@@ -12,8 +12,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         
-      - name: Install TS
-        run: npm install -g typescript
+      - name: install TS
+        run: npm install typescript
+      
+      - name: npm install
+        run: npm install
 
-      - name: Run buildRun.sh
+      - name: run buildRun.sh
         run: sh buildRun.sh
