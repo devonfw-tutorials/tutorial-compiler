@@ -1,0 +1,6 @@
+{
+    "failOnIncomplete": true,
+    "runners": [
+        "console"
+    ]
+}

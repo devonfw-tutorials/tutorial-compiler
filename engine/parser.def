@@ -1,0 +1,64 @@
+start
+  = headline
+    description
+    step+
+
+headline
+  = "=" _ string ___
+  
+description
+  = "====" ___
+    descriptionlines
+  	"====" ___ 
+
+descriptionlines
+  = descriptionline+ { return { "descriptionlines": text()}; }
+  
+descriptionline
+  = !"====" string __ 
+  
+step
+  = (
+      "====" ___
+      stepinner
+      steptextafterlines
+      "====" __
+    )
+  / stepinner
+  
+stepinner
+  = steptextlines?
+   "[step]" ___
+   "--" ___
+   steplines
+   "--" __
+
+steptextlines
+  = steptextline* { return { "steptextlines": text()}; }
+
+steptextline
+  = !"[step]" string __
+  
+steptextafterlines
+  = steptextafterline* { return { "steptextafterlines": text()}; }
+
+steptextafterline
+  = !"====" string __
+ 
+steplines
+  = stepline+
+
+stepline
+  = !"--" string __ { return { "stepline": text()}; }
+  
+string "string"
+  = [a-zA-Z0-9.(),;:/-_- ]+ { return text(); }
+
+_ "whitespace"
+  = [ \t]*
+ 
+__ "linebreak"
+  = [ \t\n\r]*
+  
+___ "linebreak"
+  = [ \t\n\r]+

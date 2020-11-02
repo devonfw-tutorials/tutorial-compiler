@@ -1,0 +1,6 @@
+{
+    "failOnIncomplete": false,
+    "runners": [
+        "katacoda"
+    ]
+}
