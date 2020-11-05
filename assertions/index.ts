@@ -18,8 +18,8 @@ export class Assertions {
         return this;
     }
 
-    public directoryExits(result: RunResult, directory: string): Assertions {
-        DirectoryExist.run(result, directory);
+    public directoryExits(directory: string): Assertions {
+        DirectoryExist.run(directory);
         return this;
     }
 }
