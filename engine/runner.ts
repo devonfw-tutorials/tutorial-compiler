@@ -10,6 +10,7 @@ export abstract class Runner {
     public name: string;
     public playbookName: string;
     public playbookPath: string;
+    public playbookTitle: string;
     protected fs = require('fs');
 
     private setVariableCallback: (name: string, value: any) => any;
@@ -42,6 +43,10 @@ export abstract class Runner {
 
     protected getPlaybookPath(): string {
         return this.playbookPath;
+    }
+
+    protected getPlaybookTitle(): string {
+        return this.playbookTitle;
     }
 
     protected getOutputDirectory(): string {
