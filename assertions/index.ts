@@ -3,9 +3,10 @@ import { Step } from "../engine/step";
 import { Command } from "../engine/command";
 import { NoErrorCode } from "./noErrorCode";
 import { NoException } from "./noException";
+import { DirectoryExist } from "./directoryExist";
 
 
-export class Assertions{
+export class Assertions {
 
     public noErrorCode(result: RunResult): Assertions {
         NoErrorCode.run(result);
@@ -14,6 +15,11 @@ export class Assertions{
 
     public noException(result: RunResult): Assertions {
         NoException.run(result);
+        return this;
+    }
+
+    public directoryExits(directory: string): Assertions {
+        DirectoryExist.run(directory);
         return this;
     }
 }
