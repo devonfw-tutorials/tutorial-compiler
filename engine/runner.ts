@@ -65,6 +65,14 @@ export abstract class Runner {
         return dir;
     }
 
+    protected getTempDirectory(): string {
+        let dir = (<string>this.getVariable("workingDir")) || __dirname + "/../temp/";
+        if (!this.fs.existsSync(dir)) {
+            this.fs.mkdirSync(dir);
+        }
+        return dir;
+    }
+
     supports(name: string): boolean {
         return !!this[this.getMethodName("run", name)];
     }
