@@ -1,5 +1,4 @@
 #!/bin/sh
-#cd /root/
 
 cd <%= tempdir; %>
 

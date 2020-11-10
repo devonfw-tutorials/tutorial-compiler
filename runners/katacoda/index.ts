@@ -5,6 +5,7 @@ import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { execSync } from "child_process";
 import { readdir, readdirSync } from "fs";
+import { KatacodaTools } from "../../engine/katacodaTools";
 const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
@@ -13,40 +14,50 @@ export class Katacoda extends Runner {
 
     private outputPathTutorial: string;
     private tempPath: string;
+    private tempPathTutorial: string;
     private stepsCount = 1;
     private description: string;
     private steps: object[];
     private assets: object[];
+    private assetPathsToCopySource: string[];
+    private assetPathsToCopyTarget: string[];
 
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
-        if(!fs.existsSync(this.getOutputDirectory() + "katacoda/")) {
-            fs.mkdirSync(this.getOutputDirectory() + "katacoda/");
+        if(!fs.existsSync(path.join(this.getOutputDirectory(), "katacoda/"))) {
+            fs.mkdirSync(path.join(this.getOutputDirectory(), "katacoda/"));
         }
 
         // delete and rebuild directory for tutorial
-        this.outputPathTutorial = this.getOutputDirectory() + "katacoda/" + playbook.name + "/";
+        this.outputPathTutorial = path.join(this.getOutputDirectory(), "katacoda/", playbook.name);
         if (fs.existsSync(this.outputPathTutorial)) {
             fs.rmdirSync(this.outputPathTutorial, { recursive: true });
         }
         fs.mkdirSync(this.outputPathTutorial);
 
         // delete and rebuild scripts folder
-        if (fs.existsSync(this.getOutputDirectory() + "../scripts/")) {
-            fs.rmdirSync(this.getOutputDirectory() + "../scripts/", { recursive: true });
+        if (fs.existsSync(path.join(this.getTempDirectory(), "scripts/"))) {
+            fs.rmdirSync(path.join(this.getTempDirectory(), "scripts/"), { recursive: true });
         }
-        fs.mkdirSync(this.getOutputDirectory() + "../scripts/");
+        fs.mkdirSync(path.join(this.getTempDirectory(), "scripts/"));
 
-        // delete and rebuild temp folder
-        this.tempPath = this.getTempDirectory() + "katacoda/" + this.getPlaybookName();
-        if (fs.existsSync(this.tempPath)) {
-            fs.rmdirSync(this.tempPath, { recursive: true });
+        // if general temp directory does not exist create it
+        this.tempPath = path.join(this.getTempDirectory(), "katacoda/");
+        if (!fs.existsSync(this.tempPath)) {
+            fs.mkdirSync(this.tempPath, { recursive: true });
         }
-        fs.mkdirSync(this.tempPath, { recursive: true });
+        // delete and rebuild temp directory for this tutorial
+        this.tempPathTutorial = path.join(this.tempPath, playbook.name);
+        if (fs.existsSync(this.tempPathTutorial)) {
+            fs.rmdirSync(this.tempPathTutorial, { recursive: true });
+        }
+        fs.mkdirSync(this.tempPathTutorial, { recursive: true });
 
         this.description = playbook.description;
         this.steps = [];
         this.assets = [];
+        this.assetPathsToCopySource = [];
+        this.assetPathsToCopyTarget = [];
     }
 
     destroy(playbook: Playbook): void {
@@ -58,46 +69,30 @@ export class Katacoda extends Runner {
             fs.rmdirSync(this.outputPathTutorial + "assets", { recursive: true });
         }
         fs.mkdirSync(this.outputPathTutorial + "assets", { recursive: true });
-        this.copyAssets(this.tempPath.replace(/\\/g, "/"), (this.outputPathTutorial + "assets").replace(/\\/g, "/"), this.tempPath.replace(/\\/g, "/"), "/devonfw");
+        for(let i = 0; i < this.assetPathsToCopySource.length; i++) {
+            this.copyAssets(this.assetPathsToCopySource[i], (this.outputPathTutorial + "assets"), this.assetPathsToCopySource[i], this.assetPathsToCopyTarget[i]);
+        }
 
         // Write index file. Required for katacoda to load the tutorial.
-        let indexJsonObject = {
-            "title": this.getPlaybookTitle(),
-            "difficulty": "Beginner",
-            "time": ((this.stepsCount - 1) * 5) + " Minutes",
-            "details": {
-                "steps": this.steps,
-                "intro": {
-                    "text": "intro.md"
-                },
-                "finish": {
-                    "text": "finish.md"
-                },
-                "assets": {
-                    "client": this.assets
-                }
-            },
-            "environment": {
-                "uilayout": "terminal",
-                "showide": true
-            },
-            "backend": {
-                "imageid": "ubuntu:2004"
-            }
-        }
+        let indexJsonObject = KatacodaTools.generateIndexJson(this.getPlaybookTitle(), ((this.stepsCount - 1) * 5), this.steps, this.assets);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
     runInstallDevonIde(step: Step, command: Command): RunResult {
         let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ");
 
-        // create and execute script to clone devon ide settings repo
-        this.renderTemplate("scripts/" + "cloneDevonIdeSettings.sh", this.getOutputDirectory() + "../scripts/" + this.stepsCount + "_cloneDevonIdeSettings.sh", { tools: params, tempdir: this.tempPath.replace(/\\/g, "/")});
-        const { exec } = require('child_process');
-        execSync("bash " + this.getTempDirectory() + "../scripts/1_cloneDevonIdeSettings.sh");
+        // create and execute script to clone devon ide settings repo only if not already exist
+        let settingsDir = path.join(this.tempPath, "devonIdeSettings_" + params.replace(" ", "_"));
+        if (!fs.existsSync(settingsDir)) {
+            fs.mkdirSync(settingsDir, { recursive: true });
+            this.renderTemplate(path.join("scripts", "cloneDevonIdeSettings.sh"), path.join(this.getTempDirectory(), "scripts", "cloneDevonIdeSettings.sh"), { tools: params, tempdir: settingsDir.replace(/\\/g, "/")});
+            execSync("bash " + this.getTempDirectory() + "/scripts/cloneDevonIdeSettings.sh");
+        }
+        this.assetPathsToCopySource.push(settingsDir);
+        this.assetPathsToCopyTarget.push("devonfw-settings");
 
-        // script to rename the git folder
-        this.renderTemplate("scripts/" + "renameGitFolder.sh", this.outputPathTutorial + "renameGitFolder.sh", {});
+        // script to rename the git folder. Render direct in output of tutorial
+        this.renderTemplate(path.join("scripts", "renameGitFolder.sh"), path.join(this.outputPathTutorial, "renameGitFolder.sh"), {});
 
         this.renderTemplate("installDevonIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
         this.steps.push({
@@ -118,29 +113,28 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    private renderTemplate(name: string, targetName: string, variables) {
-        let template = fs.readFileSync(this.getRunnerDirectory() + "/templates/" + name, 'utf8');
+    private renderTemplate(name: string, targetPath: string, variables) {
+        let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
-        fs.writeFileSync(targetName, result);
+        fs.writeFileSync(targetPath, result);
     }
 
     private copyAssets(fromDirectory: string, toDirectory: string, source: string, katacodaFolder: string) {
         let dir = readdirSync(fromDirectory);
         dir.forEach(file => {
-            if(fs.lstatSync(fromDirectory + "/" + file).isDirectory()) {
-                this.copyAssets(fromDirectory + "/" + file, toDirectory, source, katacodaFolder);
+            if(fs.lstatSync(path.join(fromDirectory, file)).isDirectory()) {
+                this.copyAssets(path.join(fromDirectory, file), toDirectory, source, katacodaFolder);
             } else {
-                if (!fs.existsSync(toDirectory + "/" + fromDirectory.substr(source.length, fromDirectory.length - 1))) {
-                    fs.mkdirSync(toDirectory + "/" + fromDirectory.substr(source.length, fromDirectory.length - 1), { recursive: true });
+                if (!fs.existsSync(path.join(toDirectory, fromDirectory.substr(source.length, fromDirectory.length - 1)))) {
+                    fs.mkdirSync(path.join(toDirectory, fromDirectory.substr(source.length, fromDirectory.length - 1)), { recursive: true });
                 }
                 
-                fs.copyFileSync(fromDirectory + "/" + file, toDirectory + "/" + fromDirectory.substr(source.length, fromDirectory.length - 1) + "/" + file);
+                fs.copyFileSync(path.join(fromDirectory, file), path.join(toDirectory, fromDirectory.substr(source.length, fromDirectory.length - 1), file));
                 this.assets.push({
-                    "file": fromDirectory.substr(source.length, fromDirectory.length - 1) + "/" + file,
-                    "target": "/root" + katacodaFolder + fromDirectory.substr(source.length, fromDirectory.length - 1) + "/"
+                    "file": path.join(fromDirectory.substr(source.length, fromDirectory.length - 1), file).replace(/\\/g, "/"),
+                    "target": path.join("/root", katacodaFolder, fromDirectory.substr(source.length, fromDirectory.length - 1)).replace(/\\/g, "/")
                 });
             }
         });
     }
-
 }
