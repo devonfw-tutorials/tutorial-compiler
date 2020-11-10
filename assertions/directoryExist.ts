@@ -1,4 +1,3 @@
-import { RunResult } from "../engine/run_result";
 import * as fs from "fs";
 
 export class DirectoryExist {
