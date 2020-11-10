@@ -4,6 +4,7 @@ import { Command } from "../engine/command";
 import { NoErrorCode } from "./noErrorCode";
 import { NoException } from "./noException";
 import { DirectoryExist } from "./directoryExist";
+import { FileExist } from "./fileExist";
 
 
 export class Assertions {
@@ -20,6 +21,11 @@ export class Assertions {
 
     public directoryExits(directory: string): Assertions {
         DirectoryExist.run(directory);
+        return this;
+    }
+
+    public fileExits(filepath: string): Assertions {
+        FileExist.run(filepath);
         return this;
     }
 }
