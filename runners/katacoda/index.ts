@@ -36,10 +36,10 @@ export class Katacoda extends Runner {
         fs.mkdirSync(this.outputPathTutorial);
 
         // delete and rebuild scripts folder
-        if (fs.existsSync(path.join(this.getTempDirectory(), "scripts/"))) {
-            fs.rmdirSync(path.join(this.getTempDirectory(), "scripts/"), { recursive: true });
-        }
-        fs.mkdirSync(path.join(this.getTempDirectory(), "scripts/"));
+        //if (fs.existsSync(path.join(this.getTempDirectory(), "scripts/"))) {
+        //    fs.rmdirSync(path.join(this.getTempDirectory(), "scripts/"), { recursive: true });
+        //}
+        //fs.mkdirSync(path.join(this.getTempDirectory(), "scripts/"));
 
         // if general temp directory does not exist create it
         this.tempPath = path.join(this.getTempDirectory(), "katacoda/");
@@ -73,33 +73,32 @@ export class Katacoda extends Runner {
             this.copyAssets(this.assetPathsToCopySource[i], (this.outputPathTutorial + "assets"), this.assetPathsToCopySource[i], this.assetPathsToCopyTarget[i]);
         }
 
-        // Write index file. Required for katacoda to load the tutorial.
+        // write index file, required for katacoda to load the tutorial
         let indexJsonObject = KatacodaTools.generateIndexJson(this.getPlaybookTitle(), ((this.stepsCount - 1) * 5), this.steps, this.assets);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
     runInstallDevonIde(step: Step, command: Command): RunResult {
-        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ");
+        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
-        // create and execute script to clone devon ide settings repo only if not already exist
-        let settingsDir = path.join(this.tempPath, "devonIdeSettings_" + params.replace(" ", "_"));
-        if (!fs.existsSync(settingsDir)) {
-            fs.mkdirSync(settingsDir, { recursive: true });
-            this.renderTemplate(path.join("scripts", "cloneDevonIdeSettings.sh"), path.join(this.getTempDirectory(), "scripts", "cloneDevonIdeSettings.sh"), { tools: params, tempdir: settingsDir.replace(/\\/g, "/")});
-            execSync("bash " + this.getTempDirectory() + "/scripts/cloneDevonIdeSettings.sh");
+        // create background and foreground script and script to download devon ide settings
+        let scriptsDir = path.join(this.tempPathTutorial, "scripts", "step" + this.stepsCount);
+        if(!fs.existsSync(scriptsDir)) {
+            fs.mkdirSync(scriptsDir, { recursive: true })
         }
-        this.assetPathsToCopySource.push(settingsDir);
-        this.assetPathsToCopyTarget.push("devonfw-settings");
+        this.renderTemplate(path.join("scripts", "foreground.sh"), path.join(this.outputPathTutorial, this.stepsCount + "_foreground.sh"), { stepCount: this.stepsCount });
+        this.renderTemplate(path.join("scripts", "background.sh"), path.join(this.outputPathTutorial, this.stepsCount + "_background.sh"), { stepCount: this.stepsCount });
+        this.renderTemplate(path.join("scripts", "cloneDevonIdeSettings.sh"), path.join(scriptsDir, "1_cloneDevonIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
+        this.assetPathsToCopySource.push(this.tempPathTutorial);
+        this.assetPathsToCopyTarget.push("");
 
-        // script to rename the git folder. Render direct in output of tutorial
-        this.renderTemplate(path.join("scripts", "renameGitFolder.sh"), path.join(this.outputPathTutorial, "renameGitFolder.sh"), {});
-
-        this.renderTemplate("installDevonIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
         this.steps.push({
             "title": "Install Devon IDE",
-            "text": "step1.md",
-            "foreground": "renameGitFolder.sh"
+            "text": "step" + this.stepsCount + ".md",
+            "foreground" : this.stepsCount + "_foreground.sh",
+            "background" : this.stepsCount + "_background.sh"
         });
+        this.renderTemplate("installDevonIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
         return null;
     }
 
@@ -108,7 +107,7 @@ export class Katacoda extends Runner {
         
         this.steps.push({
             "title": "Install CobiGen",
-            "text": "step2.md"
+            "text": "step" + this.stepsCount + ".md"
         });
         return null;
     }
