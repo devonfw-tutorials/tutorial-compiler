@@ -21,6 +21,8 @@ export class Katacoda extends Runner {
     private assets: object[];
     private assetPathsToCopySource: string[];
     private assetPathsToCopyTarget: string[];
+    private setupScripts: object[];
+    private setupDir: string;
 
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -35,17 +37,12 @@ export class Katacoda extends Runner {
         }
         fs.mkdirSync(this.outputPathTutorial);
 
-        // delete and rebuild scripts folder
-        //if (fs.existsSync(path.join(this.getTempDirectory(), "scripts/"))) {
-        //    fs.rmdirSync(path.join(this.getTempDirectory(), "scripts/"), { recursive: true });
-        //}
-        //fs.mkdirSync(path.join(this.getTempDirectory(), "scripts/"));
-
         // if general temp directory does not exist create it
         this.tempPath = path.join(this.getTempDirectory(), "katacoda/");
         if (!fs.existsSync(this.tempPath)) {
             fs.mkdirSync(this.tempPath, { recursive: true });
         }
+
         // delete and rebuild temp directory for this tutorial
         this.tempPathTutorial = path.join(this.tempPath, playbook.name);
         if (fs.existsSync(this.tempPathTutorial)) {
@@ -53,22 +50,46 @@ export class Katacoda extends Runner {
         }
         fs.mkdirSync(this.tempPathTutorial, { recursive: true });
 
+        // create folder for setup scripts inside the temp directory
+        this.setupDir = path.join(this.tempPathTutorial, "setup");
+        fs.mkdirSync(this.setupDir, { recursive: true })
+
+        // initialize private variables
         this.description = playbook.description;
         this.steps = [];
         this.assets = [];
         this.assetPathsToCopySource = [];
         this.assetPathsToCopyTarget = [];
+        this.setupScripts = [];
     }
 
     destroy(playbook: Playbook): void {
         fs.writeFileSync(this.outputPathTutorial + 'intro.md', this.description);
         fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
 
-        // copy all assets from temp in assets folder
-        if (fs.existsSync(this.outputPathTutorial + "assets")) {
-            fs.rmdirSync(this.outputPathTutorial + "assets", { recursive: true });
+        // create assets folder for the tutorial
+        if (fs.existsSync(path.join(this.outputPathTutorial, "assets", "setup"))) {
+            fs.rmdirSync(path.join(this.outputPathTutorial, "assets", "setup"), { recursive: true });
         }
-        fs.mkdirSync(this.outputPathTutorial + "assets", { recursive: true });
+        fs.mkdirSync(path.join(this.outputPathTutorial, "assets", "setup"), { recursive: true });
+
+        // create and configure required files for the setup process
+        this.renderTemplate(path.join("scripts", "intro_foreground.sh"), path.join(this.outputPathTutorial, "intro_foreground.sh"), { });
+        this.renderTemplate(path.join("scripts", "intro_background.sh"), path.join(this.outputPathTutorial, "intro_background.sh"), { });
+        this.renderTemplate(path.join("scripts", "setup.sh"), path.join(this.tempPathTutorial, "setup", "setup.sh"), {});
+        let setupFile = path.join(this.outputPathTutorial, "assets", "setup", "setup.txt");
+        fs.writeFileSync(setupFile, this.setupScripts.length + "\n\n");
+        for(let i = 0; i < this.setupScripts.length; i++) {
+            fs.appendFileSync(setupFile, this.setupScripts[i]["name"] + "\n");
+            fs.appendFileSync(setupFile, this.setupScripts[i]["script"] + "\n");
+            fs.appendFileSync(setupFile, "##########\n");
+        }
+        this.assets.push({
+            "file": "setup/setup.txt",
+            "target": "/root/setup"
+        });
+
+        // copy all assets from temp in assets folder
         for(let i = 0; i < this.assetPathsToCopySource.length; i++) {
             this.copyAssets(this.assetPathsToCopySource[i], (this.outputPathTutorial + "assets"), this.assetPathsToCopySource[i], this.assetPathsToCopyTarget[i]);
         }
@@ -81,34 +102,30 @@ export class Katacoda extends Runner {
     runInstallDevonIde(step: Step, command: Command): RunResult {
         let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
-        // create background and foreground script and script to download devon ide settings
-        let scriptsDir = path.join(this.tempPathTutorial, "scripts", "step" + this.stepsCount);
-        if(!fs.existsSync(scriptsDir)) {
-            fs.mkdirSync(scriptsDir, { recursive: true })
-        }
-        this.renderTemplate(path.join("scripts", "foreground.sh"), path.join(this.outputPathTutorial, this.stepsCount + "_foreground.sh"), { stepCount: this.stepsCount });
-        this.renderTemplate(path.join("scripts", "background.sh"), path.join(this.outputPathTutorial, this.stepsCount + "_background.sh"), { stepCount: this.stepsCount });
-        this.renderTemplate(path.join("scripts", "cloneDevonIdeSettings.sh"), path.join(scriptsDir, "1_cloneDevonIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
+        // create script to download devon ide settings
+        this.renderTemplate(path.join("scripts", "cloneDevonIdeSettings.sh"), path.join(this.setupDir, "cloneDevonIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
         this.assetPathsToCopySource.push(this.tempPathTutorial);
         this.assetPathsToCopyTarget.push("");
+        // add the script to the setup scripts for executing it at the beginning of the tutorial
+        this.setupScripts.push({
+            "name": "Clone Devon IDE settings",
+            "script": "cloneDevonIdeSettings.sh"
+        });
 
         this.steps.push({
             "title": "Install Devon IDE",
-            "text": "step" + this.stepsCount + ".md",
-            "foreground" : this.stepsCount + "_foreground.sh",
-            "background" : this.stepsCount + "_background.sh"
+            "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("installDevonIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
         return null;
     }
 
     runInstallCobiGen(step: Step, command: Command): RunResult {
-        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
-        
         this.steps.push({
             "title": "Install CobiGen",
             "text": "step" + this.stepsCount + ".md"
         });
+        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
         return null;
     }
 

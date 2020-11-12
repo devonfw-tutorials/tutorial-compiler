@@ -7,7 +7,9 @@ export class KatacodaTools {
             "details": {
                 "steps": steps,
                 "intro": {
-                    "text": "intro.md"
+                    "text": "intro.md",
+                    "code": "intro_foreground.sh",
+                    "courseData": "intro_background.sh"
                 },
                 "finish": {
                     "text": "finish.md"

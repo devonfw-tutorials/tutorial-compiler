@@ -10,14 +10,16 @@ Create the directory where the devonfw ide will be installed.
 
 
 To install devonfw execute the following commands. More information about setting up your ide on https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc
+
+First you have do download and extract the installation files.
+
 `wget -c https://bit.ly/2BCkFa9 -O - | tar -xz`{{execute}}
 
-`bash setup`{{execute}}
+Now start the installation process. You have to specify a git repository where you can configure which tools will be installed within the IDE. The repository was already cloned by the setup script. It is located in the '/root/devonfw-settings' folder.
+
+`bash setup /root/devonfw-settings/settings.git`{{execute}}
 
 The installation process may take a while.
-
-The installation routine will ask you for a settings url. If you don't have a project specific settings, you can continue by pressing Enter, but let's continue with our tutorial specific URL:
-`https://github.com/devonfw/katacoda-scenarios-ide-settings.git`{{execute}}
 
 Accept the licence agreements.
 `yes`{{execute}}
