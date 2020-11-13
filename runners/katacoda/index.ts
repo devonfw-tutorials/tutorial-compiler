@@ -4,7 +4,7 @@ import { Playbook } from "../../engine/playbook";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
-import { KatacodaAsset, KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
+import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
 import * as path from 'path';
 import * as ejs from 'ejs';
