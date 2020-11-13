@@ -4,10 +4,11 @@ import { Playbook } from "../../engine/playbook";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
-import { KatacodaAsset, KatacodaStep, KatacodaSetupScript } from "./katacodaInterface";
+import { KatacodaAsset, KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
 import * as path from 'path';
 import * as ejs from 'ejs';
+import * as fs from 'fs';
 
 export class Katacoda extends Runner {
 
@@ -44,8 +45,8 @@ export class Katacoda extends Runner {
     }
 
     destroy(playbook: Playbook): void {
-        this.fs.writeFileSync(this.outputPathTutorial + 'intro.md', playbook.description);
-        this.fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
+        fs.writeFileSync(this.outputPathTutorial + 'intro.md', playbook.description);
+        fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
 
         // create and configure required files for the setup process
         this.renderTemplate(path.join("scripts", "intro_foreground.sh"), path.join(this.outputPathTutorial, "intro_foreground.sh"), { });
@@ -61,7 +62,7 @@ export class Katacoda extends Runner {
 
         // write index file, required for katacoda to load the tutorial
         let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount - 1) * 5), this.steps, this.assetManager.getKatacodaAssets());
-        this.fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
+        fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
@@ -94,17 +95,17 @@ export class Katacoda extends Runner {
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
-        let template = this.fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
+        let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
-        this.fs.writeFileSync(targetPath, result);
+        fs.writeFileSync(targetPath, result);
     }
 
     private writeSetupFile(setupFile: string) {
-        this.fs.writeFileSync(setupFile, this.setupScripts.length + "\n\n");
+        fs.writeFileSync(setupFile, this.setupScripts.length + "\n\n");
         for(let i = 0; i < this.setupScripts.length; i++) {
-            this.fs.appendFileSync(setupFile, this.setupScripts[i].name + "\n");
-            this.fs.appendFileSync(setupFile, this.setupScripts[i].script + "\n");
-            this.fs.appendFileSync(setupFile, "##########\n");
+            fs.appendFileSync(setupFile, this.setupScripts[i].name + "\n");
+            fs.appendFileSync(setupFile, this.setupScripts[i].script + "\n");
+            fs.appendFileSync(setupFile, "##########\n");
         }
 
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);

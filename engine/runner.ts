@@ -12,7 +12,6 @@ export abstract class Runner {
     public playbookName: string;
     public playbookPath: string;
     public playbookTitle: string;
-    protected fs = require('fs');
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
@@ -52,24 +51,24 @@ export abstract class Runner {
 
     protected getOutputDirectory(): string {
         let dir = (<string>this.getVariable("outputDir")) || __dirname + "/../output/";
-        if (!this.fs.existsSync(dir)) {
-            this.fs.mkdirSync(dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
         }
         return dir;
     }
 
     protected getWorkingDirectory(): string {
         let dir = (<string>this.getVariable("workingDir")) || __dirname + "/../working/";
-        if (!this.fs.existsSync(dir)) {
-            this.fs.mkdirSync(dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
         }
         return dir;
     }
 
     protected getTempDirectory(): string {
         let dir = (<string>this.getVariable("tempDir")) || __dirname + "/../temp/";
-        if (!this.fs.existsSync(dir)) {
-            this.fs.mkdirSync(dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
         }
         return dir;
     }

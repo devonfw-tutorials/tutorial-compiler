@@ -1,4 +1,4 @@
-import { KatacodaAsset, AssetManagerData } from "./katacodaInterface";
+import { KatacodaAsset, AssetManagerData } from "./katacodaInterfaces";
 import * as fs from 'fs';
 import * as path from 'path';
 

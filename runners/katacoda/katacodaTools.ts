@@ -1,4 +1,4 @@
-import { KatacodaStep, KatacodaAsset } from "./katacodaInterface";
+import { KatacodaStep, KatacodaAsset } from "./katacodaInterfaces";
 
 export class KatacodaTools {
     public static generateIndexJson(title: string, minutes: number, steps: KatacodaStep[], assets: KatacodaAsset[]) {
