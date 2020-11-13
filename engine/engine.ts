@@ -91,6 +91,7 @@ export class Engine {
         runner.name = name;
         runner.playbookName = this.playbook.name;
         runner.playbookPath = this.playbook.path;
+        runner.playbookTitle = this.playbook.title;
         this.runners.set(name, runner);
     }
 }

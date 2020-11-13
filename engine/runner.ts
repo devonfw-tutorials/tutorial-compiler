@@ -2,6 +2,7 @@ import { Command } from "./command";
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import { Step } from "./step";
+import * as fs from 'fs';
 
 const nameof = <T>(name: Extract<keyof T, string>): string => name;
 
@@ -10,7 +11,7 @@ export abstract class Runner {
     public name: string;
     public playbookName: string;
     public playbookPath: string;
-    protected fs = require('fs');
+    public playbookTitle: string;
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
@@ -44,18 +45,30 @@ export abstract class Runner {
         return this.playbookPath;
     }
 
+    protected getPlaybookTitle(): string {
+        return this.playbookTitle;
+    }
+
     protected getOutputDirectory(): string {
         let dir = (<string>this.getVariable("outputDir")) || __dirname + "/../output/";
-        if (!this.fs.existsSync(dir)) {
-            this.fs.mkdirSync(dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
         }
         return dir;
     }
 
     protected getWorkingDirectory(): string {
         let dir = (<string>this.getVariable("workingDir")) || __dirname + "/../working/";
-        if (!this.fs.existsSync(dir)) {
-            this.fs.mkdirSync(dir);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        return dir;
+    }
+
+    protected getTempDirectory(): string {
+        let dir = (<string>this.getVariable("tempDir")) || __dirname + "/../temp/";
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
         }
         return dir;
     }
@@ -83,5 +96,15 @@ export abstract class Runner {
     }
 
     destroy(playbook: Playbook): void {
+    }
+
+    protected createFolder(path: string, deleteFolerIfExist: boolean) {
+        if(fs.existsSync(path)) {
+            if(deleteFolerIfExist) {
+                fs.rmdirSync(path, { recursive: true });
+                fs.mkdirSync(path, { recursive: true });
+            } else return
+        }
+        fs.mkdirSync(path, { recursive: true });
     }
 }
