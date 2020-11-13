@@ -2,7 +2,7 @@ import { Command } from "./command";
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import { Step } from "./step";
-const fs = require('fs');
+import * as fs from 'fs';
 
 const nameof = <T>(name: Extract<keyof T, string>): string => name;
 
@@ -67,7 +67,7 @@ export abstract class Runner {
     }
 
     protected getTempDirectory(): string {
-        let dir = (<string>this.getVariable("workingDir")) || __dirname + "/../temp/";
+        let dir = (<string>this.getVariable("tempDir")) || __dirname + "/../temp/";
         if (!this.fs.existsSync(dir)) {
             this.fs.mkdirSync(dir);
         }

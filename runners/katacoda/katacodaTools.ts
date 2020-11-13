@@ -1,5 +1,7 @@
+import { KatacodaStep, KatacodaAsset } from "./katacodaInterface";
+
 export class KatacodaTools {
-    public static generateIndexJson(title: string, minutes: number, steps: object[], assets: object[]) {
+    public static generateIndexJson(title: string, minutes: number, steps: KatacodaStep[], assets: KatacodaAsset[]) {
         let indexJsonObject = {
             "title": title,
             "difficulty": "Beginner",
