@@ -5,10 +5,9 @@ import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
 import { KatacodaAsset, KatacodaStep, KatacodaSetupScript } from "./katacodaInterface";
-import * as fs from 'fs';
+import { KatacodaAssetManager } from "./katacodaAssetManager";
 import * as path from 'path';
 import * as ejs from 'ejs';
-import { KatacodeAssetManager } from "./katacodaAssetManager";
 
 export class Katacoda extends Runner {
 
@@ -18,7 +17,7 @@ export class Katacoda extends Runner {
     private stepsCount = 1;
     private steps: KatacodaStep[] = [];
     private setupScripts: KatacodaSetupScript[] = [];
-    private assetManager: KatacodeAssetManager;
+    private assetManager: KatacodaAssetManager;
     private setupDir: string;
 
     init(playbook: Playbook): void {
@@ -41,14 +40,13 @@ export class Katacoda extends Runner {
         this.setupDir = path.join(this.tempPathTutorial, "setup");
         this.createFolder(this.setupDir, false);
 
-        this.assetManager = new KatacodeAssetManager(path.join(this.outputPathTutorial, "assets"));
+        this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
     }
 
     destroy(playbook: Playbook): void {
         this.fs.writeFileSync(this.outputPathTutorial + 'intro.md', playbook.description);
         this.fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
 
-        
         // create and configure required files for the setup process
         this.renderTemplate(path.join("scripts", "intro_foreground.sh"), path.join(this.outputPathTutorial, "intro_foreground.sh"), { });
         this.renderTemplate(path.join("scripts", "intro_background.sh"), path.join(this.outputPathTutorial, "intro_background.sh"), { });
@@ -59,7 +57,6 @@ export class Katacoda extends Runner {
 
         // copy all assets from temp/setup in assets folder
         this.assetManager.registerDirectory(path.join(this.tempPathTutorial, "setup"), "setup", "/root/setup", true);
-
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial

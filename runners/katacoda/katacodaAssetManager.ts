@@ -2,7 +2,7 @@ import { KatacodaAsset, AssetManagerData } from "./katacodaInterface";
 import * as fs from 'fs';
 import * as path from 'path';
 
-export class KatacodeAssetManager {
+export class KatacodaAssetManager {
     private assetDirectory: string;
     private assetData: AssetManagerData[] = [];
     private katacodaAssets: KatacodaAsset[] = [];
