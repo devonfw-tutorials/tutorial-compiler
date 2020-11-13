@@ -6,7 +6,7 @@ import { Assertions } from "../../assertions";
 
 export class Console extends Runner {
 
-    runInstallDevonIde(step: Step, command: Command): RunResult {
+    runInstallDevonfwIde(step: Step, command: Command): RunResult {
         //TODO
         let result = new RunResult();
         result.returnCode = 0;
@@ -17,8 +17,8 @@ export class Console extends Runner {
         return null;
     }
 
-    async assertInstallDevonIde(step: Step, command: Command, result: RunResult) {
-        console.log("assertInstallDevonIde");
+    async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
+        console.log("assertInstallDevonfwIde");
         new Assertions()
         .noErrorCode(result)
         .noException(result);

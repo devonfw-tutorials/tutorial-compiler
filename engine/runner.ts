@@ -2,6 +2,7 @@ import { Command } from "./command";
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import { Step } from "./step";
+const fs = require('fs');
 
 const nameof = <T>(name: Extract<keyof T, string>): string => name;
 
@@ -96,5 +97,15 @@ export abstract class Runner {
     }
 
     destroy(playbook: Playbook): void {
+    }
+
+    protected createFolder(path: string, deleteFolerIfExist: boolean) {
+        if(fs.existsSync(path)) {
+            if(deleteFolerIfExist) {
+                fs.rmdirSync(path, { recursive: true });
+                fs.mkdirSync(path, { recursive: true });
+            } else return
+        }
+        fs.mkdirSync(path, { recursive: true });
     }
 }
