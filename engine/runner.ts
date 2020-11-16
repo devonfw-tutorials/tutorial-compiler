@@ -106,5 +106,6 @@ export abstract class Runner {
             } else return
         }
         fs.mkdirSync(path, { recursive: true });
+        return path;
     }
 }
