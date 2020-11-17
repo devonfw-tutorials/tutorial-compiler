@@ -3,7 +3,7 @@ import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import { Step } from "./step";
 import * as fs from 'fs';
-import * as path from 'path';
+import * as rimraf from 'rimraf';
 
 const nameof = <T>(name: Extract<keyof T, string>): string => name;
 
@@ -102,24 +102,11 @@ export abstract class Runner {
     protected createFolder(path: string, deleteFolerIfExist: boolean) {
         if(fs.existsSync(path)) {
             if(deleteFolerIfExist) {
-                this.removeDirectoryRecursively(path);  //just rmdirSync work not properly on linux
+                rimraf.sync(path);
                 fs.mkdirSync(path, { recursive: true });
             } else return
         }
         fs.mkdirSync(path, { recursive: true });
         return path;
-    }
-
-    private removeDirectoryRecursively(directoryPath: string) {
-        let dir = fs.readdirSync(directoryPath);
-        dir.forEach(file => {
-            let currentPath = path.join(directoryPath, file);
-            if(fs.lstatSync(currentPath).isDirectory()) {
-                this.removeDirectoryRecursively(currentPath)
-            } else {
-                fs.unlinkSync(currentPath);
-            }
-        });
-        fs.rmdirSync(directoryPath);
     }
 }
