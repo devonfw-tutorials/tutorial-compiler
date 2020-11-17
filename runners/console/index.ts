@@ -24,7 +24,7 @@ export class Console extends Runner {
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"));
         
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
-        this.createFolder(installDir, false);
+        this.createFolder(installDir, true);
         this.executeCommandSync("curl -L -o devonfw.tar.gz https://bit.ly/2BCkFa9", installDir);
         this.executeCommandSync("tar -xf devonfw.tar.gz", installDir);
         
@@ -39,11 +39,11 @@ export class Console extends Runner {
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
-        console.log("assertInstallDevonfwIde");
-        console.log(result)
         new Assertions()
         .noErrorCode(result)
-        .noException(result);
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw"))
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"));
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
