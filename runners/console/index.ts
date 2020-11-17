@@ -11,25 +11,24 @@ export class Console extends Runner {
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
         let result = new RunResult();
-        result.returnCode = 1;
+        result.returnCode = 0;
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
-        this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir);
+        this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
         let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").trim();
         let tools = "DEVON_IDE_TOOLS=(" + params + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
-        this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"));
+        this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
         
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
-        this.executeCommandSync("curl -L -o devonfw.tar.gz https://bit.ly/2BCkFa9", installDir);
-        this.executeCommandSync("tar -xf devonfw.tar.gz", installDir);
+        this.executeCommandSync("curl -L -o devonfw.tar.gz https://bit.ly/2BCkFa9", installDir, result);
+        this.executeCommandSync("tar -xf devonfw.tar.gz", installDir, result);
         
-        child_process.spawnSync(path.join(installDir, "setup") + " " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), { shell: true, input: "yes"});
+        this.executeCommandSync(path.join(installDir, "setup") + " " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), "", result, "yes");
         
-        result.returnCode = 0;
         return result;
     }
 
@@ -38,17 +37,31 @@ export class Console extends Runner {
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
-        new Assertions()
+        let installedTools = command.parameters.replace(/\[/, "").replace("\]", "").replace(/mvn/, "maven").split(",");
+
+        let assert = new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"));
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"))
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+
+        for(let i = 0; i < installedTools.length; i++) {
+            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
+        }
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
         console.log("assertInstallCobiGen");
     }
 
-    private executeCommandSync(command: string, directory: string) {
-        child_process.execSync("cd " + path.join(directory) + " && " + command);
+    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
+        if(result.returnCode != 0) return;
+
+        let process = child_process.spawnSync("cd " + path.join(directory) + " && " + command, { shell: true, input: input });
+        if(process.status != 0) {
+            console.log("Error executing command: " + command);
+            console.log(process.stderr.toString())
+            result.returnCode = process.status;
+        }
     }
 }
