@@ -6,7 +6,6 @@ import { Assertions } from "../../assertions";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
-import { ChildProcess } from "child_process";
 
 export class Console extends Runner {
 
@@ -42,7 +41,6 @@ export class Console extends Runner {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw"))
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"));
     }
 
