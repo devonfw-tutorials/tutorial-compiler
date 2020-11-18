@@ -18,3 +18,9 @@ Now, you have to download cobigen
 --
 installCobiGen()
 --
+
+The CobiGen plugin for VS Code is already installed. You can use it right away.
+[step]
+--
+cobiGenJava(devonfw/workspaces/main/Test.java,[1 2 3 4])
+--

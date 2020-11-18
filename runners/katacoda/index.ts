@@ -94,6 +94,25 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runCobiGenJava(step: Step, command: Command): RunResult {
+        let params = command.parameters.split(",");
+        let cobiGenTemplates = params[1].replace(/\[/, "").replace("\]", "").replace(/ /g, ",");
+        
+        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { vsixFile: "cobigen-0.0.1.vsix", pluginName: "cobigen" });
+        this.setupScripts.push({
+            "name": "Install CobiGen plugin",
+            "script": "installCobiGenPlugin.sh"
+        });
+        this.assetManager.registerFile(path.join(this.getRunnerDirectory(), "templates", "files", "cobigen-0.0.1.vsix"), "setup/cobigen-0.0.1.vsix", "/root/setup", true)
+
+        this.steps.push({
+            "title": "CobiGen Java",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
