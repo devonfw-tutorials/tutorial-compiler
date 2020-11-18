@@ -59,8 +59,8 @@ export class Console extends Runner {
 
         let process = child_process.spawnSync("cd " + path.join(directory) + " && " + command, { shell: true, input: input });
         if(process.status != 0) {
-            console.log("Error executing command: " + command);
-            console.log(process.stderr.toString())
+            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
+            console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }
     }
