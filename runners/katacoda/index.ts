@@ -66,10 +66,11 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        let params = this.parseInputParameters(command.parameters);
+        let tools = params[0].replace(/\[/, "").replace(/\]/g, "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
-        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
 
         // add the script to the setup scripts for executing it at the beginning of the tutorial
         this.setupScripts.push({
@@ -95,8 +96,8 @@ export class Katacoda extends Runner {
     }
 
     runCobiGenJava(step: Step, command: Command): RunResult {
-        let params = command.parameters.split(",");
-        let cobiGenTemplates = params[1].replace(/\[/, "").replace("\]", "").replace(/ /g, ",");
+        let params = this.parseInputParameters(command.parameters)
+        let cobiGenTemplates = params[1].replace(/\[/, "").replace(/\]/g, "");
         
         this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { vsixFile: "cobigen-0.0.1.vsix", pluginName: "cobigen" });
         this.setupScripts.push({

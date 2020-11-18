@@ -12,3 +12,5 @@ A terminal will open on the bottom of the IDE and CobiGen CLI will start.
 You can choose the templates CobiGen should use by entering the numbers.
 
 `<%= cobiGenTemplates; %>`{{execute}}
+
+<%= textAfter; %>
