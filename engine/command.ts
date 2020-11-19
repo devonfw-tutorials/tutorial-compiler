@@ -3,7 +3,6 @@ export class Command{
     public parameterString: string;
 
     get parameters(): any[] {
-        let params = JSON.parse("[" + this.parameterString + "]");
-        return params;
+        return JSON.parse("[" + this.parameterString + "]");
     }
 }
