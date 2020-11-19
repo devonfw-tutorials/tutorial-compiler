@@ -52,7 +52,7 @@ stepline
   = !"--" string __ { return { "stepline": text()}; }
   
 string "string"
-  = [a-zA-Z0-9.(),;:/-_- ]+ { return text(); }
+  = [a-zA-Z0-9.(),;:/-_-" ]+ { return text(); }
 
 _ "whitespace"
   = [ \t]*

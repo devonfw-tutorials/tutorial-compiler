@@ -66,8 +66,7 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let params = this.parseInputParameters(command.parameters);
-        let tools = params[0].replace(/\[/, "").replace(/\]/g, "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -96,8 +95,8 @@ export class Katacoda extends Runner {
     }
 
     runCobiGenJava(step: Step, command: Command): RunResult {
-        let params = this.parseInputParameters(command.parameters)
-        let cobiGenTemplates = params[1].replace(/\[/, "").replace(/\]/g, "");
+        let params = command.parameters;
+        let cobiGenTemplates = params[1].join(",");
         
         this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { vsixFile: "cobigen-0.0.1.vsix", pluginName: "cobigen" });
         this.setupScripts.push({

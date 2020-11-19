@@ -109,13 +109,4 @@ export abstract class Runner {
         fs.mkdirSync(path, { recursive: true });
         return path;
     }
-
-    protected parseInputParameters(parameterString: string) {
-        let regex = /(((?<array>\[[^\]]+\])|(?<string>[^[,]+))\s*,?\s*)/mg;
-        let parameters = [];
-        for (let matches = regex.exec(parameterString); matches != null; matches = regex.exec(parameterString)) {
-            parameters.push(matches[2]);
-        }
-        return parameters;
-    }
 }

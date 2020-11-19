@@ -10,7 +10,7 @@ More information about CobiGen on https://devonfw.com/website/pages/docs/master-
 To use the cobigen cli you first have to install the devonfw ide. You will find more information about devonfw on https://devonfw.com/website/pages/welcome/welcome.html.
 [step]
 --
-installDevonfwIde([java,mvn])
+installDevonfwIde(["java","mvn"])
 --
 
 Now, you have to download cobigen
@@ -20,9 +20,9 @@ installCobiGen()
 --
 
 ====
-The CobiGen plugin for VS Code is already installed. We will use it to generate code from one single java class based on existing templates.
+CobiGen is integrated via plugin in the VS Code IDE. We will use it to generate code from one single java class based on existing templates.
 [step]
 --
-cobiGenJava(Test.java,[1,2,3,4])
+cobiGenJava("Test.java",[1,2,3,4])
 --
 ====
