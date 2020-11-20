@@ -1,0 +1,8 @@
+[submodule "externals/katacoda-scenarios"]
+	path = externals/katacoda-scenarios
+	url = https://github.com/devonfw/katacoda-scenarios.git
+	branch = master
+[submodule "externals/katacoda-scenarios-dev"]
+	path = externals/katacoda-scenarios-dev
+	url = https://github.com/devonfw/katacoda-scenarios-dev.git
+	branch = main
