@@ -42,12 +42,8 @@ else
     git branch
     echo "git branch -r"
     git branch -r
-    echo "git checkout origin/main"
-    git checkout origin/main
-    echo "git status"
-    git status
-    echo "git checkout"
-    git checkout
+    echo "git checkout --track origin/main"
+    git checkout --track origin/main
     echo "git status"
     git status
     echo "git add -A"
