@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Checkout katacoda-scenarios-dev
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw/katacoda-scenarios-dev
+          path: externals/katacoda-scenarios-dev
+
       - uses: actions/setup-node@v2-beta
         
       - name: install TS
@@ -20,3 +27,15 @@ jobs:
 
       - name: run buildRun.sh
         run: sh buildRun.sh
+
+      - name: run copyKatacoda.sh
+        run: bash copyKatacoda.sh
+
+      - uses: actions/checkout@v2
+      - run: |
+          cd externals/katacoda-scenarios-dev
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "new tutorials"
+          git push
