@@ -1,8 +1,4 @@
 #!/bin/bash
-GITHUB_RUN_NUMBER=25
-GITHUB_HEAD_REF=someBranch
-GITHUB_ACTOR=someOne
-
 branch=$GITHUB_HEAD_REF
 echo $branch
 owner=$GITHUB_ACTOR
@@ -36,6 +32,10 @@ else
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
+    echo "git remote -v"
+    git remote -v
+    echo "git fetch --all"
+    git fetch --all
     echo "git branch"
     git branch
     echo "git branch -r"
@@ -49,5 +49,5 @@ else
     #git config user.email "devonfw"
     #git config user.name "devonfw"
     git commit -m "Tutorials for ${GITHUB_RUN_NUMBER} ${owner} ${branch}"
-    #git push
+    git push origin main
 fi
