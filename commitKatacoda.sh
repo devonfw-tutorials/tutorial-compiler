@@ -32,6 +32,7 @@ else
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
+    git branch -r
     git checkout main
     git add -A
     git status
