@@ -97,16 +97,6 @@ export class Katacoda extends Runner {
     runCobiGenJava(step: Step, command: Command): RunResult {
         let params = command.parameters;
         let cobiGenTemplates = params[1].join(",");
-        
-        let javaFilePath = new String(params[0]);
-        let entity = javaFilePath.slice(javaFilePath.lastIndexOf("/") + 1, javaFilePath.lastIndexOf(".")).replace("Entity", "");
-        
-        // remove the last two directories of the path to the entity class
-        let tmpPath = javaFilePath.split("/").splice(0, javaFilePath.match(/\//g).length - 2).join("/");
-        let generatedFiles = [];
-        generatedFiles.push("devonfw/workspaces/main/" + tmpPath + "/logic/base/usecase/Abstract" + entity + "Uc.java");
-        generatedFiles.push("devonfw/workspaces/main/" + tmpPath + "/service/impl/rest/" + entity + "managementRestServiceImpl.java");
-        generatedFiles.push("devonfw/workspaces/main/" + tmpPath + "/dataaccess/api/repo/" + entity + "Repository.java");
 
         this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { vsixFile: "cobigen-0.0.1.vsix", pluginName: "cobigen" });
         this.setupScripts.push({
@@ -119,7 +109,7 @@ export class Katacoda extends Runner {
             "title": "CobiGen Java",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates, generatedFiles: generatedFiles });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
         return null;
     }
 
