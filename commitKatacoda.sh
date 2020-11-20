@@ -32,10 +32,10 @@ else
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
-    #echo "git fetch --all"
-    #git fetch --all
-    #echo "git checkout --track origin/main"
-    #git checkout --track origin/main
+    echo "git fetch --all"
+    git fetch --all
+    echo "git checkout --track origin/main"
+    git checkout --track origin/main
     echo "git add -A"
     git add -A
     git config user.email "devonfw"
