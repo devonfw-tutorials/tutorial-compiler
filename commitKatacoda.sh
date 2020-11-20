@@ -1,11 +1,7 @@
 #!/bin/bash
-env 
-echo "---------------------"
-set
-echo "---------------------"
-branch=${GITHUB_REF#refs/heads/}
+branch=$GITHUB_HEAD_REF
 echo $branch
-owner=${GITHUB_REPOSITORY%/*}
+owner=$GITHUB_ACTOR
 echo $owner
 
 if [ "$branch" = "main" ] && [ "${owner%-*}" = "devonfw" ];
@@ -28,7 +24,7 @@ else
     done
 
     #copy new
-    prefix="${GITHUB_RUN_NUMBER}_${owner}_${branch}_"
+    prefix="${GITHUB_RUN_NUMBER}_${owner}_${branch//[^A-Za-z0-9_-]/-}_"
     for DIR in build/output/katacoda/*; do
         dirName=${DIR#build/output/katacoda/}
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
