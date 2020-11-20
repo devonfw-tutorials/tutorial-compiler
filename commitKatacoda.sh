@@ -32,8 +32,9 @@ else
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
+    git remote add origin https://github.com/devonfw/katacoda-scenarios-dev.git
     git branch -r
-    git checkout main
+    git checkout origin/main
     git add -A
     git status
     #git config user.email "devonfw"
