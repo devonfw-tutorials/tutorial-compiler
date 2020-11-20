@@ -32,26 +32,14 @@ else
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
-    echo "git remote -v"
-    git remote -v
-    echo "git fetch --all"
-    git fetch --all
-    echo "git status"
-    git status
-    echo "git branch"
-    git branch
-    echo "git branch -r"
-    git branch -r
-    echo "git checkout --track origin/main"
-    git checkout --track origin/main
-    echo "git status"
-    git status
+    #echo "git fetch --all"
+    #git fetch --all
+    #echo "git checkout --track origin/main"
+    #git checkout --track origin/main
     echo "git add -A"
     git add -A
-    echo "git status"
-    git status
     git config user.email "devonfw"
     git config user.name "devonfw"
     git commit -m "Tutorials for ${GITHUB_RUN_NUMBER} ${owner} ${branch}"
-    git push origin main
+    #git push https://username:${GITHUB_TOKEN}@github.com/devonfw/katacoda-scenarios-dev.git main
 fi
