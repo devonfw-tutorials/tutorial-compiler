@@ -13,12 +13,13 @@ else
 
     #delete old builds
     oldestId="$(($GITHUB_RUN_NUMBER - 10))"
-    echo $oldestId
+    echo "oldestId: $oldestId"
     re='^[0-9]+$'
     for DIR in externals/katacoda-scenarios-dev/*; do
         dirName=${DIR#externals/katacoda-scenarios-dev/}
         id=${dirName%%_*}
         if [[ $id =~ $re ]] && [ "$id" -le "$oldestId" ]; then
+            echo "Removing $DIR"
             rm -r $DIR
         fi
     done
@@ -27,12 +28,15 @@ else
     prefix="${GITHUB_RUN_NUMBER}_${owner}_${branch//[^A-Za-z0-9_-]/-}_"
     for DIR in build/output/katacoda/*; do
         dirName=${DIR#build/output/katacoda/}
+        echo "Copying $DIR to externals/katacoda-scenarios-dev/$prefix$dirName"
         cp -R $DIR externals/katacoda-scenarios-dev/$prefix$dirName
     done
     cd externals/katacoda-scenarios-dev/
+    git checkout main
     git add -A
-    git config user.email "devonfw"
-    git config user.name "devonfw"
+    git status
+    #git config user.email "devonfw"
+    #git config user.name "devonfw"
     git commit -m "Tutorials for ${GITHUB_RUN_NUMBER} ${owner} ${branch}"
     git push
 fi
