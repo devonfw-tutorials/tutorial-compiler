@@ -1,4 +1,8 @@
 #!/bin/bash
+env 
+echo "---------------------"
+set
+echo "---------------------"
 branch=${GITHUB_REF#refs/heads/}
 echo $branch
 owner=${GITHUB_REPOSITORY%/*}
@@ -31,6 +35,8 @@ else
     done
     cd externals/katacoda-scenarios-dev/
     git add -A
+    git config user.email "devonfw"
+    git config user.name "devonfw"
     git commit -m "Tutorials for ${GITHUB_RUN_NUMBER} ${owner} ${branch}"
     git push
 fi
