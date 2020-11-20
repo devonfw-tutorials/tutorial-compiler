@@ -36,12 +36,20 @@ else
     git remote -v
     echo "git fetch --all"
     git fetch --all
+    echo "git status"
+    git status
     echo "git branch"
     git branch
     echo "git branch -r"
     git branch -r
     echo "git checkout origin/main"
     git checkout origin/main
+    echo "git status"
+    git status
+    echo "git checkout"
+    git checkout
+    echo "git status"
+    git status
     echo "git add -A"
     git add -A
     echo "git status"
