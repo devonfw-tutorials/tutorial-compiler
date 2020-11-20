@@ -46,8 +46,8 @@ else
     git add -A
     echo "git status"
     git status
-    #git config user.email "devonfw"
-    #git config user.name "devonfw"
+    git config user.email "devonfw"
+    git config user.name "devonfw"
     git commit -m "Tutorials for ${GITHUB_RUN_NUMBER} ${owner} ${branch}"
     git push origin main
 fi
