@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Checkout playbooks
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw-forge/tutorials
+          path: playbooks
+
       - uses: actions/setup-node@v2-beta
         
       - name: install TS
