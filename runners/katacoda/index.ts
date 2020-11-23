@@ -20,7 +20,8 @@ export class Katacoda extends Runner {
     private setupScripts: KatacodaSetupScript[] = [];
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
-
+    private currentDir: string = "/";
+ 
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
         this.createFolder(path.join(this.getOutputDirectory(), "katacoda/"), false)
@@ -67,11 +68,13 @@ export class Katacoda extends Runner {
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
         let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
-
+        
+        let cdCommand = this.changeCurrentDir("/");
+        
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
-
         // add the script to the setup scripts for executing it at the beginning of the tutorial
+        
         this.setupScripts.push({
             "name": "Clone devonfw IDE settings",
             "script": "cloneDevonfwIdeSettings.sh"
@@ -81,7 +84,8 @@ export class Katacoda extends Runner {
             "title": "Install devonfw IDE",
             "text": "step" + this.stepsCount + ".md",
         });
-        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
+        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
+        this.currentDir = this.currentDir + "devonfw";
         return null;
     }
 
@@ -90,8 +94,22 @@ export class Katacoda extends Runner {
             "title": "Install CobiGen",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
+        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+        
         return null;
+    }
+
+    runCreateProject(step: Step, command:Command): RunResult {
+
+        let cdCommand = this.changeCurrentDir("/devonfw");
+        this.steps.push({
+            "title": "Create a new project",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.currentDir = this.currentDir + '/workspaces/main/cobigenexample';
+        this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+        return null; 
+
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
@@ -109,5 +127,14 @@ export class Katacoda extends Runner {
         }
 
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
+    }
+
+    private changeCurrentDir(dir:string):string{
+        if(this.currentDir == dir){
+            return "";
+        }
+        this.currentDir = dir; 
+        let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
+        return ejs.render(template, {dir: dir}); 
     }
 }

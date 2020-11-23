@@ -2,6 +2,8 @@
 
 ## devonfw setup
 
+<%= cdCommand; %>
+
 Create the directory where the devonfw ide will be installed.
 
 `mkdir devonfw`{{execute}}
