@@ -144,7 +144,7 @@ export class Katacoda extends Runner {
         }
         this.currentDir = dir; 
 
-        //create template 
+        //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
         return ejs.render(template, {dir: dir}); 
     }
