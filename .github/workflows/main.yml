@@ -11,12 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Checkout playbooks
-        uses: actions/checkout@v2
-        with:
-          repository: devonfw-forge/tutorials
-          path: playbooks
-
       - uses: actions/setup-node@v2-beta
         
       - name: install TS
@@ -24,6 +18,9 @@ jobs:
       
       - name: npm install
         run: npm install
+
+      - name: run checkout.sh
+        run: bash checkout.sh
 
       - name: run buildRun.sh
         run: sh buildRun.sh
