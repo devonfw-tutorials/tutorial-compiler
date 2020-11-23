@@ -12,4 +12,5 @@ Now you can use devon to setup a java project for you by executing the following
 
 Switch into the newly create project directory.
 `cd cobigenexample/`{{execute}}
+
 <%= textAfter; %>

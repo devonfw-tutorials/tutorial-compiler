@@ -86,7 +86,10 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md",
         });
         this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
+        
+        //update current directory
         this.currentDir = this.currentDir + "devonfw";
+        
         return null;
     }
 
@@ -96,7 +99,6 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
-        
         return null;
     }
 
@@ -109,7 +111,10 @@ export class Katacoda extends Runner {
             "title": "Create a new project",
             "text": "step" + this.stepsCount + ".md"
         });
+
+         //update current directory
         this.currentDir = this.currentDir + '/workspaces/main/cobigenexample';
+
         this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
         return null; 
 
@@ -133,12 +138,13 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(dir:string):string{
-    
+        
         if(this.currentDir == dir){
             return "";
         }
         this.currentDir = dir; 
 
+        //create template 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
         return ejs.render(template, {dir: dir}); 
     }
