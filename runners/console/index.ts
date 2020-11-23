@@ -16,8 +16,7 @@ export class Console extends Runner {
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
-        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").trim();
-        let tools = "DEVON_IDE_TOOLS=(" + params + ")";
+        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
@@ -36,8 +35,12 @@ export class Console extends Runner {
         return null;
     }
 
+    runCobiGenJava(step: Step, command: Command): RunResult {
+        return null;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
-        let installedTools = command.parameters.replace(/\[/, "").replace("\]", "").replace(/mvn/, "maven").split(",");
+        let installedTools = command.parameters[0];
 
         let assert = new Assertions()
         .noErrorCode(result)
@@ -46,12 +49,17 @@ export class Console extends Runner {
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
 
         for(let i = 0; i < installedTools.length; i++) {
+            if(installedTools[i] == "mvn") installedTools[i] = "maven";
             assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
         }
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
         console.log("assertInstallCobiGen");
+    }
+
+    async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
+        console.log("assertCobiGenJava");
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
