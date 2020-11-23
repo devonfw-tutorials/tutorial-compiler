@@ -130,6 +130,9 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(dir:string):string{
+    
+        let changeToDir: string;
+
         if(this.currentDir == dir){
             return "";
         }
