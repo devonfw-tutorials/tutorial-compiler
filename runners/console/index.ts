@@ -58,6 +58,10 @@ export class Console extends Runner {
         console.log("assertInstallCobiGen");
     }
 
+    async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
+        console.log("assertCobiGenJava");
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
