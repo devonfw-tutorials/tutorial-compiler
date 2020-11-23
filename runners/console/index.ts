@@ -35,6 +35,10 @@ export class Console extends Runner {
         return null;
     }
 
+    runCobiGenJava(step: Step, command: Command): RunResult {
+        return null;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
