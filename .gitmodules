@@ -1,6 +1,0 @@
-[submodule "playbooks/playbooks/tutorials"]
-	path = playbooks/playbooks/tutorials
-	url = https://github.com/denise-khuu/tutorials.git
-[submodule "playbooks/tutorials"]
-	path = playbooks/tutorials
-	url = https://github.com/denise-khuu/tutorials.git
