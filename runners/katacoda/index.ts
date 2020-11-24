@@ -67,6 +67,7 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
+<<<<<<< HEAD
         let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
         
         // generate template to change directory, if the current directory is not equal to the required start directory
@@ -75,6 +76,13 @@ export class Katacoda extends Runner {
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
         
+=======
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+
+        // create script to download devonfw ide settings
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
+
+>>>>>>> 08f6c837bfbfd87f8ef9a13a7bab47d763ae0fbe
         // add the script to the setup scripts for executing it at the beginning of the tutorial
         this.setupScripts.push({
             "name": "Clone devonfw IDE settings",
@@ -102,23 +110,40 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runCreateProject(step: Step, command:Command): RunResult {
+    runCobiGenJava(step: Step, command: Command): RunResult {
+        let params = command.parameters;
+        let cobiGenTemplates = params[1].join(",");
 
-         // generate template to change directory, if the current directory is not equal to the required start directory
-        let cdCommand = this.changeCurrentDir("/devonfw");
-
-        this.steps.push({
-            "title": "Create a new project",
-            "text": "step" + this.stepsCount + ".md"
+        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
+        this.setupScripts.push({
+            "name": "Install CobiGen plugin",
+            "script": "installCobiGenPlugin.sh"
         });
 
-         //update current directory
-        this.currentDir = this.currentDir + '/workspaces/main/cobigenexample';
-
-        this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
-        return null; 
+        this.steps.push({
+            "title": "CobiGen Java",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
+        return null;
 
     }
+
+    runCreateProject(step: Step, command:Command): RunResult {
+
+        // generate template to change directory, if the current directory is not equal to the required start directory
+       let cdCommand = this.changeCurrentDir("/devonfw");
+
+       this.steps.push({
+           "title": "Create a new project",
+           "text": "step" + this.stepsCount + ".md"
+       });
+
+        //update current directory
+       this.currentDir = this.currentDir + '/workspaces/main/cobigenexample';
+
+       this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+       return null; 
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');

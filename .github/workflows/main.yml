@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2-beta
         
       - name: install TS
@@ -17,6 +18,9 @@ jobs:
       
       - name: npm install
         run: npm install
+
+      - name: run checkout.sh
+        run: bash checkout.sh
 
       - name: run buildRun.sh
         run: sh buildRun.sh
