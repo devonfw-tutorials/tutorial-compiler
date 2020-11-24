@@ -20,7 +20,7 @@ export class Katacoda extends Runner {
     private setupScripts: KatacodaSetupScript[] = [];
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
-    private currentDir: string = "root";
+    private currentDir: string = "/root";
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
