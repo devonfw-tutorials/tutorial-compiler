@@ -20,7 +20,7 @@ export class Katacoda extends Runner {
     private setupScripts: KatacodaSetupScript[] = [];
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
-    private currentDir: string = "/";
+    private currentDir: string = "root";
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -67,7 +67,7 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir("/");     
+        let cdCommand = this.changeCurrentDir("root");     
 
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
@@ -87,7 +87,7 @@ export class Katacoda extends Runner {
         this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
         
         //update current directory
-        this.currentDir = this.currentDir + "devonfw";
+        this.currentDir = path.join(this.currentDir, "devonfw");
         
         return null;
     }
@@ -123,7 +123,7 @@ export class Katacoda extends Runner {
     runCreateProject(step: Step, command:Command): RunResult {
 
         // generate template to change directory, if the current directory is not equal to the required start directory
-       let cdCommand = this.changeCurrentDir("/devonfw");
+       let cdCommand = this.changeCurrentDir(path.join("root", "devonfw"));
 
        this.steps.push({
            "title": "Create a new project",
@@ -131,7 +131,7 @@ export class Katacoda extends Runner {
        });
 
         //update current directory
-       this.currentDir = this.currentDir + '/workspaces/main/cobigenexample';
+       this.currentDir = path.join(this.currentDir, "workspace", "main","cobigenexample"); 
 
        this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
        return null; 
