@@ -98,12 +98,11 @@ export class Katacoda extends Runner {
         let params = command.parameters;
         let cobiGenTemplates = params[1].join(",");
 
-        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { vsixFile: "cobigen-0.0.1.vsix", pluginName: "cobigen" });
+        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
         this.setupScripts.push({
             "name": "Install CobiGen plugin",
             "script": "installCobiGenPlugin.sh"
         });
-        this.assetManager.registerFile(path.join(this.getRunnerDirectory(), "templates", "files", "cobigen-0.0.1.vsix"), "setup/cobigen-0.0.1.vsix", "/root/setup", true)
 
         this.steps.push({
             "title": "CobiGen Java",
