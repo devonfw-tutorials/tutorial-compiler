@@ -67,7 +67,7 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir("root");     
+        let cdCommand = this.changeCurrentDir("/root");     
 
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
