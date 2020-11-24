@@ -3,6 +3,7 @@ import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import { Step } from "./step";
 import * as fs from 'fs';
+import * as rimraf from 'rimraf';
 
 const nameof = <T>(name: Extract<keyof T, string>): string => name;
 
@@ -101,10 +102,11 @@ export abstract class Runner {
     protected createFolder(path: string, deleteFolerIfExist: boolean) {
         if(fs.existsSync(path)) {
             if(deleteFolerIfExist) {
-                fs.rmdirSync(path, { recursive: true });
+                rimraf.sync(path);
                 fs.mkdirSync(path, { recursive: true });
             } else return
         }
         fs.mkdirSync(path, { recursive: true });
+        return path;
     }
 }

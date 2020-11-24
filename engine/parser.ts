@@ -54,7 +54,7 @@ export class Parser {
         let result = re.exec(line);
         let retVal = new Command();
         retVal.name = result[1].trim();
-        retVal.parameters = result[2];
+        retVal.parameterString = result[2];
         return retVal;
     }
 

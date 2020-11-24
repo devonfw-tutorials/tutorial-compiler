@@ -66,10 +66,10 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
-        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
 
         // add the script to the setup scripts for executing it at the beginning of the tutorial
         this.setupScripts.push({
@@ -91,6 +91,24 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
+        return null;
+    }
+
+    runCobiGenJava(step: Step, command: Command): RunResult {
+        let params = command.parameters;
+        let cobiGenTemplates = params[1].join(",");
+
+        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
+        this.setupScripts.push({
+            "name": "Install CobiGen plugin",
+            "script": "installCobiGenPlugin.sh"
+        });
+
+        this.steps.push({
+            "title": "CobiGen Java",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
         return null;
     }
 
