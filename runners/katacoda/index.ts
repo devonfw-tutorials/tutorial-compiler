@@ -123,7 +123,7 @@ export class Katacoda extends Runner {
     runCreateProject(step: Step, command:Command): RunResult {
 
         // generate template to change directory, if the current directory is not equal to the required start directory
-       let cdCommand = this.changeCurrentDir(path.join("root", "devonfw"));
+       let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
 
        this.steps.push({
            "title": "Create a new project",
