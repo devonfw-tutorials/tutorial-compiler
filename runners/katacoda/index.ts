@@ -67,22 +67,13 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-<<<<<<< HEAD
-        let params = command.parameters.replace(/\[/, "").replace("\]", "").replace(/,/, " ").replace(/vscode/,"").replace(/eclipse/, "").trim();
-        
-        // generate template to change directory, if the current directory is not equal to the required start directory
-        let cdCommand = this.changeCurrentDir("/");
-        
-        // create script to download devonfw ide settings
-        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: params, cloneDir: "/root/devonfw-settings/"});
-        
-=======
+        let cdCommand = this.changeCurrentDir("/");     
+
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
 
->>>>>>> 08f6c837bfbfd87f8ef9a13a7bab47d763ae0fbe
         // add the script to the setup scripts for executing it at the beginning of the tutorial
         this.setupScripts.push({
             "name": "Clone devonfw IDE settings",
