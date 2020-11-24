@@ -144,6 +144,7 @@ export class Katacoda extends Runner {
 
        this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
        return null; 
+    }
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
