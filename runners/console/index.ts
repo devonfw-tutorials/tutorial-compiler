@@ -39,6 +39,10 @@ export class Console extends Runner {
         return null;
     }
 
+    runCreateProject(){
+        return null;
+    }
+    
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -59,6 +63,10 @@ export class Console extends Runner {
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
+        console.log("assertCobiGenJava");
+    }
+
+    async assertCreateProject(step: Step, command: Command, result: RunResult) {
         console.log("assertCobiGenJava");
     }
 
