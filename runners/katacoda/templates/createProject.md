@@ -11,6 +11,6 @@ Now you can use devon to setup a <%= language; %>  project for you by executing 
 `devon <%= language; %> create com.example.application.<%= name; %>`{{execute}}
 
 Switch into the newly create project directory.
-`cd cobigenexample/`{{execute}}
+`cd <%= name; %>`{{execute}}
 
 <%= textAfter; %>

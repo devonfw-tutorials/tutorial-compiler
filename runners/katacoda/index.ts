@@ -135,7 +135,7 @@ export class Katacoda extends Runner {
        });
 
         //update current directory
-       this.currentDir = path.join(this.currentDir, "workspace", "main","cobigenexample"); 
+       this.currentDir = path.join(this.currentDir, "workspace", "main", name); 
 
        this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, language: language, name : name});
        return null; 
