@@ -28,6 +28,8 @@ export class Console extends Runner {
         
         this.executeCommandSync(path.join(installDir, "setup") + " " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), "", result, "yes");
         
+        this.executeCommandSync("devon", installDir, result);
+
         return result;
     }
 
@@ -36,7 +38,6 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         this.executeCommandSync("devon cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
-
         return result;
     }
 
