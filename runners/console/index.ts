@@ -39,7 +39,7 @@ export class Console extends Runner {
         return null;
     }
 
-    runCreateProject(){
+    runCreateProject(step: Step, command: Command): RunResult{
         return null;
     }
 
