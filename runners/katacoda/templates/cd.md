@@ -1,5 +1,4 @@
 
-We have to start at the folder '<%= dir; %>'.
-The following command will lead you to the right folder.
+Please change the folder to <% dir: %>
 
 `cd <%= dir; %>`{{execute}}
