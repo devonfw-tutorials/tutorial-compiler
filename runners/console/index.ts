@@ -32,7 +32,12 @@ export class Console extends Runner {
     }
 
     runInstallCobiGen(step: Step, command: Command): RunResult {
-        return null;
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        this.executeCommandSync("devon cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+
+        return result;
     }
 
     runCobiGenJava(step: Step, command: Command): RunResult {
@@ -55,7 +60,12 @@ export class Console extends Runner {
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
-        console.log("assertInstallCobiGen");
+        let assert = new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
