@@ -122,6 +122,11 @@ export class Katacoda extends Runner {
 
     runCreateProject(step: Step, command:Command): RunResult {
 
+        let params = command.parameters; 
+        let language = params[0];
+        let name = params[1]; 
+    
+
         // generate template to change directory, if the current directory is not equal to the required start directory
        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
 
@@ -133,7 +138,7 @@ export class Katacoda extends Runner {
         //update current directory
        this.currentDir = path.join(this.currentDir, "workspace", "main","cobigenexample"); 
 
-       this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+       this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name : name, language: language });
        return null; 
     }
 
