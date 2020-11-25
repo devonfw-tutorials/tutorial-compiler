@@ -28,7 +28,7 @@ export class Console extends Runner {
         
         this.executeCommandSync(path.join(installDir, "setup") + " " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), "", result, "yes");
         
-        this.executeCommandSync("devon", installDir, result);
+        this.executeCommandSync(". ~/.bashrc", installDir, result);
 
         return result;
     }
