@@ -60,6 +60,13 @@ export class Console extends Runner {
         return result;
     }
 
+    runCreateProject(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        return result;
+    }
+
     runCobiGenJava(step: Step, command: Command): RunResult {
         return null;
     }
@@ -90,6 +97,10 @@ export class Console extends Runner {
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
         console.log("assertCobiGenJava");
+    }
+
+    async assertCreateProject(step: Step, command: Command, result: RunResult) {
+        console.log("assertCreateProject");
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
