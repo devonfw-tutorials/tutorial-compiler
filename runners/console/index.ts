@@ -68,7 +68,7 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], workspaceDir, result);
         } else {
-            this.executeCommandSync("~/.devon/devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync("~/.devon/devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], workspaceDir, result);
         }
 
         return result;
@@ -108,7 +108,7 @@ export class Console extends Runner {
 
     async assertCreateProject(step: Step, command: Command, result: RunResult) {
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        
+
         let assert = new Assertions()
         .noErrorCode(result)
         .noException(result)
