@@ -64,6 +64,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main")
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], workspaceDir, result);
+        } else {
+            this.executeCommandSync("~/.devon/devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], path.join(this.getWorkingDirectory(), "devonfw"), result);
+        }
+
         return result;
     }
 
@@ -100,7 +107,19 @@ export class Console extends Runner {
     }
 
     async assertCreateProject(step: Step, command: Command, result: RunResult) {
-        console.log("assertCreateProject");
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        
+        let assert = new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(workspaceDir, command.parameters[1]));
+
+        if(command.parameters[0] == "java") {
+            assert.directoryExits(path.join(workspaceDir, command.parameters[1], "api", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, command.parameters[1], "core", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, command.parameters[1], "server", "src", "main", "java"))
+            .fileExits(path.join(workspaceDir, command.parameters[1], "core", "src", "main", "java", "com", "example", "application", command.parameters[1], "SpringBootApp.java"));
+        }
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
