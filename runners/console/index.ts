@@ -65,10 +65,17 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main")
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], workspaceDir, result);
+        let template = command.parameters[0];
+        let projectName = command.parameters[1];
+        if(template == "devon4j") {
+            if(this.platform == ConsolePlatform.WINDOWS) {
+                this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
+            } else {
+                this.executeCommandSync("~/.devon/devon java create com.example.application." + projectName, workspaceDir, result);
+            }
         } else {
-            this.executeCommandSync("~/.devon/devon " + command.parameters[0] + " create com.example.application." + command.parameters[1], workspaceDir, result);
+            // TODO: implement generation of devon4ng, devon4node and devon4net projects
+            result.exceptions.push(new Error("template not supported: " + template));
         }
 
         return result;
@@ -114,7 +121,7 @@ export class Console extends Runner {
         .noException(result)
         .directoryExits(path.join(workspaceDir, command.parameters[1]));
 
-        if(command.parameters[0] == "java") {
+        if(command.parameters[0] == "devon4j") {
             assert.directoryExits(path.join(workspaceDir, command.parameters[1], "api", "src", "main", "java"))
             .directoryExits(path.join(workspaceDir, command.parameters[1], "core", "src", "main", "java"))
             .directoryExits(path.join(workspaceDir, command.parameters[1], "server", "src", "main", "java"))
