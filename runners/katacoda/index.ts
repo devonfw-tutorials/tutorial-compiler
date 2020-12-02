@@ -169,7 +169,5 @@ export class Katacoda extends Runner {
         return ejs.render(template, {dirPath: dirPath}); 
     }
 
-    private findRelPath(oldDir:string, newDir:string){
 
-    }
 }
