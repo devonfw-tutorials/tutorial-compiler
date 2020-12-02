@@ -5,11 +5,10 @@ export class DirUtils{
 
     getCdParam(currentDir:string, dir:string):string{
 
-        //cd-Parameter
         let dirPath = "";
 
-        let currentPaths = currentDir.split('/');
-        let dirPaths = dir.split('/');
+        let currentPaths = currentDir.split(path.sep);
+        let dirPaths = dir.split(path.sep);
         
         let index;
         let isEqual = true;
@@ -21,7 +20,7 @@ export class DirUtils{
          
         //saves the remaining path, if currentdir is the prefix of dir
         if(dir.substring(0,currentDir.length) == currentDir){
-            return dir.replace(currentDir.concat('/'), '');
+            return path.join(dir.replace(currentDir + path.sep, ''));
         }
 
         else{
@@ -36,14 +35,14 @@ export class DirUtils{
                     index = i;
                 }else{
                     isEqual = false;
-                    dirPath = dirPath.concat('../');
+                    dirPath = path.join(dirPath,'..');
                 }
             })
 
             //slice dirPaths to get the relative path
             dirPaths = dirPaths.slice(index + 1, dirPaths.length);
         
-            return dirPath.concat(dirPaths.join('/'));
+            return path.join(dirPath, dirPaths.join(path.sep));
             
         }
 
