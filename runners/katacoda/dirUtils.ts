@@ -40,7 +40,7 @@ export class DirUtils{
                 }
             })
 
-            //slice newPaths to get the relative path
+            //slice dirPaths to get the relative path
             dirPaths = dirPaths.slice(index + 1, dirPaths.length);
         
             return dirPath.concat(dirPaths.join('/'));
