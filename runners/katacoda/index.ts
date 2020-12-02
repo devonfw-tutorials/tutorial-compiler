@@ -9,6 +9,7 @@ import { KatacodaAssetManager } from "./katacodaAssetManager";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
+import { DirUtils } from "./dirUtils";
 
 export class Katacoda extends Runner {
 
@@ -159,54 +160,16 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(dir:string):string{
-        let dirPath = "";
-        let startIndex = 1, whileIndex, isEqualIndex;
-
-        //returns an empty string, if both variables have the same path 
-        if(this.currentDir == dir){
-            return "";
-        }
-         
-        //saves the remaining path, if currentdir is the prefix of dir
-        if(dir.substring(0,this.currentDir.length) == this.currentDir){
-            dirPath = dir.replace(this.currentDir.concat('/'), '');
-        }
-
-        else{
-            //split am / 
-            //iteratieren bis nicht mehr gleich 
-            //wen nder gleiche Teil nur null elemente lang ist dann absoluter pfad
-            //sonst ich zähle beim akturellen pfad die verbleibenden elemente 
-            //kenne die Anzahl der ../ 
-            //dann verbleibende dir pfad anhängen 
-            //substring of array //chunk
-            dirPath = '../';
-
-            //iterates through the currentDir path, while searching for slashes
-            while(this.currentDir.indexOf('/', startIndex) > -1){
-
-                whileIndex = this.currentDir.indexOf('/', startIndex);
-
-                //saves the position of the slash, where dir and currentDir have the same parent directories
-                if(dir.substring(0, whileIndex) == this.currentDir.substring(0, whileIndex)){
-                    isEqualIndex = whileIndex; 
-                }
-
-                //creates the path to move several folders upwards
-                else{
-                    dirPath = path.join(dirPath, "..");
-                }
-
-                startIndex += whileIndex;
-            }
-            //creates the full path to get to dir
-            dirPath = path.join(dirPath, dir.replace(dir.substring(0,isEqualIndex), ''));
-
-        }
+        let dirUtils = new DirUtils();
+        let dirPath = dirUtils.getCdParam(this.currentDir, dir);
         this.currentDir = dir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
         return ejs.render(template, {dirPath: dirPath}); 
+    }
+
+    private findRelPath(oldDir:string, newDir:string){
+
     }
 }

@@ -4,4 +4,3 @@ cp -r ../tutorials build/playbooks
 cp -r environments build
 cp -r runners build
 npm test
-node build/engine/run.js
