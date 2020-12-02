@@ -5,6 +5,7 @@ import { NoErrorCode } from "./noErrorCode";
 import { NoException } from "./noException";
 import { DirectoryExist } from "./directoryExist";
 import { FileExist } from "./fileExist";
+import { DirectoryNotEmpty } from "./directoryNotEmpty";
 
 
 export class Assertions {
@@ -21,6 +22,11 @@ export class Assertions {
 
     public directoryExits(directory: string): Assertions {
         DirectoryExist.run(directory);
+        return this;
+    }
+
+    public directoryNotEmpty(directory: string): Assertions {
+        DirectoryNotEmpty.run(directory);
         return this;
     }
 
