@@ -9,6 +9,7 @@ import { KatacodaAssetManager } from "./katacodaAssetManager";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
+import { DirUtils } from "./dirUtils";
 
 export class Katacoda extends Runner {
 
@@ -127,7 +128,7 @@ export class Katacoda extends Runner {
         let name = params[1]; 
     
         // generate template to change directory, if the current directory is not equal to the required start directory
-       let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
+       let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "dsfsdf", "sadsad"));
 
        this.steps.push({
            "title": "Create a new project",
@@ -159,14 +160,16 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(dir:string):string{
-        
-        if(this.currentDir == dir){
-            return "";
-        }
+        let dirUtils = new DirUtils();
+        let dirPath = dirUtils.getCdParam(this.currentDir, dir);
         this.currentDir = dir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir}); 
+        return ejs.render(template, {dirPath: dirPath}); 
+    }
+
+    private findRelPath(oldDir:string, newDir:string){
+
     }
 }
