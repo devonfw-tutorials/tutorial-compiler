@@ -1,4 +1,4 @@
 
-Please change the folder to <%= dirPath; %>
+Please change the folder to <%= dir; %>
 
-`cd <%= dirPath; %>`{{execute}}
+`cd <%= dir; %>`{{execute}}

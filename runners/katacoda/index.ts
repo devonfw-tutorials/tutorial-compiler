@@ -123,9 +123,6 @@ export class Katacoda extends Runner {
 
     runCreateProject(step: Step, command:Command): RunResult {
 
-        let params = command.parameters; 
-        let language = params[0];
-        let name = params[1]; 
     
         // generate template to change directory, if the current directory is not equal to the required start directory
        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
@@ -136,9 +133,9 @@ export class Katacoda extends Runner {
        });
 
         //update current directory
-       this.currentDir = path.join(this.currentDir, "workspace", "main", name); 
+       this.currentDir = path.join(this.currentDir, "workspace", "main", command.parameters[1]); 
 
-       this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, language: language, name : name});
+       this.renderTemplate("createProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, language: command.parameters[0], name : command.parameters[1]});
        return null; 
     }
 
@@ -159,14 +156,18 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(dir:string):string{
+    private changeCurrentDir(targetDir:string):string{
+        if(this.currentDir == targetDir){
+            return "";
+        }
         let dirUtils = new DirUtils();
-        let dirPath = dirUtils.getCdParam(this.currentDir, dir);
-        this.currentDir = dir; 
+        let dir = dirUtils.getCdParam(this.currentDir, targetDir);
+
+        this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dirPath: dirPath}); 
+        return ejs.render(template, {dir: dir}); 
     }
 
 
