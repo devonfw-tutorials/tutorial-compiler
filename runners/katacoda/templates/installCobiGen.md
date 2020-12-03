@@ -4,5 +4,4 @@
 
 `devon cobigen`{{execute}}
 
-
 <%= textAfter; %>

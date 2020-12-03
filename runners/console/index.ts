@@ -64,7 +64,7 @@ export class Console extends Runner {
         return null;
     }
 
-    runCreateProject(step: Step, command: Command): RunResult{
+    runCreateDevon4jProject(step: Step, command: Command): RunResult{
         return null;
     }
 
@@ -96,7 +96,7 @@ export class Console extends Runner {
         console.log("assertCobiGenJava");
     }
 
-    async assertCreateProject(step: Step, command: Command, result: RunResult) {
+    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
         console.log("assertCreateProject");
     }
 
