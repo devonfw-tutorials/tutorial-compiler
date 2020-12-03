@@ -6,10 +6,10 @@ import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
 import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
+import { DirUtils } from "./dirUtils";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { DirUtils } from "./dirUtils";
 
 export class Katacoda extends Runner {
 
