@@ -9,9 +9,7 @@
     "pegjs": "^0.10.0",
     "rimraf": "^3.0.2",
     "ts-pegjs": "^0.2.7",
-    "yargs": "^16.1.0"
-  },
-  "devDependencies": {
+    "yargs": "^16.1.0",
     "@types/jasmine": "^3.6.2"
   },
   "scripts": {
