@@ -97,7 +97,7 @@ export class Console extends Runner {
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
-        console.log("assertCreateProject");
+        console.log("assertCreateDevon4jProject");
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
