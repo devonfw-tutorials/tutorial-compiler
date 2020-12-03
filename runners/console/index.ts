@@ -60,22 +60,16 @@ export class Console extends Runner {
         return result;
     }
 
-    runCreateProject(step: Step, command: Command): RunResult {
+    runCreateDevon4jProject(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main")
-        let template = command.parameters[0];
-        let projectName = command.parameters[1];
-        if(template == "devon4j") {
-            if(this.platform == ConsolePlatform.WINDOWS) {
-                this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
-            } else {
-                this.executeCommandSync("~/.devon/devon java create com.example.application." + projectName, workspaceDir, result);
-            }
+        let projectName = command.parameters[0];
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
         } else {
-            // TODO: implement generation of devon4ng, devon4node and devon4net projects
-            result.exceptions.push(new Error("template not supported: " + template));
+            this.executeCommandSync("~/.devon/devon java create com.example.application." + projectName, workspaceDir, result);
         }
 
         return result;
@@ -113,20 +107,17 @@ export class Console extends Runner {
         console.log("assertCobiGenJava");
     }
 
-    async assertCreateProject(step: Step, command: Command, result: RunResult) {
+    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
 
-        let assert = new Assertions()
+        new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(workspaceDir, command.parameters[1]));
-
-        if(command.parameters[0] == "devon4j") {
-            assert.directoryExits(path.join(workspaceDir, command.parameters[1], "api", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, command.parameters[1], "core", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, command.parameters[1], "server", "src", "main", "java"))
-            .fileExits(path.join(workspaceDir, command.parameters[1], "core", "src", "main", "java", "com", "example", "application", command.parameters[1], "SpringBootApp.java"));
-        }
+        .directoryExits(path.join(workspaceDir, command.parameters[0]))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "src", "main", "java"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
+        .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {

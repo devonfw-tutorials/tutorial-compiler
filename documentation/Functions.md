@@ -33,12 +33,11 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 
 ***
 
-### createProject
+### createDevon4jProject
 #### parameter 
-1. the template used for project generation
-2. the project name
+1. the project name
 
 #### example 
-createProject("devon4j","cobigenexample")
+createDevon4jProject("cobigenexample")
 
 ***
