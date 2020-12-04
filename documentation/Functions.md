@@ -35,8 +35,17 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 
 ### createDevon4jProject
 #### parameter 
-1. the project name
+1. The project name
 #### example 
 createDevon4jProject("cobigenexample")
+
+***
+
+### buildJava
+#### parameter 
+1. The project directory
+2. Indicator whether tests should be run
+#### example 
+buildJava("cobigenexample", true)
 
 ***

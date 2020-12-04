@@ -75,6 +75,20 @@ export class Console extends Runner {
         return result;
     }
 
+    runBuildJava(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0])
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon mvn clean install -Dmaven.test.skip=" + command.parameters[1], projectDir, result);
+        } else {
+            this.executeCommandSync("~/.devon/devon mvn clean install -Dmaven.test.skip=" + command.parameters[1], projectDir, result);
+        }
+
+        return result;
+    }
+
     runCobiGenJava(step: Step, command: Command): RunResult {
         return null;
     }
@@ -101,6 +115,17 @@ export class Console extends Runner {
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
         .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
         .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+    }
+
+    async assertBuildJava(step: Step, command: Command, result: RunResult) {
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "target"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "target"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "target"));
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
