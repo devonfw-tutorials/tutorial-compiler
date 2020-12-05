@@ -129,7 +129,7 @@ export class Console extends Runner {
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
-        console.log("assertCobiGenJava");
+        console.log("there is no assertion yet for the cobiGenJava command");
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
