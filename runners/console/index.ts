@@ -81,9 +81,9 @@ export class Console extends Runner {
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0])
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon mvn clean install -Dmaven.test.skip=" + command.parameters[1], projectDir, result);
+            this.executeCommandSync("devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
         } else {
-            this.executeCommandSync("~/.devon/devon mvn clean install -Dmaven.test.skip=" + command.parameters[1], projectDir, result);
+            this.executeCommandSync("~/.devon/devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
         }
 
         return result;
@@ -148,7 +148,7 @@ export class Console extends Runner {
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
