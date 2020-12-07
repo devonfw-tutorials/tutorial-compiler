@@ -60,6 +60,21 @@ export class Console extends Runner {
         return result;
     }
 
+    runCreateDevon4jProject(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main")
+        let projectName = command.parameters[0];
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
+        } else {
+            this.executeCommandSync("~/.devon/devon java create com.example.application." + projectName, workspaceDir, result);
+        }
+
+        return result;
+    }
+
     runCobiGenJava(step: Step, command: Command): RunResult {
         return null;
     }
@@ -93,7 +108,20 @@ export class Console extends Runner {
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
-        console.log("assertCobiGenJava");
+        console.log("there is no assertion yet for the cobiGenJava command");
+    }
+
+    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(workspaceDir, command.parameters[0]))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "src", "main", "java"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
+        .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
