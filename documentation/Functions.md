@@ -36,7 +36,8 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### createDevon4jProject
 #### parameter 
 1. The project name
+2. the absolute path to the parent folder
 #### example 
-createDevon4jProject("cobigenexample")
+createDevon4jProject("cobigenexample", "/root/devonfw/workspace/main")
 
 ***
