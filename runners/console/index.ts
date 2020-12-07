@@ -79,10 +79,6 @@ export class Console extends Runner {
         return null;
     }
 
-    runCreateDevon4jProject(step: Step, command: Command): RunResult{
-        return null;
-    }
-
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -124,9 +120,6 @@ export class Console extends Runner {
         .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
     }
 
-    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
-        console.log("assertCreateDevon4jProject");
-    }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
