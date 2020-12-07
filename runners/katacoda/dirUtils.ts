@@ -19,14 +19,14 @@ export class DirUtils{
          
         //saves the remaining path, if currentdir is the prefix of targetDir
         if(targetDir.substring(0,currentDir.length) == currentDir){
-            return path.join(targetDir.replace(currentDir + path.sep, ''));
+            return path.join(targetDir.replace(currentDir + path.sep, '')).replace("\\", "/");
         }
 
 
         else{
             //returns the absolut directory, if the first parent folder is different
             if(currentPaths[1] != targetPaths[1]){
-                return targetDir;
+                return targetDir.replace("\\", "/");
             }
             
             //iterates throught currentPath array to compare parent directories
@@ -42,7 +42,7 @@ export class DirUtils{
             //slice targetPaths to get the relative path
             targetPaths = targetPaths.slice(index + 1, targetPaths.length);
         
-            return path.join(dirPath, targetPaths.join(path.sep));
+            return path.join(dirPath, targetPaths.join(path.sep)).replace("\\", "/");
             
         }
 
