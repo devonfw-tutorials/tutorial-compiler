@@ -43,7 +43,7 @@ createDevon4jProject("cobigenexample")
 
 ### createFile
 #### parameter 
-1. Path of the file to be create (relative path to the workspace directory)
+1. Path of the file to be created (relative path to the workspace directory)
 2. (Optional) Path of the file to get the content from. Relative to the playbook directory
 #### example 
 createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
