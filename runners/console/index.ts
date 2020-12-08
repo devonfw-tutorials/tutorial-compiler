@@ -36,12 +36,16 @@ export class Console extends Runner {
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
+        let downloadUrl = "https://bit.ly/2BCkFa9";
+        if(command.parameters.length > 1 && command.parameters[1] != "") {
+            downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + command.parameters[1];
+        }
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("powershell.exe Invoke-WebRequest -OutFile devonfw.tar.gz https://bit.ly/2BCkFa9", installDir, result);
+            this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
             this.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result);
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
-            this.executeCommandSync("wget -c https://bit.ly/2BCkFa9 -O - | tar -xz", installDir, result);
+            this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
 
