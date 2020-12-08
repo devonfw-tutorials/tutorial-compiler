@@ -64,7 +64,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main")
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = command.parameters[0];
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
@@ -78,6 +78,18 @@ export class Console extends Runner {
     runCreateFile(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        let filepath = path.join(workspaceDir, command.parameters[0]);
+        if(!fs.existsSync(filepath.substr(0, filepath.lastIndexOf(path.sep)))) {
+            fs.mkdirSync(filepath.substr(0, filepath.lastIndexOf(path.sep)), { recursive: true });
+        }
+
+        let content = "";
+        if(command.parameters.length == 2) {
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
+        }
+        fs.writeFileSync(filepath, content);
 
         return result;
     }
@@ -128,7 +140,10 @@ export class Console extends Runner {
     }
 
     async assertCreateFile(step: Step, command: Command, result: RunResult) {
-        console.log("there is no assertion yet for the createFile command");
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
