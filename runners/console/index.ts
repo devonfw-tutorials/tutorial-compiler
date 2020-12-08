@@ -116,7 +116,8 @@ export class Console extends Runner {
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
         new Assertions()
         .noErrorCode(result)
-        .noException(result);
+        .noException(result)
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
