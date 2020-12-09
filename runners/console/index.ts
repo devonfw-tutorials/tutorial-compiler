@@ -114,7 +114,17 @@ export class Console extends Runner {
     }
 
     runCobiGenJava(step: Step, command: Command): RunResult {
-        return null;
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+        } else {
+            this.executeCommandSync("~/.devon/devon cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+        }
+
+        return result;
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
@@ -153,7 +163,10 @@ export class Console extends Runner {
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
-        console.log("there is no assertion yet for the cobiGenJava command");
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
