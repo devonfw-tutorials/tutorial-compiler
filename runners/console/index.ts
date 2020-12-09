@@ -93,6 +93,10 @@ export class Console extends Runner {
         return null;
     }
 
+    runBuildJava(step: Step, command: Command): RunResult {
+        return null;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -144,6 +148,11 @@ export class Console extends Runner {
         .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
         .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
     }
+
+    async assertbuildJava(step: Step, command: Command, result: RunResult) {
+        console.log("assertbuildJava exceptions");
+    }
+
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
