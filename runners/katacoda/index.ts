@@ -125,7 +125,6 @@ export class Katacoda extends Runner {
 
         // generate template to change directory, if the current directory is not equal to the required start directory
        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
-       let cdTarget = this.changeCurrentDir(path.join(command.parameters[1]));
 
        this.steps.push({
            "title": "Create a new project",
@@ -135,7 +134,7 @@ export class Katacoda extends Runner {
         //update current directory
        this.currentDir = path.join(this.currentDir, "workspace", "main"); 
 
-       this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, cdTarget: cdTarget, name : command.parameters[0]});
+       this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name : command.parameters[0]});
        return null;  
     }
 
