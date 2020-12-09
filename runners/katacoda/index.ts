@@ -113,23 +113,26 @@ export class Katacoda extends Runner {
     }
 
     runCreateDevon4jProject(step: Step, command: Command): RunResult{
-        let cdCommand = "/root/devonfw";
-        this.steps.push({
-            "title": "CobiGen Java",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: command.parameters[1]});
         return null;
     }
 
     runBuildJava(step: Step, command: Command): RunResult{
-        let cdCommand = "/root/devonfw/workspace/" + command.parameters[0];
+        
+        //cdCommand needs to be added
+        let cdCommand = "";
 
+        let skipTestDescr = "";
+        let skipTest = "";
+        
+        if(command.parameters[1] == true){
+            skipTest = '-Dmaven.test.skip=' + command.parameters[1];
+            skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'."
+        }
         this.steps.push({
-            "title": "Build Java",
+            "title": "Build the java project",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: command.parameters[1]});
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr});
         return null;
 
     }
