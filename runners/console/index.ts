@@ -36,12 +36,16 @@ export class Console extends Runner {
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
+        let downloadUrl = "https://bit.ly/2BCkFa9";
+        if(command.parameters.length > 1 && command.parameters[1] != "") {
+            downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + command.parameters[1];
+        }
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("powershell.exe Invoke-WebRequest -OutFile devonfw.tar.gz https://bit.ly/2BCkFa9", installDir, result);
+            this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
             this.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result);
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
-            this.executeCommandSync("wget -c https://bit.ly/2BCkFa9 -O - | tar -xz", installDir, result);
+            this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
 
@@ -90,6 +94,21 @@ export class Console extends Runner {
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
         }
         fs.writeFileSync(filepath, content);
+      
+        return result;
+    }
+    
+
+    runBuildJava(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0])
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
+        } else {
+            this.executeCommandSync("~/.devon/devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
+        }
 
         return result;
     }
@@ -122,6 +141,17 @@ export class Console extends Runner {
         .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
     }
 
+    async assertBuildJava(step: Step, command: Command, result: RunResult) {
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "target"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "target"))
+        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "target"));
+    }
+
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
         console.log("there is no assertion yet for the cobiGenJava command");
     }
@@ -149,7 +179,7 @@ export class Console extends Runner {
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
