@@ -7,11 +7,12 @@ The following functions are already implemented:
 
 ***
 
-### installDevonIde
+### installDevonfwIde
 #### parameter
 1. The tools you want to install within the devonfw ide: string array
+2. Optional: The version of the ide to install
 #### example
-installDevonfwIde(["java","mvn"])
+installDevonfwIde(["java","mvn"], "2020.08.001")
 
 ***
 
