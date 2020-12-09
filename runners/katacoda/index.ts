@@ -132,7 +132,7 @@ export class Katacoda extends Runner {
        });
 
         //update current directory
-       this.currentDir = path.join(this.currentDir, "workspace", "main"); 
+       this.currentDir = path.join(this.currentDir, "workspaces", "main"); 
 
        this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name : command.parameters[0]});
        return null;  
@@ -140,7 +140,6 @@ export class Katacoda extends Runner {
 
     runBuildJava(step: Step, command: Command): RunResult{
         
-        //cdCommand needs to be added
         let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));;
 
         let skipTestDescr = "";
