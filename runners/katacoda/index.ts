@@ -6,6 +6,7 @@ import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
 import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
+import { DirUtils } from "./dirUtils";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
@@ -20,7 +21,8 @@ export class Katacoda extends Runner {
     private setupScripts: KatacodaSetupScript[] = [];
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
-
+    private currentDir: string = "/root";
+ 
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
         this.createFolder(path.join(this.getOutputDirectory(), "katacoda/"), false)
@@ -66,6 +68,8 @@ export class Katacoda extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir("/root");     
+
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
@@ -81,7 +85,11 @@ export class Katacoda extends Runner {
             "title": "Install devonfw IDE",
             "text": "step" + this.stepsCount + ".md",
         });
-        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
+        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
+        
+        //update current directory
+        this.currentDir = path.join(this.currentDir, "devonfw");
+        
         return null;
     }
 
@@ -90,7 +98,7 @@ export class Katacoda extends Runner {
             "title": "Install CobiGen",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter });
+        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
         return null;
     }
 
@@ -110,6 +118,24 @@ export class Katacoda extends Runner {
         });
         this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
         return null;
+
+    }
+
+    runCreateDevon4jProject(step: Step, command:Command): RunResult {
+
+        // generate template to change directory, if the current directory is not equal to the required start directory
+       let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));
+
+       this.steps.push({
+           "title": "Create a new project",
+           "text": "step" + this.stepsCount + ".md"
+       });
+
+        //update current directory
+       this.currentDir = path.join(this.currentDir, "workspace", "main"); 
+
+       this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name : command.parameters[0]});
+       return null;  
     }
 
     runCreateDevon4jProject(step: Step, command: Command): RunResult{
@@ -153,4 +179,20 @@ export class Katacoda extends Runner {
 
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
+
+    private changeCurrentDir(targetDir:string):string{
+        if(this.currentDir == targetDir){
+            return "";
+        }
+        let dirUtils = new DirUtils();
+        let dir = dirUtils.getCdParam(this.currentDir, targetDir);
+
+        this.currentDir = targetDir; 
+
+        //create template to change directory 
+        let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
+        return ejs.render(template, {dir: dir}); 
+    }
+
+
 }
