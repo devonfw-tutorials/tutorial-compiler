@@ -141,7 +141,7 @@ export class Katacoda extends Runner {
     runBuildJava(step: Step, command: Command): RunResult{
         
         //cdCommand needs to be added
-        let cdCommand = "";
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspace", "main", command.parameters[0]));;
 
         let skipTestDescr = "";
         let skipTest = "";
@@ -154,6 +154,7 @@ export class Katacoda extends Runner {
             "title": "Build the java project",
             "text": "step" + this.stepsCount + ".md"
         });
+        
         this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr});
         return null;
 
