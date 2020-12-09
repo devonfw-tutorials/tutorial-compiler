@@ -138,6 +138,31 @@ export class Katacoda extends Runner {
        return null;  
     }
 
+    runCreateDevon4jProject(step: Step, command: Command): RunResult{
+        return null;
+    }
+
+    runBuildJava(step: Step, command: Command): RunResult{
+        
+        //cdCommand needs to be added
+        let cdCommand = "";
+
+        let skipTestDescr = "";
+        let skipTest = "";
+        
+        if(command.parameters[1] == true){
+            skipTest = '-Dmaven.test.skip=' + command.parameters[1];
+            skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'."
+        }
+        this.steps.push({
+            "title": "Build the java project",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr});
+        return null;
+
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);

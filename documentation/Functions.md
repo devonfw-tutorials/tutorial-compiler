@@ -7,11 +7,12 @@ The following functions are already implemented:
 
 ***
 
-### installDevonIde
+### installDevonfwIde
 #### parameter
 1. The tools you want to install within the devonfw ide: string array
+2. Optional: The version of the ide to install
 #### example
-installDevonfwIde(["java","mvn"])
+installDevonfwIde(["java","mvn"], "2020.08.001")
 
 ***
 
@@ -38,5 +39,14 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 1. The project name
 #### example 
 createDevon4jProject("cobigenexample")
+
+***
+
+### buildJava
+#### parameter 
+1. The project directory
+2. Indicator whether tests should be run
+#### example 
+buildJava("cobigenexample", true)
 
 ***
