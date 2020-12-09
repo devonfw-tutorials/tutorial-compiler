@@ -2,8 +2,10 @@
 The following functions are already implemented:
 * installDevonIde
 * installCobiGen
-* createProject
 * cobiGenJava
+* createDevon4jProject
+* buildJava
+* createFile
 
 ***
 
@@ -31,7 +33,6 @@ installCobiGen()
 #### example
 cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 
-
 ***
 
 ### createDevon4jProject
@@ -48,5 +49,14 @@ createDevon4jProject("cobigenexample")
 2. Indicator whether tests should be run
 #### example 
 buildJava("cobigenexample", true)
+
+***
+
+### createFile
+#### parameter 
+1. Path of the file to be created (relative path to the workspace directory)
+2. (Optional) Path of the file to get the content from. Relative to the playbook directory
+#### example 
+createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
 
 ***

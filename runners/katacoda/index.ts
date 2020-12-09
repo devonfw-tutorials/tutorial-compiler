@@ -138,10 +138,6 @@ export class Katacoda extends Runner {
        return null;  
     }
 
-    runCreateDevon4jProject(step: Step, command: Command): RunResult{
-        return null;
-    }
-
     runBuildJava(step: Step, command: Command): RunResult{
         
         //cdCommand needs to be added
