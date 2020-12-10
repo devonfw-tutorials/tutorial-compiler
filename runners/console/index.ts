@@ -44,10 +44,12 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
             this.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result);
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+            this.executeCommandSync("powershell.exe devon", installDir, result);
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
+
 
         return result;
     }
