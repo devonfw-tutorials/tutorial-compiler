@@ -44,7 +44,6 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
             this.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result);
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
-            this.executeCommandSync("powershell.exe .\\scripts\\devon", installDir, result);
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
@@ -59,7 +58,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync(".\\scripts\\devon cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
         } else {
             this.executeCommandSync("~/.devon/devon cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
         }
