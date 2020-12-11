@@ -49,7 +49,6 @@ export class Console extends Runner {
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
 
-
         return result;
     }
 
