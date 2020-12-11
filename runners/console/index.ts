@@ -72,7 +72,7 @@ export class Console extends Runner {
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = command.parameters[0];
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon java create com.example.application." + projectName, workspaceDir, result);
+            this.executeCommandSync(".\\scripts\\devon java create com.example.application." + projectName, workspaceDir, result);
         } else {
             this.executeCommandSync("~/.devon/devon java create com.example.application." + projectName, workspaceDir, result);
         }
@@ -106,7 +106,7 @@ export class Console extends Runner {
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0])
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
+            this.executeCommandSync(".\\scripts\\devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
         } else {
             this.executeCommandSync("~/.devon/devon mvn clean install -Dmaven.test.skip=" + !command.parameters[1], projectDir, result);
         }
@@ -120,7 +120,7 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("devon cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+            this.executeCommandSync(".\\scripts\\devon cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
         } else {
             this.executeCommandSync("~/.devon/devon cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
         }
