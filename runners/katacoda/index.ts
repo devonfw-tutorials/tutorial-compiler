@@ -138,6 +138,27 @@ export class Katacoda extends Runner {
        return null;  
     }
 
+    runCreateFile(step: Step, command: Command): RunResult{
+
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+        let workspaceDir = path.join("devonfw", "workspaces", "main");
+        let filePath = path.join(command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep))).replace(/\\/g, "/");
+        let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+        
+        let content = "";
+        if(command.parameters.length == 2) {
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
+        }
+
+        this.steps.push({
+            "title": "Create a new file",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: filePath, fileDir: fileDir, content: content});
+        return null;
+    }
+
     runBuildJava(step: Step, command: Command): RunResult{
         
         let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));;
@@ -158,6 +179,8 @@ export class Katacoda extends Runner {
         return null;
 
     }
+
+    
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
