@@ -47,6 +47,7 @@ createDevon4jProject("cobigenexample")
 #### parameter 
 1. The project directory
 2. Indicator whether tests should be run
+
 #### example 
 buildJava("cobigenexample", true)
 
@@ -56,6 +57,7 @@ buildJava("cobigenexample", true)
 #### parameter 
 1. Path of the file to be created (relative path to the workspace directory)
 2. (Optional) Path of the file to get the content from. Relative to the playbook directory
+
 #### example 
 createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
 

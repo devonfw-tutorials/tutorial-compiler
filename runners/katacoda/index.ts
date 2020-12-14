@@ -142,12 +142,15 @@ export class Katacoda extends Runner {
         
         let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));
 
-        let skipTest = "-Dmaven.test.skip=true";
-        let skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.";
+        let skipTest;
+        let skipTestDescr;
 
         if(command.parameters.length == 2 && command.parameters[1] == true){
             skipTest = "";
             skipTestDescr = "";    
+        }else{
+            skipTest = "-Dmaven.test.skip=true";
+            skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.";    
         }
 
     
