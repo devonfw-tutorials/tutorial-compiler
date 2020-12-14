@@ -144,7 +144,7 @@ export class Katacoda extends Runner {
         let workspaceDir = path.join("devonfw", "workspaces", "main");
         let filePath = path.join(command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep))).replace(/\\/g, "/");
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
-        
+        let fileName = path.join(command.parameters[0].substring(path.join(command.parameters[0]).lastIndexOf(path.sep) - 1 , command.parameters[0].length)).replace(/\\/g, "/");
         let content = "";
         if(command.parameters.length == 2) {
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
@@ -155,7 +155,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: filePath, fileDir: fileDir, content: content});
+        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
         return null;
     }
 
