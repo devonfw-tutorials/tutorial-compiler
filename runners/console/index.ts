@@ -131,6 +131,26 @@ export class Console extends Runner {
         return result;
     }
 
+    runChangeFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        let filepath = path.join(workspaceDir, command.parameters[0]);
+        let placeholder = command.parameters[1];
+
+        let content = fs.readFileSync(filepath, { encoding: "utf-8" });
+        if(command.parameters[2].content) {
+            content = content.replace(placeholder, command.parameters[2].content);
+        } else if (command.parameters[2].file) {
+            let contentFile = fs.readFileSync(path.join(this.playbookPath, command.parameters[2].file), { encoding: "utf-8" });
+            content = content.replace(placeholder, contentFile);
+        }
+        fs.writeFileSync(filepath, content);
+
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -187,6 +207,13 @@ export class Console extends Runner {
     }
 
     async assertCreateFile(step: Step, command: Command, result: RunResult) {
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+    }
+
+    async assertChangeFile(step: Step, command: Command, result: RunResult) {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
