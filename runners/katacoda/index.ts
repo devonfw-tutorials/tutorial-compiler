@@ -144,7 +144,7 @@ export class Katacoda extends Runner {
         let workspaceDir = path.join("devonfw", "workspaces", "main");
         let filePath = path.join(command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep))).replace(/\\/g, "/");
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
-        let fileName = path.join(command.parameters[0].substring(path.join( command.parameters[0]).lastIndexOf(path.sep) + 1 , command.parameters[0].length )).replace(/\\/g, "/");
+        let fileName = path.basename(command.parameters[0]);
         let content = "";
         if(command.parameters.length == 2) {
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
@@ -156,6 +156,28 @@ export class Katacoda extends Runner {
         });
         
         this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
+        return null;
+    }
+
+    runChangeFile(step: Step, command: Command): RunResult{
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+        let workspaceDir = path.join("devonfw", "workspaces", "main");
+        let fileName = path.basename(command.parameters[0]);
+        let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+        let content = "";
+
+        if(command.parameters[2].content){
+            content = command.parameters[2].content
+        }else if(command.parameters[2].file){
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[2].path), { encoding: "utf-8" });
+        }
+
+        this.steps.push({
+            "title": "Change " + fileName,
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, fileDir: fileDir, fileName:fileName, content: content, placeholder: command.parameters[1]});
         return null;
     }
 
@@ -180,8 +202,6 @@ export class Katacoda extends Runner {
         return null;
 
     }
-
-    
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
