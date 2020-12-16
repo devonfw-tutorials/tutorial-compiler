@@ -79,7 +79,7 @@ changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 #### details
 ##### Name of the placeholder
 Naming Convention
-[Comment-Syntax]PLACEHOLDER-[ATTRIBUTE]
+[Comment-Syntax]PLACEHOLDER-[DESCRIPTION]
 ##### Path of the file to get the content from or a string, that should be inserted.
 If you want to add content from a file: 
 {"file": "[path]"}
