@@ -162,7 +162,7 @@ export class Katacoda extends Runner {
     runChangeFile(step: Step, command: Command): RunResult{
         let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
         let workspaceDir = path.join("devonfw", "workspaces", "main");
-        let fileName = path.basename(command.parameters[0]);
+        let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
         let content = "";
 
