@@ -167,7 +167,7 @@ export class Katacoda extends Runner {
         let content = "";
 
         if(command.parameters[2].content){
-            content = command.parameters[2].content
+            content = command.parameters[2].content;
         }else if(command.parameters[2].file){
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[2].path), { encoding: "utf-8" });
         }
