@@ -137,16 +137,24 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let filepath = path.join(workspaceDir, command.parameters[0]);
-        let placeholder = command.parameters[1];
 
-        let content = fs.readFileSync(filepath, { encoding: "utf-8" });
-        if(command.parameters[2].content) {
-            content = content.replace(placeholder, command.parameters[2].content);
-        } else if (command.parameters[2].file) {
-            let contentFile = fs.readFileSync(path.join(this.playbookPath, command.parameters[2].file), { encoding: "utf-8" });
-            content = content.replace(placeholder, contentFile);
+        if(command.parameters[1].placeholder) {
+            let content = fs.readFileSync(filepath, { encoding: "utf-8" });
+            let placeholder = command.parameters[1].placeholder;
+            if(command.parameters[1].content) {
+                content = content.replace(placeholder, command.parameters[1].content);
+            } else if (command.parameters[1].file) {
+                let contentFile = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+                content = content.replace(placeholder, contentFile);
+            }
+            fs.writeFileSync(filepath, content);
+        } else {
+            if(command.parameters[1].content) {
+                fs.writeFileSync(filepath, command.parameters[1].content);
+            } else {
+                fs.writeFileSync(filepath, fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" }));
+            }
         }
-        fs.writeFileSync(filepath, content);
 
         return result;
     }

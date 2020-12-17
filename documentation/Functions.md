@@ -60,3 +60,13 @@ buildJava("cobigenexample", true)
 createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
 
 ***
+
+#### changeFile
+#### parameter 
+1. Path of the file to be changed (relative path to the workspace directory)
+2. Name of the placeholder to be replaced
+3. A JSON object with the string to be inserted or the path to a file which holds the content to be inserted ({ "content": "content as string", "file": "path/to/file" })
+#### example 
+changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "#PLACEHOLDER_ATTRIBUTE", { "content": "private String company;" })
+
+***
