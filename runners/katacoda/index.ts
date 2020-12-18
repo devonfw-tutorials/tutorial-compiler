@@ -160,7 +160,6 @@ export class Katacoda extends Runner {
     }
 
     runChangeFile(step: Step, command: Command): RunResult{
-        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
         let workspaceDir = path.join("devonfw", "workspaces", "main");
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
@@ -170,7 +169,7 @@ export class Katacoda extends Runner {
         let changeDescr = "replace the content of "+ fileName +" with the following code.";
         if(command.parameters[1].placeholder){
             dataTarget = "insert";
-            placeholder = 'data-marker="' + command.parameters[1].placeholder + '"';
+            placeholder = command.parameters[1].placeholder;
             changeDescr = "insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
         }
         if(command.parameters[1].content){
@@ -184,7 +183,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
         return null;
     }
 
