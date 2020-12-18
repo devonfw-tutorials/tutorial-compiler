@@ -95,7 +95,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0])
+        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         if(command.parameters.length == 2 && command.parameters[1] == true){
             this.executeDevonCommandSync("mvn clean install", projectDir, result);
         } else {
