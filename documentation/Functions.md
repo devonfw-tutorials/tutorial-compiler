@@ -46,7 +46,7 @@ createDevon4jProject("cobigenexample")
 ### buildJava
 #### parameter 
 1. The project directory
-2. Indicator whether tests should be run
+2. (Optional) Indicator whether tests should be run. Default is false.
 #### example 
 buildJava("cobigenexample", true)
 
