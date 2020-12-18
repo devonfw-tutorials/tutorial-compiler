@@ -166,11 +166,11 @@ export class Katacoda extends Runner {
         let content = "";
         let placeholder = "";
         let dataTarget = "replace";
-        let changeDescr = "replace the content of "+ fileName +" with the following code.";
+        let changeDescr = "Replace the content of "+ fileName +" with the following code.";
         if(command.parameters[1].placeholder){
             dataTarget = "insert";
             placeholder = command.parameters[1].placeholder;
-            changeDescr = "insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
+            changeDescr = "Insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
         }
         if(command.parameters[1].content){
             content = command.parameters[1].content;

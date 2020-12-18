@@ -72,18 +72,27 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 ### changeFile
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
-2. Name of the placeholder
-3. Path of the file to get the content from or a string, that should be inserted.
+2. 
+ *  path of the file to get the content from or a string, that should be inserted.
+ * (Optional) Name of a placeholder 
 #### example 
-changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "//PLACEHOLDER-GETTER-SETTER", {"file": "files/CustomerEntityFunction.java"})
+changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### details
-##### Name of the placeholder
-Naming Convention
-[Comment-Syntax]PLACEHOLDER-[DESCRIPTION]
 ##### Path of the file to get the content from or a string, that should be inserted.
 If you want to add content from a file: 
 {"file": "[path]"}
 If you want to add a string to a file: 
 {"content": "[string]"}
+##### Name of the placeholder
+If you want to insert content into your code between two existing lines, take the previous line as your placeholder. 
+
+example:{...,"placeholder": "private int age;"}
+| Before | Content or File | After |
+| --- | --- | --- |
+|<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
+
+A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
+
+Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing the placeholders. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be disregarded by the console-environment and other custom placeholders might cause errors.
 
 ***

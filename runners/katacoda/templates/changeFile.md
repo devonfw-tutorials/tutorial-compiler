@@ -1,8 +1,10 @@
 <%= text; %>
 
-Go back to <%= fileName; %> and <%= changeDescr; %>
+Go back to the IDE and find the file <%= fileName; %>.
 
-Go to the IDE and click on 'Copy to Editor' to change it automatically.
+<%= changeDescr; %>
+
+Click on 'Copy to Editor' to change it automatically.
 
 <pre class="file" data-filename="<%= fileDir; %>" data-target="<%= dataTarget; %>" data-marker="<%= placeholder; %>">
 <%= content; %>
