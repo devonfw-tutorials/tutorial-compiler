@@ -22,6 +22,7 @@ export class Katacoda extends Runner {
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
     private currentDir: string = "/root";
+    private terminalCounter: number = 1;
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -181,7 +182,18 @@ export class Katacoda extends Runner {
 
     }
 
-    
+    runServerJava(step: Step, command: Command): RunResult{
+        this.terminalCounter ++; 
+        let cdCommand = this.changeCurrentDir("/server", this.terminalCounter);
+        let terminal = this.terminalCounter; 
+        this.steps.push({
+            "title": "Start the java server",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("serverJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminal: terminal});
+        return null;
+    }
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
@@ -200,18 +212,22 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string):string{
+    private changeCurrentDir(targetDir:string, terminalId?: number):string{
         if(this.currentDir == targetDir){
             return "";
         }
         let dirUtils = new DirUtils();
         let dir = dirUtils.getCdParam(this.currentDir, targetDir);
+        let terminal = "";
+        if(terminalId){
+            terminal = "T" + terminalId;
+        }
 
         this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir}); 
+        return ejs.render(template, {dir: dir, termianl: terminal}); 
     }
 
 
