@@ -84,7 +84,7 @@ If you want to add content from a file:
 If you want to add a string to a file: 
 {"content": "[string]"}
 ##### Name of the placeholder
-If you want to insert content into your code between two existing lines, take the previous line as your placeholder. 
+If you want to insert content into your code between two existing lines, take the previous line as your placeholder. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
