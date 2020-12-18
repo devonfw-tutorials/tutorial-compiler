@@ -2,11 +2,11 @@
 
 <%= cdCommand; %>
 
-Go back to <%= fileName; %> and replace '<%= placeholder; %>' with the following segment of code. 
+Go back to <%= fileName; %> and <%= changeDescr; %>
 
-Change to the IDE and click on 'Copy to Editor' to add this segment automatically.
+Go to the IDE and click on 'Copy to Editor' to change it automatically.
 
-<pre class="file" data-filename="<%= fileDir; %>" data-target="insert" data-marker="<%= placeholder; %>">
+<pre class="file" data-filename="<%= fileDir; %>" data-target="<%= changeDescr; %>" <%= placeholder; %>>
 <%= content; %>
 </pre>
 

@@ -165,11 +165,18 @@ export class Katacoda extends Runner {
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
         let content = "";
-
-        if(command.parameters[2].content){
-            content = command.parameters[2].content;
-        }else if(command.parameters[2].file){
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[2].path), { encoding: "utf-8" });
+        let placeholder = "";
+        let dataTarget = "replace";
+        let changeDescr = "replace the content of "+ fileName +" with the following code.";
+        if(command.parameters[1].placeholder){
+            dataTarget = "insert";
+            placeholder = 'data-marker="' + command.parameters[1].placeholder + '"';
+            changeDescr = "insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
+        }
+        if(command.parameters[1].content){
+            content = command.parameters[1].content;
+        }else if(command.parameters[1].file){
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
         }
 
         this.steps.push({
@@ -177,7 +184,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, fileDir: fileDir, fileName:fileName, content: content, placeholder: command.parameters[1]});
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
         return null;
     }
 
