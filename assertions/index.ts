@@ -6,6 +6,7 @@ import { NoException } from "./noException";
 import { DirectoryExist } from "./directoryExist";
 import { FileExist } from "./fileExist";
 import { DirectoryNotEmpty } from "./directoryNotEmpty";
+import { FileContains } from "./fileContains";
 
 
 export class Assertions {
@@ -32,6 +33,11 @@ export class Assertions {
 
     public fileExits(filepath: string): Assertions {
         FileExist.run(filepath);
+        return this;
+    }
+
+    public fileContains(filepath: string, content: string): Assertions {
+        FileContains.run(filepath, content);
         return this;
     }
 }
