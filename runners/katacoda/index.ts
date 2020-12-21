@@ -145,7 +145,7 @@ export class Katacoda extends Runner {
         let workspaceDir = path.join("devonfw", "workspaces", "main");
         let filePath = path.join(command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep))).replace(/\\/g, "/");
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
-        let fileName = path.join(command.parameters[0].substring(path.join( command.parameters[0]).lastIndexOf(path.sep) + 1 , command.parameters[0].length )).replace(/\\/g, "/");
+        let fileName = path.basename(path.join(command.parameters[0]));
         let content = "";
         if(command.parameters.length == 2) {
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
@@ -157,6 +157,34 @@ export class Katacoda extends Runner {
         });
         
         this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
+        return null;
+    }
+
+    runChangeFile(step: Step, command: Command): RunResult{
+        let workspaceDir = path.join("devonfw", "workspaces", "main");
+        let fileName = path.basename(path.join(command.parameters[0]));
+        let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+        let content = "";
+        let placeholder = "";
+        let dataTarget = "replace";
+        let changeDescr = "Replace the content of "+ fileName +" with the following code.";
+        if(command.parameters[1].placeholder){
+            dataTarget = "insert";
+            placeholder = command.parameters[1].placeholder;
+            changeDescr = "Insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
+        }
+        if(command.parameters[1].content){
+            content = command.parameters[1].content;
+        }else if(command.parameters[1].file){
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+        }
+
+        this.steps.push({
+            "title": "Change " + fileName,
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
         return null;
     }
 
@@ -194,6 +222,7 @@ export class Katacoda extends Runner {
         this.renderTemplate("serverJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminal: terminal});
         return null;
     }
+
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
