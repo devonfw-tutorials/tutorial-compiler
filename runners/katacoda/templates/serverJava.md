@@ -1,14 +1,7 @@
-<%= text; %>
 
-We have to change to a new terminal, whose sole job will be to run this certain server. 
-
-Switch to the server folder
 <%= cdCommand; %>
+Start the server at terminal <%= terminalId; %> by running the maven command 'mvn spring-boot:run'.
 
-
-
-Now you can start the server.
-
-`mvn spring-boot:run`{{execute T<%= terminal; %>}}
+`mvn spring-boot:run`{{execute T<%= terminalId; %> interrupt}}
 
 <%= textAfter; %>

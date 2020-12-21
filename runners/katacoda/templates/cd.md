@@ -1,4 +1,3 @@
 
-Please change the folder to <%= dir; %>
-
+<%= terminalDescr; %>
 `cd <%= dir; %>`{{execute <%= terminal; %>}}

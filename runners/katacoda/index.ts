@@ -23,6 +23,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = "/root";
     private terminalCounter: number = 1;
+    private terminals = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -211,15 +212,15 @@ export class Katacoda extends Runner {
     }
 
     runServerJava(step: Step, command: Command): RunResult{
-        this.terminalCounter ++; 
-        let cdCommand = this.changeCurrentDir("/server", this.terminalCounter);
-        let terminal = this.terminalCounter; 
+        let serverDir = path.join("/root", command.parameters[0]);
+        let terminalId = this.getTerminal('serverJava');
+        let cdCommand = this.changeCurrentDir(serverDir, terminalId);
         this.steps.push({
             "title": "Start the java server",
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("serverJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminal: terminal});
+        this.renderTemplate("serverJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminalId});
         return null;
     }
 
@@ -248,16 +249,28 @@ export class Katacoda extends Runner {
         let dirUtils = new DirUtils();
         let dir = dirUtils.getCdParam(this.currentDir, targetDir);
         let terminal = "";
+        let terminalDescr = "Please change the folder to " + dir;
+
         if(terminalId){
             terminal = "T" + terminalId;
+            terminalDescr = "\nClick on the cd command and you will change to " + dir + " in terminal " + terminalId + " .\n"; 
         }
 
         this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir, termianl: terminal}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
     }
 
+    private getTerminal(functionName: string): number{
+        if(this.terminals.find( terminal => terminal.function === functionName)){
+            return this.terminals.find( terminal => terminal.function === functionName).terminalId;
+        }
+        this.currentDir = path.join("/root"); 
+        this.terminalCounter++;
+        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
+        return this.terminalCounter;
+    }
 
 }
