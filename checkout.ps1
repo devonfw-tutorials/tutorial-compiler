@@ -1,16 +1,13 @@
-Write-Output "Current dir: $pwd"
-Get-ChildItem "$path" -Recurse -Directory
 if(Test-Path "playbooks") {
-    Write-Output "remove playbooks directory"
     Get-ChildItem "playbooks" -Recurse | Remove-Item -Recurse -Force
-    Start-Sleep -s 2
     Get-Item "playbooks" | Remove-Item -Recurse -Force
-    Start-Sleep -s 2
 }
 
-Write-Output "clone Repo"
 if($env:GITHUB_EVENT_NAME -match "pull_request") {
-    (git clone https://github.com/$env:GITHUB_ACTOR/tutorials.git playbooks) -or (git clone https://github.com/devonfw-forge/tutorials.git playbooks)
+    git clone https://github.com/$env:GITHUB_ACTOR/tutorials.git playbooks
+    if ( $? -eq "$False" ) {
+        git clone https://github.com/devonfw-forge/tutorials.git playbooks
+    }
 } else {
     git clone https://github.com/devonfw-forge/tutorials.git playbooks
 }
