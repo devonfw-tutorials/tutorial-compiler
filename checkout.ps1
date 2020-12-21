@@ -1,4 +1,5 @@
 if(Test-Path "playbooks") {
+    Get-ChildItem "playbooks" -Recurse | Remove-Item -Recurse
     Remove-Item -Recurse "playbooks"
 }
 
