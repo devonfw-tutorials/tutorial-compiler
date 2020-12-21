@@ -1,3 +1,5 @@
+Write-Output "Current dir: $pwd"
+Get-ChildItem "$path" -Recurse -Directory
 if(Test-Path "playbooks") {
     Write-Output "remove playbooks directory"
     Get-ChildItem "playbooks" -Recurse | Remove-Item -Recurse -Force
