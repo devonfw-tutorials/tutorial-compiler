@@ -5,7 +5,7 @@ if(Test-Path "playbooks") {
 
 if($env:GITHUB_EVENT_NAME -match "pull_request") {
     git clone https://github.com/$env:GITHUB_ACTOR/tutorials.git playbooks
-    if ( $? -eq "$False" ) {
+    if ( $? -eq $False ) {
         git clone https://github.com/devonfw-forge/tutorials.git playbooks
     }
 } else {
