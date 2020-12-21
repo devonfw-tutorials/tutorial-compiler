@@ -73,15 +73,18 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
 2. 
- *  path of the file to get the content from or a string, that should be inserted.
+ *  Path of the file to get the content from or a string, that should be inserted.
  * (Optional) Name of a placeholder 
 #### example 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### details
 ##### Path of the file to get the content from or a string, that should be inserted.
 If you want to add content from a file: 
+
 {"file": "[path]"}
+
 If you want to add a string to a file: 
+
 {"content": "[string]"}
 ##### Name of the placeholder
 If you want to insert content into your code between two existing lines, take the previous line as your placeholder. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
