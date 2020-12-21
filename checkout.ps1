@@ -1,5 +1,5 @@
 if(Test-Path "playbooks") {
-    Remove-Item -Recurse "playbooks"
+    Remove-Item -Recurse "playbooks" -Force
 }
 
 if($env:GITHUB_EVENT_NAME -match "pull_request") {
