@@ -222,10 +222,20 @@ export class Console extends Runner {
     }
 
     async assertChangeFile(step: Step, command: Command, result: RunResult) {
+        
+        let content = "";
+        if(command.parameters[1].content) {
+            content = command.parameters[1].content;
+        } else if (command.parameters[1].file) {
+            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+        }
+
+        let filepath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        .fileExits(filepath)
+        .fileContains(filepath, content);
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
