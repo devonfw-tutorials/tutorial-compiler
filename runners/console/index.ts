@@ -8,16 +8,37 @@ import { ConsolePlatform } from "./consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
+import * as psList from "ps-list";
 
 export class Console extends Runner {
 
     private platform: ConsolePlatform;
+    private processesToKill: number[] = [];
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
             this.platform = ConsolePlatform.WINDOWS;
         } else {
             this.platform = ConsolePlatform.LINUX;
+        }
+    }
+
+    destroy(playbook: Playbook): void {
+        if(this.processesToKill.length > 0) {
+            psList().then(processes => {
+                // Get all processes and check if they are child processes of the processes that should be terminated. If so, kill them first.
+                let childProcesses = processes.filter(process => {
+                    return this.processesToKill.indexOf(process.ppid) > -1;
+                });
+
+                childProcesses.forEach(childProcess => {
+                    process.kill(childProcess.pid);
+                });
+            }).then(() => {
+                this.processesToKill.forEach(pid => {
+                    process.kill(pid);
+                });
+            });
         }
     }
 
@@ -143,6 +164,24 @@ export class Console extends Runner {
         return result;
     }
 
+    runRunServerJava(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        this.executeCommandSync("git clone https://github.com/devonfw/jump-the-queue.git", workspaceDir, result);
+        
+        let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
+        this.executeCommandSync("mvn clean install", path.join(workspaceDir, "jump-the-queue", "java", "jtqj"), result);
+
+        let process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
+        if(process.pid) {
+            this.processesToKill.push(process.pid);
+        }
+
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -222,6 +261,23 @@ export class Console extends Runner {
         .fileContains(filepath, content);
     }
 
+    async assertRunServerJava(step: Step, command: Command, result: RunResult) {
+        let assert = new Assertions()
+        .noErrorCode(result)
+        .noException(result);
+
+        if(command.parameters.length > 1) {
+            if(command.parameters[1].startupTime) {
+                await this.sleep(command.parameters[1].startupTime);
+            }
+
+            let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+            if(!isReachable) {
+                throw new Error("the server is not reachable: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+            }
+        }
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
@@ -240,5 +296,19 @@ export class Console extends Runner {
         } else {
             this.executeCommandSync("~/.devon/devon " + devonCommand, directory, result, input);
         }
+    }
+
+    private executeCommandAsync(command: string, directory: string, result: RunResult, input?: string): child_process.ChildProcess {
+        if(result.returnCode != 0) return;
+
+        let process = child_process.spawn(command, [], { shell: true, cwd: directory });
+        if(!process.pid) {
+            result.returnCode = 1;
+        }
+        return process;
+    }
+
+    private sleep(seconds: number) {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 }
