@@ -144,7 +144,16 @@ export class Console extends Runner {
     }
 
     runCloneRepository(step: Step, command: Command): RunResult {
-        return null;
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        let directorypath = path.join(workspaceDir, command.parameters[0]);
+        
+        this.createFolder(directorypath, false);
+        this.executeCommandSync("git clone" + command.parameters[1], directorypath, result);
+
+        return result;
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
@@ -224,6 +233,15 @@ export class Console extends Runner {
         .noException(result)
         .fileExits(filepath)
         .fileContains(filepath, content);
+    }
+
+    async assertCloneRepository(step: Step, command: Command, result: RunResult) {
+        let repository = command.parameters[1]
+        let repoName = repository.substr(repository.lastIndexOf("/"),repository.lastIndexOf("."));
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
