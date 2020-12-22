@@ -143,6 +143,19 @@ export class Console extends Runner {
         return result;
     }
 
+    runDockerCompose(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        let filepath = path.join(workspaceDir, command.parameters[0]);
+        if (fs.existsSync(path.join(filepath, "Dockerfile"))) {
+            this.executeCommandSync("docker-compose up", filepath, result);
+        }
+        return result;
+        
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -220,6 +233,12 @@ export class Console extends Runner {
         .noException(result)
         .fileExits(filepath)
         .fileContains(filepath, content);
+    }
+
+    assertDockerCompose(step: Step, command: Command, result: RunResult) {
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result);
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
