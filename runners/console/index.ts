@@ -147,10 +147,9 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        let directorypath = path.join(workspaceDir, command.parameters[0]);
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         
-        this.createFolder(directorypath, false);
+        this.createFolder(directorypath, true);
         this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
 
         return result;
@@ -236,12 +235,13 @@ export class Console extends Runner {
     }
 
     async assertCloneRepository(step: Step, command: Command, result: RunResult) {
-        let repository = command.parameters[1]
+        let repository = command.parameters[1];
         let repoName = repository.slice(repository.lastIndexOf("/"), -4);
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName));
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
