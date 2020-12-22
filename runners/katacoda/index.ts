@@ -211,9 +211,9 @@ export class Katacoda extends Runner {
 
     }
 
-    runServerJava(step: Step, command: Command): RunResult{
+    runRunServerJava(step: Step, command: Command): RunResult{
         let serverDir = path.join("/root", command.parameters[0]);
-        let terminalId = this.getTerminal('serverJava');
+        let terminalId = this.getTerminal('runServerJava');
         let cdCommand = this.changeCurrentDir(serverDir, terminalId);
         this.steps.push({
             "title": "Start the java server",
@@ -249,7 +249,7 @@ export class Katacoda extends Runner {
         let dirUtils = new DirUtils();
         let dir = dirUtils.getCdParam(this.currentDir, targetDir);
         let terminal = "";
-        let terminalDescr = "Please change the folder to " + dir;
+        let terminalDescr = "Please change the folder to " + dir + ".";
 
         if(terminalId){
             terminal = "T" + terminalId;
