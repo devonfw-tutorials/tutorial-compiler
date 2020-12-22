@@ -241,35 +241,18 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string, terminalId?: number):string{
+    private changeCurrentDir(targetDir:string):string{
         if(this.currentDir == targetDir){
             return "";
         }
         let dirUtils = new DirUtils();
         let dir = dirUtils.getCdParam(this.currentDir, targetDir);
-        let terminal = "";
-        let terminalDescr = "Please change the folder to " + dir + ".";
-
-        if(terminalId){
-            terminal = "T" + terminalId;
-            terminalDescr = "\nClick on the cd command and you will change to " + dir + " in terminal " + terminalId + " .\n"; 
-        }
 
         this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
-    }
-
-    private getTerminal(functionName: string): number{
-        if(this.terminals.find( terminal => terminal.function === functionName)){
-            return this.terminals.find( terminal => terminal.function === functionName).terminalId;
-        }
-        this.currentDir = path.join("/root"); 
-        this.terminalCounter++;
-        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
-        return this.terminalCounter;
+        return ejs.render(template, {dir: dir}); 
     }
 
 }
