@@ -211,18 +211,7 @@ export class Katacoda extends Runner {
 
     }
 
-    runClientNg(step: Step, command: Command): RunResult{
-        let cdCommand = this.changeCurrentDir(path.join("/root"));
-        let ngDir = this.changeCurrentDir(path.join("/root", command.parameters[0]));
-        this.steps.push({
-            "title": "Run Angular Client",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        
-        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, ngDir: ngDir});
-        return null;
-
-    }
+    
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
@@ -253,6 +242,16 @@ export class Katacoda extends Runner {
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
         return ejs.render(template, {dir: dir}); 
+    }
+
+    private getTerminal(functionName: string): number{
+        if(this.terminals.find( terminal => terminal.function === functionName)){
+            return this.terminals.find( terminal => terminal.function === functionName).terminalId;
+        }
+        this.currentDir = path.join("/root"); 
+        this.terminalCounter++;
+        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
+        return this.terminalCounter;
     }
 
 }
