@@ -67,9 +67,28 @@ export class Katacoda extends Runner {
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
+    runRestoreWorkspace(step: Step, command: Command): RunResult {
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+
+        // create script to download devonfw ide settings.
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
+        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {});
+
+        // add the script to the setup scripts for executing it at the beginning of the tutorial
+        this.setupScripts.push({
+            "name": "Clone devonfw IDE settings",
+            "script": "cloneDevonfwIdeSettings.sh"
+        });
+        this.setupScripts.push({
+            "name": "Restore Workspace",
+            "script": "restoreWorkspace.sh"
+        });
+
+        return null;
+    }
+
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir("/root");     
-
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
