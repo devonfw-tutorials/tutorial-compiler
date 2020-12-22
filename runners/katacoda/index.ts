@@ -209,6 +209,21 @@ export class Katacoda extends Runner {
 
     }
 
+    runCloneRepository(step: Step, command: Command): RunResult {
+
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+        let workspaceDir = path.join("devonfw", "workspaces", "main");
+        let directoryPath = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+
+        this.steps.push({
+            "title": "Clones Repository " + command.parameters[1],
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1]});
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
