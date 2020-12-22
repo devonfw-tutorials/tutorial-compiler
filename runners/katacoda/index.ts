@@ -22,8 +22,6 @@ export class Katacoda extends Runner {
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
     private currentDir: string = "/root";
-    private terminalCounter: number = 1;
-    private terminals = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -244,14 +242,5 @@ export class Katacoda extends Runner {
         return ejs.render(template, {dir: dir}); 
     }
 
-    private getTerminal(functionName: string): number{
-        if(this.terminals.find( terminal => terminal.function === functionName)){
-            return this.terminals.find( terminal => terminal.function === functionName).terminalId;
-        }
-        this.currentDir = path.join("/root"); 
-        this.terminalCounter++;
-        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
-        return this.terminalCounter;
-    }
 
 }
