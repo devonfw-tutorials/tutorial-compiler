@@ -211,7 +211,18 @@ export class Katacoda extends Runner {
 
     }
 
-    
+    runClientNg(step: Step, command: Command): RunResult{
+        let cdCommand = this.changeCurrentDir(path.join("/root"));
+        let ngDir = this.changeCurrentDir(path.join("/root", command.parameters[0]));
+        this.steps.push({
+            "title": "Run Angular Client",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, ngDir: ngDir});
+        return null;
+
+    }
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
@@ -230,18 +241,25 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string):string{
+    private changeCurrentDir(targetDir:string, terminalId?: number):string{
         if(this.currentDir == targetDir){
             return "";
         }
         let dirUtils = new DirUtils();
         let dir = dirUtils.getCdParam(this.currentDir, targetDir);
+        let terminal = "";
+        let terminalDescr = "Please change the folder to " + dir + ".";
+
+        if(terminalId){
+            terminal = "T" + terminalId;
+            terminalDescr = "\nClick on the cd command and you will change to " + dir + " in terminal " + terminalId + " .\n"; 
+        }
 
         this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
     }
 
     private getTerminal(functionName: string): number{
