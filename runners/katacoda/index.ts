@@ -209,6 +209,21 @@ export class Katacoda extends Runner {
 
     }
 
+    runBuildNg(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+
+        let projectPath = path.join(command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep))).replace(/\\/g, "/");
+        let projectName = path.basename(path.join(command.parameters[0]));
+
+        this.steps.push({
+            "title": "Build the Angular Project",
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, projectPath: projectPath, projectName: projectName });
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
