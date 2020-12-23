@@ -67,12 +67,12 @@ export class Katacoda extends Runner {
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
-    runRestoreWorkspace(step: Step, command: Command): RunResult {
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings.
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
-        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {});
+        this.renderTemplate(path.join("scripts", "restoreDevonfwIde.sh"), path.join(this.setupDir, "restoreDevonfwIde.sh"), {});
 
         // add the script to the setup scripts for executing it at the beginning of the tutorial
         this.setupScripts.push({
@@ -80,8 +80,8 @@ export class Katacoda extends Runner {
             "script": "cloneDevonfwIdeSettings.sh"
         });
         this.setupScripts.push({
-            "name": "Restore Workspace",
-            "script": "restoreWorkspace.sh"
+            "name": "Restore Devonfw IDE",
+            "script": "restoreDevonfwIde.sh"
         });
 
         return null;
