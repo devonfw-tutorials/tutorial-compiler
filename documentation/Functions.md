@@ -1,6 +1,7 @@
 ## Functions 
 The following functions are already implemented:
 * installDevonIde
+* restoreDevonIde
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
