@@ -52,6 +52,14 @@ export class Console extends Runner {
         return result;
     }
 
+
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;    
+        result = this.runInstallDevonfwIde (step, command);
+        return result;
+    }
+
     runInstallCobiGen(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -144,6 +152,21 @@ export class Console extends Runner {
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
+        let installedTools = command.parameters[0];
+
+        let assert = new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"))
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+
+        for(let i = 0; i < installedTools.length; i++) {
+            if(installedTools[i] == "mvn") installedTools[i] = "maven";
+            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
+        }
+    }
+
+    async assertRestoreDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
         let assert = new Assertions()
