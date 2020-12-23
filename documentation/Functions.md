@@ -25,8 +25,7 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 #### example
 restoreDevonfwIde(["java","mvn"], "2020.08.001")
 #### details 
-The installation of the devonfw IDE is executed in a startup script.
-
+In the Katacoda Environment the installation of the devonfw IDE is executed in a startup script.
 ***
 
 ### installCobiGen
