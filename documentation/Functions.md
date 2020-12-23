@@ -100,8 +100,8 @@ Please try not to use custom placeholders. Keep in mind that you might want to b
 
 ### cloneRepository
 #### parameter 
-1. Path into which the repository is to be cloned, relative to workspace
-2. Git Repository URL
+1. Path into which the repository is to be cloned, relative to workspace.
+2. Git repository URL
 #### example 
 cloneRepository("", "https://github.com/devonfw-forge/tutorial-compiler.git")
 
