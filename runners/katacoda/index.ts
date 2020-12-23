@@ -209,6 +209,29 @@ export class Katacoda extends Runner {
 
     }
 
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw"));     
+
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+
+        // create script to download devonfw ide settings
+        this.renderTemplate(path.join("scripts", "updateDevonfwIdeSettings.sh"), path.join(this.setupDir, "updateDevonfwIdeSettings.sh"), { tools: tools, updateDir: "/root/devonfw-settings/"});
+
+        // add the script to the setup scripts for executing it at the beginning of the tutorial
+        this.setupScripts.push({
+            "name": "Update devonfw IDE settings",
+            "script": "updateDevonfwIdeSettings.sh"
+        });
+
+        this.steps.push({
+            "title": "Restores devonfw IDE with different Tools",
+            "text": "step" + this.stepsCount + ".md",
+        });
+
+        this.renderTemplate("restoreDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
