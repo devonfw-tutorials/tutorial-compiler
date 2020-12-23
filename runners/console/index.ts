@@ -54,10 +54,7 @@ export class Console extends Runner {
 
 
     runRestoreDevonfwIde(step: Step, command: Command): RunResult {
-        let result = new RunResult();
-        result.returnCode = 0;    
-        result = this.runInstallDevonfwIde(step, command);
-        return result;
+        return this.runInstallDevonfwIde(step, command);
     }
 
     runInstallCobiGen(step: Step, command: Command): RunResult {
