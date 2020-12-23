@@ -217,7 +217,7 @@ export class Katacoda extends Runner {
             "text": "step" +this.stepsCount + ".md"
         });
 
-        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: command.parameters[0].replace(/\\/g, "/"); })
+        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: command.parameters[0].replace(/\\/g, "/") });
         return null;
     }
 

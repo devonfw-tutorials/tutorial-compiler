@@ -6,6 +6,7 @@ The following functions are already implemented:
 * createDevon4jProject
 * buildJava
 * createFile
+* dockerCompose
 
 ***
 
@@ -94,5 +95,13 @@ example:{...,"placeholder": "private int age;"}
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
+
+***
+
+### dockerCompose
+#### parameter 
+1. Path to the Dockerfile
+#### example 
+dockerCompose("exampleproject")
 
 ***
