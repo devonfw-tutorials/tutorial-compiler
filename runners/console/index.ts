@@ -143,6 +143,18 @@ export class Console extends Runner {
         return result;
     }
 
+    runBuildNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        let projectPath = path.join(workspaceDir, command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep)));
+        let projectName = path.basename(path.join(command.parameters[0]));
+
+        this.executeCommandSync("ng build " + projectName, projectPath, result);
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         let installedTools = command.parameters[0];
 
@@ -220,6 +232,15 @@ export class Console extends Runner {
         .noException(result)
         .fileExits(filepath)
         .fileContains(filepath, content);
+    }
+
+    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep)));
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(projectPath, "dist"))
+        .directoryNotEmpty(path.join(projectPath, "dist"));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
