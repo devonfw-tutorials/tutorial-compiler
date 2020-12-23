@@ -96,3 +96,11 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
 ***
+
+### buildNg
+#### parameter 
+1. Path to the angular project relative to workspace
+#### example 
+buildNg("exampleAngularProject")
+
+***
