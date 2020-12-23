@@ -6,6 +6,7 @@ The following functions are already implemented:
 * createDevon4jProject
 * buildJava
 * createFile
+* buildNg
 
 ***
 
