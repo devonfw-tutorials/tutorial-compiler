@@ -19,6 +19,16 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 
 ***
 
+### restoreDevonfwIde
+#### parameter
+1. The tools you want to install within the devonfw ide: string array
+2. Optional: The version of the ide to install
+#### example
+restoreDevonfwIde(["java","mvn"], "2020.08.001")
+#### details 
+In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
+***
+
 ### installCobiGen
 #### parameter
 * No parameters
@@ -96,6 +106,7 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
+
 ***
 
 ### buildNg
@@ -105,3 +116,4 @@ Please try not to use custom placeholders. Keep in mind that you might want to b
 buildNg("exampleAngularProject")
 
 ***
+
