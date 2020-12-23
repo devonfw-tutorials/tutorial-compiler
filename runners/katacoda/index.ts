@@ -209,6 +209,18 @@ export class Katacoda extends Runner {
 
     }
 
+    runDockerCompose(step: Step, command: Command) : RunResult {
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+
+        this.steps.push({
+            "title": "Execute Docker Compose",
+            "text": "step" +this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, filePath: command.parameters[0].replace(/\\/g, "/"); })
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
