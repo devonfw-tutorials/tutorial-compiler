@@ -252,8 +252,8 @@ export class Console extends Runner {
         if(process.status != 0) {
             result.returnCode = process.status;
         }
-         // checks if stdout is not empty
-         if(Boolean(process.stdout.toString())) {
+
+        if(process.stdout.toString()) {
             console.log("Current git status: " + process.stdout.toString());
             result.returnCode = 1;
         }
