@@ -246,6 +246,18 @@ export class Console extends Runner {
     async assertCloneRepository(step: Step, command: Command, result: RunResult) {
         let repository = command.parameters[1];
         let repoName = repository.slice(repository.lastIndexOf("/"), -4);
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
+        
+        let process = child_process.spawnSync("git status -s", { shell: true, cwd: directorypath });
+        if(process.status != 0) {
+            result.returnCode = process.status;
+        }
+         // checks if stdout is not empty
+         if(Boolean(process.stdout.toString())) {
+            console.log("Current git status: " + process.stdout.toString());
+            result.returnCode = 1;
+        }
+       
         new Assertions()
         .noErrorCode(result)
         .noException(result)

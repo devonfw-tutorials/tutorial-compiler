@@ -238,13 +238,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
 
-        // checks if path is an empty string
-        if(Boolean(command.parameters[0].trim())) {
-            this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1]});
-        } else {
-            this.renderTemplate("cloneRepositoryEmptyString.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", {text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, repository: command.parameters[1]});
-        }
-        
+        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1], string: command.parameters[0].trim() });
         return null;
     }
 
