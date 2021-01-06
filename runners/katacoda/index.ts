@@ -228,7 +228,17 @@ export class Katacoda extends Runner {
 
     }
 
-    
+    runRunClientNg(step: Step, command: Command): RunResult{
+
+      
+        this.steps.push({
+            "title": "Run Angular Client",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+        return null;
+    }
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
