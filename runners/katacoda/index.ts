@@ -262,20 +262,24 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(targetDir:string, terminalId?: number):string{
-        if(this.currentDir == targetDir){
+        if(!terminalId && this.currentDir == targetDir){
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir = dirUtils.getCdParam(this.currentDir, targetDir);
-        let terminal = "";
-        let terminalDescr = "Please change the folder to " + dir + ".";
-
+        let dir;
+        let terminal;
+        let terminalDescr;
         if(terminalId){
+            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
             terminal = "T" + terminalId;
             terminalDescr = "\nClick on the cd command and you will change to " + dir + " in terminal " + terminalId + " .\n"; 
+            
+        }else{
+            dir = dirUtils.getCdParam(this.currentDir, targetDir);
+            terminal = "";
+            terminalDescr = "Please change the folder to " + dir + ".";
+            this.currentDir = targetDir;
         }
-
-        this.currentDir = targetDir; 
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
@@ -285,8 +289,7 @@ export class Katacoda extends Runner {
     private getTerminal(functionName: string): number{
         if(this.terminals.find( terminal => terminal.function === functionName)){
             return this.terminals.find( terminal => terminal.function === functionName).terminalId;
-        }
-        this.currentDir = path.join("/root"); 
+        } 
         this.terminalCounter++;
         this.terminals.push({function: functionName, terminalId: this.terminalCounter});
         return this.terminalCounter;
