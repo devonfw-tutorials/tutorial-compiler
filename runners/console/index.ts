@@ -149,6 +149,7 @@ export class Console extends Runner {
     }
 
 
+
     runBuildNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -158,6 +159,19 @@ export class Console extends Runner {
         console.log("ProjectPath: " + projectPath);
         this.executeCommandSync("npm install --loglevel verbose", projectPath, result);
         this.executeCommandSync("ng build --output-path dist", projectPath, result);
+
+        return result;
+    }
+
+    runCloneRepository(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        
+        this.createFolder(directorypath, true);
+        this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
+
         return result;
     }
 
@@ -244,6 +258,7 @@ export class Console extends Runner {
         .fileContains(filepath, content);
     }
 
+
     async assertBuildNg(step: Step, command: Command, result: RunResult) {
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep)));
         new Assertions()
@@ -251,6 +266,19 @@ export class Console extends Runner {
         .noException(result)
         .directoryExits(path.join(projectPath, "dist"))
         .directoryNotEmpty(path.join(projectPath, "dist"));
+    }
+
+    async assertCloneRepository(step: Step, command: Command, result: RunResult) {
+        let repository = command.parameters[1];
+        let repoName = repository.slice(repository.lastIndexOf("/"), -4);
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
+        
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .repositoryIsClean(directorypath);
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
