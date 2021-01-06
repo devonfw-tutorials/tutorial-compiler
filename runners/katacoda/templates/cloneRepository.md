@@ -2,7 +2,7 @@
 
 <%= cdCommand; %>
 
-<% if (string) { %>
+<% if (directoryPath) { %>
 If the parent directories aren't already in the project, 'mkdir -p' will create them for you. 
 
 `mkdir -p <%= directoryPath; %>`{{execute}}
