@@ -173,16 +173,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        this.executeCommandSync("git clone https://github.com/devonfw/jump-the-queue.git", workspaceDir, result);
-        
         let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
-        this.executeCommandSync("mvn clean install", path.join(workspaceDir, "jump-the-queue", "java", "jtqj"), result);
-
         let process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
         if(process.pid) {
             this.processesToKill.push(process.pid);
         }
+
+        return result;
     }
 
     runCloneRepository(step: Step, command: Command): RunResult {
