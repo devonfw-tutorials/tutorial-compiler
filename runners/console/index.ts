@@ -73,6 +73,11 @@ export class Console extends Runner {
         return result;
     }
 
+
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
+        return this.runInstallDevonfwIde(step, command);
+    }
+
     runInstallCobiGen(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -178,6 +183,16 @@ export class Console extends Runner {
         if(process.pid) {
             this.processesToKill.push(process.pid);
         }
+    }
+
+    runCloneRepository(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        
+        this.createFolder(directorypath, true);
+        this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
 
         return result;
     }
@@ -195,6 +210,10 @@ export class Console extends Runner {
             if(installedTools[i] == "mvn") installedTools[i] = "maven";
             assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
         }
+    }
+
+    async assertRestoreDevonfwIde(step: Step, command: Command, result: RunResult) {
+       this.assertInstallDevonfwIde(step, command, result);
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
@@ -276,6 +295,19 @@ export class Console extends Runner {
                 throw new Error("the server is not reachable: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
             }
         }
+    }
+
+    async assertCloneRepository(step: Step, command: Command, result: RunResult) {
+        let repository = command.parameters[1];
+        let repoName = repository.slice(repository.lastIndexOf("/"), -4);
+        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
+        
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .repositoryIsClean(directorypath);
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {

@@ -69,7 +69,6 @@ export class Katacoda extends Runner {
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir("/root");     
-
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
@@ -90,6 +89,26 @@ export class Katacoda extends Runner {
         //update current directory
         this.currentDir = path.join(this.currentDir, "devonfw");
         
+        return null;
+    }
+
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+
+        // create script to download devonfw ide settings.
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
+        this.renderTemplate(path.join("scripts", "restoreDevonfwIde.sh"), path.join(this.setupDir, "restoreDevonfwIde.sh"), {});
+
+        // add the script to the setup scripts for executing it at the beginning of the tutorial
+        this.setupScripts.push({
+            "name": "Clone devonfw IDE settings",
+            "script": "cloneDevonfwIdeSettings.sh"
+        });
+        this.setupScripts.push({
+            "name": "Restore Devonfw IDE",
+            "script": "restoreDevonfwIde.sh"
+        });
+
         return null;
     }
 
@@ -207,6 +226,25 @@ export class Katacoda extends Runner {
         this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr});
         return null;
 
+    }
+
+    runCloneRepository(step: Step, command: Command): RunResult {
+
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+        let directoryPath = "";
+        if(command.parameters[0].trim()) {
+            directoryPath = path.join(command.parameters[0]).replace(/\\/g, "/");
+            this.currentDir = path.join(this.currentDir, directoryPath);
+        }
+        
+
+        this.steps.push({
+            "title": "Clones Repository " + command.parameters[1],
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1] });
+        return null;
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {

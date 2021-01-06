@@ -8,6 +8,7 @@ import { FileExist } from "./fileExist";
 import { DirectoryNotEmpty } from "./directoryNotEmpty";
 import { FileContains } from "./fileContains";
 import { ServerIsReachable } from "./serverIsReachable";
+import { RepositoryIsClean } from "./repositoryIsClean";
 
 
 export class Assertions {
@@ -44,5 +45,10 @@ export class Assertions {
 
     public serverIsReachable(port: number, path: string): Promise<boolean> {
         return ServerIsReachable.run(port, path);
+    }
+
+    public repositoryIsClean(directory: string): Assertions {
+        RepositoryIsClean.run(directory);
+        return this;
     }
 }
