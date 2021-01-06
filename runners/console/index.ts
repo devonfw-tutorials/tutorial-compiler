@@ -148,16 +148,14 @@ export class Console extends Runner {
         return result;
     }
 
-
-
     runBuildNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        let projectName = path.basename(path.join(command.parameters[0]));
-        console.log("ProjectPath: " + projectPath);
-        this.executeCommandSync("npm install --loglevel verbose", projectPath, result);
+        console.log(projectPath);
+
+        this.executeCommandSync("npm install", projectPath, result); // needed until npm integrated
         this.executeCommandSync("ng build --output-path dist", projectPath, result);
 
         return result;
@@ -260,7 +258,7 @@ export class Console extends Runner {
 
 
     async assertBuildNg(step: Step, command: Command, result: RunResult) {
-        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep)));
+        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         new Assertions()
         .noErrorCode(result)
         .noException(result)
