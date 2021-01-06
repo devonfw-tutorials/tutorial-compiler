@@ -8,6 +8,7 @@ import { ConsolePlatform } from "./consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
+import { O_DIRECTORY } from "constants";
 
 export class Console extends Runner {
 
@@ -248,21 +249,12 @@ export class Console extends Runner {
         let repoName = repository.slice(repository.lastIndexOf("/"), -4);
         let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
         
-        let process = child_process.spawnSync("git status -s", { shell: true, cwd: directorypath });
-        if(process.status != 0) {
-            result.returnCode = process.status;
-        }
-
-        if(process.stdout.toString()) {
-            console.log("Current git status: " + process.stdout.toString());
-            result.returnCode = 1;
-        }
-       
         new Assertions()
         .noErrorCode(result)
         .noException(result)
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
-        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName));
+        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .repositoryIsClean(directorypath);
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
