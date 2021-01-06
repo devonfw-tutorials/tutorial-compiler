@@ -148,15 +148,16 @@ export class Console extends Runner {
         return result;
     }
 
+
     runBuildNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        let projectPath = path.join(workspaceDir, command.parameters[0].substring(0,path.join(command.parameters[0]).lastIndexOf(path.sep)));
+        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         let projectName = path.basename(path.join(command.parameters[0]));
-
-        this.executeCommandSync("ng build " + projectName, projectPath, result);
+        console.log("ProjectPath: " + projectPath);
+        this.executeCommandSync("npm install --loglevel verbose", projectPath, result);
+        this.executeCommandSync("ng build --output-path dist", projectPath, result);
         return result;
     }
 
