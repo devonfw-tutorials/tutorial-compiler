@@ -8,7 +8,6 @@ import { ConsolePlatform } from "./consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
-import { O_DIRECTORY } from "constants";
 
 export class Console extends Runner {
 
