@@ -174,7 +174,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
-        let process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
+        let process = this.executeCommandAsync("mvn spring-boot:run -X", serverDir, result);
         if(process.pid) {
             this.processesToKill.push(process.pid);
 
