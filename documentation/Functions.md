@@ -7,6 +7,7 @@ The following functions are already implemented:
 * createDevon4jProject
 * buildJava
 * createFile
+* cloneRepository
 
 ***
 
@@ -106,4 +107,17 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
+
+***
+
+### cloneRepository
+#### parameter 
+1. Path into which the repository is to be cloned, relative to workspace.
+2. Git repository URL
+#### example 
+cloneRepository("", "https://github.com/devonfw-forge/tutorial-compiler.git")
+Repository will be cloned directly into the workspace directory.
+
+cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory devonfw-forge.
 ***
