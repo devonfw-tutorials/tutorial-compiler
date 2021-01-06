@@ -7,7 +7,6 @@ import { DirectoryExist } from "./directoryExist";
 import { FileExist } from "./fileExist";
 import { DirectoryNotEmpty } from "./directoryNotEmpty";
 import { FileContains } from "./fileContains";
-import { RepositoryIsClean } from "./repositoryIsClean";
 
 
 export class Assertions {
@@ -39,11 +38,6 @@ export class Assertions {
 
     public fileContains(filepath: string, content: string): Assertions {
         FileContains.run(filepath, content);
-        return this;
-    }
-
-    public repositoryIsClean(directory: string): Assertions {
-        RepositoryIsClean.run(directory);
         return this;
     }
 }
