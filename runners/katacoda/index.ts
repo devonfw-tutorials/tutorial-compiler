@@ -234,6 +234,7 @@ export class Katacoda extends Runner {
         let directoryPath = "";
         if(command.parameters[0].trim()) {
             directoryPath = path.join(command.parameters[0]).replace(/\\/g, "/");
+            this.currentDir = path.join(this.currentDir, directoryPath);
         }
         
 
