@@ -230,6 +230,19 @@ export class Katacoda extends Runner {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
     runRunServerJava(step: Step, command: Command): RunResult{
         let serverDir = path.join("/root", command.parameters[0]);
         let terminal = this.getTerminal('runServerJava');
