@@ -232,14 +232,14 @@ export class Katacoda extends Runner {
 
     runRunServerJava(step: Step, command: Command): RunResult{
         let serverDir = path.join("/root", command.parameters[0]);
-        let terminalId = this.getTerminal('runServerJava');
-        let cdCommand = this.changeCurrentDir(serverDir, terminalId);
+        let terminal = this.getTerminal('runServerJava');
+        let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
         this.steps.push({
             "title": "Start the java server",
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminalId});
+        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId,  interrupt: terminal.isRunning});
         return null;
     }
 
@@ -261,8 +261,8 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string, terminalId?: number):string{
-        if(!terminalId && this.currentDir == targetDir){
+    private changeCurrentDir(targetDir:string, terminalId?: number, isRunning?: boolean):string{
+        if((!terminalId && this.currentDir == targetDir || isRunning)){
             return "";
         }
         let dirUtils = new DirUtils();
@@ -286,13 +286,14 @@ export class Katacoda extends Runner {
         return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
     }
 
-    private getTerminal(functionName: string): number{
-        if(this.terminals.find( terminal => terminal.function === functionName)){
-            return this.terminals.find( terminal => terminal.function === functionName).terminalId;
+    private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{
+        let terminal = this.terminals.find( terminal => terminal.function === functionName)
+        if(terminal){
+            return {terminalId: terminal.terminalId, isRunning: true};
         } 
         this.terminalCounter++;
         this.terminals.push({function: functionName, terminalId: this.terminalCounter});
-        return this.terminalCounter;
+        return {terminalId: this.terminalCounter, isRunning: false};
     }
 
 }
