@@ -177,6 +177,10 @@ export class Console extends Runner {
         let process = this.executeDevonCommandAsync("mvn spring-boot:run -X", serverDir, result);
         if(process.pid) {
             this.processesToKill.push(process.pid);
+
+            process.stdout.on("data", (data) => {
+                console.log(data);
+            });
         }
 
         return result;
