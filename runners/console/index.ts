@@ -174,7 +174,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
-        let process = this.executeCommandAsync("mvn spring-boot:run -X", serverDir, result);
+        let process = this.executeDevonCommandAsync("mvn spring-boot:run -X", serverDir, result);
         if(process.pid) {
             this.processesToKill.push(process.pid);
 
@@ -346,6 +346,15 @@ export class Console extends Runner {
             result.returnCode = 1;
         }
         return process;
+    }
+
+    private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult, input?: string): child_process.ChildProcess {
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
+            return this.executeCommandAsync(scriptsDir + "\\devon " + devonCommand, directory, result, input);
+        } else {
+            return this.executeCommandAsync("~/.devon/devon " + devonCommand, directory, result, input);
+        }
     }
 
     private sleep(seconds: number) {
