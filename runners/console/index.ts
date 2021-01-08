@@ -9,11 +9,14 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
+const fkill = require('fkill');
+const findProcess = require("find-process");
 
 export class Console extends Runner {
 
     private platform: ConsolePlatform;
     private processesToKill: number[] = [];
+    private portsToShutdown: object[] = [];
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -24,22 +27,7 @@ export class Console extends Runner {
     }
 
     destroy(playbook: Playbook): void {
-        if(this.processesToKill.length > 0) {
-            psList().then(processes => {
-                // Get all processes and check if they are child processes of the processes that should be terminated. If so, kill them first.
-                let childProcesses = processes.filter(process => {
-                    return this.processesToKill.indexOf(process.ppid) > -1;
-                });
-
-                childProcesses.forEach(childProcess => {
-                    process.kill(childProcess.pid);
-                });
-            }).then(() => {
-                this.processesToKill.forEach(pid => {
-                    process.kill(pid);
-                });
-            });
-        }
+        this.killAsyncProcesses();
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
@@ -174,13 +162,13 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
-        let process = this.executeDevonCommandAsync("mvn spring-boot:run -X", serverDir, result);
+        let process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
         if(process.pid) {
             this.processesToKill.push(process.pid);
 
-            process.stdout.on("data", (data) => {
-                console.log(data);
-            });
+            if(command.parameters.length > 1) {
+                this.portsToShutdown.push({ "name": "java.exe", "port": command.parameters[1].port });
+            }
         }
 
         return result;
@@ -353,4 +341,51 @@ export class Console extends Runner {
     private sleep(seconds: number) {
         return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
+
+    private killAsyncProcesses() {
+        if(this.processesToKill.length > 0) {
+            psList().then(processes => {
+                processes.forEach(p => {
+                    console.log(p.pid + ", " + p.ppid + ", " + p.name + ", " + p.cmd + ", " + p.uid);
+                });
+
+                // Get all processes and check if they are child orprocesses of the processes that should be terminated. If so, kill them first.
+                let killProcessesRecursively = function(processes, processIdToKill) {
+                    let childProcesses = processes.filter(process => {
+                        return process.ppid == processIdToKill;
+                    });
+
+                    if(childProcesses.length > 0) {
+                        childProcesses.forEach(childProcess => {
+                            console.log("childprocess: ", childProcess)
+                            killProcessesRecursively(processes, childProcess.pid)
+                        });
+                    }
+
+                    console.log("kill process: ", processIdToKill)
+                    process.kill(processIdToKill);
+                }
+
+                this.processesToKill.forEach(pid => {
+                    killProcessesRecursively(processes, pid);
+                });
+            }).then(() => {
+                //Check if there are still running processes on the given ports
+                this.portsToShutdown.forEach(p => {
+                    let port = parseInt(p["port"]);
+                    findProcess("port", port).then((list) => {
+                        if(list.length > 0) {
+                            list.forEach(listElement => {
+                                if(listElement.name == p["name"] || listElement.name == p["name"] + ".exe") {
+                                    console.log("kill process: ", listElement.pid);
+                                    process.kill(listElement.pid);
+                                }
+                            });
+                        }
+                    })
+                });
+            })
+        }
+    }
+    
 }
