@@ -157,9 +157,9 @@ export class Console extends Runner {
         this.executeCommandSync("npm install", projectPath, result); // needed until npm integrated
 
         if(command.parameters.length == 2) {
-            this.executeCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
+            this.executeDevonCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
         } else {
-            this.executeCommandSync("ng build", projectPath, result);
+            this.executeDevonCommandSync("ng build", projectPath, result);
         }
         
         return result;
