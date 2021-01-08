@@ -365,10 +365,10 @@ export class Console extends Runner {
                 this.asyncProcesses.forEach(asyncProcess => {
                     findProcess("port", asyncProcess.port).then((processes) => {
                         if(processes.length > 0) {
-                            processes.forEach(process => {
-                                if(process.name == asyncProcess.name || process.name == asyncProcess.name + ".exe") {
-                                    console.log("kill process: ", process.pid)
-                                    process.kill(process.pid);
+                            processes.forEach(proc => {
+                                if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
+                                    console.log("kill process: ", proc.pid)
+                                    process.kill(proc.pid);
                                 }
                             });
                         }
