@@ -115,9 +115,13 @@ Please try not to use custom placeholders. Keep in mind that you might want to b
 ### buildNg
 #### parameter 
 1. Path to the angular project relative to workspace
+2. (Optional) Custom output directory.
 #### example 
 buildNg("exampleAngularProject")
+Will build the angular project to default output directory defined in angular.json outputPath key, normally set to dist/.
 
+buildNg("exampleAngularProject", "testOutput")
+Will build the angular project to output directory testOutput.
 ***
 
 =======

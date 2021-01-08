@@ -156,8 +156,13 @@ export class Console extends Runner {
         console.log(projectPath);
 
         this.executeCommandSync("npm install", projectPath, result); // needed until npm integrated
-        this.executeCommandSync("ng build --output-path dist", projectPath, result);
-
+        if(command.parameters.length == 2) {
+            console.log()
+            this.executeCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
+        } else {
+            this.executeCommandSync("ng build", projectPath, result);
+        }
+        
         return result;
     }
 
@@ -259,11 +264,23 @@ export class Console extends Runner {
 
     async assertBuildNg(step: Step, command: Command, result: RunResult) {
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let outputdirectory = "";
+        if(command.parameters.length == 2) {
+            outputdirectory = command.parameters[1];
+        } else {
+            let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+            outputdirectory = this.lookup(JSON.parse(content), "outputPath")[1];
+            if(outputdirectory == null) {
+                outputdirectory = "dist";
+            }
+            console.log(outputdirectory);
+        }
+        
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(projectPath, "dist"))
-        .directoryNotEmpty(path.join(projectPath, "dist"));
+        .directoryExits(path.join(projectPath, outputdirectory))
+        .directoryNotEmpty(path.join(projectPath, outputdirectory));
     }
 
     async assertCloneRepository(step: Step, command: Command, result: RunResult) {
@@ -297,5 +314,20 @@ export class Console extends Runner {
         } else {
             this.executeCommandSync("~/.devon/devon " + devonCommand, directory, result, input);
         }
+    }
+
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
+            
+            if(key == lookupkey) {
+                console.log("key: " + key + ", value: " + obj[key]);
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
     }
 }
