@@ -276,6 +276,7 @@ export class Console extends Runner {
 
             let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
             if(!isReachable) {
+                this.killAsyncProcesses();
                 throw new Error("the server is not reachable: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
             }
         }
@@ -348,12 +349,10 @@ export class Console extends Runner {
 
                     if(childProcesses.length > 0) {
                         childProcesses.forEach(childProcess => {
-                            console.log("childprocess: ", childProcess)
                             killProcessesRecursively(processes, childProcess.pid)
                         });
                     }
 
-                    console.log("kill process: ", processIdToKill)
                     process.kill(processIdToKill);
                 }
 
@@ -367,7 +366,6 @@ export class Console extends Runner {
                         if(processes.length > 0) {
                             processes.forEach(proc => {
                                 if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                                    console.log("kill process: ", proc.pid)
                                     process.kill(proc.pid);
                                 }
                             });
