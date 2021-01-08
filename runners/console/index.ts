@@ -4,7 +4,7 @@ import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
-import { ConsolePlatform } from "./consoleInterfaces";
+import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
@@ -15,8 +15,7 @@ const findProcess = require("find-process");
 export class Console extends Runner {
 
     private platform: ConsolePlatform;
-    private processesToKill: number[] = [];
-    private portsToShutdown: object[] = [];
+    private asyncProcesses: AsyncProcess[] = [];
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -164,11 +163,7 @@ export class Console extends Runner {
         let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
         let process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
         if(process.pid) {
-            this.processesToKill.push(process.pid);
-
-            if(command.parameters.length > 1) {
-                this.portsToShutdown.push({ "name": "java.exe", "port": command.parameters[1].port });
-            }
+            this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
         }
 
         return result;
@@ -343,12 +338,8 @@ export class Console extends Runner {
     }
 
     private killAsyncProcesses() {
-        if(this.processesToKill.length > 0) {
+        if(this.asyncProcesses.length > 0) {
             psList().then(processes => {
-                processes.forEach(p => {
-                    console.log(p.pid + ", " + p.ppid + ", " + p.name + ", " + p.cmd + ", " + p.uid);
-                });
-
                 // Get all processes and check if they are child orprocesses of the processes that should be terminated. If so, kill them first.
                 let killProcessesRecursively = function(processes, processIdToKill) {
                     let childProcesses = processes.filter(process => {
@@ -366,19 +357,18 @@ export class Console extends Runner {
                     process.kill(processIdToKill);
                 }
 
-                this.processesToKill.forEach(pid => {
-                    killProcessesRecursively(processes, pid);
+                this.asyncProcesses.forEach(asyncProcess => {
+                    killProcessesRecursively(processes, asyncProcess.pid);
                 });
             }).then(() => {
                 //Check if there are still running processes on the given ports
-                this.portsToShutdown.forEach(p => {
-                    let port = parseInt(p["port"]);
-                    findProcess("port", port).then((list) => {
-                        if(list.length > 0) {
-                            list.forEach(listElement => {
-                                if(listElement.name == p["name"] || listElement.name == p["name"] + ".exe") {
-                                    console.log("kill process: ", listElement.pid);
-                                    process.kill(listElement.pid);
+                this.asyncProcesses.forEach(asyncProcess => {
+                    findProcess("port", asyncProcess.port).then((processes) => {
+                        if(processes.length > 0) {
+                            processes.forEach(process => {
+                                if(process.name == asyncProcess.name || process.name == asyncProcess.name + ".exe") {
+                                    console.log("kill process: ", process.pid)
+                                    process.kill(process.pid);
                                 }
                             });
                         }
