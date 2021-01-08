@@ -153,7 +153,6 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        console.log(projectPath);
 
         this.executeCommandSync("npm install", projectPath, result); // needed until npm integrated
         if(command.parameters.length == 2) {
@@ -273,7 +272,7 @@ export class Console extends Runner {
             if(outputdirectory == null) {
                 outputdirectory = "dist";
             }
-            console.log(outputdirectory);
+            
         }
         
         new Assertions()
