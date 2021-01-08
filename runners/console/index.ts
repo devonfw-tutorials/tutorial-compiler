@@ -155,6 +155,7 @@ export class Console extends Runner {
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
 
         this.executeCommandSync("npm install", projectPath, result); // needed until npm integrated
+        
         if(command.parameters.length == 2) {
             this.executeCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
         } else {
