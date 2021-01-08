@@ -9,7 +9,6 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
-const fkill = require('fkill');
 const findProcess = require("find-process");
 
 export class Console extends Runner {
