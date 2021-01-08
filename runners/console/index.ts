@@ -322,7 +322,6 @@ export class Console extends Runner {
         for(var key in obj) {
             
             if(key == lookupkey) {
-                console.log("key: " + key + ", value: " + obj[key]);
                 return [lookupkey, obj[key]];
             }
             if(obj[key] instanceof Object) {
