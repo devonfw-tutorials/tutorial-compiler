@@ -190,7 +190,6 @@ export class Console extends Runner {
             if(installedTools[i] == "mvn") installedTools[i] = "maven";
             if(installedTools[i] == "ng") {
                 installedTools[i] = path.join("node");
-                assert.fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "node", "ng"));
             } 
             assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
         }
