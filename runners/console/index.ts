@@ -270,7 +270,7 @@ export class Console extends Runner {
 
         if(command.parameters.length > 1) {
             if(!command.parameters[1].startupTime) {
-                console.log("No startup time for command runServerJava has been set")
+                console.warn("No startup time for command runServerJava has been set")
             }
             let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
             await this.sleep(command.parameters[1].startupTime);
@@ -282,7 +282,7 @@ export class Console extends Runner {
                 let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
                 if(!isReachable) {
                     this.killAsyncProcesses();
-                    throw new Error("the server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                    throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
                 }
             }
         }
