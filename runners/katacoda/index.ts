@@ -280,7 +280,7 @@ export class Katacoda extends Runner {
     }
 
     private changeCurrentDir(targetDir:string, terminalId?: number, isRunning?: boolean):string{
-        if((!terminalId && this.currentDir == targetDir || isRunning)){
+        if(!terminalId && this.currentDir == targetDir || isRunning){
             return "";
         }
         let dirUtils = new DirUtils();

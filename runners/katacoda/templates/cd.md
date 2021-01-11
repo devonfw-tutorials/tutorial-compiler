@@ -1,1 +1,3 @@
-<%= terminalDescr; %> cd <%= dir; %>{{execute <%= terminal; %>}}
+<%= terminalDescr; %>
+
+`cd <%= dir; %>`{{execute <%= terminal; %>}}
