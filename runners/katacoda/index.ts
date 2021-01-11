@@ -4,7 +4,7 @@ import { Playbook } from "../../engine/playbook";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
-import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
+import { KatacodaStep, KatacodaSetupScript, KatacodaTerminals } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
 import { DirUtils } from "./dirUtils";
 import * as path from 'path';
@@ -23,7 +23,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = "/root";
     private terminalCounter: number = 1;
-    private terminals = [{function: "default", terminalId: 1}];
+    private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist

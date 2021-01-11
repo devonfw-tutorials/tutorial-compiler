@@ -2,7 +2,7 @@
 
 <%= cdCommand; %>
  
-Use the following devon command to build the java project.
+Use the following command to build the java project.
 
 `mvn clean install <%= skipTest; %>`{{execute}}
 
