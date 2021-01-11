@@ -269,14 +269,21 @@ export class Console extends Runner {
         .noException(result);
 
         if(command.parameters.length > 1) {
-            if(command.parameters[1].startupTime) {
-                await this.sleep(command.parameters[1].startupTime);
+            if(!command.parameters[1].startupTime) {
+                console.log("No startup time for command runServerJava has been set")
             }
+            let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+            await this.sleep(command.parameters[1].startupTime);
 
-            let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
-            if(!isReachable) {
+            if(!command.parameters[1].port || !command.parameters[1].path) {
                 this.killAsyncProcesses();
-                throw new Error("the server is not reachable: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
+            } else {
+                let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                if(!isReachable) {
+                    this.killAsyncProcesses();
+                    throw new Error("the server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                }
             }
         }
     }
