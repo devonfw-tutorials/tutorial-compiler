@@ -57,6 +57,14 @@ export class Console extends Runner {
         return this.runInstallDevonfwIde(step, command);
     }
 
+    runRestoreWorkspace(step: Step, command: Command): RunResult {
+        let result = this.runInstallDevonfwIde(step, command);
+        let workspacesDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces");
+        this.executeCommandSync("rm -r " + workspacesDir, this.getWorkingDirectory(), result);
+        this.executeCommandSync("git clone --single-branch --branch " + command.parameters[2] + " https://github.com/denise-khuu/katacoda-scenario-workspaces.git " + workspacesDir, this.getWorkingDirectory(), result);
+        return result;
+    }
+
     runInstallCobiGen(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -177,6 +185,23 @@ export class Console extends Runner {
 
     async assertRestoreDevonfwIde(step: Step, command: Command, result: RunResult) {
        this.assertInstallDevonfwIde(step, command, result);
+    }
+
+    async assertRestoreWorkspace(step: Step, command: Command, result: RunResult) {
+        let installedTools = command.parameters[0];
+        let workspacesDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces");
+        let assert = new Assertions() 
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"))
+        .directoryExits(workspacesDir)
+        .directoryNotEmpty(workspacesDir)
+        .repositoryIsClean(workspacesDir);
+
+        for(let i = 0; i < installedTools.length; i++) {
+            if(installedTools[i] == "mvn") installedTools[i] = "maven";
+            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
+        }
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
