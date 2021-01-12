@@ -111,7 +111,7 @@ export class Katacoda extends Runner {
             "script": "restoreDevonfwIde.sh"
         });
 
-        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n cd devonfw \n . ~/.bashrc \n");
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n.~/.bashrc\n");
         this.currentDir = path.join(this.currentDir, "devonfw");
 
         return null;
