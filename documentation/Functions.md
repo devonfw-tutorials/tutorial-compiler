@@ -6,7 +6,9 @@ The following functions are already implemented:
 * createDevon4jProject
 * buildJava
 * createFile
+* changeFile
 * cloneRepository
+* runServerJava
 
 ***
 
@@ -119,4 +121,17 @@ Repository will be cloned directly into the workspace directory.
 
 cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
 Repository will be cloned into a newly created subdirectory devonfw-forge.
+***
+
+### runServerJava
+#### parameter 
+1. Path to the server directory within the java project.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
 ***
