@@ -247,6 +247,17 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runNpmInstall(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));
+        
+        this.steps.push({
+            "title": "Install the dependencies",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
