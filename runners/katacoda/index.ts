@@ -4,7 +4,7 @@ import { Playbook } from "../../engine/playbook";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
-import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
+import { KatacodaStep, KatacodaSetupScript, KatacodaTerminals } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
 import { DirUtils } from "./dirUtils";
 import * as path from 'path';
@@ -22,6 +22,8 @@ export class Katacoda extends Runner {
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
     private currentDir: string = "/root";
+    private terminalCounter: number = 1;
+    private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -247,6 +249,19 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runRunServerJava(step: Step, command: Command): RunResult{
+        let serverDir = path.join("/root", command.parameters[0]);
+        let terminal = this.getTerminal('runServerJava');
+        let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
+        this.steps.push({
+            "title": "Start the java server",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId,  interrupt: terminal.isRunning});
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
@@ -264,19 +279,39 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string):string{
-        if(this.currentDir == targetDir){
+    private changeCurrentDir(targetDir:string, terminalId?: number, isRunning?: boolean):string{
+        if(!terminalId && this.currentDir == targetDir || isRunning){
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir = dirUtils.getCdParam(this.currentDir, targetDir);
-
-        this.currentDir = targetDir; 
+        let dir;
+        let terminal;
+        let terminalDescr;
+        if(terminalId){
+            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
+            terminal = "T" + terminalId;
+            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
+            
+        }else{
+            dir = dirUtils.getCdParam(this.currentDir, targetDir);
+            terminal = "";
+            terminalDescr = "Please change the folder to " + dir + ".";
+            this.currentDir = targetDir;
+        }
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
     }
 
+    private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{
+        let terminal = this.terminals.find( terminal => terminal.function === functionName)
+        if(terminal){
+            return {terminalId: terminal.terminalId, isRunning: true};
+        } 
+        this.terminalCounter++;
+        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
+        return {terminalId: this.terminalCounter, isRunning: false};
+    }
 
 }
