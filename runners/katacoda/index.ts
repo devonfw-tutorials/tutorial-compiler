@@ -290,7 +290,7 @@ export class Katacoda extends Runner {
         if(terminalId){
             dir = dirUtils.getCdParam(path.join("/root"), targetDir);
             terminal = "T" + terminalId;
-            terminalDescr = "\nClick on the cd command and you will change to " + dir + " in terminal " + terminalId + " .\n"; 
+            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
             
         }else{
             dir = dirUtils.getCdParam(this.currentDir, targetDir);
