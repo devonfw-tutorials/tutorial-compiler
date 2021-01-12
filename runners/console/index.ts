@@ -318,7 +318,6 @@ export class Console extends Runner {
         .noException(result)
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
-
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
