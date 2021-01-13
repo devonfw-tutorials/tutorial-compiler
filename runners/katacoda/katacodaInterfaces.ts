@@ -13,6 +13,11 @@ export interface KatacodaSetupScript {
     script: string
 }
 
+export interface KatacodaTerminals {
+    function: string;
+    terminalId: number;
+}
+
 export interface AssetManagerData {
     sourcePath: string;
     targetPath: string;
