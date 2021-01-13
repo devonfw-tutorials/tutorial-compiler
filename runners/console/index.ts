@@ -321,8 +321,8 @@ export class Console extends Runner {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(outputdirectory)
-        .directoryNotEmpty(outputdirectory);
+        .directoryExits(path.join(outputdirectory))
+        .directoryNotEmpty(path.join(outputdirectory));
     }
   
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
