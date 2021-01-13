@@ -316,13 +316,12 @@ export class Console extends Runner {
             }
             
         }
-        let outputdirectory = this.createFolder(path.join(projectPath, outputpath),true);
-        console.log("assert output: " + outputdirectory);
+    
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(outputdirectory))
-        .directoryNotEmpty(path.join(outputdirectory));
+        .directoryExits(path.join(projectPath, outputpath))
+        .directoryNotEmpty(path.join(projectPath, outputpath));
     }
   
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
