@@ -179,11 +179,8 @@ export class Console extends Runner {
                 outputpath = "dist";
             }
             outputdirectory = this.createFolder(path.join(projectPath, outputpath),true);
-            console.log("outputdirectory: " + outputdirectory);
-            console.log("angular project at: " + projectPath);
-            this.executeDevonCommandSync("ng build", projectPath, result);
+            this.executeDevonCommandSync("ng build --progress", projectPath, result);
             console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
-            console.log("outputdirectory exists: " + fs.existsSync(outputdirectory));
             console.log("outputdirectory subdirectories: " + fs.readdirSync(outputdirectory));
         }
 
