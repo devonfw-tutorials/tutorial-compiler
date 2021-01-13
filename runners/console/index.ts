@@ -168,19 +168,18 @@ export class Console extends Runner {
         // } else {
         //     this.executeDevonCommandSync("ng build", projectPath, result);
         // }
-        let outputdirectory = "";
-        if(command.parameters.length == 2  && command.parameters[1].trim()) {
-            outputdirectory = command.parameters[1].trim();
-            this.createFolder(path.join(projectPath, outputdirectory),true);
+        var outputdirectory;
+        if(command.parameters.length == 2  && command.parameters[1]) {
+            outputdirectory = this.createFolder(path.join(projectPath, command.parameters[1].trim()), true);
             this.executeDevonCommandSync("ng build --output-path " + outputdirectory, projectPath, result);
         } else {
             let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
-            outputdirectory = this.lookup(JSON.parse(content), "outputPath")[1];
-            if(outputdirectory == null) {
-                outputdirectory = "dist";
+            let outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+            if(outputpath == null) {
+                outputpath = "dist";
             }
-            let folder = this.createFolder(path.join(projectPath, outputdirectory),true);
-            console.log("outputdirectory: " + folder);
+            outputdirectory = this.createFolder(path.join(projectPath, outputpath),true);
+            console.log("outputdirectory: " + outputdirectory);
             console.log("angular project at: " + projectPath);
             this.executeDevonCommandSync("ng build", projectPath, result);
             console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
@@ -306,17 +305,18 @@ export class Console extends Runner {
 
     async assertBuildNg(step: Step, command: Command, result: RunResult) {
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        let outputdirectory = "";
-        if(command.parameters.length == 2 && command.parameters[1].trim()) {
-            outputdirectory = command.parameters[1].trim();
+        var outputpath;
+        if(command.parameters.length == 2) {
+            outputpath = command.parameters[1].trim();
         } else {
             let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
-            outputdirectory = this.lookup(JSON.parse(content), "outputPath")[1];
-            if(outputdirectory == null) {
-                outputdirectory = "dist";
+            outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+            if(outputpath == null) {
+                outputpath = "dist";
             }
             
         }
+        let outputdirectory = this.createFolder(path.join(projectPath, outputpath),true);
         
         new Assertions()
         .noErrorCode(result)
