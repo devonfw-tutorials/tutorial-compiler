@@ -163,12 +163,26 @@ export class Console extends Runner {
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
 
         this.executeDevonCommandSync("npm install", projectPath, result); // needed until npm integrated
-
-        if(command.parameters.length == 2 && command.parameters[1].trim()) {
+        // if(command.parameters.length == 2 && command.parameters[1].trim()) {
+        //     this.executeDevonCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
+        // } else {
+        //     this.executeDevonCommandSync("ng build", projectPath, result);
+        // }
+        let outputdirectory = "";
+        if(command.parameters.length == 2  && command.parameters[1].trim()) {
+            outputdirectory = command.parameters[1];
+            this.createFolder(path.join(projectPath, outputdirectory),true);
             this.executeDevonCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
         } else {
+            let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+            outputdirectory = this.lookup(JSON.parse(content), "outputPath")[1];
+            if(outputdirectory == null) {
+                outputdirectory = "dist";
+            }
+            this.createFolder(path.join(projectPath, outputdirectory),true);
             this.executeDevonCommandSync("ng build", projectPath, result);
         }
+
       
         return result;
     }
