@@ -2,12 +2,8 @@
 
 <%= cdCommand; %>
  
-Navigate to the directory of the angular project. 
+Run ng build command to build the Angular Project to the output directory specified in the angular.json.
 
-`cd <%= projectPath %>`{{execute}}
-
-Run ng build command to build the Angular Project to a output directory dist/ in the project directory.
-
-`ng build <%= projectName; %>`{{execute}}
+`ng build`{{execute}}
 
 <%= textAfter; %>
