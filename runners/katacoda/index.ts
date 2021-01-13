@@ -4,7 +4,7 @@ import { Playbook } from "../../engine/playbook";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { KatacodaTools } from "./katacodaTools";
-import { KatacodaStep, KatacodaSetupScript } from "./katacodaInterfaces";
+import { KatacodaStep, KatacodaSetupScript, KatacodaTerminals } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
 import { DirUtils } from "./dirUtils";
 import * as path from 'path';
@@ -22,6 +22,8 @@ export class Katacoda extends Runner {
     private assetManager: KatacodaAssetManager;
     private setupDir: string;
     private currentDir: string = "/root";
+    private terminalCounter: number = 1;
+    private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -69,7 +71,6 @@ export class Katacoda extends Runner {
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir("/root");     
-
         let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
@@ -90,6 +91,28 @@ export class Katacoda extends Runner {
         //update current directory
         this.currentDir = path.join(this.currentDir, "devonfw");
         
+        return null;
+    }
+
+    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
+        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+
+        // create script to download devonfw ide settings.
+        this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
+        this.renderTemplate(path.join("scripts", "restoreDevonfwIde.sh"), path.join(this.setupDir, "restoreDevonfwIde.sh"), {});
+
+        // add the script to the setup scripts for executing it at the beginning of the tutorial
+        this.setupScripts.push({
+            "name": "Clone devonfw IDE settings",
+            "script": "cloneDevonfwIdeSettings.sh"
+        });
+        this.setupScripts.push({
+            "name": "Restore Devonfw IDE",
+            "script": "restoreDevonfwIde.sh"
+        });
+
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n . ~/.bashrc \n");
+
         return null;
     }
 
@@ -209,6 +232,7 @@ export class Katacoda extends Runner {
 
     }
 
+
     runBuildNg(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));
 
@@ -218,6 +242,40 @@ export class Katacoda extends Runner {
         });
 
         this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+
+        return null;
+    }
+  
+    runCloneRepository(step: Step, command: Command): RunResult {
+
+        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
+        let directoryPath = "";
+        if(command.parameters[0].trim()) {
+            directoryPath = path.join(command.parameters[0]).replace(/\\/g, "/");
+            this.currentDir = path.join(this.currentDir, directoryPath);
+        }
+        
+
+        this.steps.push({
+            "title": "Clones Repository " + command.parameters[1],
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1] });
+        return null;
+    }
+
+    runRunServerJava(step: Step, command: Command): RunResult{
+        let serverDir = path.join("/root", command.parameters[0]);
+        let terminal = this.getTerminal('runServerJava');
+        let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
+        this.steps.push({
+            "title": "Start the java server",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        
+        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId,  interrupt: terminal.isRunning});
+
         return null;
     }
 
@@ -238,19 +296,39 @@ export class Katacoda extends Runner {
         this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
     }
 
-    private changeCurrentDir(targetDir:string):string{
-        if(this.currentDir == targetDir){
+    private changeCurrentDir(targetDir:string, terminalId?: number, isRunning?: boolean):string{
+        if(!terminalId && this.currentDir == targetDir || isRunning){
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir = dirUtils.getCdParam(this.currentDir, targetDir);
-
-        this.currentDir = targetDir; 
+        let dir;
+        let terminal;
+        let terminalDescr;
+        if(terminalId){
+            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
+            terminal = "T" + terminalId;
+            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
+            
+        }else{
+            dir = dirUtils.getCdParam(this.currentDir, targetDir);
+            terminal = "";
+            terminalDescr = "Please change the folder to " + dir + ".";
+            this.currentDir = targetDir;
+        }
 
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
     }
 
+    private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{
+        let terminal = this.terminals.find( terminal => terminal.function === functionName)
+        if(terminal){
+            return {terminalId: terminal.terminalId, isRunning: true};
+        } 
+        this.terminalCounter++;
+        this.terminals.push({function: functionName, terminalId: this.terminalCounter});
+        return {terminalId: this.terminalCounter, isRunning: false};
+    }
 
 }

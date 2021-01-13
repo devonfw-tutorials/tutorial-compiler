@@ -1,11 +1,15 @@
 ## Functions 
 The following functions are already implemented:
-* installDevonIde
+* installDevonfwIde
+* restoreDevonfwIde
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
 * buildJava
 * createFile
+* changeFile
+* cloneRepository
+* runServerJava
 
 ***
 
@@ -16,6 +20,16 @@ The following functions are already implemented:
 #### example
 installDevonfwIde(["java","mvn"], "2020.08.001")
 
+***
+
+### restoreDevonfwIde
+#### parameter
+1. The tools you want to install within the devonfw ide: string array
+2. Optional: The version of the ide to install
+#### example
+restoreDevonfwIde(["java","mvn"], "2020.08.001")
+#### details 
+In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
 ***
 
 ### installCobiGen
@@ -95,4 +109,30 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
+
+***
+
+### cloneRepository
+#### parameter 
+1. Path into which the repository is to be cloned, relative to workspace.
+2. Git repository URL
+#### example 
+cloneRepository("", "https://github.com/devonfw-forge/tutorial-compiler.git")
+Repository will be cloned directly into the workspace directory.
+
+cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory devonfw-forge.
+***
+
+### runServerJava
+#### parameter 
+1. Path to the server directory within the java project.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
 ***
