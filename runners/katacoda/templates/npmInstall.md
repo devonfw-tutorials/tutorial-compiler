@@ -4,7 +4,7 @@
 
 Install the dependencies from the package.json file.
 
-`devon npm install`{{execute}}
+`npm install`{{execute}}
 
 This may take some time.
 

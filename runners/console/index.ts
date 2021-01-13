@@ -190,7 +190,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        this.executeDevonCommandSync("npm install", projectPath, result);
+        this.executeCommandSync("npm install", projectPath, result);
 
         return result;
     }
