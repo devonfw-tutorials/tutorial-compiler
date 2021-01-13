@@ -2,7 +2,7 @@
 
 <%= cdCommand; %>
 
-Install the dependencies from the angular.json file.
+Install the dependencies from the package.json file.
 
 `devon npm install`{{execute}}
 

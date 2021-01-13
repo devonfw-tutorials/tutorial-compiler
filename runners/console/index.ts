@@ -15,6 +15,7 @@ export class Console extends Runner {
 
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
+    private mapIdeTools: Map<String, String> = new Map();
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -22,6 +23,10 @@ export class Console extends Runner {
         } else {
             this.platform = ConsolePlatform.LINUX;
         }
+
+        this.mapIdeTools.set("mvn", "maven")
+        .set("npm", "node")
+        .set("ng", "node");
     }
 
     destroy(playbook: Playbook): void {
@@ -200,9 +205,8 @@ export class Console extends Runner {
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
 
         for(let i = 0; i < installedTools.length; i++) {
-            if(installedTools[i] == "mvn") installedTools[i] = "maven";
-            if(installedTools[i] == "npm") installedTools[i] = "node";
-            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
+            let tool = this.mapIdeTools.get(installedTools[i]) != undefined ? this.mapIdeTools.get(installedTools[i]) : installedTools[i];
+            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
         }
     }
 

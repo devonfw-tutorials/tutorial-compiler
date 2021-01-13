@@ -142,7 +142,7 @@ path: The URL path on which is checked if the server is running
 
 ### npmInstall
 #### parameter 
-1. Path to the project where the dependencies from the angular.json file are to be installed.
+1. Path to the project where the dependencies from the package.json file are to be installed.
 #### example 
 npmInstall("my-thai-star/angular")
 
