@@ -90,6 +90,7 @@ export class Katacoda extends Runner {
         
         //update current directory
         this.currentDir = path.join(this.currentDir, "devonfw");
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\nexport NG_CLI_ANALYTICS=CI");
         
         return null;
     }
@@ -111,7 +112,7 @@ export class Katacoda extends Runner {
             "script": "restoreDevonfwIde.sh"
         });
 
-        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n . ~/.bashrc \n");
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
 
         return null;
     }
