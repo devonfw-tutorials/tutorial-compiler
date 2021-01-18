@@ -17,6 +17,8 @@ export class Console extends Runner {
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
+    private useDevonCommand: boolean = false;
+    private workingDir: string;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -33,6 +35,8 @@ export class Console extends Runner {
         if(fs.existsSync(path.join(homedir, ".devon"))) {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
+
+        this.workingDir = this.getWorkingDirectory();
     }
 
     destroy(playbook: Playbook): void {
@@ -74,7 +78,11 @@ export class Console extends Runner {
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+
         }
+
+        this.workingDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        this.useDevonCommand = true;
 
         return result;
     }
@@ -107,8 +115,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        let filepath = path.join(workspaceDir, command.parameters[0]);
+        let filepath = path.join(this.workingDir, command.parameters[0]);
         if(!fs.existsSync(filepath.substr(0, filepath.lastIndexOf(path.sep)))) {
             fs.mkdirSync(filepath.substr(0, filepath.lastIndexOf(path.sep)), { recursive: true });
         }
@@ -127,13 +134,18 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let projectDir = path.join(this.workingDir, command.parameters[0]);
+        let buildCommand;
         if(command.parameters.length == 2 && command.parameters[1] == true){
-            this.executeDevonCommandSync("mvn clean install", projectDir, result);
+            buildCommand = "mvn clean install";
         } else {
-            this.executeDevonCommandSync("mvn clean install -Dmaven.test.skip=true", projectDir, result);
+            buildCommand = "mvn clean install -Dmaven.test.skip=true";
         }
-
+        if(this.useDevonCommand){
+            this.executeDevonCommandSync(buildCommand, projectDir, result);
+        } else {
+            this.executeCommandSync(buildCommand, projectDir, result);
+        }
         return result;
     }
 
@@ -151,8 +163,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        let filepath = path.join(workspaceDir, command.parameters[0]);
+        let filepath = path.join(this.workingDir, command.parameters[0]);
 
         if(command.parameters[1].placeholder) {
             let content = fs.readFileSync(filepath, { encoding: "utf-8" });
@@ -178,9 +189,13 @@ export class Console extends Runner {
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
-        let serverDir = path.join(this.getWorkingDirectory(), command.parameters[0]);
-        let process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
+        let process;
+        let serverDir = path.join(this.workingDir, command.parameters[0]);
+        if(this.useDevonCommand){
+            process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
+        }else{
+            process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
+        }
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
         }
@@ -192,7 +207,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let directorypath = path.join(this.workingDir, command.parameters[0]);
         if(command.parameters[0] != "") {
             this.createFolder(directorypath, true);
         }
@@ -205,7 +220,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let projectPath = path.join(this.workingDir, command.parameters[0]);
         this.executeCommandSync("npm install", projectPath, result);
 
         return result;
@@ -240,14 +255,13 @@ export class Console extends Runner {
     }
 
     async assertBuildJava(step: Step, command: Command, result: RunResult) {
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
 
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "target"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "target"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "target"));
+        .directoryExits(path.join(this.workingDir, command.parameters[0], "api", "target"))
+        .directoryExits(path.join(this.workingDir, command.parameters[0], "core", "target"))
+        .directoryExits(path.join(this.workingDir, command.parameters[0], "server", "target"));
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
@@ -274,7 +288,7 @@ export class Console extends Runner {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        .fileExits(path.join(this.workingDir, command.parameters[0]));
     }
 
     async assertChangeFile(step: Step, command: Command, result: RunResult) {
@@ -286,7 +300,7 @@ export class Console extends Runner {
             content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
         }
 
-        let filepath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let filepath = path.join(this.workingDir, command.parameters[0]);
         new Assertions()
         .noErrorCode(result)
         .noException(result)
@@ -322,13 +336,13 @@ export class Console extends Runner {
     async assertCloneRepository(step: Step, command: Command, result: RunResult) {
         let repository = command.parameters[1];
         let repoName = repository.slice(repository.lastIndexOf("/"), -4);
-        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
+        let directorypath = path.join(this.workingDir, command.parameters[0], repoName);
         
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
-        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+        .directoryExits(path.join(this.workingDir, command.parameters[0], repoName))
+        .directoryNotEmpty(path.join(this.workingDir, command.parameters[0], repoName))
         .repositoryIsClean(directorypath);
     }
 
@@ -336,8 +350,8 @@ export class Console extends Runner {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
+        .directoryExits(path.join(this.workingDir, command.parameters[0]))
+        .directoryExits(path.join(this.workingDir, command.parameters[0], "node_modules"));
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
