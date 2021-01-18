@@ -78,7 +78,6 @@ export class Console extends Runner {
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
-
         }
 
         this.workingDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
@@ -164,7 +163,6 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let filepath = path.join(this.workingDir, command.parameters[0]);
-
         if(command.parameters[1].placeholder) {
             let content = fs.readFileSync(filepath, { encoding: "utf-8" });
             let placeholder = command.parameters[1].placeholder;
@@ -189,6 +187,7 @@ export class Console extends Runner {
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
+        
         let process;
         let serverDir = path.join(this.workingDir, command.parameters[0]);
         if(this.useDevonCommand){
