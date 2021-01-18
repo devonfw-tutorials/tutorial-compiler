@@ -222,9 +222,9 @@ export class Console extends Runner {
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
         if(process.pid) {
-            process.stdout.on("data", (data) => {
-                console.log(data);
-            })
+            process.stdout.on('data', (data) => {
+                console.log("stdout: " + data);
+            });
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
