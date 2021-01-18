@@ -219,6 +219,9 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        this.executeCommandSync("npm config list -l", this.getWorkingDirectory(), result);
+        this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
+
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
         if(process.pid) {
@@ -413,6 +416,7 @@ export class Console extends Runner {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
+        console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
