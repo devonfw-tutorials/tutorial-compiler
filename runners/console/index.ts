@@ -17,7 +17,6 @@ export class Console extends Runner {
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
-    private useDevonCommand: boolean = false;
     private workingDir: string;
 
     init(playbook: Playbook): void {
@@ -220,7 +219,12 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.workingDir, command.parameters[0]);
-        this.executeCommandSync("npm install", projectPath, result);
+
+        if(this.useDevonCommand){
+            this.executeDevonCommandSync("npm install", projectPath, result);
+        }else{
+            this.executeCommandSync("npm install", projectPath, result);
+        }
 
         return result;
     }
