@@ -4,7 +4,7 @@
 
 Install the dependencies from the package.json file.
 
-`npm install`{{execute}}
+`<% if(useDevonCommand){ %>devon<% } %> npm install`{{execute}}
 
 This may take some time.
 

@@ -13,6 +13,7 @@ export abstract class Runner {
     public playbookName: string;
     public playbookPath: string;
     public playbookTitle: string;
+    protected useDevonCommand: boolean = false; 
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {

@@ -25,7 +25,6 @@ export class Katacoda extends Runner {
     private workingDir: string = path.join("/root");
     private terminalCounter: number = 1;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
-    private useDevonCommand: boolean = false; 
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -276,7 +275,7 @@ export class Katacoda extends Runner {
             "title": "Install the dependencies",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.useDevonCommand });
         return null;
     }
 
