@@ -189,8 +189,6 @@ export class Katacoda extends Runner {
 
     runChangeFile(step: Step, command: Command): RunResult{
         let workspaceDir = path.join(path.normalize(this.workingDir.concat(path.sep).replace(path.sep + "root" + path.sep, "")));
-        console.log(workspaceDir);
-        console.log(this.workingDir);
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
         let content = "";
