@@ -220,8 +220,11 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        let process = this.executeDevonCommandAsync("ng serve --host 0.0.0.0 --disable-host-check ", projectDir, result);
+        let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
         if(process.pid) {
+            process.stdout.on("data", (data) => {
+                console.log(data);
+            })
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
