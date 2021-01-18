@@ -36,6 +36,10 @@ export class Console extends Runner {
     }
 
     destroy(playbook: Playbook): void {
+        this.cleanUp();
+    }
+
+    cleanUp(): void {
         this.killAsyncProcesses();
 
         let homedir = os.homedir();
@@ -211,18 +215,36 @@ export class Console extends Runner {
         return result;
     }
 
+    runRunClientNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let process = this.executeDevonCommandAsync("ng serve --host 0.0.0.0 --disable-host-check ", projectDir, result);
+        if(process.pid) {
+            this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
+        }
+
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
-        let installedTools = command.parameters[0];
+        try {
+            let installedTools = command.parameters[0];
 
-        let assert = new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"))
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software"))
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
 
-        for(let i = 0; i < installedTools.length; i++) {
-            let tool = this.mapIdeTools.get(installedTools[i]) != undefined ? this.mapIdeTools.get(installedTools[i]) : installedTools[i];
-            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
+            for(let i = 0; i < installedTools.length; i++) {
+                let tool = this.mapIdeTools.get(installedTools[i]) != undefined ? this.mapIdeTools.get(installedTools[i]) : installedTools[i];
+                assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
+            }
+        } catch (error) {
+            this.cleanUp();
+            throw error;
         }
     }
 
@@ -231,113 +253,157 @@ export class Console extends Runner {
     }
 
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
-        let assert = new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertBuildJava(step: Step, command: Command, result: RunResult) {
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        try {
+            let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
 
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "target"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "target"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "target"));
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "target"))
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "target"))
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "target"));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
-        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        try {
+            let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
 
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(workspaceDir, command.parameters[0]))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "src", "main", "java"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java"))
-        .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
-        .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(workspaceDir, command.parameters[0]))
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
+            .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertCreateFile(step: Step, command: Command, result: RunResult) {
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertChangeFile(step: Step, command: Command, result: RunResult) {
-        
-        let content = "";
-        if(command.parameters[1].content) {
-            content = command.parameters[1].content;
-        } else if (command.parameters[1].file) {
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
-        }
+        try {
+            let content = "";
+            if(command.parameters[1].content) {
+                content = command.parameters[1].content;
+            } else if (command.parameters[1].file) {
+                content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+            }
 
-        let filepath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .fileExits(filepath)
-        .fileContains(filepath, content);
+            let filepath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(filepath)
+            .fileContains(filepath, content);
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
-        let assert = new Assertions()
-        .noErrorCode(result)
-        .noException(result);
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
 
-        if(command.parameters.length > 1) {
-            if(!command.parameters[1].startupTime) {
-                console.warn("No startup time for command runServerJava has been set")
+            if(command.parameters.length > 0) {
+                await assert.serverIsReachable(command.name, command.parameters[1]);
             }
-            let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
-            await this.sleep(command.parameters[1].startupTime);
-
-            if(!command.parameters[1].port || !command.parameters[1].path) {
-                this.killAsyncProcesses();
-                throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
-            } else {
-                let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
-                if(!isReachable) {
-                    this.killAsyncProcesses();
-                    throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
-                }
-            }
+        } catch (error) {
+            this.cleanUp();
+            throw error;
         }
     }
 
     async assertCloneRepository(step: Step, command: Command, result: RunResult) {
-        let repository = command.parameters[1];
-        let repoName = repository.slice(repository.lastIndexOf("/"), -4);
-        let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
-        
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
-        .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
-        .repositoryIsClean(directorypath);
+        try {
+            let repository = command.parameters[1];
+            let repoName = repository.slice(repository.lastIndexOf("/"), -4);
+            let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName);
+            
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+            .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], repoName))
+            .repositoryIsClean(directorypath);
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertNpmInstall(step: Step, command: Command, result: RunResult) {
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertRunClientNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(command.parameters.length > 0) {
+                await assert.serverIsReachable(command.name, command.parameters[1]);
+            }
+        } catch (error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
@@ -369,10 +435,6 @@ export class Console extends Runner {
     private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult): child_process.ChildProcess {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
         return this.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result);
-    }
-
-    private sleep(seconds: number) {
-        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
     private killAsyncProcesses() {

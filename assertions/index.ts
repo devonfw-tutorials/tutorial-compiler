@@ -43,8 +43,9 @@ export class Assertions {
         return this;
     }
 
-    public serverIsReachable(port: number, path: string): Promise<boolean> {
-        return ServerIsReachable.run(port, path);
+    public async serverIsReachable(command: string, assertionDetails: any) {
+        await ServerIsReachable.run(command, assertionDetails);
+        return this;
     }
 
     public repositoryIsClean(directory: string): Assertions {
