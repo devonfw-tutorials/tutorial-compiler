@@ -432,9 +432,6 @@ export class Console extends Runner {
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            command = "powershell.exe " + command;
-        }
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
         console.log(process.stdout.toString());
         if(process.status != 0) {
@@ -452,9 +449,6 @@ export class Console extends Runner {
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            command = "powershell.exe " + command;
-        }
         let process = child_process.spawn(command, [], { shell: true, cwd: directory });
         if(!process.pid) {
             result.returnCode = 1;
