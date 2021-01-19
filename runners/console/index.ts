@@ -221,6 +221,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        this.executeDevonCommandSync("npm config delete prefix", this.getWorkingDirectory(), result);
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
         this.executeDevonCommandSync("npm config set prefix '" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "'", this.getWorkingDirectory(), result);
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
