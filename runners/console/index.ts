@@ -82,9 +82,9 @@ export class Console extends Runner {
         }
 
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("dir /s " + path.join(this.getWorkingDirectory(), "devonfw", "software"), path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
+            this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
         }
 
         return result;
