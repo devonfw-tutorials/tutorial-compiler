@@ -58,7 +58,7 @@ export class Console extends Runner {
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
-        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ").replace("ng", "") + ")";
+        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
         //fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
@@ -81,11 +81,9 @@ export class Console extends Runner {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
-
-        if(command.parameters[0].indexOf("ng") >= 0) {
-            this.executeDevonCommandSync(" && devon ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        }       
+     
         if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
             this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
             //this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
