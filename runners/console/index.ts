@@ -55,7 +55,9 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        this.executeCommandSync("npm", path.join(this.getWorkingDirectory()), result);
+        this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
+        this.executeCommandSync("npm config set prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
+        this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
