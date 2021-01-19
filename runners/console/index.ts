@@ -225,7 +225,7 @@ export class Console extends Runner {
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        let process = this.executeDevonCommandAsync("&& ng serve", projectDir, result);
+        let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
         if(process.pid) { 
             process.stdout.on('data', (data) => {
                 console.log("stdout: " + data);
@@ -428,6 +428,9 @@ export class Console extends Runner {
 
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
+        if(this.platform = ConsolePlatform.WINDOWS) {
+            devonCommand = " && " + devonCommand;
+        }
         this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
     }
 
@@ -444,6 +447,9 @@ export class Console extends Runner {
 
     private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult): child_process.ChildProcess {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
+        if(this.platform = ConsolePlatform.WINDOWS) {
+            devonCommand = " && " + devonCommand;
+        }
         return this.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result);
     }
 
