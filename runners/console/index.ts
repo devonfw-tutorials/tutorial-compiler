@@ -55,20 +55,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            //this.executeCommandSync("dir /s " + path.join("C:", "Users", "runneradmin"), path.join(this.getWorkingDirectory()), result);
-            //this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
-            //this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
-        }
-        this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
-
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix='" + pathToNode + "'\nnunsafe-perm=true");
+        fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\W" + pathToNode + "\"\nnunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
         
@@ -91,8 +84,7 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("dir /s " + path.join(this.getWorkingDirectory(), "devonfw", "software"), path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
-            //this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
-            //this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
+            this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
         }
 
         return result;
