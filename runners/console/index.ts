@@ -88,6 +88,13 @@ export class Console extends Runner {
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("dir /s " + path.join(this.getWorkingDirectory(), "devonfw", "software"), path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
+            //this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
+            //this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
+        }
+
         return result;
     }
 
