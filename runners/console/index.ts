@@ -24,6 +24,7 @@ export class Console extends Runner {
         } else {
             this.platform = ConsolePlatform.LINUX;
         }
+        console.log(this.platform, process.platform);
 
         this.mapIdeTools.set("mvn", "maven")
         .set("npm", "node")
