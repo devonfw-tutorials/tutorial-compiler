@@ -61,7 +61,7 @@ export class Console extends Runner {
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\W" + pathToNode + "\"\nnunsafe-perm=true");
+        fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
         
