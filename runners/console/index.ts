@@ -83,7 +83,7 @@ export class Console extends Runner {
         }
 
         if(command.parameters[0].indexOf("ng") >= 0) {
-            this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeDevonCommandSync(" && devon ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
         }       
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
