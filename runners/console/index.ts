@@ -55,7 +55,6 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        this.executeCommandSync("dir /s " + path.join("C:", "npm"), path.join(this.getWorkingDirectory()), result);
         this.executeCommandSync("npm", path.join(this.getWorkingDirectory()), result);
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
