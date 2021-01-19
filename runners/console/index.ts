@@ -56,8 +56,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("dir /s " + path.join("C:", "Users", "runneradmin"), path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("cat " + path.join("C:", "Users", "runneradmin", ".npmrc"), path.join(this.getWorkingDirectory()), result);
+            //this.executeCommandSync("dir /s " + path.join("C:", "Users", "runneradmin"), path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
+            this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
         }
         this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
 
