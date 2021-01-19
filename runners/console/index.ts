@@ -222,7 +222,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
-        this.executeDevonCommandSync("devon npm config set prefix '" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "'", this.getWorkingDirectory(), result);
+        this.executeDevonCommandSync("npm config set prefix '" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "'", this.getWorkingDirectory(), result);
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
