@@ -57,8 +57,8 @@ export class Console extends Runner {
 
         if(this.platform == ConsolePlatform.WINDOWS) {
             //this.executeCommandSync("dir /s " + path.join("C:", "Users", "runneradmin"), path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
-            this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
+            //this.executeCommandSync("echo prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\" > .npmrc", path.join("C:", "Users", "runneradmin"), result);
+            //this.executeCommandSync("more .npmrc", path.join("C:", "Users", "runneradmin"), result);
         }
         this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
 
@@ -68,7 +68,6 @@ export class Console extends Runner {
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        console.log("pathToNode: " + pathToNode);
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix='" + pathToNode + "'\nnunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
@@ -426,6 +425,9 @@ export class Console extends Runner {
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            command = "powershell.exe " + command;
+        }
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
         console.log(process.stdout.toString());
         if(process.status != 0) {
@@ -443,6 +445,9 @@ export class Console extends Runner {
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            command = "powershell.exe " + command;
+        }
         let process = child_process.spawn(command, [], { shell: true, cwd: directory });
         if(!process.pid) {
             result.returnCode = 1;
