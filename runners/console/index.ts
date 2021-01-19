@@ -225,7 +225,7 @@ export class Console extends Runner {
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        let process = this.executeDevonCommandAsync(" && ng serve", projectDir, result);
+        let process = this.executeDevonCommandAsync("&& ng serve", projectDir, result);
         if(process.pid) { 
             process.stdout.on('data', (data) => {
                 console.log("stdout: " + data);
@@ -434,6 +434,7 @@ export class Console extends Runner {
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
+        console.log("command async:" + command);
         let process = child_process.spawn(command, [], { shell: true, cwd: directory });
         if(!process.pid) {
             result.returnCode = 1;

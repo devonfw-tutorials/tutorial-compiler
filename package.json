@@ -5,9 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "@types/node": "^14.14.2",
+    "config": "^3.3.3",
     "ejs": "^3.1.5",
     "find-process": "^1.4.4",
     "is-reachable": "^5.0.0",
+    "list": "^2.0.19",
     "pegjs": "^0.10.0",
     "ps-list": "^7.2.0",
     "rimraf": "^3.0.2",
