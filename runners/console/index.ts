@@ -24,7 +24,6 @@ export class Console extends Runner {
         } else {
             this.platform = ConsolePlatform.LINUX;
         }
-        console.log(this.platform, process.platform);
 
         this.mapIdeTools.set("mvn", "maven")
         .set("npm", "node")
@@ -222,7 +221,8 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        this.executeCommandSync("npm config list -l", this.getWorkingDirectory(), result);
+        this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
+        this.executeDevonCommandSync("devon npm config set prefix '" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "'", this.getWorkingDirectory(), result);
         this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
@@ -429,16 +429,12 @@ export class Console extends Runner {
 
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        if(this.platform = ConsolePlatform.WINDOWS) {
-            devonCommand = " && " + devonCommand;
-        }
         this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
     }
 
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
-        console.log("command async:" + command);
         let process = child_process.spawn(command, [], { shell: true, cwd: directory });
         if(!process.pid) {
             result.returnCode = 1;
@@ -448,9 +444,6 @@ export class Console extends Runner {
 
     private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult): child_process.ChildProcess {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        if(this.platform = ConsolePlatform.WINDOWS) {
-            devonCommand = " && " + devonCommand;
-        }
         return this.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result);
     }
 
