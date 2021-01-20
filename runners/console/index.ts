@@ -93,7 +93,7 @@ export class Console extends Runner {
         }
      
         console.log("npm install");
-        this.executeDevonCommandSync("npm install -g @angular/cli", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        this.executeCommandSync("npm install -g @angular/cli", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
             this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
