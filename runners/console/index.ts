@@ -60,6 +60,7 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             env["npm_config_prefix"] = pathToNode;
             env["npm_config_cache"] = "";
+            env["Path"] = env["Path"].replace("C:\\npm\\prefix", "");
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
         }
         console.log(process.env);
