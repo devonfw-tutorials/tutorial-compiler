@@ -95,6 +95,8 @@ export class Console extends Runner {
      
         this.executeDevonCommandSync("npm config set userconfig " + path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm", ".npmrc"), path.join(this.getWorkingDirectory(), "devonfw"), result);
         this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        this.executeDevonCommandSync("node -v", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        this.executeDevonCommandSync("npm -v", path.join(this.getWorkingDirectory(), "devonfw"), result);
         console.log("npm install");
         this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
@@ -452,7 +454,7 @@ export class Console extends Runner {
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawn(command, [], { shell: true, cwd: directory });
+        let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: this.env });
         if(!process.pid) {
             result.returnCode = 1;
         }
