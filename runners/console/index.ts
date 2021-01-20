@@ -61,10 +61,8 @@ export class Console extends Runner {
             env["npm_config_prefix"] = pathToNode;
             env["npm_config_cache"] = "";
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
-            this.executeCommandSync("setx npm_config_prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result, "", env);
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
-            console.log(process.env);
         }
+        console.log(process.env);
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
