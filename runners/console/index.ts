@@ -10,11 +10,13 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
 const findProcess = require("find-process");
+const os = require("os");
 
 export class Console extends Runner {
 
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
+    private mapIdeTools: Map<String, String> = new Map();
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -22,10 +24,27 @@ export class Console extends Runner {
         } else {
             this.platform = ConsolePlatform.LINUX;
         }
+
+        this.mapIdeTools.set("mvn", "maven")
+        .set("npm", "node")
+        .set("ng", "node");
+
+        let homedir = os.homedir();
+        if(fs.existsSync(path.join(homedir, ".devon"))) {
+            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
+        }
     }
 
     destroy(playbook: Playbook): void {
         this.killAsyncProcesses();
+
+        let homedir = os.homedir();
+        if(fs.existsSync(path.join(homedir, ".devon"))) {
+            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
+        }
+        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
+            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
+        }
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
@@ -37,6 +56,7 @@ export class Console extends Runner {
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
+        fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
         
@@ -186,12 +206,23 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let directorypath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        
-        this.createFolder(directorypath, true);
+        if(command.parameters[0] != "") {
+            this.createFolder(directorypath, true);
+        }
         this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
 
         return result;
 
+    }
+
+    runNpmInstall(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        this.executeCommandSync("npm install", projectPath, result);
+
+        return result;
     }
 
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
@@ -204,8 +235,8 @@ export class Console extends Runner {
         .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
 
         for(let i = 0; i < installedTools.length; i++) {
-            if(installedTools[i] == "mvn") installedTools[i] = "maven";
-            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", installedTools[i]));
+            let tool = this.mapIdeTools.get(installedTools[i]) != undefined ? this.mapIdeTools.get(installedTools[i]) : installedTools[i];
+            assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
         }
     }
 
@@ -323,6 +354,14 @@ export class Console extends Runner {
 
     }
 
+    async assertNpmInstall(step: Step, command: Command, result: RunResult) {
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
@@ -335,15 +374,11 @@ export class Console extends Runner {
     }
 
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-            this.executeCommandSync(scriptsDir + "\\devon " + devonCommand, directory, result, input);
-        } else {
-            this.executeCommandSync("~/.devon/devon " + devonCommand, directory, result, input);
-        }
+        let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
+        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
     }
 
-    private executeCommandAsync(command: string, directory: string, result: RunResult, input?: string): child_process.ChildProcess {
+    private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawn(command, [], { shell: true, cwd: directory });
@@ -353,13 +388,9 @@ export class Console extends Runner {
         return process;
     }
 
-    private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult, input?: string): child_process.ChildProcess {
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-            return this.executeCommandAsync(scriptsDir + "\\devon " + devonCommand, directory, result, input);
-        } else {
-            return this.executeCommandAsync("~/.devon/devon " + devonCommand, directory, result, input);
-        }
+    private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult): child_process.ChildProcess {
+        let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
+        return this.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result);
     }
 
     private sleep(seconds: number) {

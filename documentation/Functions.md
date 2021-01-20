@@ -10,6 +10,7 @@ The following functions are already implemented:
 * changeFile
 * cloneRepository
 * runServerJava
+* npmInstall
 
 ***
 
@@ -122,6 +123,7 @@ Repository will be cloned directly into the workspace directory.
 
 cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
 Repository will be cloned into a newly created subdirectory devonfw-forge.
+
 ***
 
 ### runServerJava
@@ -135,4 +137,13 @@ runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "star
 startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
+
+***
+
+### npmInstall
+#### parameter 
+1. Path to the project where the dependencies from the package.json file are to be installed.
+#### example 
+npmInstall("my-thai-star/angular")
+
 ***

@@ -17,7 +17,7 @@ First you have do download and extract the installation files.
 
 `wget -c https://bit.ly/2BCkFa9 -O - | tar -xz`{{execute}}
 
-Now start the installation process. You have to specify a git repository where you can configure which tools will be installed within the IDE. The repository was already cloned by the setup script. It is located in the '/root/devonfw-settings' folder.
+Now start the installation process. The tools that are installed within the IDE can be configured in a settings repository. A repository that you can use has already been created by the setup script. It is located in the '/root/devonfw-settings' folder.
 
 `bash setup /root/devonfw-settings/settings.git`{{execute}}
 
