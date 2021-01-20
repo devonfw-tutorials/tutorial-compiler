@@ -57,7 +57,7 @@ export class Console extends Runner {
 
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("set npm_config_prefix=" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("setx npm_config_prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
         }
 
@@ -85,14 +85,14 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
-            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes", { "npm_config_prefix": pathToNode });
+            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
      
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes", { "npm_config_prefix": pathToNode });
-            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes", { "npm_config_prefix": pathToNode });
+            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
+            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
             this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
-            this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
+            //this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
             //this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
         }
