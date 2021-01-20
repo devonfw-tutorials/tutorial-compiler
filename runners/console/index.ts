@@ -182,26 +182,14 @@ export class Console extends Runner {
 
         let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
 
-        // if(command.parameters.length == 2 && command.parameters[1].trim()) {
-        //     this.executeDevonCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
-        // } else {
-        //     this.executeDevonCommandSync("ng build", projectPath, result);
-        // }
-        var outputdirectory;
-        if(command.parameters.length == 2  && command.parameters[1]) {
-            outputdirectory = this.createFolder(path.join(projectPath, command.parameters[1].trim()), true);
-            this.executeDevonCommandSync("ng build --output-path " + outputdirectory, projectPath, result);
+        if(command.parameters.length == 2) {
+            this.executeCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
         } else {
-            let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
-            let outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
-            if(outputpath == null) {
-                outputpath = "dist";
-            }
-            outputdirectory = this.createFolder(path.join(projectPath, outputpath),true);
-            this.executeDevonCommandSync("ng build --progress", projectPath, result);
-            console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
-            console.log("outputdirectory subdirectories: " + fs.readdirSync(outputdirectory));
+            this.executeCommandSync("ng build", projectPath, result);
         }
+        
+        console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
+        
 
         return result;
     }
