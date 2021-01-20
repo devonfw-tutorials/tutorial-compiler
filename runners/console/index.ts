@@ -57,7 +57,7 @@ export class Console extends Runner {
 
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("setx npm_config_prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\"", path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("setx npm_config_prefix=" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
             console.log(process.env);
         }
