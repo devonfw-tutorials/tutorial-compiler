@@ -95,9 +95,9 @@ export class Console extends Runner {
      
         this.executeDevonCommandSync("npm config set userconfig " + path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm", ".npmrc"), path.join(this.getWorkingDirectory(), "devonfw"), result);
         this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        this.executeDevonCommandSync("node --h", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        this.executeDevonCommandSync("npm --h", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        console.log("npm install");
+        this.executeDevonCommandSync("npm -h", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        this.executeCommandSync("npm -h", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        console.log("install ng");
         this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
             //this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
