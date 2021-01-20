@@ -85,7 +85,7 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
-            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes", { "npm_config_prefix": pathToNode });
         }
      
         if(this.platform == ConsolePlatform.WINDOWS) {
@@ -430,10 +430,10 @@ export class Console extends Runner {
         }
     }
 
-    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
+    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string, env?: any) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
         console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
