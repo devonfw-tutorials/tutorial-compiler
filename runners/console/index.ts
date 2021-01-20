@@ -68,7 +68,7 @@ export class Console extends Runner {
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
-        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
+        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ").repace("ng", "") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
@@ -92,6 +92,7 @@ export class Console extends Runner {
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes", env);
         }
      
+        this.executeDevonCommandSync("npm install -g @angular/cli", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
             this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes");
