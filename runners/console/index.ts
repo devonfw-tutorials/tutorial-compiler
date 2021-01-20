@@ -55,10 +55,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        let env = process.env;
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("setx npm_config_prefix=" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
+            env["npm_config_prefix"] = "";
+            env["npm_config_cache"] = "";
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
+            this.executeCommandSync("setx npm_config_prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result, "", env);
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
             console.log(process.env);
         }
 
@@ -86,7 +89,7 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
-            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes", env);
         }
      
         if(this.platform == ConsolePlatform.WINDOWS) {
