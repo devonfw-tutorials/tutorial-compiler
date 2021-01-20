@@ -9,6 +9,7 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
+import * as yaml from "yaml";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -182,9 +183,15 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let filepath = path.join(workspaceDir, command.parameters[0]);
-        if (fs.existsSync(path.join(filepath, "Dockerfile"))) {
-            this.executeCommandSync("docker-compose up", filepath, result);
+        let processV = child_process.spawnSync("docker-compose --version", { shell: true, cwd: filepath, maxBuffer: Infinity });
+        if(processV.status != 0) {
+            throw new Error("Error checking version of docker-compose: docker-compose is not installed")
         }
+        let process = this.executeDevonCommandAsync("docker-compose up", filepath, result);
+        if(process.pid && command.parameters.length == 2) {
+            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
+        }
+        
         return result;
     }    
 
@@ -310,9 +317,28 @@ export class Console extends Runner {
 
 
     async assertDockerCompose(step: Step, command: Command, result: RunResult) {
-        new Assertions()
+        let assert = new Assertions()
         .noErrorCode(result)
         .noException(result);
+
+        if(command.parameters.length > 1) {
+            if(!command.parameters[1].startupTime) {
+                console.warn("No startup time for command dockerCompose has been set")
+            }
+            let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+            await this.sleep(command.parameters[1].startupTime);
+
+            if(!command.parameters[1].port) {
+                this.killAsyncProcesses();
+                throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
+            } else {
+                let isReachable = await assert.serverIsReachable(command.parameters[1].port, "");
+                if(!isReachable) {
+                    this.killAsyncProcesses();
+                    throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port)
+                }
+            }
+        }
     }
 
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
@@ -434,5 +460,20 @@ export class Console extends Runner {
             })
         }
     }
+
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
+
+            if(key == lookupkey) {
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
+    }
+
     
 }

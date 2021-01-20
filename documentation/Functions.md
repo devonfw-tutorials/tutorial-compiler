@@ -11,6 +11,7 @@ The following functions are already implemented:
 * cloneRepository
 * runServerJava
 * npmInstall
+* dockerCompose
 
 ***
 
@@ -145,5 +146,18 @@ path: The URL path on which is checked if the server is running
 1. Path to the project where the dependencies from the package.json file are to be installed.
 #### example 
 npmInstall("my-thai-star/angular")
+
+***
+
+### dockerCompose
+#### parameter 
+1. Path to the directory where the docker-compose.yml file is located, relative to workspace.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081 })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
 
 ***
