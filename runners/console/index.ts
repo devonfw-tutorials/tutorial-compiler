@@ -89,7 +89,8 @@ export class Console extends Runner {
         }
      
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes", { "npm_config_prefix": pathToNode });
+            this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "yes", { "npm_config_prefix": pathToNode });
             this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
             this.executeCommandSync("more .npmrc", path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm"), result);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
@@ -442,9 +443,9 @@ export class Console extends Runner {
         }
     }
 
-    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
+    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string, env?: any) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
+        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input, env);
     }
 
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
