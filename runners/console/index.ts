@@ -56,8 +56,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let env = process.env;
+        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
         if(this.platform == ConsolePlatform.WINDOWS) {
-            env["npm_config_prefix"] = "";
+            env["npm_config_prefix"] = pathToNode;
             env["npm_config_cache"] = "";
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
             this.executeCommandSync("setx npm_config_prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result, "", env);
@@ -70,7 +71,7 @@ export class Console extends Runner {
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
-        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+        
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
         //fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
