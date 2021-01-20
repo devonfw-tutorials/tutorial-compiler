@@ -9,7 +9,6 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
-import * as yaml from "yaml";
 const findProcess = require("find-process");
 const os = require("os");
 
