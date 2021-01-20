@@ -62,14 +62,13 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.env["npm_config_prefix"] = pathToNode;
             this.env["npm_config_cache"] = "";
-            this.env["Path"] = this.env["Path"].replace("C:\\npm\\prefix;", "").replace("C:\\Program Files\\nodejs\\", pathToNode);
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
+            //this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
         }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
-        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ").replace("ng", "") + ")";
+        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
@@ -93,12 +92,6 @@ export class Console extends Runner {
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
      
-        this.executeDevonCommandSync("npm config set userconfig " + path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm", ".npmrc"), path.join(this.getWorkingDirectory(), "devonfw"), result);
-        this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        //this.executeDevonCommandSync("npm -h", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        //this.executeCommandSync("npm -h", path.join(this.getWorkingDirectory(), "devonfw"), result);
-        console.log("install ng");
-        this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
             //this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
