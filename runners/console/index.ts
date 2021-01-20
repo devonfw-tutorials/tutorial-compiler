@@ -17,6 +17,7 @@ export class Console extends Runner {
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
+    private env: any;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -33,6 +34,8 @@ export class Console extends Runner {
         if(fs.existsSync(path.join(homedir, ".devon"))) {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
+
+        this.env = process.env;
     }
 
     destroy(playbook: Playbook): void {
@@ -55,15 +58,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let env = process.env;
         let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
         if(this.platform == ConsolePlatform.WINDOWS) {
-            env["npm_config_prefix"] = pathToNode;
-            env["npm_config_cache"] = "";
-            env["Path"] = env["Path"].replace("C:\\npm\\prefix;", "").replace("C:\\Program Files\\nodejs\\", pathToNode);
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result, "", env);
+            this.env["npm_config_prefix"] = pathToNode;
+            this.env["npm_config_cache"] = "";
+            this.env["Path"] = this.env["Path"].replace("C:\\npm\\prefix;", "").replace("C:\\Program Files\\nodejs\\", pathToNode);
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
         }
-        console.log(process.env);
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
@@ -89,15 +90,15 @@ export class Console extends Runner {
             this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
-            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes", env);
+            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
      
-        this.executeDevonCommandSync("npm config set userconfig " + path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm", ".npmrc"), path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
-        this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
+        this.executeDevonCommandSync("npm config set userconfig " + path.join(this.getWorkingDirectory(), "devonfw", "conf", "npm", ".npmrc"), path.join(this.getWorkingDirectory(), "devonfw"), result);
+        this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
         console.log("npm install");
-        this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
+        this.executeDevonCommandSync("ng", path.join(this.getWorkingDirectory(), "devonfw"), result);
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
+            //this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
             //this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
         }
@@ -431,10 +432,10 @@ export class Console extends Runner {
         }
     }
 
-    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string, env?: any) {
+    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
         console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
@@ -443,9 +444,9 @@ export class Console extends Runner {
         }
     }
 
-    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string, env?: any) {
+    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input, env);
+        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
     }
 
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
