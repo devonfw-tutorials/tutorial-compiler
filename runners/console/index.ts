@@ -56,10 +56,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("set npm_config_prefix=" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory(), "devonfw"), result);
-            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
-            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
         }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
