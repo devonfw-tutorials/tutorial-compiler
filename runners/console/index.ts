@@ -188,6 +188,7 @@ export class Console extends Runner {
             this.executeCommandSync("ng build", projectPath, result);
         }
         
+        
         console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
         
 
