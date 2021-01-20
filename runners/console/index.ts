@@ -57,8 +57,9 @@ export class Console extends Runner {
 
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
-            this.executeCommandSync("setx npm_config_prefix " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
+            this.executeCommandSync("setx npm_config_prefix=\"" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "\"", path.join(this.getWorkingDirectory()), result);
             this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
+            console.log(process.env);
         }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
@@ -235,11 +236,6 @@ export class Console extends Runner {
     runRunClientNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
-        this.executeDevonCommandSync("npm config delete prefix", this.getWorkingDirectory(), result);
-        this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
-        this.executeDevonCommandSync("npm config set prefix '" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node") + "'", this.getWorkingDirectory(), result);
-        this.executeDevonCommandSync("npm config list -l", this.getWorkingDirectory(), result);
 
         let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
         let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
