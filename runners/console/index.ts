@@ -55,6 +55,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync("set npm_config_prefix=" + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result);
+            this.executeDevonCommandSync("npm config list -l", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        }
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
@@ -427,7 +434,7 @@ export class Console extends Runner {
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: {"npm_config_prefix": ""} });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
         console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
