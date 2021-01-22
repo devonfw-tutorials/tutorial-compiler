@@ -182,12 +182,16 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let filepath = path.join(workspaceDir, command.parameters[0]);
-        let processV = child_process.spawnSync("docker-compose --version", { shell: true, cwd: filepath, maxBuffer: Infinity });
-        if(processV.status != 0) {
-            throw new Error("Error checking version of docker-compose: docker-compose is not installed")
-        }
-        let process = this.executeDevonCommandAsync("docker-compose up", filepath, result);
-        console.log(process.stdout);
+        //let processV = this.executeCommandSync
+        let process = this.executeCommandAsync("docker-compose up --build", filepath, result);
+        process.stderr.setEncoding('utf-8');
+        process.stderr.on('data', (data) => {
+           console.log(data);
+        });
+        process.stdout.setEncoding('utf8');
+        process.stdout.on('data', (data) => {
+            console.log(data);
+        });
         if(process.pid && command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
         }
