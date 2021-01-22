@@ -187,6 +187,7 @@ export class Console extends Runner {
             throw new Error("Error checking version of docker-compose: docker-compose is not installed")
         }
         let process = this.executeDevonCommandAsync("docker-compose up", filepath, result);
+        console.log(process.stdout);
         if(process.pid && command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
         }
