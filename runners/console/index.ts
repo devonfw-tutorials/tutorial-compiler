@@ -183,10 +183,10 @@ export class Console extends Runner {
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let filepath = path.join(workspaceDir, command.parameters[0]);
         //let processV = this.executeCommandSync
-        let process = this.executeCommandAsync("docker-compose up --build", filepath, result);
+        let process = this.executeCommandAsync("docker-compose up", filepath, result);
         process.stderr.setEncoding('utf-8');
         process.stderr.on('data', (data) => {
-           console.log(data);
+           console.log("stderr: " + data);
         });
         process.stdout.setEncoding('utf8');
         process.stdout.on('data', (data) => {
