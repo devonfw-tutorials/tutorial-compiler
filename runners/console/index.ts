@@ -29,7 +29,7 @@ export class Console extends Runner {
         .set("npm", "node")
         .set("ng", "node");
 
-        let homedir = os.homedir()
+        let homedir = os.homedir();
         if(fs.existsSync(path.join(homedir, ".devon"))) {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
