@@ -12,7 +12,7 @@ export abstract class Runner {
     public playbookPath: string;
     public playbookTitle: string;
     protected readonly useDevonCommand: string = "useDevonCommand";
-    protected readonly workingDir: string = "workingDir";
+    protected readonly workspaceDirectory: string = "workspaceDirectory";
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
