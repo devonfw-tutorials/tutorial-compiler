@@ -47,8 +47,6 @@ export class Katacoda extends Runner {
 
         //set working direktory and useDevonCommand-variable
         this.setVariable("workingDir", path.join("/root"));
-        this.setVariable("useDevonCommand", false);
-
 
         this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
     }
