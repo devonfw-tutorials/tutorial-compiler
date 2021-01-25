@@ -169,7 +169,6 @@ export class Katacoda extends Runner {
     }
 
     runCreateFile(step: Step, command: Command): RunResult{
-        console.log(this.workspaceDirectory);
         let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
         let filePath = path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0])).replace(/\\/g, "/");
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
