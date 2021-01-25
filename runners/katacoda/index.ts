@@ -46,7 +46,7 @@ export class Katacoda extends Runner {
         this.createFolder(this.setupDir, false);
 
         //set working direktory
-        this.setVariable("workingDir", path.join("/root"));
+        this.setVariable(this.workingDir, path.join("/root"));
 
         this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
     }
@@ -93,8 +93,8 @@ export class Katacoda extends Runner {
         
         //update current and working directory
         this.currentDir = path.join(this.currentDir, "devonfw");
-        this.setVariable("workingDir", path.join("/root", "devonfw", "workspaces", "main"));
-        this.setVariable("useDevonCommand", true);
+        this.setVariable(this.workingDir, path.join("/root", "devonfw", "workspaces", "main"));
+        this.setVariable(this.useDevonCommand, true);
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\nexport NG_CLI_ANALYTICS=CI");
         
         return null;
@@ -118,8 +118,8 @@ export class Katacoda extends Runner {
         });
 
         //update working directory
-        this.setVariable("workingDir", path.join("/root", "devonfw", "workspaces", "main"));
-        this.setVariable("useDevonCommand", true);
+        this.setVariable(this.workingDir, path.join("/root", "devonfw", "workspaces", "main"));
+        this.setVariable(this.useDevonCommand, true);
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
 
@@ -169,8 +169,8 @@ export class Katacoda extends Runner {
     }
 
     runCreateFile(step: Step, command: Command): RunResult{
-        let workspaceDir = path.join(this.getVariable("workingDir").concat(path.sep).replace(path.sep + "root" + path.sep, ""));
-        let filePath = path.join(this.getVariable("workingDir"), path.dirname(command.parameters[0])).replace(/\\/g, "/");
+        let workspaceDir = path.join(this.getVariable(this.workingDir).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
+        let filePath = path.join(this.getVariable(this.workingDir), path.dirname(command.parameters[0])).replace(/\\/g, "/");
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
         let fileName = path.basename(path.join(command.parameters[0]));
         let content = "";
@@ -188,7 +188,7 @@ export class Katacoda extends Runner {
     }
 
     runChangeFile(step: Step, command: Command): RunResult{
-        let workspaceDir = path.join(this.getVariable("workingDir").concat(path.sep).replace(path.sep + "root" + path.sep, ""));
+        let workspaceDir = path.join(this.getVariable(this.workingDir).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
         let content = "";
@@ -217,7 +217,7 @@ export class Katacoda extends Runner {
 
     runBuildJava(step: Step, command: Command): RunResult{
         
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable("workingDir"), command.parameters[0]));
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workingDir), command.parameters[0]));
 
         let skipTest = "-Dmaven.test.skip=true";
         let skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.";  
@@ -232,14 +232,14 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr, useDevonCommand: this.getVariable("useDevonCommand")});
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
 
     }
 
     runCloneRepository(step: Step, command: Command): RunResult {
 
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable("workingDir")));
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workingDir)));
         let directoryPath = "";
         if(command.parameters[0].trim()) {
             directoryPath = path.join(command.parameters[0]).replace(/\\/g, "/");
@@ -257,7 +257,7 @@ export class Katacoda extends Runner {
     }
 
     runRunServerJava(step: Step, command: Command): RunResult{
-        let serverDir = path.join(this.getVariable("workingDir"), command.parameters[0]);
+        let serverDir = path.join(this.getVariable(this.workingDir), command.parameters[0]);
         let terminal = this.getTerminal('runServerJava');
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
         this.steps.push({
@@ -265,18 +265,18 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable("useDevonCommand")});
+        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
 
     runNpmInstall(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable("workingDir"), command.parameters[0]));
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workingDir), command.parameters[0]));
         
         this.steps.push({
             "title": "Install the dependencies",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable("useDevonCommand")});
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
 

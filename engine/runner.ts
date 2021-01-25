@@ -5,14 +5,14 @@ import { Step } from "./step";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 
-const nameof = <T>(name: Extract<keyof T, string>): string => name;
-
 export abstract class Runner {
     public path: string;
     public name: string;
     public playbookName: string;
     public playbookPath: string;
     public playbookTitle: string;
+    protected readonly useDevonCommand: string = "useDevonCommand";
+    protected readonly workingDir: string = "workingDir";
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
