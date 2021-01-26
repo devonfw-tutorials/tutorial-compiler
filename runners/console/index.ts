@@ -33,7 +33,7 @@ export class Console extends Runner {
         if(fs.existsSync(path.join(homedir, ".devon"))) {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
-        this.setVariable("workingDir", path.join(this.getWorkingDirectory()));
+        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
 
     }
 
