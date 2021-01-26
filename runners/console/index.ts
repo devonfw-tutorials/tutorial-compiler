@@ -96,19 +96,24 @@ export class Console extends Runner {
     runInstallCobiGen(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
-        this.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        if(this.getVariable(this.useDevonCommand)){
+            this.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        }else{
+            console.warn("Devonfw IDE is not installed");
+        }
         return result;
     }
 
     runCreateDevon4jProject(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
+        if(this.getVariable(this.useDevonCommand)){
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = command.parameters[0];
         this.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, result);
-
+        }else{
+            console.warn("Devonfw IDE is not installed");   
+        }
         return result;
     }
 
@@ -155,8 +160,12 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        this.executeDevonCommandSync("cobigen generate " + command.parameters[0], this.getVariable(this.workspaceDirectory), result, command.parameters[1].toString());
-
+        if(this.getVariable(this.useDevonCommand)){
+        let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
+        this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+        }else{
+            console.warn("Devonfw IDE is not installed"); 
+        }
         return result;
     }
 
