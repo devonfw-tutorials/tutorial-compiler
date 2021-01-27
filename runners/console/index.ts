@@ -96,19 +96,23 @@ export class Console extends Runner {
     runInstallCobiGen(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
+
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
-            this.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+
+        this.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
         return result;
     }
 
     runCreateDevon4jProject(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
+
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
+
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = command.parameters[0];
         this.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, result);
@@ -140,11 +144,13 @@ export class Console extends Runner {
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let buildCommand;
+
         if(command.parameters.length == 2 && command.parameters[1] == true){
             buildCommand = "mvn clean install";
         } else {
             buildCommand = "mvn clean install -Dmaven.test.skip=true";
         }
+
         if(this.getVariable(this.useDevonCommand)){
             this.executeDevonCommandSync(buildCommand, projectDir, result);
         } else {
@@ -161,6 +167,7 @@ export class Console extends Runner {
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
+        
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
         return result;
@@ -199,11 +206,13 @@ export class Console extends Runner {
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let process;
+
         if(this.getVariable(this.useDevonCommand)){
             process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
         }else{
             process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
         }
+
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
         }
@@ -234,7 +243,6 @@ export class Console extends Runner {
         }else{
             this.executeCommandSync("npm install", projectPath, result);
         }
-
 
         return result;
     }
