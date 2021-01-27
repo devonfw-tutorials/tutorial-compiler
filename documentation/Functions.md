@@ -11,6 +11,7 @@ The following functions are already implemented:
 * cloneRepository
 * runServerJava
 * npmInstall
+* downloadFile
 
 ***
 
@@ -145,5 +146,15 @@ path: The URL path on which is checked if the server is running
 1. Path to the project where the dependencies from the package.json file are to be installed.
 #### example 
 npmInstall("my-thai-star/angular")
+
+***
+
+### downloadFile
+#### parameter 
+1. URL of the file to be downloaded.
+2. Path to where the file should be saved.
+3. (Optional) Name of file.
+#### example 
+downloadFile("https://bit.ly/2BCkFa9", "downloads", "file")
 
 ***

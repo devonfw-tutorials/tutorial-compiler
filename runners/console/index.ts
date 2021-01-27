@@ -215,6 +215,32 @@ export class Console extends Runner {
         return result;
     }
 
+    runDownloadFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let downloadUrl = command.parameters[0];
+        let installDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]);
+        this.createFolder(installDir, false);
+
+        if (command.parameters.length > 2) {
+            let name = command.parameters[2];
+            if(this.platform == ConsolePlatform.WINDOWS) {
+                this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile " + name + " '" + downloadUrl + "'\"", installDir, result);
+            } else {
+                this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O " + name, installDir, result);
+            }
+        } else {
+            if(this.platform == ConsolePlatform.WINDOWS) {
+                this.executeCommandSync("powershell.exe \"Invoke-WebRequest '" + downloadUrl + "'\"", installDir, result);
+            } else {
+                this.executeCommandSync("wget -c \"" + downloadUrl + "\"", installDir, result);
+            }
+        }
+        
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         try {
             let installedTools = command.parameters[0];
@@ -387,6 +413,24 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]))
             .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0], "node_modules"));
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertDownloadFile(step: Step, command: Command, result: RunResult){
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]))
+            .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]));
+
+            if(command.parameters.length > 2) {
+                assert.fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1], command.parameters[2]));
+            }
+            
         } catch(error) {
             this.cleanUp();
             throw error;
