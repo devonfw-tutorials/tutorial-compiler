@@ -67,12 +67,9 @@ export class Console extends Runner {
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
-        
-        //fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
-
 
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
@@ -263,12 +260,9 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
         if(process.pid) { 
-            process.stdout.on('data', (data) => {
-                console.log("stdout: " + data);
-            });
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
@@ -485,7 +479,6 @@ export class Console extends Runner {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
-        console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
