@@ -17,6 +17,7 @@ export class Console extends Runner {
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
+    private env: any;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -34,7 +35,7 @@ export class Console extends Runner {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
-
+        this.env = process.env;
     }
 
     destroy(playbook: Playbook): void {
@@ -57,15 +58,25 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.env["npm_config_prefix"] = pathToNode;
+            this.env["npm_config_cache"] = "";
+            //this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
+        }
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
+        
+        //fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nprefix=\"" + pathToNode + "\"\nunsafe-perm=true");
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
-        
+
+
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
@@ -80,6 +91,12 @@ export class Console extends Runner {
         } else {
             this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+        }
+
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            //this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
+            this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
+            //this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
@@ -242,6 +259,22 @@ export class Console extends Runner {
             this.executeDevonCommandSync("npm install", projectPath, result);
         }else{
             this.executeCommandSync("npm install", projectPath, result);
+        }
+
+        return result;
+    }
+
+    runRunClientNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
+        let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
+        if(process.pid) { 
+            process.stdout.on('data', (data) => {
+                console.log("stdout: " + data);
+            });
+            this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
         return result;
@@ -423,10 +456,41 @@ export class Console extends Runner {
         }
     }
 
+    async assertRunClientNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(command.parameters.length > 1) {
+                if(!command.parameters[1].startupTime) {
+                    console.warn("No startup time for command runClientNg has been set")
+                }
+                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+                await this.sleep(command.parameters[1].startupTime);
+
+                if(!command.parameters[1].port) {
+                    this.killAsyncProcesses();
+                    throw new Error("Missing arguments for command runClientNg. You have to specify a port and a path for the server. For further information read the function documentation.");
+                } else {
+                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    if(!isReachable) {
+                        this.killAsyncProcesses();
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                    }
+                }
+            }
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
+        console.log(process.stdout.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
@@ -442,7 +506,7 @@ export class Console extends Runner {
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawn(command, [], { shell: true, cwd: directory });
+        let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: this.env });
         if(!process.pid) {
             result.returnCode = 1;
         }
