@@ -252,7 +252,7 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let downloadUrl = command.parameters[0];
-        let installDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]);
+        let installDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]);
         this.createFolder(installDir, false);
 
         if (command.parameters.length > 2) {
@@ -454,11 +454,11 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]))
-            .directoryNotEmpty(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1]));
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]))
+            .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]));
 
             if(command.parameters.length > 2) {
-                assert.fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[1], command.parameters[2]));
+                assert.fileExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1], command.parameters[2]));
             }
             
         } catch(error) {
