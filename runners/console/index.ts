@@ -58,11 +58,9 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        // let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        // if(this.platform == ConsolePlatform.WINDOWS) {
-        //     this.env["npm_config_prefix"] = pathToNode;
-        //     this.env["npm_config_cache"] = "";
-        // }
+        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+        this.env["npm_config_prefix"] = pathToNode;
+        this.env["npm_config_cache"] = "";
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
