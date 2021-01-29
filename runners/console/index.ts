@@ -9,6 +9,7 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
+import { info } from "console";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -205,9 +206,12 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let workspaceDir = this.getVariable(this.workspaceDirectory);
-        let filepath = path.join(workspaceDir, command.parameters[0]);
-        
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            child_process.execFileSync("./DockerCli.exe", ["-SwitchLinuxEngine"], {cwd : "C:/Program Files/Docker/Docker"});
+            this.executeCommandSync("sleep 60", filepath, result);
+        } 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
         process.stderr.setEncoding('utf-8');
         process.stderr.on('data', (data) => {
@@ -217,12 +221,17 @@ export class Console extends Runner {
         process.stdout.on('data', (data) => {
             console.log(data);
         });
-        if(process.pid && command.parameters.length == 2) {
+        if(process.pid && command.parameters.length == 3) {
             this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
         }
         
         return result;
-    }    
+        
+    }
+    
+    private dockerCompose(filepath: String, result: RunResult) {
+        
+    }
 
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
@@ -552,6 +561,18 @@ export class Console extends Runner {
         }
     }
 
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
 
+            if(key == lookupkey) {
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
+    }
     
 }
