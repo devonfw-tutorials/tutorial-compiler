@@ -58,12 +58,11 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            this.env["npm_config_prefix"] = pathToNode;
-            this.env["npm_config_cache"] = "";
-            //this.executeCommandSync("set", path.join(this.getWorkingDirectory()), result);
-        }
+        // let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+        // if(this.platform == ConsolePlatform.WINDOWS) {
+        //     this.env["npm_config_prefix"] = pathToNode;
+        //     this.env["npm_config_cache"] = "";
+        // }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
@@ -94,9 +93,7 @@ export class Console extends Runner {
         }
 
         if(this.platform == ConsolePlatform.WINDOWS) {
-            //this.executeCommandSync("set", path.join(this.getWorkingDirectory(), "devonfw"), result, "", env);
             this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
-            //this.executeCommandSync("npm config list -l", path.join(this.getWorkingDirectory()), result);
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
