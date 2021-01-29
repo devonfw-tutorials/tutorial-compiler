@@ -252,11 +252,14 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let downloadUrl = command.parameters[0];
-        let installDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]);
+        let installDir = this.getVariable(this.workspaceDirectory);
+        if (command.parameters[1].dir) {
+            installDir = path.join(installDir, command.parameters[1].dir);
+        }
         this.createFolder(installDir, false);
-
-        if (command.parameters.length > 2) {
-            let name = command.parameters[2];
+        
+        if (command.parameters[1].name) {
+            let name = command.parameters[1].name;
             if(this.platform == ConsolePlatform.WINDOWS) {
                 this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile " + name + " '" + downloadUrl + "'\"", installDir, result);
             } else {

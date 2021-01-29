@@ -152,9 +152,10 @@ npmInstall("my-thai-star/angular")
 ### downloadFile
 #### parameter 
 1. URL of the file to be downloaded.
-2. Path to where the file should be saved.
-3. (Optional) Name of file.
+2. (Optional) Options: 
+    dir -> Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
+    name -> Renames file after download to the given name. (Needed for better assertion)
 #### example 
-downloadFile("https://bit.ly/2BCkFa9", "downloads", "file")
+downloadFile("https://bit.ly/2BCkFa9", { "dir": "downloads", "name": "file"})
 
 ***
