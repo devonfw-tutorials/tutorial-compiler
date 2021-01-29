@@ -83,7 +83,7 @@ export abstract class Runner {
     }
 
     init(playbook: Playbook): void {
-        this.setVariable("useDevonCommand", false);
+        this.setVariable(this.useDevonCommand, false);
     }
 
     run(step: Step, command: Command): RunResult {
