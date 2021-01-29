@@ -58,9 +58,11 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let pathToNode = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
-        this.env["npm_config_prefix"] = pathToNode;
-        this.env["npm_config_cache"] = "";
+        if(command.parameters[0].indexOf("npm") > -1 || command.parameters[0].indexOf("ng")) {
+            let nodeInstallDir = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+            this.env["npm_config_prefix"] = nodeInstallDir;
+            this.env["npm_config_cache"] = "";
+        }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
@@ -87,12 +89,8 @@ export class Console extends Runner {
             this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
         }
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("dir " + path.join(this.getWorkingDirectory(), "devonfw", "software", "node"), path.join(this.getWorkingDirectory()), result);
-        }
-
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
-        this.setVariable(this.useDevonCommand,true);
+        this.setVariable(this.useDevonCommand, true);
 
         return result;
     }
@@ -460,7 +458,7 @@ export class Console extends Runner {
 
                 if(!command.parameters[1].port) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runClientNg. You have to specify a port and a path for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
                     if(!isReachable) {
