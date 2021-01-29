@@ -255,9 +255,9 @@ export class Console extends Runner {
         let installDir = this.getVariable(this.workspaceDirectory);
         if (command.parameters[1].dir) {
             installDir = path.join(installDir, command.parameters[1].dir);
+            this.createFolder(installDir, false);
         }
-        this.createFolder(installDir, false);
-        
+                
         if (command.parameters[1].name) {
             let name = command.parameters[1].name;
             if(this.platform == ConsolePlatform.WINDOWS) {
