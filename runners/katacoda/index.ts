@@ -280,6 +280,22 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runRunClientNg(step: Step, command: Command): RunResult {
+        let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let terminal = this.getTerminal('runClientNg');
+        let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
+
+        this.steps.push({
+            "title": "Start the java server",
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        console.log(this.getVariable(this.useDevonCommand));
+        
+        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
