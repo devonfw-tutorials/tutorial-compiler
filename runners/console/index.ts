@@ -259,7 +259,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let process = this.executeDevonCommandAsync("ng serve", projectDir, result);
+        let process = this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandAsync("ng serve", projectDir, result)
+            : this.executeCommandAsync("ng serve", projectDir, result);
         if(process.pid) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
