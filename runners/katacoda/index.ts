@@ -286,7 +286,7 @@ export class Katacoda extends Runner {
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
 
         this.steps.push({
-            "title": "Start the java server",
+            "title": "Start the Angular Project",
             "text": "step" + this.stepsCount + ".md"
         });
         
