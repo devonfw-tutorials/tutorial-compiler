@@ -289,8 +289,6 @@ export class Katacoda extends Runner {
             "title": "Start the java server",
             "text": "step" + this.stepsCount + ".md"
         });
-
-        console.log(this.getVariable(this.useDevonCommand));
         
         this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
