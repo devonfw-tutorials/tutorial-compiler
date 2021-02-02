@@ -95,8 +95,10 @@ export class Katacoda extends Runner {
         this.currentDir = path.join(this.currentDir, "devonfw");
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
+
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\nexport NG_CLI_ANALYTICS=CI");
-        
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
+
         return null;
     }
 
@@ -122,6 +124,7 @@ export class Katacoda extends Runner {
         this.setVariable(this.useDevonCommand, true);
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
 
         return null;
     }
@@ -285,13 +288,12 @@ export class Katacoda extends Runner {
         let terminal = this.getTerminal('runClientNg');
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
 
-        this.renderTemplate(path.join("scripts", "runClientNg.sh"), path.join(this.outputPathTutorial, "runClientNg.sh"), { });
-
         this.steps.push({
             "title": "Start the Angular Project",
-            "text": "step" + this.stepsCount + ".md",
-            "courseData": "runClientNg.sh"
+            "text": "step" + this.stepsCount + ".md"
         });
+
+        fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NODE_OPTIONS=\"--max-old-space-size=16384\"\' >> /root/.profile\n");
 
         this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
