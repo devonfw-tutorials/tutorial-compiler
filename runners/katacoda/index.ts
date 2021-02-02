@@ -285,11 +285,14 @@ export class Katacoda extends Runner {
         let terminal = this.getTerminal('runClientNg');
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
 
+        this.renderTemplate(path.join("scripts", "runClientNg.sh"), path.join(this.outputPathTutorial, "runClientNg.sh"), { });
+
         this.steps.push({
             "title": "Start the Angular Project",
-            "text": "step" + this.stepsCount + ".md"
+            "text": "step" + this.stepsCount + ".md",
+            "courseData": "runClientNg.sh"
         });
-        
+
         this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
