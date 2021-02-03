@@ -152,10 +152,23 @@ npmInstall("my-thai-star/angular")
 ### downloadFile
 #### parameter 
 1. URL of the file to be downloaded.
-2. (Optional) Options: 
-    dir -> Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
-    name -> Renames file after download to the given name. (Needed for better assertion)
+2. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
 #### example 
-downloadFile("https://bit.ly/2BCkFa9", { "dir": "downloads", "name": "file"})
+downloadFile("https://bit.ly/2BCkFa9", "downloads")
 
 ***
+
+### runClientNg
+#### parameter 
+1. Path to the angular project from which the frontend server is to be started.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+runClientNg("jump-the-queue/angular", { "startupTime": 200, "port": 4200, "path": "" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
+
+***
+
