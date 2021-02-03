@@ -253,24 +253,15 @@ export class Console extends Runner {
 
         let downloadUrl = command.parameters[0];
         let installDir = this.getVariable(this.workspaceDirectory);
-        if (command.parameters[1].dir) {
-            installDir = path.join(installDir, command.parameters[1].dir);
+        if (command.parameters.length == 2) {
+            installDir = path.join(installDir, command.parameters[1]);
             this.createFolder(installDir, false);
         }
-                
-        if (command.parameters[1].name) {
-            let name = command.parameters[1].name;
-            if(this.platform == ConsolePlatform.WINDOWS) {
-                this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile " + name + " '" + downloadUrl + "'\"", installDir, result);
-            } else {
-                this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O " + name, installDir, result);
-            }
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile download.tar.gz '" + downloadUrl + "'\"", installDir, result);
+            this.executeCommandSync("powershell.exe tar -xvzf download.tar.gz", installDir, result);
         } else {
-            if(this.platform == ConsolePlatform.WINDOWS) {
-                this.executeCommandSync("powershell.exe \"Invoke-WebRequest '" + downloadUrl + "'\"", installDir, result);
-            } else {
-                this.executeCommandSync("wget -c \"" + downloadUrl + "\"", installDir, result);
-            }
+            this.executeCommandSync("wget -c " + downloadUrl + " -O download.tar.gz | tar -xz", installDir, result);
         }
         
         return result;
@@ -454,16 +445,17 @@ export class Console extends Runner {
 
     async assertDownloadFile(step: Step, command: Command, result: RunResult){
         try {
-            let assert = new Assertions()
+            let directory = this.getVariable(this.workspaceDirectory);
+            if(command.parameters.length == 2) {
+                directory = path.join(directory, command.parameters[1]);
+            }
+            new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]))
-            .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1]));
+            .directoryExits(directory)
+            .directoryNotEmpty(directory)
+            .fileExits(path.join(directory, "download.tar.gz"));
 
-            if(command.parameters.length > 2) {
-                assert.fileExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[1], command.parameters[2]));
-            }
-            
         } catch(error) {
             this.cleanUp();
             throw error;
