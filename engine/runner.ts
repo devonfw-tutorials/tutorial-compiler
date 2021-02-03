@@ -105,7 +105,7 @@ export abstract class Runner {
             if(deleteFolerIfExist) {
                 rimraf.sync(path);
                 fs.mkdirSync(path, { recursive: true });
-            } else return
+            } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
         return path;
