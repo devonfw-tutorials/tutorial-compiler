@@ -282,8 +282,6 @@ export class Console extends Runner {
             ? this.executeDevonCommandSync(command1, projectDir, result)
             : this.executeCommandSync(command1, projectDir, result);
         
-        console.log("projectpath subdirectories: " + fs.readdirSync(projectDir));
-        
         return result;
     }
 
@@ -527,7 +525,6 @@ export class Console extends Runner {
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }
-        console.log(process.stderr.toString(), process.stdout.toString());
     }
 
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
