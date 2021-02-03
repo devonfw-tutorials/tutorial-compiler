@@ -258,20 +258,17 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let downloadUrl = command.parameters[0];
         let installDir = this.getVariable(this.workspaceDirectory);
-        if (command.parameters.length == 2) {
-            installDir = path.join(installDir, command.parameters[1]);
+        if (command.parameters.length == 3) {
+            installDir = path.join(installDir, command.parameters[2]);
             this.createFolder(installDir, false);
         }
         var command1;
         var command2;
         if(this.platform == ConsolePlatform.WINDOWS) {
-            command1 = "powershell.exe \"Invoke-WebRequest -OutFile download.tar.gz '" + downloadUrl + "'\"";
-            command2 = "powershell.exe tar -xvzf download.tar.gz";
+            command1 = "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\"";
         } else {
-            command1 = "wget -c " + downloadUrl + " -O download.tar.gz";
-            command2 = "tar -xvzf download.tar.gz";
+            command1 = "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
         }
         this.executeCommandSync(command1, installDir, result);
         this.executeCommandSync(command2, installDir, result);
@@ -471,15 +468,15 @@ export class Console extends Runner {
     async assertDownloadFile(step: Step, command: Command, result: RunResult){
         try {
             let directory = this.getVariable(this.workspaceDirectory);
-            if(command.parameters.length == 2) {
-                directory = path.join(directory, command.parameters[1]);
+            if(command.parameters.length == 3) {
+                directory = path.join(directory, command.parameters[2]);
             }
             new Assertions()
             .noErrorCode(result)
             .noException(result)
             .directoryExits(directory)
             .directoryNotEmpty(directory)
-            .fileExits(path.join(directory, "download.tar.gz"));
+            .fileExits(path.join(directory, command.parameters[1]));
          } catch(error) {
             this.cleanUp();
             throw error;
