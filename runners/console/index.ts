@@ -257,12 +257,17 @@ export class Console extends Runner {
             installDir = path.join(installDir, command.parameters[1]);
             this.createFolder(installDir, false);
         }
+        var command1;
+        var command2;
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile download.tar.gz '" + downloadUrl + "'\"", installDir, result);
-            this.executeCommandSync("powershell.exe tar -xvzf download.tar.gz", installDir, result);
+            command1 = "powershell.exe \"Invoke-WebRequest -OutFile download.tar.gz '" + downloadUrl + "'\"";
+            command2 = "powershell.exe tar -xvzf download.tar.gz";
         } else {
-            this.executeCommandSync("wget -c " + downloadUrl + " -O download.tar.gz | tar -xz", installDir, result);
+            command1 = "wget -c " + downloadUrl + " -O download.tar.gz";
+            command2 = "tar -xvzf download.tar.gz";
         }
+        this.executeCommandSync(command1, installDir, result);
+        this.executeCommandSync(command2, installDir, result);
         
         return result;
     }
