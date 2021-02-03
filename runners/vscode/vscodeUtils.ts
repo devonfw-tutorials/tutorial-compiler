@@ -43,17 +43,45 @@ export class VsCodeUtils {
     }
     
     static downloadChromeDriver(chromeDriverVersion: string, downloadPath: string) {
-        let file = path.join(downloadPath, process.platform == "win32" ? "chromedriver.exe" : "chromedriver");
         let driverPlatform = process.platform === "win32" ? "win32" : "linux64";
+        let file = path.join(downloadPath, "chromedriver_" + driverPlatform + ".zip");
         let url = "https://chromedriver.storage.googleapis.com/" + chromeDriverVersion + "/chromedriver_" + driverPlatform + ".zip"
 
         let command = (process.platform == "win32")
-            ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver.exe\""
-            : "wget -c \"" + url + "\" -O chromedriver -";
-        child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+            ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_" + driverPlatform + ".zip\""
+            : "wget -c \"" + url + "\" -O chromedriver_" + driverPlatform + ".zip -";
+        let cp = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
         if(!fs.existsSync(file)) {
-            throw new Error("Error while downloading chromedriver from url " + url);
+            console.log("Unable to chromedriver from url " + url + ". Try to download latest release for chromedriver version " + chromeDriverVersion.substring(0, chromeDriverVersion.indexOf(".")));
+            url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_" + chromeDriverVersion.substring(0, chromeDriverVersion.indexOf("."));
+            command = (process.platform == "win32")
+                ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_latestRelease.txt\""
+                : "wget -c \"" + url + "\" -O chromedriver_latestRelease.txt -";
+            cp = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+
+            if(!fs.existsSync(path.join(downloadPath, "chromedriver_latestRelease.txt"))) {
+                throw new Error("Unable to get latest release");
+            }
+
+            chromeDriverVersion = fs.readFileSync(path.join(downloadPath, "chromedriver_latestRelease.txt"), "utf-8");
+            url = "https://chromedriver.storage.googleapis.com/" + chromeDriverVersion + "/chromedriver_" + driverPlatform + ".zip"
+            command = (process.platform == "win32")
+                ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_" + driverPlatform + ".zip\""
+                : "wget -c \"" + url + "\" -O chromedriver_" + driverPlatform + ".zip -";
+            cp = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+            if(!fs.existsSync(file)) {
+                console.log(cp.output.toString());
+                throw new Error("Error while downloading chromedriver from url " + url);
+            }
         }
         console.log("Chromedriver (Version: " + chromeDriverVersion + ") successfully downloaded to " + file);
+
+        //unzip driver
+        command = (process.platform == "win32")
+            ? "powershell.exe tar -xz chromedriver_" + driverPlatform + ".zip"
+            : "tar -xz chromedriver_" + driverPlatform + ".zip";
+        cp = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        console.log(cp.output.toString());
+        return file;
     }
 }
