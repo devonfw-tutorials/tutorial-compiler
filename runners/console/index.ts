@@ -264,14 +264,12 @@ export class Console extends Runner {
             this.createFolder(installDir, false);
         }
         var command1;
-        var command2;
         if(this.platform == ConsolePlatform.WINDOWS) {
             command1 = "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\"";
         } else {
             command1 = "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
         }
         this.executeCommandSync(command1, installDir, result);
-        this.executeCommandSync(command2, installDir, result);
         return result;
     }
         
