@@ -527,6 +527,7 @@ export class Console extends Runner {
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }
+        console.log(process.stderr.toString(), process.stdout.toString());
     }
 
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
