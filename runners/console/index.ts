@@ -205,28 +205,7 @@ export class Console extends Runner {
         }
 
         return result;
-    }
-
-
-    runBuildNg(step: Step, command: Command): RunResult {
-        let result = new RunResult();
-        result.returnCode = 0;
-
-        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-
-        if(command.parameters.length == 2) {
-            this.executeDevonCommandSync("ng build --output-path " + command.parameters[1], projectPath, result);
-        } else {
-            this.executeDevonCommandSync("ng build", projectPath, result);
-        }
-        
-        
-        console.log("projectpath subdirectories: " + fs.readdirSync(projectPath));
-        
-
-        return result;
-    }
-        
+    }        
 
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
@@ -287,6 +266,24 @@ export class Console extends Runner {
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
+        return result;
+    }
+
+    runBuildNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let command1 = "ng build";
+        if(command.parameters.length == 2) {
+            command1 = command1 + " --output-path " + command.parameters[1];
+        }
+        this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandSync(command1, projectDir, result)
+            : this.executeCommandSync(command1, projectDir, result);
+        
+        console.log("projectpath subdirectories: " + fs.readdirSync(projectDir));
+        
         return result;
     }
 
@@ -404,28 +401,6 @@ export class Console extends Runner {
             throw error;
         }
     }
-
-
-    async assertBuildNg(step: Step, command: Command, result: RunResult) {
-        let projectPath = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]);
-        var outputpath;
-        if(command.parameters.length == 2) {
-            outputpath = command.parameters[1].trim();
-        } else {
-            let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
-            outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
-            if(outputpath == null) {
-                outputpath = "dist";
-            }
-            
-        }
-    
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(projectPath, outputpath))
-        .directoryNotEmpty(path.join(projectPath, outputpath));
-    }
   
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
         try {
@@ -512,6 +487,31 @@ export class Console extends Runner {
                     }
                 }
             }
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            var outputpath;
+            if(command.parameters.length == 2) {
+                outputpath = command.parameters[1].trim();
+            } else {
+                let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+                outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+                if(outputpath == null) {
+                    outputpath = "dist";
+                }
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(projectPath, outputpath))
+            .directoryNotEmpty(path.join(projectPath, outputpath));
+
         } catch(error) {
             this.cleanUp();
             throw error;
