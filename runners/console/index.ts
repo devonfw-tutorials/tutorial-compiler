@@ -205,7 +205,7 @@ export class Console extends Runner {
         }
 
         return result;
-    }
+    }        
 
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
@@ -266,6 +266,22 @@ export class Console extends Runner {
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
 
+        return result;
+    }
+
+    runBuildNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let command1 = "ng build";
+        if(command.parameters.length == 2) {
+            command1 = command1 + " --output-path " + command.parameters[1];
+        }
+        this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandSync(command1, projectDir, result)
+            : this.executeCommandSync(command1, projectDir, result);
+        
         return result;
     }
 
@@ -383,7 +399,7 @@ export class Console extends Runner {
             throw error;
         }
     }
-
+  
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
         try {
             let assert = new Assertions()
@@ -475,6 +491,31 @@ export class Console extends Runner {
         }
     }
 
+    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            var outputpath;
+            if(command.parameters.length == 2) {
+                outputpath = command.parameters[1].trim();
+            } else {
+                let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+                outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+                if(outputpath == null) {
+                    outputpath = "dist";
+                }
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(projectPath, outputpath))
+            .directoryNotEmpty(path.join(projectPath, outputpath));
+
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
@@ -489,6 +530,20 @@ export class Console extends Runner {
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
         this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
+    }
+
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
+            
+            if(key == lookupkey) {
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
     }
 
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
@@ -548,4 +603,5 @@ export class Console extends Runner {
         }
     }
     
+
 }
