@@ -23,7 +23,8 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
     process.env = env;
     process.env.TEST_RESOURCES = downloadFolder;
 
-    let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, "");
+    let config = path.resolve("build/runners/vscode/.mocharc.js");
+    let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, config);
     return runner.runTests(testFile, "info");
 }
 

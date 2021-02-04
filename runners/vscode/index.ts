@@ -50,7 +50,7 @@ export class VsCode extends Runner {
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runInstallDevonfwId(step, command);
+        return this.consoleRunner.runInstallDevonfwIde(step, command);
     }
 
 
