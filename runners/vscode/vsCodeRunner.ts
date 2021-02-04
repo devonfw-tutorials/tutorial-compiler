@@ -53,7 +53,6 @@ export class VSRunner {
             });
     
             this.mocha.suite.beforeAll(async function () {
-                console.log("before");
                 this.timeout(15000);
                 await browser.start(self.chromeBin);
                 await browser.waitForWorkbench();

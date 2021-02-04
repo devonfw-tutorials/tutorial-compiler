@@ -41,7 +41,7 @@ export class VsCode extends Runner {
 
         console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
         let downloadDirectory = this.createFolder(path.join(this.getWorkingDirectory(), "..", "runners", "vscode", "resources"), false);
-        let chromiumVersion = VsCodeUtils.getChromeDriverVersion(vsCodeVersion, downloadDirectory);
+        let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
     }
 
@@ -78,9 +78,10 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        let testfile = path.join("build", "runners", "vscode", "tests", "runCobiGenJava.js");
         let testrunner = path.join("build", "runners", "vscode", "vsCodeTestRunner.js");
-        this.executeCommandSync("node " + testrunner, path.join(this.getWorkingDirectory(), "..", ".."), result);
-
+        this.executeCommandSync("node " + testrunner + " " + testfile, path.join(this.getWorkingDirectory(), "..", ".."), result);
+ 
         return result;
     }
 
@@ -148,8 +149,7 @@ export class VsCode extends Runner {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
-        console.log(command, directory);
-        console.log(process.stdout.toString());
+        console.log(command, process.output.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());

@@ -1,29 +1,42 @@
-// Import all the necessary objects from extension tester
-//import { Notification, VSBrowser, Workbench, WebDriver, NotificationType } from 'vscode-extension-tester';
-//We are using chai for assertions, feel free to use whichever package you like
 import { expect } from 'chai';
-//import { VSBrowser } from '../vsBrowser';
-import { WebDriver, Workbench, VSBrowser } from 'vscode-extension-tester';
+import { WebDriver, Workbench, VSBrowser, InputBox, ActivityBar, Key } from 'vscode-extension-tester';
 
-// Test suite is in standard Mocha BDD format
-describe('Hello World Example UI Tests', () => {
+describe('CobiGenJava Test', () => {
     let driver: WebDriver;
 
     before(() => {
-    //     // Retrieve a handle for the internal WebDriver instance so 
-    //     // we can use all its functionality along with the tester API
         driver = VSBrowser.instance.driver;
     });
 
-    // Test the Hello World command does what we expect
-    it('Hello World Command should show a notification with the correct text', async function () {
+    it('runCobiGenJava', async function () {
         console.log("Title: " + await VSBrowser.instance.driver.getTitle());
         expect(await VSBrowser.instance.driver.getTitle()).contain("Code");
-
+        await sleep(4);
         let workbench = new Workbench();
         let commandprompt = await workbench.openCommandPrompt();
         commandprompt.sendKeys("Hallo");
 
-        console.log(await driver.getTitle());
+        await workbench.executeCommand('Extest: Add Folder To Workspace');
+        let prompt = await workbench.openCommandPrompt() as InputBox;
+        await prompt.setText('C:\\projects\\my-first-project\\workspaces\\main\\tutorial-compiler\\');
+        await prompt.sendKeys(Key.ENTER);
+
+        await sleep(4);
+
+        let control = await new ActivityBar().getViewControl('Explorer');
+        await control.openView();
+
+        await sleep(4);
+
+        await workbench.executeCommand('Extest: Open File');
+        prompt = await workbench.openCommandPrompt() as InputBox;
+        await prompt.setText('C:\\projects\\my-first-project\\workspaces\\main\\tutorial-compiler\\package.json');
+        await prompt.sendKeys(Key.ENTER);
+
+        await sleep(5);
     });
 });
+
+function sleep(seconds: number) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
