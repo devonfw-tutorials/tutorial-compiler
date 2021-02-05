@@ -254,6 +254,23 @@ export class Console extends Runner {
         return result;
     }
 
+    runDownloadFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let downloadlDir = this.getVariable(this.workspaceDirectory);
+        if (command.parameters.length == 3) {
+            downloadlDir = path.join(downloadlDir, command.parameters[2]);
+            this.createFolder(downloadlDir, false);
+        }
+        let command1 = (this.platform == ConsolePlatform.WINDOWS) 
+            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
+            : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
+        
+        this.executeCommandSync(command1, downloadlDir, result);
+        return result;
+    }
+        
     runRunClientNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -265,7 +282,6 @@ export class Console extends Runner {
         if(process.pid) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
-
         return result;
     }
 
@@ -456,6 +472,24 @@ export class Console extends Runner {
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]))
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "node_modules"));
         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertDownloadFile(step: Step, command: Command, result: RunResult){
+        try {
+            let directory = this.getVariable(this.workspaceDirectory);
+            if(command.parameters.length == 3) {
+                directory = path.join(directory, command.parameters[2]);
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(directory)
+            .directoryNotEmpty(directory)
+            .fileExits(path.join(directory, command.parameters[1]));
+         } catch(error) {
             this.cleanUp();
             throw error;
         }

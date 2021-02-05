@@ -12,6 +12,7 @@ The following functions are already implemented:
 * runServerJava
 * buildNg
 * npmInstall
+* downloadFile
 
 ***
 
@@ -151,6 +152,16 @@ npmInstall("my-thai-star/angular")
 
 ***
 
+### downloadFile
+#### parameter 
+1. URL of the file to be downloaded.
+2. Name of file.
+3. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
+#### example 
+downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+***
+
 ### buildNg
 #### parameter 
 1. Path to the angular project relative to workspace
@@ -163,7 +174,6 @@ buildNg("exampleAngularProject", "testOutput")
 Will build the angular project to output directory testOutput.
 
 ***
-
 
 ### runClientNg
 #### parameter 
