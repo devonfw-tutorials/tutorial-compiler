@@ -10,6 +10,7 @@ The following functions are already implemented:
 * changeFile
 * cloneRepository
 * runServerJava
+* buildNg
 * npmInstall
 * downloadFile
 
@@ -114,6 +115,7 @@ Please try not to use custom placeholders. Keep in mind that you might want to b
 
 ***
 
+
 ### cloneRepository
 #### parameter 
 1. Path into which the repository is to be cloned, relative to workspace.
@@ -126,6 +128,7 @@ cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-comp
 Repository will be cloned into a newly created subdirectory devonfw-forge.
 
 ***
+
 
 ### runServerJava
 #### parameter 
@@ -156,6 +159,19 @@ npmInstall("my-thai-star/angular")
 3. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
 #### example 
 downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+***
+
+### buildNg
+#### parameter 
+1. Path to the angular project relative to workspace
+2. (Optional) Custom output directory.
+#### example 
+buildNg("exampleAngularProject")
+Will build the angular project to default output directory defined in angular.json outputPath key, normally set to dist/.
+
+buildNg("exampleAngularProject", "testOutput")
+Will build the angular project to output directory testOutput.
 
 ***
 
