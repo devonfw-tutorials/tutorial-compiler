@@ -6,6 +6,8 @@ import { Playbook } from "../../engine/playbook";
 import { Console } from "../console/index";
 import * as path from 'path';
 import * as child_process from "child_process";
+import * as ejs from 'ejs';
+import * as fs from 'fs';
 import { VsCodeUtils } from "./vscodeUtils";
 
 export class VsCode extends Runner {
@@ -26,6 +28,7 @@ export class VsCode extends Runner {
         this.consoleRunner.init(playbook);
 
         this.setupVsCode();
+        this.createFolder(path.join(__dirname, "tests"), true);
     }
 
     setupVsCode() {
@@ -40,7 +43,7 @@ export class VsCode extends Runner {
         }
 
         console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
-        let downloadDirectory = this.createFolder(path.join(this.getWorkingDirectory(), "..", "runners", "vscode", "resources"), false);
+        let downloadDirectory = this.createFolder(path.join(__dirname, "resources"), false);
         let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
     }
@@ -77,10 +80,10 @@ export class VsCode extends Runner {
     runCobiGenJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
-        let testfile = path.join("build", "runners", "vscode", "tests", "runCobiGenJava.js");
-        let testrunner = path.join("build", "runners", "vscode", "vsCodeTestRunner.js");
-        this.executeCommandSync("node " + testrunner + " " + testfile, path.join(this.getWorkingDirectory(), "..", ".."), result);
+        
+        let testfile = path.join(__dirname, "tests", "runCobiGenJava.js");
+        this.renderTemplate("runCobiGenJava.js", testfile, { test: "jlhkjhkj" });
+        this.runTest(testfile, result);
  
         return result;
     }
@@ -145,20 +148,21 @@ export class VsCode extends Runner {
         return this.consoleRunner.assertNpmInstall(step, command, result);
     }
 
-    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
+    private runTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
-        console.log(command, process.output.toString());
+        let testrunner = path.join(__dirname, "vsCodeTestRunner.js");
+        let process = child_process.spawnSync("node " + testrunner + " " + testfile, { shell: true, cwd: __dirname });
         if(process.status != 0) {
-            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
+            console.log("Error while running test: " + testfile + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }
     }
 
-    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
-        let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
-    }  
+    private renderTemplate(name: string, targetPath: string, variables) {
+        let template = fs.readFileSync(path.join(__dirname, "test-templates", name), 'utf8');
+        let result = ejs.render(template, variables);
+        fs.writeFileSync(targetPath, result);
+    }
 }

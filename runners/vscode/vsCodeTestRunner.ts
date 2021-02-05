@@ -2,17 +2,18 @@ import * as path from "path";
 import { VSRunner } from "./vsCodeRunner";
 import { VsCodeUtils } from "./vscodeUtils";
 
-function main(args: string[]) {
+async function main(args: string[]) {
     if(args && args.length > 2) {
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeInstallDirectory();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion();
-        runTest(vsCodeExecutable, testfile, vsCodeVersion);
+        let res = await runTest(vsCodeExecutable, testfile, vsCodeVersion);
+        console.log("result: " + res);
     }
 }
 
 function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: string): Promise<number> {
-    let downloadFolder = path.resolve("build/runners/vscode/resources");
+    let downloadFolder = path.join(__dirname, "resources");
 
     // add chromedriver to process' path
     let env: NodeJS.ProcessEnv = {};
@@ -23,7 +24,7 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
     process.env = env;
     process.env.TEST_RESOURCES = downloadFolder;
 
-    let config = path.resolve("build/runners/vscode/.mocharc.js");
+    let config = path.join(__dirname, ".mocharc.js");
     let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, config);
     return runner.runTests(testFile, "info");
 }

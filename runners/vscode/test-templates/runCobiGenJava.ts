@@ -30,10 +30,13 @@ describe('CobiGenJava Test', () => {
 
         await workbench.executeCommand('Extest: Open File');
         prompt = await workbench.openCommandPrompt() as InputBox;
-        await prompt.setText('C:\\projects\\my-first-project\\workspaces\\main\\tutorial-compiler\\package.json');
+        await prompt.setText("<%= test; %>");
         await prompt.sendKeys(Key.ENTER);
 
         await sleep(5);
+
+        let x = "hallo";
+        expect(x).equals("v");
     });
 });
 
