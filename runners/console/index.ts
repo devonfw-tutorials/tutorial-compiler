@@ -18,6 +18,7 @@ export class Console extends Runner {
     private platform: ConsolePlatform;
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
+    private env: any;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -35,7 +36,7 @@ export class Console extends Runner {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
-
+        this.env = process.env;
     }
 
     destroy(playbook: Playbook): void {
@@ -58,6 +59,12 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        if(command.parameters[0].indexOf("npm") > -1 || command.parameters[0].indexOf("ng")) {
+            let nodeInstallDir = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
+            this.env["npm_config_prefix"] = nodeInstallDir;
+            this.env["npm_config_cache"] = "";
+        }
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
@@ -66,7 +73,7 @@ export class Console extends Runner {
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
         this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
-        
+
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
@@ -84,7 +91,7 @@ export class Console extends Runner {
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
-        this.setVariable(this.useDevonCommand,true);
+        this.setVariable(this.useDevonCommand, true);
 
         return result;
     }
@@ -199,7 +206,7 @@ export class Console extends Runner {
         }
 
         return result;
-    }
+    }        
 
 
     runDockerCompose(step: Step, command: Command): RunResult {
@@ -270,6 +277,53 @@ export class Console extends Runner {
             this.executeCommandSync("npm install", projectPath, result);
         }
 
+        return result;
+    }
+
+    runDownloadFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let downloadlDir = this.getVariable(this.workspaceDirectory);
+        if (command.parameters.length == 3) {
+            downloadlDir = path.join(downloadlDir, command.parameters[2]);
+            this.createFolder(downloadlDir, false);
+        }
+        let command1 = (this.platform == ConsolePlatform.WINDOWS) 
+            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
+            : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
+        
+        this.executeCommandSync(command1, downloadlDir, result);
+        return result;
+    }
+        
+    runRunClientNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let process = this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandAsync("ng serve", projectDir, result)
+            : this.executeCommandAsync("ng serve", projectDir, result);
+        if(process.pid) { 
+            this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
+        }
+        return result;
+    }
+
+    runBuildNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let command1 = "ng build";
+        if(command.parameters.length == 2) {
+            command1 = command1 + " --output-path " + command.parameters[1];
+        }
+        this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandSync(command1, projectDir, result)
+            : this.executeCommandSync(command1, projectDir, result);
+        
         return result;
     }
 
@@ -388,7 +442,6 @@ export class Console extends Runner {
         }
     }
 
-
     async assertDockerCompose(step: Step, command: Command, result: RunResult) {
         try {
             let assert = new Assertions()
@@ -481,10 +534,83 @@ export class Console extends Runner {
         }
     }
 
+    async assertDownloadFile(step: Step, command: Command, result: RunResult){
+        try {
+            let directory = this.getVariable(this.workspaceDirectory);
+            if(command.parameters.length == 3) {
+                directory = path.join(directory, command.parameters[2]);
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(directory)
+            .directoryNotEmpty(directory)
+            .fileExits(path.join(directory, command.parameters[1]));
+         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertRunClientNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(command.parameters.length > 1) {
+                if(!command.parameters[1].startupTime) {
+                    console.warn("No startup time for command runClientNg has been set")
+                }
+                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+                await this.sleep(command.parameters[1].startupTime);
+
+                if(!command.parameters[1].port) {
+                    this.killAsyncProcesses();
+                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
+                } else {
+                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    if(!isReachable) {
+                        this.killAsyncProcesses();
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                    }
+                }
+            }
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            var outputpath;
+            if(command.parameters.length == 2) {
+                outputpath = command.parameters[1].trim();
+            } else {
+                let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+                outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+                if(outputpath == null) {
+                    outputpath = "dist";
+                }
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(projectPath, outputpath))
+            .directoryNotEmpty(path.join(projectPath, outputpath));
+
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity });
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
@@ -497,10 +623,24 @@ export class Console extends Runner {
         this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
     }
 
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
+            
+            if(key == lookupkey) {
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
+    }
+
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawn(command, [], { shell: true, cwd: directory });
+        let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: this.env });
         if(!process.pid) {
             result.returnCode = 1;
         }
@@ -568,4 +708,5 @@ export class Console extends Runner {
         return null;
     }
     
+
 }
