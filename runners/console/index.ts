@@ -258,18 +258,16 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let installDir = this.getVariable(this.workspaceDirectory);
+        let downloadlDir = this.getVariable(this.workspaceDirectory);
         if (command.parameters.length == 3) {
-            installDir = path.join(installDir, command.parameters[2]);
-            this.createFolder(installDir, false);
+            downloadlDir = path.join(downloadlDir, command.parameters[2]);
+            this.createFolder(downloadlDir, false);
         }
-        var command1;
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            command1 = "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\"";
-        } else {
-            command1 = "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
-        }
-        this.executeCommandSync(command1, installDir, result);
+        let command1 = (this.platform == ConsolePlatform.WINDOWS) 
+            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
+            : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
+        
+        this.executeCommandSync(command1, downloadlDir, result);
         return result;
     }
         
