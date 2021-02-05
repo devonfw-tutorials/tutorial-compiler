@@ -208,10 +208,6 @@ export class Console extends Runner {
 
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            child_process.execFileSync("./DockerCli.exe", ["-SwitchLinuxEngine"], {cwd : "C:/Program Files/Docker/Docker"});
-            this.executeCommandSync("sleep 60", filepath, result);
-        } 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
         process.stderr.setEncoding('utf-8');
         process.stderr.on('data', (data) => {
@@ -221,15 +217,11 @@ export class Console extends Runner {
         process.stdout.on('data', (data) => {
             console.log(data);
         });
-        if(process.pid && command.parameters.length == 3) {
+        if(process.pid && command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
         }
         
         return result;
-        
-    }
-    
-    private dockerCompose(filepath: String, result: RunResult) {
         
     }
 
@@ -423,7 +415,8 @@ export class Console extends Runner {
             }
          } catch(error) {
             this.cleanUp();
-            throw error;
+            console.log(error);
+            console.log("docker-compose failed, this could be due to a wrong container engine.")
         }  
     }
 
