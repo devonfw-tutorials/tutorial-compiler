@@ -242,14 +242,14 @@ export class Katacoda extends Runner {
 
 
     runBuildNg(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main", command.parameters[0]));
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
 
         this.steps.push({
             "title": "Build the Angular Project",
             "text": "step" + this.stepsCount + ".md"
         });
 
-        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand });
+        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, outputDir: command.parameters[1], useDevonCommand: this.getVariable(this.useDevonCommand) });
 
         return null;
     }
