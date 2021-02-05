@@ -10,6 +10,9 @@ The following functions are already implemented:
 * changeFile
 * cloneRepository
 * runServerJava
+* buildNg
+* npmInstall
+* downloadFile
 
 ***
 
@@ -112,6 +115,7 @@ Please try not to use custom placeholders. Keep in mind that you might want to b
 
 ***
 
+
 ### cloneRepository
 #### parameter 
 1. Path into which the repository is to be cloned, relative to workspace.
@@ -122,7 +126,9 @@ Repository will be cloned directly into the workspace directory.
 
 cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
 Repository will be cloned into a newly created subdirectory devonfw-forge.
+
 ***
+
 
 ### runServerJava
 #### parameter 
@@ -135,4 +141,51 @@ runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "star
 startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
+
 ***
+
+### npmInstall
+#### parameter 
+1. Path to the project where the dependencies from the package.json file are to be installed.
+#### example 
+npmInstall("my-thai-star/angular")
+
+***
+
+### downloadFile
+#### parameter 
+1. URL of the file to be downloaded.
+2. Name of file.
+3. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
+#### example 
+downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+***
+
+### buildNg
+#### parameter 
+1. Path to the angular project relative to workspace
+2. (Optional) Custom output directory.
+#### example 
+buildNg("exampleAngularProject")
+Will build the angular project to default output directory defined in angular.json outputPath key, normally set to dist/.
+
+buildNg("exampleAngularProject", "testOutput")
+Will build the angular project to output directory testOutput.
+
+***
+
+### runClientNg
+#### parameter 
+1. Path to the angular project from which the frontend server is to be started.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+runClientNg("jump-the-queue/angular", { "startupTime": 200, "port": 4200, "path": "" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
+
+***
+
