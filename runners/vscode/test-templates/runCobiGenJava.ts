@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { WebDriver, Workbench, VSBrowser, InputBox, ActivityBar, Key } from 'vscode-extension-tester';
+import { WebDriver, Workbench, VSBrowser, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
 
 describe('CobiGenJava Test', () => {
     let driver: WebDriver;
@@ -9,34 +8,50 @@ describe('CobiGenJava Test', () => {
     });
 
     it('runCobiGenJava', async function () {
-        console.log("Title: " + await VSBrowser.instance.driver.getTitle());
-        expect(await VSBrowser.instance.driver.getTitle()).contain("Code");
-        await sleep(4);
         let workbench = new Workbench();
-        let commandprompt = await workbench.openCommandPrompt();
-        commandprompt.sendKeys("Hallo");
 
-        await workbench.executeCommand('Extest: Add Folder To Workspace');
         let prompt = await workbench.openCommandPrompt() as InputBox;
-        await prompt.setText('C:\\projects\\my-first-project\\workspaces\\main\\tutorial-compiler\\');
+        await prompt.setText('> Extest: Add Folder To Workspace');
+        await prompt.sendKeys(Key.ENTER);
+        await sleep(1);
+        await prompt.setText('<%= directoryPath %>');
         await prompt.sendKeys(Key.ENTER);
 
-        await sleep(4);
 
-        let control = await new ActivityBar().getViewControl('Explorer');
-        await control.openView();
+        let explorer = new ActivityBar().getViewControl("Explorer");
+        await explorer.openView();
 
-        await sleep(4);
-
-        await workbench.executeCommand('Extest: Open File');
-        prompt = await workbench.openCommandPrompt() as InputBox;
-        await prompt.setText("<%= test; %>");
-        await prompt.sendKeys(Key.ENTER);
-
-        await sleep(5);
-
-        let x = "hallo";
-        expect(x).equals("v");
+        let sections = await new SideBarView().getContent().getSections();
+        let workspace = "";
+        for(let i = 0; i < sections.length; i++) {
+            let title = await sections[i].getTitle();
+            if(title && title.toLowerCase().indexOf("workspace") > 0) workspace = await sections[i].getTitle();
+        }
+        if(workspace) {
+            let workspaceSection = await new SideBarView().getContent().getSection(workspace) as CustomTreeSection;
+            let files = await workspaceSection.openItem("<%= directoryName %>");
+            sleep(2)
+            for(let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let fileText = await file.getText();
+                if(fileText.indexOf("<%= filename %>") > -1) {
+                    let menu = await file.openContextMenu();
+                    let items = await menu.getItems();
+                    for(let i = 0; i < items.length; i++) {
+                        let text = await items[i].getText();
+                        if(text.indexOf("CobiGen") > -1) {
+                            await items[i].select();
+                            break;
+                        }
+                    }
+                    await sleep(30);
+                    
+                   let terminal = new TerminalView();
+                   await terminal.executeCommand("<%= cobigenTemplates %>");
+                   await sleep(10);
+                }
+            }
+        }
     });
 });
 

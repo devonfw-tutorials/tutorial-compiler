@@ -5,7 +5,7 @@ import { VsCodeUtils } from "./vscodeUtils";
 async function main(args: string[]) {
     if(args && args.length > 2) {
         let testfile = args[2];
-        let vsCodeExecutable = VsCodeUtils.getVsCodeInstallDirectory();
+        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion();
         let res = await runTest(vsCodeExecutable, testfile, vsCodeVersion);
         console.log("result: " + res);

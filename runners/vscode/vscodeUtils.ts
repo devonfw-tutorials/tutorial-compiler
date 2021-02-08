@@ -3,16 +3,17 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 
 export class VsCodeUtils {
-    static getVsCodeInstallDirectory() {
-        let cmd = (process.platform == "win32") ? "where code" : "which code"
+    static getVsCodeExecutable() {
+        let cmd = (process.platform == "win32") ? "where code" : "which code";
         let cp = child_process.spawnSync(cmd, { shell: true });
         let output = cp.stdout.toString();
         if(!output) {
             return "";
         }
         
-        let vsCodeDirectory = output.toString().split("\n")[0];
-        let executable = vsCodeDirectory.substring(0, vsCodeDirectory.lastIndexOf(path.sep)) + path.sep + ".." + path.sep + "Code.exe";
+        let vsCodeBin = output.toString().split("\n")[0];
+        let executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", "Code.exe"));
+        if(!fs.existsSync(executable)) return "";
         return executable;
     }
     
@@ -47,15 +48,15 @@ export class VsCodeUtils {
         
         this.downloadDriverInternal(chromiumVersion, driverPlatform, downloadPath);
         if(!fs.existsSync(file)) {
-            console.log("Unable to download chromedriver from chromium " + chromiumVersion + ". Try to download latest chromedriver release for chromium version " + chromiumVersion.substring(0, chromiumVersion.indexOf(".")));
+            console.log("Unable to download chromedriver " + chromiumVersion + ". Try to download latest chromedriver release for chromium " + chromiumVersion.substring(0, chromiumVersion.indexOf(".")));
             chromiumVersion = this.getLatestChromeDriverVersion(chromiumVersion.substring(0, chromiumVersion.indexOf(".")), downloadPath);
            
             this.downloadDriverInternal(chromiumVersion, driverPlatform, downloadPath);
             if(!fs.existsSync(file)) {
-                throw new Error("Unable to download chromedriver for chromium version " + chromiumVersion);
+                throw new Error("Unable to download chromedriver " + chromiumVersion);
             }
         }
-        console.log("Chromedriver for chromium " + chromiumVersion + " successfully downloaded to " + file);
+        console.log("Chromedriver " + chromiumVersion + " successfully downloaded to " + file);
 
         //unzip chromedriver
         let unzipCommand = (process.platform == "win32")
@@ -72,7 +73,7 @@ export class VsCodeUtils {
             : "wget -c \"" + url + "\" -O chromedriver_latestRelease.txt";
         child_process.spawnSync(command, { shell: true, cwd: downloadPath });
         if(!fs.existsSync(path.join(downloadPath, "chromedriver_latestRelease.txt"))) {
-            throw new Error("Unable to get latest release for chromium version " + chromiumVersion);
+            throw new Error("Unable to get latest chromedriver release for chromium version " + chromiumVersion);
         }
         return fs.readFileSync(path.join(downloadPath, "chromedriver_latestRelease.txt"), "utf-8");
     }
