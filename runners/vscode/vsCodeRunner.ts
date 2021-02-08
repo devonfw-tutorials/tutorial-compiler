@@ -64,7 +64,6 @@ export class VSRunner {
             });
     
             this.mocha.run((failures) => {
-                console.log("mocha run");
                 process.exitCode = failures ? 1 : 0;
                 resolve(process.exitCode);
             });

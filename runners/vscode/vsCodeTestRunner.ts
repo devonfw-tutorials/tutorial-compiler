@@ -8,7 +8,8 @@ async function main(args: string[]) {
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion();
         let res = await runTest(vsCodeExecutable, testfile, vsCodeVersion);
-        console.log("result: " + res);
+        console.log(res);
+        return res;
     }
 }
 

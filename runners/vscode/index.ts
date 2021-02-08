@@ -14,6 +14,7 @@ export class VsCode extends Runner {
 
     private consoleRunner: Console;
     private variables: Map<string, any> = new Map<string, any>();
+    private installedExtensions: string[] = [];
 
     init(playbook: Playbook): void {
         this.consoleRunner = new Console();
@@ -53,6 +54,7 @@ export class VsCode extends Runner {
 
     destroy(playbook: Playbook): void {
         this.consoleRunner.destroy(playbook);
+        this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
     }
 
     runInstallDevonfwIde(step: Step, command: Command): RunResult {
@@ -95,7 +97,7 @@ export class VsCode extends Runner {
     }
 
     runCreateFile(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runCreateFile(step, command);
+        return this.consoleRunner.runCreateFil(step, command);
     }
     
     runBuildJava(step: Step, command: Command): RunResult {
@@ -181,7 +183,6 @@ export class VsCode extends Runner {
 
         let testrunner = path.join(__dirname, "vsCodeTestRunner.js");
         let process = child_process.spawnSync("node " + testrunner + " " + testfile, { shell: true, cwd: __dirname });
-        console.log(process.output.toString());
         if(process.status != 0) {
             console.log("Error while running test: " + testfile + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
@@ -198,12 +199,19 @@ export class VsCode extends Runner {
     private installExtension(vsCodeExecutable: string, vsixPath: string) {
         console.log("Installing extension " + vsixPath);
         let vsCodeBin = path.join(path.dirname(vsCodeExecutable), "bin", "code");
-        console.log(vsCodeBin + " --install-extension " + vsixPath);
-        let process = child_process.spawnSync(vsCodeBin);
-        console.log(process);
+        let process = child_process.spawnSync(vsCodeBin + " --install-extension " + vsixPath, { shell: true });
         if(process.status != 0) {
             console.log("Error while installing extension: " + process.output.toString());
             throw new Error("Unable to install externsion " + vsixPath);
         }
+        this.installedExtensions.push(vsixPath);
+    }
+
+    private uninstallExtensions(vsCodeExecutable: string) {
+        this.installedExtensions.forEach(extension => {
+            console.log("Uninstall extension " + extension);
+            let vsCodeBin = path.join(path.dirname(vsCodeExecutable), "bin", "code");
+            child_process.spawnSync(vsCodeBin + " --uninstall-extension " + extension, { shell: true });
+        });
     }
 }

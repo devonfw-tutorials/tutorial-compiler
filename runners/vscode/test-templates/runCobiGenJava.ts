@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { WebDriver, Workbench, VSBrowser, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
 
 describe('CobiGenJava Test', () => {
@@ -9,11 +10,10 @@ describe('CobiGenJava Test', () => {
 
     it('runCobiGenJava', async function () {
         let workbench = new Workbench();
-
+        let cobigenOutput = "";
         let prompt = await workbench.openCommandPrompt() as InputBox;
         await prompt.setText('> Extest: Add Folder To Workspace');
         await prompt.sendKeys(Key.ENTER);
-        await sleep(1);
         await prompt.setText('<%= directoryPath %>');
         await prompt.sendKeys(Key.ENTER);
 
@@ -30,7 +30,6 @@ describe('CobiGenJava Test', () => {
         if(workspace) {
             let workspaceSection = await new SideBarView().getContent().getSection(workspace) as CustomTreeSection;
             let files = await workspaceSection.openItem("<%= directoryName %>");
-            sleep(2)
             for(let i = 0; i < files.length; i++) {
                 let file = files[i];
                 let fileText = await file.getText();
@@ -44,14 +43,17 @@ describe('CobiGenJava Test', () => {
                             break;
                         }
                     }
+                    await sleep(50);
+                    let terminal = new TerminalView();
+                    await terminal.executeCommand("<%= cobigenTemplates %>");
                     await sleep(30);
-                    
-                   let terminal = new TerminalView();
-                   await terminal.executeCommand("<%= cobigenTemplates %>");
-                   await sleep(10);
+                    cobigenOutput = await terminal.getText();
                 }
             }
         }
+
+        expect(cobigenOutput).to.not.be.empty;
+        expect(cobigenOutput).not.contains("Exception");
     });
 });
 
