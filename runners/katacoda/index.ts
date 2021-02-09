@@ -221,8 +221,7 @@ export class Katacoda extends Runner {
     runBuildJava(step: Step, command: Command): RunResult{
         
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-        let skipTest = true;
-        if(command.parameters.length == 2 && command.parameters[1] == true) skipTest = false;
+        let skipTest = (command.parameters.length == 2 && command.parameters[1] == true) ? false : true;
     
         this.steps.push({
             "title": "Build the java project",

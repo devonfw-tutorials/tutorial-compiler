@@ -2,6 +2,8 @@
 
 Go back to the IDE and find the file "<%= fileDir; %>".
 
+`<%= fileDir; %>`{{open}}
+
 <%= changeDescr; %>
 
 Click on 'Copy to Editor' to change it automatically.
