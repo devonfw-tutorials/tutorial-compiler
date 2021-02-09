@@ -221,21 +221,15 @@ export class Katacoda extends Runner {
     runBuildJava(step: Step, command: Command): RunResult{
         
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-
-        let skipTest = "-Dmaven.test.skip=true";
-        let skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.";  
-
-        if(command.parameters.length == 2 && command.parameters[1] == true){
-            skipTest = "";
-            skipTestDescr = "";    
-        }
+        let skipTest = true;
+        if(command.parameters.length == 2 && command.parameters[1] == true) skipTest = false;
     
         this.steps.push({
             "title": "Build the java project",
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
 
     }
