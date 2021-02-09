@@ -194,19 +194,15 @@ export class Katacoda extends Runner {
         let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+        let placeholder = command.parameters[1].placeholder ? command.parameters[1].placeholder : "";
+        let dataTarget = command.parameters[1].placeholder ? "insert" : "replace";
+
         let content = "";
-        let placeholder = "";
-        let dataTarget = "replace";
-        let changeDescr = "Replace the content of "+ fileName +" with the following code.";
-        if(command.parameters[1].placeholder){
-            dataTarget = "insert";
-            placeholder = command.parameters[1].placeholder;
-            changeDescr = "Insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
-        }
-        if(command.parameters[1].content){
-            content = command.parameters[1].content;
-        }else if(command.parameters[1].file){
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+        if(command.parameters[1].content || command.parameters[1].contentKatacoda){
+            content = (command.parameters[1].contentKatacoda) ? command.parameters[1].contentKatacoda : command.parameters[1].content;
+        }else if(command.parameters[1].file || command.parameters[1].fileKatacoda){
+            let file = (command.parameters[1].fileKatacoda) ? command.parameters[1].fileKatacoda : command.parameters[1].file;
+            content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
         this.steps.push({
@@ -214,7 +210,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
     }
 
