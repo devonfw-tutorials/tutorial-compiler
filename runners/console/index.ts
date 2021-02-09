@@ -150,19 +150,13 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let buildCommand;
+        let buildCommand = (command.parameters.length == 2 && command.parameters[1] == true)
+            ? "mvn clean install"
+            : "mvn clean install -Dmaven.test.skip=true";
 
-        if(command.parameters.length == 2 && command.parameters[1] == true){
-            buildCommand = "mvn clean install";
-        } else {
-            buildCommand = "mvn clean install -Dmaven.test.skip=true";
-        }
-
-        if(this.getVariable(this.useDevonCommand)){
-            this.executeDevonCommandSync(buildCommand, projectDir, result);
-        } else {
-            this.executeCommandSync(buildCommand, projectDir, result);
-        }
+        this.getVariable(this.useDevonCommand)
+            ? this.executeDevonCommandSync(buildCommand, projectDir, result)
+            : this.executeCommandSync(buildCommand, projectDir, result);
 
         return result;
     }
@@ -174,7 +168,7 @@ export class Console extends Runner {
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
-        
+
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
         return result;
@@ -197,11 +191,9 @@ export class Console extends Runner {
             }
             fs.writeFileSync(filepath, content);
         } else {
-            if(command.parameters[1].content) {
-                fs.writeFileSync(filepath, command.parameters[1].content);
-            } else {
-                fs.writeFileSync(filepath, fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" }));
-            }
+            (command.parameters[1].content)
+                ? fs.writeFileSync(filepath, command.parameters[1].content)
+                : fs.writeFileSync(filepath, fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" }));
         }
 
         return result;
@@ -212,13 +204,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let process;
-
-        if(this.getVariable(this.useDevonCommand)){
-            process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
-        }else{
-            process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
-        }
+        let process = (this.getVariable(this.useDevonCommand))
+            ? this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result)
+            : this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
 
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
@@ -245,11 +233,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        if(this.getVariable(this.useDevonCommand)){
-            this.executeDevonCommandSync("npm install", projectPath, result);
-        }else{
-            this.executeCommandSync("npm install", projectPath, result);
-        }
+        this.getVariable(this.useDevonCommand)
+            ? this.executeDevonCommandSync("npm install", projectPath, result)
+            : this.executeCommandSync("npm install", projectPath, result);
 
         return result;
     }
