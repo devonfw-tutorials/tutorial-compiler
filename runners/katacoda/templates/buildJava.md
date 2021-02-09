@@ -4,7 +4,7 @@
  
 Use the following devon command to build the java project.
 
-`<% if(useDevonCommand){ %>devon <% } %>mvn clean install<% if(skipTest){ %> -Dmaven.test.skip=true<% } %>`{{execute}}
+`<% if(useDevonCommand){ %>devon <% } %>mvn clean install<% if(skipTest){ %> -Dmaven.test.skip=true<% } %>`{{execute T1}}
 
 The maven command 'clean' will clear the target directory beforehand. 
 

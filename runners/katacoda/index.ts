@@ -214,7 +214,7 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
         return null;
     }
 
@@ -325,7 +325,7 @@ export class Katacoda extends Runner {
             
         }else{
             dir = dirUtils.getCdParam(this.currentDir, targetDir);
-            terminal = "";
+            terminal = "T1";
             terminalDescr = "Please change the folder to " + dir + ".";
             this.currentDir = targetDir;
         }
