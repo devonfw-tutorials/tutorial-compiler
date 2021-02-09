@@ -1,6 +1,8 @@
 <%= text; %>
 
-Go back to the IDE and find the file <%= fileName; %>.
+Go back to the IDE and find the file "<%= fileDir; %>".
+
+`<%= fileDir; %>`{{open}}
 
 <%= changeDescr; %>
 
