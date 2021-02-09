@@ -126,7 +126,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runCreateFil(step: Step, command: Command): RunResult {
+    runCreateFile(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 

@@ -97,7 +97,7 @@ export class VsCode extends Runner {
     }
 
     runCreateFile(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runCreateFil(step, command);
+        return this.consoleRunner.runCreateFile(step, command);
     }
     
     runBuildJava(step: Step, command: Command): RunResult {

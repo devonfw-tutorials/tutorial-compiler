@@ -54,6 +54,7 @@ describe('CobiGenJava Test', () => {
 
         expect(cobigenOutput).to.not.be.empty;
         expect(cobigenOutput).not.contains("Exception");
+        expect(cobigenOutput).contains("Commands were executed correctly");
     });
 });
 
