@@ -8,6 +8,7 @@ The following functions are already implemented:
 * buildJava
 * createFile
 * changeFile
+* createFolder
 * cloneRepository
 * runServerJava
 * buildNg
@@ -112,9 +113,15 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
-
 ***
 
+### createFolder
+#### parameter 
+1. Path of the folder to be created, relative to the workspace directory. Subdirectories are also created.
+#### example 
+createFolder("directoryPath/subDirectory")
+
+***
 
 ### cloneRepository
 #### parameter 
