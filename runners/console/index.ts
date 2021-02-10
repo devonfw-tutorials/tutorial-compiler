@@ -287,6 +287,18 @@ export class Console extends Runner {
         return result;
     }
 
+    runCreateFolder(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        if(folderPath && !fs.existsSync(folderPath)) {
+            this.createFolder(folderPath, true);
+        }
+        
+        return result;
+    }
+
     runNextKatacodaStep(step: Step, command: Command): RunResult {
         //Only needed for katacoda runner
         return null;
@@ -536,6 +548,19 @@ export class Console extends Runner {
             .directoryNotEmpty(path.join(projectPath, outputpath));
 
         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertCreateFolder(step: Step, command: Command, result: RunResult){
+        try {
+            let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(folderPath);
+         } catch(error) {
             this.cleanUp();
             throw error;
         }
