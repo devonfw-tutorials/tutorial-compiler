@@ -23,43 +23,36 @@ export class Engine {
         for (let runnerIndex in this.environment.runners) {
             (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
-        let stop = false;
         for (let stepIndex in this.playbook.steps) {
-            if(stop) { 
-                break;
-            }
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
-                if(stop) { 
-                    break;
-                }
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
                         var result = new RunResult();
+                        
                         try {
                             result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
                         }
                         catch (e) {
                             result.exceptions.push(e);
                         }
-                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
-                            stop = true;
-                        }
-                        console.log(this.playbook.steps[stepIndex].lines[lineIndex].name + ": is skippable: " + stop);
+                        
+                        let allowedToStop = runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name);
+                        
                         try {
                             await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
                         } catch(error){
-                            if(stop) {
-                                console.log("Catched failed assertion of skippable command");
+                            if(allowedToStop) {
+                                console.log("Catched failed assertion of skippable command: " + this.playbook.steps[stepIndex].lines[lineIndex].name);
                                 continue;
                             } else {
                                 throw error;
                             }
                         }
-                        stop = false;
                         break;
                     }
-                }
+                } 
+                
             }
         }
 

@@ -703,7 +703,6 @@ export class Console extends Runner {
         let returnVal = false;
         var arr = this.skippableCommands;
         for (var i=0; i < arr.length; i++){
-            console.log("skippableCommand: " + arr[i]);
             if (arr[i] == command) {
                 returnVal = true;
                 break;
