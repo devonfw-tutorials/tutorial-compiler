@@ -23,8 +23,10 @@ export class Engine {
         for (let runnerIndex in this.environment.runners) {
             (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
-        for (let stepIndex in this.playbook.steps) {
+
+        mainloop: for (let stepIndex in this.playbook.steps) {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
+                let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
@@ -49,9 +51,13 @@ export class Engine {
                                 throw error;
                             }
                         }
+                        foundRunnerToExecuteCommand = true;
                         break;
                     }
-                } 
+                }
+                if(!foundRunnerToExecuteCommand) {
+                    break mainloop;
+                }
                 
             }
         }
