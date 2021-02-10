@@ -36,6 +36,7 @@ export class Console extends Runner {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
+        this.setVariable(this.skippableCommands, new Array());
         this.env = process.env;
     }
 
@@ -212,7 +213,7 @@ export class Console extends Runner {
     runDockerCompose(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
+        this.addToSkippableCommands(command);
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
@@ -468,8 +469,7 @@ export class Console extends Runner {
             }
          } catch(error) {
             this.cleanUp();
-            console.log(error);
-            console.log("docker-compose failed, this could be due to a wrong container engine.")
+            throw error;
         }  
     }
 
@@ -693,19 +693,13 @@ export class Console extends Runner {
             })
         }
     }
-
-    private lookup(obj, lookupkey) {
-        for(var key in obj) {
-
-            if(key == lookupkey) {
-                return [lookupkey, obj[key]];
-            }
-            if(obj[key] instanceof Object) {
-                var y = this.lookup(obj[key], lookupkey);
-                if (y && y[0] == lookupkey) return y;
-            }
+    addToSkippableCommands(command: Command) {
+        console.log("Add " + command.name + "to skippableCommands");
+        try {
+            this.setVariable(this.skippableCommands, this.getVariable(this.skippableCommands).push(command.name));
+        } catch(e) {
+            console.log(e);
         }
-        return null;
     }
     
 

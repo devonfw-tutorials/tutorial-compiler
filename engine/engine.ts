@@ -23,9 +23,15 @@ export class Engine {
         for (let runnerIndex in this.environment.runners) {
             (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
-
+        let stop = false;
         for (let stepIndex in this.playbook.steps) {
+            if(stop) { 
+                break;
+            }
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
+                if(stop) { 
+                    break;
+                }
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
@@ -35,6 +41,11 @@ export class Engine {
                         }
                         catch (e) {
                             result.exceptions.push(e);
+                            if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
+                                console.log("Should stop")
+                                stop = true;
+                                break;
+                            }
                         }
                         await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
                         break;
