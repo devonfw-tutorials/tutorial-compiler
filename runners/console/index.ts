@@ -196,7 +196,7 @@ export class Console extends Runner {
                 content = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
             } else {
                 let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
-                content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" })
+                content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
         }
         fs.writeFileSync(filepath, content);
