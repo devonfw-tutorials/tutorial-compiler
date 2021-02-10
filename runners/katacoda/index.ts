@@ -233,6 +233,20 @@ export class Katacoda extends Runner {
 
     }
 
+
+    runBuildNg(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+
+        this.steps.push({
+            "title": "Build the Angular Project",
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, outputDir: command.parameters[1], useDevonCommand: this.getVariable(this.useDevonCommand) });
+
+        return null;
+    }
+  
     runCloneRepository(step: Step, command: Command): RunResult {
 
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory)));
@@ -260,7 +274,6 @@ export class Katacoda extends Runner {
             "title": "Start the java server",
             "text": "step" + this.stepsCount + ".md"
         });
-        
         this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
