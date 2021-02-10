@@ -43,6 +43,7 @@ export class Engine {
                             result.exceptions.push(e);
                             if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
                                 stop = true;
+                                break;
                             }
                         }
                         await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);

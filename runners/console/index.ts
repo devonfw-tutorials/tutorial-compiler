@@ -228,7 +228,7 @@ export class Console extends Runner {
         process.on('close', (code) => {
             if (code !== 0) {
               result.returnCode = code;
-              throw new Error(`Docker-Compose process exited with code ${code}`);
+              throw new Error("Docker-Compose process exited with code " + code);
             }
           });
         if(process.pid && command.parameters.length == 2) {
