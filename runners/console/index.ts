@@ -299,6 +299,11 @@ export class Console extends Runner {
         return result;
     }
 
+    runNextKatacodaStep(step: Step, command: Command): RunResult {
+        //Only needed for katacoda runner
+        return null;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         try {
             let installedTools = command.parameters[0];

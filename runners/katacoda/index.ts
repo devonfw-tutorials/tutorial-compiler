@@ -316,6 +316,32 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runNextKatacodaStep(step: Step, command: Command): RunResult {
+        let tempFile = path.join(this.getTempDirectory(), command.name + ".md");
+        fs.writeFileSync(tempFile, "");
+        for(let i = 0; i < command.parameters[1].length; i++) {
+            let param = command.parameters[1][i];
+            if(param.content) {
+                fs.appendFileSync(tempFile, param.content);
+            } else if(param.file) {
+                fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
+            } else if (param.image) {
+                let image = path.join(this.playbookPath, param.image);
+                this.assetManager.registerFile(image, path.basename(image), "", true);
+                fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
+            }
+            fs.appendFileSync(tempFile, "\n\n");
+        }
+
+        let content = fs.readFileSync(tempFile, "utf-8");
+        this.steps.push({
+            "title": command.parameters[0],
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
+        return null;
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
