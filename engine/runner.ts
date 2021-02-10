@@ -116,7 +116,6 @@ export abstract class Runner {
     commandIsSkippable(command: Command): Boolean {
         let returnVal = false;
         for (let skippableCommand in this.getVariable(this.skippableCommands)){
-            console.log("skippable command: " + skippableCommand + ", command in question: " + command.name);
             if (skippableCommand == command.name) {
                 returnVal = true;
                 break;

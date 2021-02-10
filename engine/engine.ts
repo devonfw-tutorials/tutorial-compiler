@@ -41,13 +41,16 @@ export class Engine {
                         }
                         catch (e) {
                             result.exceptions.push(e);
+                        }
+                        try {
+                            await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
+                        } catch(error) {
                             if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
-                                console.log("Should stop")
                                 stop = true;
-                                break;
+                            } else {
+                                throw error;
                             }
                         }
-                        await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
                         break;
                     }
                 }

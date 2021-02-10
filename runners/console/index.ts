@@ -694,12 +694,7 @@ export class Console extends Runner {
         }
     }
     addToSkippableCommands(command: Command) {
-        console.log("Add " + command.name + "to skippableCommands");
-        try {
-            this.setVariable(this.skippableCommands, this.getVariable(this.skippableCommands).push(command.name));
-        } catch(e) {
-            console.log(e);
-        }
+        this.setVariable(this.skippableCommands, this.getVariable(this.skippableCommands).push(command.name));
     }
     
 
