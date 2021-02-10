@@ -225,6 +225,12 @@ export class Console extends Runner {
         process.stdout.on('data', (data) => {
             console.log(data);
         });
+        process.on('close', (code) => {
+            if (code !== 0) {
+              result.returnCode = code;
+              throw new Error(`Docker-Compose process exited with code ${code}`);
+            }
+          });
         if(process.pid && command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
         }
