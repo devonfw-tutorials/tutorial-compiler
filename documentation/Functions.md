@@ -13,6 +13,7 @@ The following functions are already implemented:
 * buildNg
 * npmInstall
 * downloadFile
+* nextKatacodaStep
 
 ***
 
@@ -189,3 +190,17 @@ path: The URL path on which is checked if the server is running
 
 ***
 
+### nextKatacodaStep
+#### parameter 
+1. An array of json objects with files, content, or images to be rendered within the katacoda step.
+#### example 
+nextKatacodaStep([{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
+
+#### Details
+Available attributes in the json objects:
+
+file: Path to a file whose content is to be displayed in the katacoda step (e.g. .md or .txt file).
+content: Plain text to be displayed in the katacoda step.
+image: Path to an image to be displayed in the katacoda step.
+
+***
