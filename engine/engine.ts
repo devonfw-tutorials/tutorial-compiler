@@ -35,18 +35,27 @@ export class Engine {
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
+                            stop = true;
+                        }
                         var result = new RunResult();
                         try {
                             result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
                         }
                         catch (e) {
                             result.exceptions.push(e);
-                            if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
-                                stop = true;
-                                break;
+                        }
+                        console.log("Assertions start");
+                        try {
+                            await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
+                        } catch(error){
+                            if(stop) {
+                                continue;
+                            } else {
+                                throw error;
                             }
                         }
-                        await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
+                        stop = false;
                         break;
                     }
                 }
