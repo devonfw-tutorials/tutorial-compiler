@@ -198,10 +198,11 @@ path: The URL path on which is checked if the server is running
 ***
 
 ### nextKatacodaStep
-#### parameter 
-1. An array of json objects with files, content, or images to be rendered within the katacoda step.
+#### parameter
+1. The title of the step.
+2. An array of json objects with files, content, or images to be rendered within the katacoda step.
 #### example 
-nextKatacodaStep([{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
+nextKatacodaStep("Step title", [{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Details
 Available attributes in the json objects:

@@ -319,12 +319,12 @@ export class Katacoda extends Runner {
     runNextKatacodaStep(step: Step, command: Command): RunResult {
         let tempFile = path.join(this.getTempDirectory(), command.name + ".md");
         fs.writeFileSync(tempFile, "");
-        for(let i = 0; i < command.parameters[0].length; i++) {
-            let param = command.parameters[0][i];
+        for(let i = 0; i < command.parameters[1].length; i++) {
+            let param = command.parameters[1][i];
             if(param.content) {
                 fs.appendFileSync(tempFile, param.content);
             } else if(param.file) {
-                fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"))
+                fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
             } else if (param.image) {
                 let image = path.join(this.playbookPath, param.image);
                 this.assetManager.registerFile(image, path.basename(image), "", true);
@@ -335,7 +335,7 @@ export class Katacoda extends Runner {
 
         let content = fs.readFileSync(tempFile, "utf-8");
         this.steps.push({
-            "title": "Next step",
+            "title": command.parameters[0],
             "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
