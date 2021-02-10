@@ -35,9 +35,6 @@ export class Engine {
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
-                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex])) {
-                            stop = true;
-                        }
                         var result = new RunResult();
                         try {
                             result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
@@ -45,11 +42,15 @@ export class Engine {
                         catch (e) {
                             result.exceptions.push(e);
                         }
-                        console.log("Assertions start");
+                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                            stop = true;
+                        }
+                        console.log(this.playbook.steps[stepIndex].lines[lineIndex].name + ": is skippable: " + stop);
                         try {
                             await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
                         } catch(error){
                             if(stop) {
+                                console.log("Catched failed assertion of skippable command");
                                 continue;
                             } else {
                                 throw error;

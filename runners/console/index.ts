@@ -19,6 +19,7 @@ export class Console extends Runner {
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
     private env: any;
+    private skippableCommands: Array<String> = new Array();
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -36,7 +37,6 @@ export class Console extends Runner {
             fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
-        this.setVariable(this.skippableCommands, new Array());
         this.env = process.env;
     }
 
@@ -213,7 +213,7 @@ export class Console extends Runner {
     runDockerCompose(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-        this.addToSkippableCommands(command);
+        this.skippableCommands.push(command.name);
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
@@ -698,8 +698,18 @@ export class Console extends Runner {
             })
         }
     }
-    addToSkippableCommands(command: Command) {
-        this.setVariable(this.skippableCommands, this.getVariable(this.skippableCommands).push(command.name));
+    
+    commandIsSkippable(command: String): Boolean {
+        let returnVal = false;
+        var arr = this.skippableCommands;
+        for (var i=0; i < arr.length; i++){
+            console.log("skippableCommand: " + arr[i]);
+            if (arr[i] == command) {
+                returnVal = true;
+                break;
+            }
+        }
+        return returnVal;
     }
     
 

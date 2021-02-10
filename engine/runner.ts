@@ -13,7 +13,6 @@ export abstract class Runner {
     public playbookTitle: string;
     protected readonly useDevonCommand: string = "useDevonCommand";
     protected readonly workspaceDirectory: string = "workspaceDirectory";
-    protected readonly skippableCommands: string = "skippableCommands";
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
@@ -85,7 +84,6 @@ export abstract class Runner {
 
     init(playbook: Playbook): void {
         this.setVariable(this.useDevonCommand, false);
-        this.setVariable(this.skippableCommands, new Array());
     }
 
     run(step: Step, command: Command): RunResult {
@@ -113,14 +111,7 @@ export abstract class Runner {
         return path;
     }
 
-    commandIsSkippable(command: Command): Boolean {
-        let returnVal = false;
-        for (let skippableCommand in this.getVariable(this.skippableCommands)){
-            if (skippableCommand == command.name) {
-                returnVal = true;
-                break;
-            }
-        }
-        return returnVal;
+    commandIsSkippable(command: String): Boolean {
+        return false;
     }
 }
