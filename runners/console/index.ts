@@ -180,21 +180,26 @@ export class Console extends Runner {
 
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
+        let content = fs.readFileSync(filepath, { encoding: "utf-8" });
         if(command.parameters[1].placeholder) {
-            let content = fs.readFileSync(filepath, { encoding: "utf-8" });
             let placeholder = command.parameters[1].placeholder;
-            if(command.parameters[1].content) {
-                content = content.replace(placeholder, command.parameters[1].content);
-            } else if (command.parameters[1].file) {
-                let contentFile = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+            if(command.parameters[1].content || command.parameters[1].contentConsole) {
+                let contentReplace = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
+                content = content.replace(placeholder, contentReplace);
+            } else if (command.parameters[1].file || command.parameters[1].fileConsole) {
+                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+                let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
-            fs.writeFileSync(filepath, content);
         } else {
-            (command.parameters[1].content)
-                ? fs.writeFileSync(filepath, command.parameters[1].content)
-                : fs.writeFileSync(filepath, fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" }));
+            if(command.parameters[1].content || command.parameters[1].contentConsole) {
+                content = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
+            } else {
+                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+                content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
+            }
         }
+        fs.writeFileSync(filepath, content);
 
         return result;
     }        
