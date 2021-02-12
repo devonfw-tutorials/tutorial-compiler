@@ -338,6 +338,16 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runAdaptCobiGenTemplates(step: Step, command: Command): RunResult {
+        this.steps.push({
+            "title": "Adapt cobiGen templates",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("adaptCobiGenTemplates.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+        return null;
+    
+    }
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);

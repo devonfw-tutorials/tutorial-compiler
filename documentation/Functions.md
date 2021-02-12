@@ -15,6 +15,7 @@ The following functions are already implemented:
 * npmInstall
 * downloadFile
 * nextKatacodaStep
+* adaptCobiGenTemplates
 
 ***
 
@@ -214,3 +215,13 @@ content: Plain text to be displayed in the katacoda step.
 image: Path to an image to be displayed in the katacoda step.
 
 ***
+
+### adaptCobiGenTemplates
+#### parameter
+* No parameters
+#### example
+adaptCobiGenTemplates()
+
+***
+
+
