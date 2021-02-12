@@ -116,6 +116,7 @@ export abstract class Runner {
         if(this.getVariable("skipCommands")) {
             let json = JSON.parse(this.getVariable("skipCommands"));
             for(var key in json) {
+                console.log("key: " + key + " runnername: " + runnerName);
                 if(key == runnerName) {
                     for (var i=0; i < json[key].length; i++){
                         if (json[key][i] == command) {
