@@ -71,13 +71,17 @@ class Run {
 
     parseArgs() {
         var argv = yargs(process.argv.slice(2)).argv;
+        console.log(argv);
         this.traverseArgs('', argv);
+        console.log(this.args);
+
     }
 
     traverseArgs(parentName, obj) {
 
         for (let index in obj) {
-            if (isObject(obj[index])) {
+            if (obj[index] instanceof Object) {
+                this.args.set(parentName + index, obj[index]);
                 this.traverseArgs(parentName + index + ".", obj[index]);
             }
             else {

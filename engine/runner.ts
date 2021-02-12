@@ -111,23 +111,21 @@ export abstract class Runner {
         return path;
     }
 
-    commandIsSkippable(runnerName: String, command: String): Boolean {
-        let returnVal = false;
-        if(this.getVariable("skipCommands")) {
-            let json = JSON.parse(this.getVariable("skipCommands"));
-            for(var key in json) {
-                console.log("key: " + key + " runnername: " + runnerName);
-                if(key == runnerName) {
-                    for (var i=0; i < json[key].length; i++){
-                        if (json[key][i] == command) {
-                            returnVal = true;
-                            break;
-                        }
+    commandIsSkippable(command: String): Boolean {
+        let returnVal = false; 
+        let runner = this.getVariable("skipCommands." + this.getRunnerName());
+        if(runner) {
+            if(runner instanceof Array) {
+                for (var i=0; i < runner.length; i++){
+                    if (runner[i] == command) {
+                        returnVal = true;
+                        break;
                     }
-                    break;
                 }
+            } else if (runner == command) {
+                    returnVal = true;
             }
-        }
+        } 
         return returnVal;
     }
 }
