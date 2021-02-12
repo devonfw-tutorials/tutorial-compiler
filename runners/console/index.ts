@@ -19,7 +19,6 @@ export class Console extends Runner {
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
     private env: any;
-    private skippableCommands: Array<String> = new Array();
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -38,6 +37,9 @@ export class Console extends Runner {
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
+        if(this.argv.consolerunner) {
+            this.skippableCommands = JSON.parse(this.argv.consolerunner);
+        }
     }
 
     destroy(playbook: Playbook): void {
@@ -213,18 +215,18 @@ export class Console extends Runner {
     runDockerCompose(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-        this.skippableCommands.push(command.name);
+        
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
-        process.stderr.setEncoding('utf-8');
-        process.stderr.on('data', (data) => {
-           console.log("stderr: " + data);
-        });
-        process.stdout.setEncoding('utf8');
-        process.stdout.on('data', (data) => {
-            console.log(data);
-        });
+        // process.stderr.setEncoding('utf-8');
+        // process.stderr.on('data', (data) => {
+        //    console.log("stderr: " + data);
+        // });
+        // process.stdout.setEncoding('utf8');
+        // process.stdout.on('data', (data) => {
+        //     console.log(data);
+        // });
         process.on('close', (code) => {
             if (code !== 0) {
                 result.returnCode = code;
@@ -699,17 +701,6 @@ export class Console extends Runner {
         }
     }
     
-    commandIsSkippable(command: String): Boolean {
-        let returnVal = false;
-        var arr = this.skippableCommands;
-        for (var i=0; i < arr.length; i++){
-            if (arr[i] == command) {
-                returnVal = true;
-                break;
-            }
-        }
-        return returnVal;
-    }
     
 
 }

@@ -31,7 +31,9 @@ export class Engine {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
                         var result = new RunResult();
-                        
+                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                            continue;
+                        }
                         try {
                             result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
                         }
@@ -39,26 +41,15 @@ export class Engine {
                             result.exceptions.push(e);
                         }
                         
-                        let allowedToStop = runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name);
+                        await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
                         
-                        try {
-                            await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
-                        } catch(error){
-                            if(allowedToStop) {
-                                console.log("Catched failed assertion of skippable command: " + this.playbook.steps[stepIndex].lines[lineIndex].name);
-                                continue;
-                            } else {
-                                throw error;
-                            }
-                        }
                         foundRunnerToExecuteCommand = true;
                         break;
                     }
                 }
                 if(!foundRunnerToExecuteCommand) {
                     break mainloop;
-                }
-                
+                }   
             }
         }
 

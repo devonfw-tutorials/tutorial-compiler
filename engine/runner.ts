@@ -13,6 +13,8 @@ export abstract class Runner {
     public playbookTitle: string;
     protected readonly useDevonCommand: string = "useDevonCommand";
     protected readonly workspaceDirectory: string = "workspaceDirectory";
+    protected argv = require('minimist')(process.argv.slice(2));
+    protected skippableCommands: Array<String> = new Array();
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
@@ -112,6 +114,13 @@ export abstract class Runner {
     }
 
     commandIsSkippable(command: String): Boolean {
-        return false;
+        let returnVal = false;
+        for (var i=0; i < this.skippableCommands.length; i++){
+            if (this.skippableCommands[i] == command) {
+                returnVal = true;
+                break;
+            }
+        }
+        return returnVal;
     }
 }
