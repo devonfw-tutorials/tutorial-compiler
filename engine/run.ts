@@ -71,10 +71,7 @@ class Run {
 
     parseArgs() {
         var argv = yargs(process.argv.slice(2)).argv;
-        console.log(argv);
         this.traverseArgs('', argv);
-        console.log(this.args);
-
     }
 
     traverseArgs(parentName, obj) {
