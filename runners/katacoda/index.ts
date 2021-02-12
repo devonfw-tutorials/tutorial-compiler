@@ -338,12 +338,12 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runAdaptCobiGenTemplates(step: Step, command: Command): RunResult {
+    runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
         this.steps.push({
             "title": "Adapt cobiGen templates",
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("adaptCobiGenTemplates.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+        this.renderTemplate("adaptTemplatesCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
         return null;
     
     }
