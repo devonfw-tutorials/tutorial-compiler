@@ -9,7 +9,6 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
-import { info } from "console";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -217,14 +216,6 @@ export class Console extends Runner {
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
-        // process.stderr.setEncoding('utf-8');
-        // process.stderr.on('data', (data) => {
-        //    console.log("stderr: " + data);
-        // });
-        // process.stdout.setEncoding('utf8');
-        // process.stdout.on('data', (data) => {
-        //     console.log(data);
-        // });
         process.on('close', (code) => {
             if (code !== 0) {
                 result.returnCode = code;
