@@ -37,9 +37,7 @@ export class Console extends Runner {
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
-        if(this.argv.consolerunner) {
-            this.skippableCommands = JSON.parse(this.argv.consolerunner);
-        }
+       
     }
 
     destroy(playbook: Playbook): void {
