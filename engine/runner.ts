@@ -115,9 +115,7 @@ export abstract class Runner {
         let returnVal = false; 
         let runner = this.getVariable("skipCommands." + this.getRunnerName());
         if(runner) {
-            if(runner instanceof Array && runner.indexOf(command) != -1) {
-                returnVal = true;
-            } else if (runner == command) {
+            if((runner instanceof Array && runner.indexOf(command) != -1) || runner == command) {
                 returnVal = true;
             }
         } 
