@@ -303,7 +303,7 @@ export class Katacoda extends Runner {
 
     runCreateFolder(step: Step, command: Command): RunResult {
         let folderPath = new DirUtils().getCdParam(this.currentDir, path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-        
+
         this.steps.push({
             "title": "Create a new folder",
             "text": "step" + this.stepsCount + ".md"
@@ -335,6 +335,11 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
+        
+        if(command.parameters[2]) {
+            this.currentDir = path.join(this.currentDir, command.parameters[2]);
+        }
+        
         return null;
     }
 
