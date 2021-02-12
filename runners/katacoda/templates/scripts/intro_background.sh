@@ -25,6 +25,14 @@ done
 
 #write 'Finished' in status file
 #the setup script checks the status file for this string
+
+#increase swap size by 4 GB by adding a new swap file
+mkdir /root/dev
+fallocate -l 4G /root/dev/md-0
+chmod 600 /root/dev/md-0
+mkswap /root/dev/md-0
+swapon /root/dev/md-0
+
 echo "Finished" > $STATUS_FILE
 
 #increase swap size by 4 GB by adding a new swap file
