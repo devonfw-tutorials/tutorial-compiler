@@ -4,12 +4,18 @@
 
 <%= cdCommand; %>
 
-Navigate to the folder in which your Dockerfile is. 
+<% if(!interrupt){ %>
+Now run docker-compose.
+<% } else { %>
+The docker container is already running.
+<% } %> 
 
-`cd <%= filePath; %>`{{execute}}
+`<% if(useDevonCommand){ %>devon<% } %> docker-compose up`{{execute T<%= terminalId; %> <% if (interrupt) { %>interrupt<% } %>}}
 
-Now you can use docker-compose up.
+This will take some time.
 
-`docker-compose up`{{execute}}
-
+<% if(port){ %>
+Then you can open the following link to use the app. 
+https://[[HOST_SUBDOMAIN]]-<%= port %>-[[KATACODA_HOST]].environments.katacoda.com/
+<% } %> 
 <%= textAfter; %>
