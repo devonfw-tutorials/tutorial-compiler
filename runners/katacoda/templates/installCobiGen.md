@@ -2,6 +2,6 @@
 
 ## Install cobigen
 
-`devon cobigen`{{execute}}
+`devon cobigen`{{execute T1}}
 
 <%= textAfter; %>

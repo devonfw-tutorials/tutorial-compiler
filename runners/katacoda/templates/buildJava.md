@@ -4,10 +4,10 @@
  
 Use the following devon command to build the java project.
 
-`devon mvn clean install <%= skipTest; %>`{{execute}}
+`<% if(useDevonCommand){ %>devon <% } %>mvn clean install<% if(skipTest){ %> -Dmaven.test.skip=true<% } %>`{{execute T1}}
 
 The maven command 'clean' will clear the target directory beforehand. 
 
-<%= skipTestDescr; %>
+<% if(skipTest){ %>We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.<% } %>
 
 <%= textAfter; %>
