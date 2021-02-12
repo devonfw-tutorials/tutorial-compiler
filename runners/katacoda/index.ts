@@ -337,7 +337,9 @@ export class Katacoda extends Runner {
         this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
         
         if(command.parameters[2]) {
-            this.currentDir = path.join(this.currentDir, command.parameters[2]);
+            console.log(this.currentDir)
+            this.currentDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[2]);
+            console.log(this.currentDir)
         }
         
         return null;
