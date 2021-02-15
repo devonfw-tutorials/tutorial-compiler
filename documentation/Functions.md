@@ -230,3 +230,4 @@ content: Plain text to be displayed in the katacoda step.
 image: Path to an image to be displayed in the katacoda step.
 
 ***
+
