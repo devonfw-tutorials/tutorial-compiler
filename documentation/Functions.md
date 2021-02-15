@@ -16,7 +16,7 @@ The following functions are already implemented:
 * dockerCompose
 * downloadFile
 * nextKatacodaStep
-* adaptCobiGenTemplates
+* adaptTemplatesCobiGen
 
 ***
 
