@@ -343,6 +343,7 @@ export class Katacoda extends Runner {
         return null;
     }
 
+
     runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
         this.steps.push({
             "title": "Adapt cobiGen templates",
@@ -350,7 +351,20 @@ export class Katacoda extends Runner {
         });
         this.renderTemplate("adaptTemplatesCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
         return null;
-    
+    }
+
+    runDockerCompose(step: Step, command: Command) : RunResult {
+        let terminal = this.getTerminal('runDockerCompose');
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]), terminal.terminalId, terminal.isRunning);
+
+        this.steps.push({
+            "title": "Execute Docker Compose",
+            "text": "step" +this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: command.parameters[1].port});
+        return null;
+
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
