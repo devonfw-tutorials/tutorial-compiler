@@ -12,7 +12,9 @@ Usually you would type "Ctrl + C" and rerun the same command in this terminal to
 
 For your local projects you wouldn't add '--host 0.0.0.0' and '--disable-host-check' to the ng command.
 
+<% if(port){ %>
 Now you can open the following link to use the app. 
 https://[[HOST_SUBDOMAIN]]-<%= port; %>-[[KATACODA_HOST]].environments.katacoda.com/
+<% } %> 
 
 <%= textAfter; %>
