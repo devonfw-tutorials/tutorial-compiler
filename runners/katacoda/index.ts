@@ -365,24 +365,16 @@ export class Katacoda extends Runner {
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir;
-        let terminal;
-        let terminalDescr;
-        if(terminalId){
-            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
-            terminal = "T" + terminalId;
-            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
-            
-        }else{
-            dir = dirUtils.getCdParam(this.currentDir, targetDir);
-            terminal = "T1";
-            terminalDescr = "Please change the folder to " + dir + ".";
+        let dir = terminalId ? dirUtils.getCdParam(path.join("/root"), targetDir) : dirUtils.getCdParam(this.currentDir, targetDir);
+        let terminal = terminalId ? "T" + terminalId : "T1";
+           
+        if(!terminalId){
             this.currentDir = targetDir;
         }
-
+        
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalId: terminalId}); 
     }
 
     private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{
