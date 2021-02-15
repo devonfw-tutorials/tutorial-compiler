@@ -297,7 +297,7 @@ export class Katacoda extends Runner {
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NODE_OPTIONS=\"--max-old-space-size=16384\"\' >> /root/.profile\n");
 
-        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: command.parameters[1].port, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
 
