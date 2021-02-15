@@ -456,15 +456,10 @@ export class Console extends Runner {
                     this.killAsyncProcesses();
                     throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
-                    let path = (<string>command.parameters[1].path) || "";
-                    if (path) {
-                        path = "/" + path;
-                    }
-                    console.log(path);
-                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, path);
+                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
                     if(!isReachable) {
                         this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost" + path + ":" + command.parameters[1].port)
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path);
                     }
                 }
             }
