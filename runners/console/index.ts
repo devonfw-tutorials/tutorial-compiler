@@ -36,6 +36,7 @@ export class Console extends Runner {
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
+       
     }
 
     destroy(playbook: Playbook): void {
@@ -204,6 +205,27 @@ export class Console extends Runner {
         return result;
     }        
 
+
+    runDockerCompose(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+
+        let process = this.executeCommandAsync("docker-compose up", filepath, result);
+        process.on('close', (code) => {
+            if (code !== 0) {
+                result.returnCode = code;
+            }
+          });
+        if(process.pid && command.parameters.length == 2) {
+            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
+        }
+        
+        return result;
+        
+    }
+
     runRunServerJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -231,6 +253,7 @@ export class Console extends Runner {
         this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
 
         return result;
+
     }
 
     runNpmInstall(step: Step, command: Command): RunResult {
@@ -434,7 +457,37 @@ export class Console extends Runner {
             throw error;
         }
     }
-  
+
+    async assertDockerCompose(step: Step, command: Command, result: RunResult) {
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(command.parameters.length > 1) {
+                if(!command.parameters[1].startupTime) {
+                    console.warn("No startup time for command dockerCompose has been set")
+                }
+                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+                await this.sleep(command.parameters[1].startupTime);
+
+                if(!command.parameters[1].port) {
+                    this.killAsyncProcesses();
+                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
+                } else {
+                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    if(!isReachable) {
+                        this.killAsyncProcesses();
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path);
+                    }
+                }
+            }
+         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }  
+    }
+
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
         try {
             let assert = new Assertions()
@@ -682,6 +735,7 @@ export class Console extends Runner {
             })
         }
     }
+    
     
 
 }
