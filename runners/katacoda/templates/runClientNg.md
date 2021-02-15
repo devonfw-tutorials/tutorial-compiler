@@ -5,7 +5,7 @@
 Now build and start the app
 <% } else { %>
 The Angular app is already running. 
-Usually you would type "Ctrl + C" and rerun the same command in this terminal to rebuild the app, but for now click on the command to stop and relaunch it automatically.
+Usually you would type 'Ctrl + C' and rerun the same command in this terminal to rebuild the app, but for now click on the command to stop and relaunch it automatically.
 <% } %> 
 
 `<% if(useDevonCommand){ %>devon<% } %> ng serve --host 0.0.0.0 --disable-host-check`{{execute T<%= terminalId; %> <% if (interrupt) { %>interrupt<% } %>}}
