@@ -216,11 +216,11 @@ image: Path to an image to be displayed in the katacoda step.
 
 ***
 
-### adaptCobiGenTemplates
+### adaptTemplatesCobiGen
 #### parameter
 * No parameters
 #### example
-adaptCobiGenTemplates()
+adaptTemplatesCobiGen()
 
 ***
 
