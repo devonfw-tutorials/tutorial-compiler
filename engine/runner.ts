@@ -110,4 +110,15 @@ export abstract class Runner {
         fs.mkdirSync(path, { recursive: true });
         return path;
     }
+
+    commandIsSkippable(command: String): Boolean {
+        let returnVal = false; 
+        let runner = this.getVariable("skipCommands." + this.getRunnerName());
+        if(runner) {
+            if((runner instanceof Array && runner.indexOf(command) != -1) || runner == command) {
+                returnVal = true;
+            }
+        } 
+        return returnVal;
+    }
 }
