@@ -203,6 +203,7 @@ path: The URL path on which is checked if the server is running
 #### parameter
 1. The title of the step.
 2. An array of json objects with files, content, or images to be rendered within the katacoda step.
+3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
 #### example 
 nextKatacodaStep("Step title", [{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
