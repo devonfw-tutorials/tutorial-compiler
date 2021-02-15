@@ -637,11 +637,11 @@ export class Console extends Runner {
 
     async assertAdaptTemplatesCobiGen(step: Step, command: Command, result: RunResult) {
         try {
+            let homedir = os.homedir();
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cg"))
-            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "class-loader-agent.jar"));
+            .directoryExits(path.join(homedir, ".cobigen", "templates"));
 
         } catch(error) {
             this.cleanUp();
