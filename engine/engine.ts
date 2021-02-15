@@ -24,22 +24,33 @@ export class Engine {
             (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
 
-        for (let stepIndex in this.playbook.steps) {
+        mainloop: for (let stepIndex in this.playbook.steps) {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
+                let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
                         var result = new RunResult();
+                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                            console.log("Command " + this.playbook.steps[stepIndex].lines[lineIndex].name + " will be skipped.");
+                            continue;
+                        }
                         try {
                             result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
                         }
                         catch (e) {
                             result.exceptions.push(e);
                         }
+                        
                         await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
+                        
+                        foundRunnerToExecuteCommand = true;
                         break;
                     }
                 }
+                if(!foundRunnerToExecuteCommand) {
+                    break mainloop;
+                }   
             }
         }
 
