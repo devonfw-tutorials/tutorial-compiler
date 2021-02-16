@@ -637,11 +637,12 @@ export class Console extends Runner {
 
     async assertAdaptTemplatesCobiGen(step: Step, command: Command, result: RunResult) {
         try {
-            let homedir = os.homedir();
+            let templateDir = path.join(os.homedir(), ".cobigen", "templates");
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(homedir, ".cobigen", "templates"));
+            .directoryExits(templateDir)
+            .directoryNotEmpty(templateDir);
 
         } catch(error) {
             this.cleanUp();
