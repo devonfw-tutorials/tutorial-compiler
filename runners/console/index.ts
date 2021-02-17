@@ -332,6 +332,17 @@ export class Console extends Runner {
         return null;
     }
 
+    runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        if(!this.getVariable(this.useDevonCommand)){
+            console.warn("Devonfw IDE is not installed"); 
+        }
+        this.executeDevonCommandSync("cobigen adapt-templates",path.join(this.getWorkingDirectory(), "devonfw"), result);
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         try {
             let installedTools = command.parameters[0];
@@ -619,6 +630,21 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(folderPath);
          } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertAdaptTemplatesCobiGen(step: Step, command: Command, result: RunResult) {
+        try {
+            let templatesDir = path.join(os.homedir(), ".cobigen", "templates");
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(templatesDir)
+            .directoryNotEmpty(templatesDir);
+
+        } catch(error) {
             this.cleanUp();
             throw error;
         }

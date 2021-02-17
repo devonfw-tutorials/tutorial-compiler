@@ -16,6 +16,7 @@ The following functions are already implemented:
 * dockerCompose
 * downloadFile
 * nextKatacodaStep
+* adaptTemplatesCobiGen
 
 ***
 
@@ -231,3 +232,11 @@ image: Path to an image to be displayed in the katacoda step.
 
 ***
 
+
+### adaptTemplatesCobiGen
+#### parameter
+* No parameters
+#### example
+adaptTemplatesCobiGen()
+
+***
