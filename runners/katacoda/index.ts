@@ -52,7 +52,8 @@ export class Katacoda extends Runner {
     }
 
     destroy(playbook: Playbook): void {
-        fs.writeFileSync(this.outputPathTutorial + 'intro.md', playbook.description);
+        let tutorialDirectoryName = path.basename(playbook.path);
+        this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
         fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
 
         // create and configure required files for the setup process
