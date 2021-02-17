@@ -159,8 +159,10 @@ path: The URL path on which is checked if the server is running
 ### npmInstall
 #### parameter 
 1. Path to the project where the dependencies from the package.json file are to be installed.
+2. (Optional) name of a package
+3. (Optional) array of npm arguments
 #### example 
-npmInstall("my-thai-star/angular")
+npmInstall("my-thai-star/angular", "@angular/cli", ["-g"])
 
 ***
 

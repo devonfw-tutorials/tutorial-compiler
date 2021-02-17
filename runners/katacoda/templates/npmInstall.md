@@ -2,9 +2,11 @@
 
 <%= cdCommand; %>
 
-Install the dependencies from the package.json file.
+<% if(packageName){ %>
+Install the package <%= packageName; %> and add it to the dependencies.<% } else {%>
+Install the dependencies from the package.json file.<% } %>
 
-`<% if(useDevonCommand){ %>devon<% } %> npm install`{{execute T1}}
+`<% if(useDevonCommand){ %>devon<% } %> npm install <%= packageArgs; %> <%= packageName; %>`{{execute T1}}
 
 This may take some time.
 
