@@ -2,5 +2,6 @@
     "failOnIncomplete": true,
     "runners": [
         "console"
-    ]
+    ],
+    "ciExecution": true
 }

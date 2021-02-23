@@ -3,5 +3,6 @@
     "runners": [
         "vscode",
         "console"
-    ]
+    ],
+    "ciExecution": false
 }

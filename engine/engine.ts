@@ -12,6 +12,10 @@ export class Engine {
     constructor(private environmentName: string, private environment: Environment, private playbook: Playbook) { }
 
     async run() {
+        if(this.variables.get("ci") && !this.environment.ciExecution) {
+            console.log(this.environment, "Skip environment " + this.environmentName + " because of ci execution");
+            return;
+        }
         console.log("Environment: " + this.environmentName);
         if (! await this.isEnvironmentComplete()) {
             if (this.environment.failOnIncomplete) {

@@ -2,5 +2,6 @@
     "failOnIncomplete": false,
     "runners": [
         "katacoda"
-    ]
+    ],
+    "ciExecution": true
 }
