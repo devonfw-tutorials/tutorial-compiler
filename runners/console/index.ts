@@ -36,6 +36,7 @@ export class Console extends Runner {
         }
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
+       
     }
 
     destroy(playbook: Playbook): void {
@@ -150,19 +151,13 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let buildCommand;
+        let buildCommand = (command.parameters.length == 2 && command.parameters[1] == true)
+            ? "mvn clean install"
+            : "mvn clean install -Dmaven.test.skip=true";
 
-        if(command.parameters.length == 2 && command.parameters[1] == true){
-            buildCommand = "mvn clean install";
-        } else {
-            buildCommand = "mvn clean install -Dmaven.test.skip=true";
-        }
-
-        if(this.getVariable(this.useDevonCommand)){
-            this.executeDevonCommandSync(buildCommand, projectDir, result);
-        } else {
-            this.executeCommandSync(buildCommand, projectDir, result);
-        }
+        this.getVariable(this.useDevonCommand)
+            ? this.executeDevonCommandSync(buildCommand, projectDir, result)
+            : this.executeCommandSync(buildCommand, projectDir, result);
 
         return result;
     }
@@ -174,7 +169,7 @@ export class Console extends Runner {
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
-        
+
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
         return result;
@@ -186,25 +181,49 @@ export class Console extends Runner {
 
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
+        let content = fs.readFileSync(filepath, { encoding: "utf-8" });
         if(command.parameters[1].placeholder) {
-            let content = fs.readFileSync(filepath, { encoding: "utf-8" });
             let placeholder = command.parameters[1].placeholder;
-            if(command.parameters[1].content) {
-                content = content.replace(placeholder, command.parameters[1].content);
-            } else if (command.parameters[1].file) {
-                let contentFile = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+            if(command.parameters[1].content || command.parameters[1].contentConsole) {
+                let contentReplace = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
+                content = content.replace(placeholder, contentReplace);
+            } else if (command.parameters[1].file || command.parameters[1].fileConsole) {
+                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+                let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
-            fs.writeFileSync(filepath, content);
         } else {
-            if(command.parameters[1].content) {
-                fs.writeFileSync(filepath, command.parameters[1].content);
+            if(command.parameters[1].content || command.parameters[1].contentConsole) {
+                content = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
             } else {
-                fs.writeFileSync(filepath, fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" }));
+                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+                content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
         }
+        fs.writeFileSync(filepath, content);
 
         return result;
+    }        
+
+
+    runDockerCompose(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+
+        let process = this.executeCommandAsync("docker-compose up", filepath, result);
+        process.on('close', (code) => {
+            if (code !== 0) {
+                result.returnCode = code;
+            }
+          });
+        if(process.pid && command.parameters.length == 2) {
+            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
+        }
+        
+        return result;
+        
     }
 
     runRunServerJava(step: Step, command: Command): RunResult {
@@ -212,13 +231,9 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let process;
-
-        if(this.getVariable(this.useDevonCommand)){
-            process = this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result);
-        }else{
-            process = this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
-        }
+        let process = (this.getVariable(this.useDevonCommand))
+            ? this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result)
+            : this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
 
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
@@ -238,6 +253,7 @@ export class Console extends Runner {
         this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
 
         return result;
+
     }
 
     runNpmInstall(step: Step, command: Command): RunResult {
@@ -245,15 +261,30 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        if(this.getVariable(this.useDevonCommand)){
-            this.executeDevonCommandSync("npm install", projectPath, result);
-        }else{
-            this.executeCommandSync("npm install", projectPath, result);
-        }
+        this.getVariable(this.useDevonCommand)
+            ? this.executeDevonCommandSync("npm install", projectPath, result)
+            : this.executeCommandSync("npm install", projectPath, result);
 
         return result;
     }
 
+    runDownloadFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let downloadlDir = this.getVariable(this.workspaceDirectory);
+        if (command.parameters.length == 3) {
+            downloadlDir = path.join(downloadlDir, command.parameters[2]);
+            this.createFolder(downloadlDir, false);
+        }
+        let command1 = (this.platform == ConsolePlatform.WINDOWS) 
+            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
+            : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
+        
+        this.executeCommandSync(command1, downloadlDir, result);
+        return result;
+    }
+        
     runRunClientNg(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -265,7 +296,50 @@ export class Console extends Runner {
         if(process.pid) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
+        return result;
+    }
 
+    runBuildNg(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let command1 = "ng build";
+        if(command.parameters.length == 2) {
+            command1 = command1 + " --output-path " + command.parameters[1];
+        }
+        this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandSync(command1, projectDir, result)
+            : this.executeCommandSync(command1, projectDir, result);
+        
+        return result;
+    }
+
+    runCreateFolder(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        if(folderPath && !fs.existsSync(folderPath)) {
+            this.createFolder(folderPath, true);
+        }
+        
+        return result;
+    }
+
+    runNextKatacodaStep(step: Step, command: Command): RunResult {
+        //Only needed for katacoda runner
+        return null;
+    }
+
+    runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        if(!this.getVariable(this.useDevonCommand)){
+            console.warn("Devonfw IDE is not installed"); 
+        }
+        this.executeDevonCommandSync("cobigen adapt-templates",path.join(this.getWorkingDirectory(), "devonfw"), result);
         return result;
     }
 
@@ -384,6 +458,36 @@ export class Console extends Runner {
         }
     }
 
+    async assertDockerCompose(step: Step, command: Command, result: RunResult) {
+        try {
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(command.parameters.length > 1) {
+                if(!command.parameters[1].startupTime) {
+                    console.warn("No startup time for command dockerCompose has been set")
+                }
+                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
+                await this.sleep(command.parameters[1].startupTime);
+
+                if(!command.parameters[1].port) {
+                    this.killAsyncProcesses();
+                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
+                } else {
+                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    if(!isReachable) {
+                        this.killAsyncProcesses();
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path);
+                    }
+                }
+            }
+         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }  
+    }
+
     async assertRunServerJava(step: Step, command: Command, result: RunResult) {
         try {
             let assert = new Assertions()
@@ -445,6 +549,24 @@ export class Console extends Runner {
         }
     }
 
+    async assertDownloadFile(step: Step, command: Command, result: RunResult){
+        try {
+            let directory = this.getVariable(this.workspaceDirectory);
+            if(command.parameters.length == 3) {
+                directory = path.join(directory, command.parameters[2]);
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(directory)
+            .directoryNotEmpty(directory)
+            .fileExits(path.join(directory, command.parameters[1]));
+         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
     async assertRunClientNg(step: Step, command: Command, result: RunResult) {
         try {
             let assert = new Assertions()
@@ -475,6 +597,59 @@ export class Console extends Runner {
         }
     }
 
+    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+        try {
+            let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            var outputpath;
+            if(command.parameters.length == 2) {
+                outputpath = command.parameters[1].trim();
+            } else {
+                let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
+                outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
+                if(outputpath == null) {
+                    outputpath = "dist";
+                }
+            }
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(projectPath, outputpath))
+            .directoryNotEmpty(path.join(projectPath, outputpath));
+
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertCreateFolder(step: Step, command: Command, result: RunResult){
+        try {
+            let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(folderPath);
+         } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertAdaptTemplatesCobiGen(step: Step, command: Command, result: RunResult) {
+        try {
+            let templatesDir = path.join(os.homedir(), ".cobigen", "templates");
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(templatesDir)
+            .directoryNotEmpty(templatesDir);
+
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
     private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
         if(result.returnCode != 0) return;
 
@@ -489,6 +664,20 @@ export class Console extends Runner {
     private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
         let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
         this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
+    }
+
+    private lookup(obj, lookupkey) {
+        for(var key in obj) {
+            
+            if(key == lookupkey) {
+                return [lookupkey, obj[key]];
+            }
+            if(obj[key] instanceof Object) {
+                var y = this.lookup(obj[key], lookupkey);
+                if (y && y[0] == lookupkey) return y;
+            }
+        }
+        return null;
     }
 
     private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
@@ -548,4 +737,6 @@ export class Console extends Runner {
         }
     }
     
+    
+
 }

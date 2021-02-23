@@ -77,7 +77,8 @@ class Run {
     traverseArgs(parentName, obj) {
 
         for (let index in obj) {
-            if (isObject(obj[index])) {
+            if (obj[index] instanceof Object) {
+                this.args.set(parentName + index, obj[index]);
                 this.traverseArgs(parentName + index + ".", obj[index]);
             }
             else {

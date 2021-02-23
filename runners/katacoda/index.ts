@@ -194,19 +194,15 @@ export class Katacoda extends Runner {
         let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
         let fileName = path.basename(path.join(command.parameters[0]));
         let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
+        let placeholder = command.parameters[1].placeholder ? command.parameters[1].placeholder : "";
+        let dataTarget = command.parameters[1].placeholder ? "insert" : "replace";
+
         let content = "";
-        let placeholder = "";
-        let dataTarget = "replace";
-        let changeDescr = "Replace the content of "+ fileName +" with the following code.";
-        if(command.parameters[1].placeholder){
-            dataTarget = "insert";
-            placeholder = command.parameters[1].placeholder;
-            changeDescr = "Insert after ' " + command.parameters[1].placeholder + " ' the following segment of code.";
-        }
-        if(command.parameters[1].content){
-            content = command.parameters[1].content;
-        }else if(command.parameters[1].file){
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+        if(command.parameters[1].content || command.parameters[1].contentKatacoda){
+            content = (command.parameters[1].contentKatacoda) ? command.parameters[1].contentKatacoda : command.parameters[1].content;
+        }else if(command.parameters[1].file || command.parameters[1].fileKatacoda){
+            let file = (command.parameters[1].fileKatacoda) ? command.parameters[1].fileKatacoda : command.parameters[1].file;
+            content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
         this.steps.push({
@@ -214,32 +210,39 @@ export class Katacoda extends Runner {
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, fileName:fileName, content: content, placeholder: placeholder, dataTarget: dataTarget, changeDescr: changeDescr});
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
     }
 
     runBuildJava(step: Step, command: Command): RunResult{
         
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-
-        let skipTest = "-Dmaven.test.skip=true";
-        let skipTestDescr = "We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.";  
-
-        if(command.parameters.length == 2 && command.parameters[1] == true){
-            skipTest = "";
-            skipTestDescr = "";    
-        }
+        let skipTest = (command.parameters.length == 2 && command.parameters[1] == true) ? false : true;
     
         this.steps.push({
             "title": "Build the java project",
             "text": "step" + this.stepsCount + ".md"
         });
         
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, skipTestDescr: skipTestDescr, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
 
     }
 
+
+    runBuildNg(step: Step, command: Command): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+
+        this.steps.push({
+            "title": "Build the Angular Project",
+            "text": "step" + this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, outputDir: command.parameters[1], useDevonCommand: this.getVariable(this.useDevonCommand) });
+
+        return null;
+    }
+  
     runCloneRepository(step: Step, command: Command): RunResult {
 
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory)));
@@ -267,7 +270,6 @@ export class Katacoda extends Runner {
             "title": "Start the java server",
             "text": "step" + this.stepsCount + ".md"
         });
-        
         this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
@@ -295,8 +297,74 @@ export class Katacoda extends Runner {
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NODE_OPTIONS=\"--max-old-space-size=16384\"\' >> /root/.profile\n");
 
-        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: command.parameters[1].port, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
+    }
+
+    runCreateFolder(step: Step, command: Command): RunResult {
+        let folderPath = new DirUtils().getCdParam(this.currentDir, path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+
+        this.steps.push({
+            "title": "Create a new folder",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("createFolder.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, folderPath: folderPath });
+        return null;
+    }
+
+    runNextKatacodaStep(step: Step, command: Command): RunResult {
+        let tempFile = path.join(this.getTempDirectory(), command.name + ".md");
+        fs.writeFileSync(tempFile, "");
+        for(let i = 0; i < command.parameters[1].length; i++) {
+            let param = command.parameters[1][i];
+            if(param.content) {
+                fs.appendFileSync(tempFile, param.content);
+            } else if(param.file) {
+                fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
+            } else if (param.image) {
+                let image = path.join(this.playbookPath, param.image);
+                this.assetManager.registerFile(image, path.basename(image), "", true);
+                fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
+            }
+            fs.appendFileSync(tempFile, "\n\n");
+        }
+
+        let content = fs.readFileSync(tempFile, "utf-8");
+        this.steps.push({
+            "title": command.parameters[0],
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
+        
+        if(command.parameters[2]) {
+            this.currentDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[2]);
+        }
+        
+        return null;
+    }
+
+
+    runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
+        this.steps.push({
+            "title": "Adapt cobiGen templates",
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("adaptTemplatesCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+        return null;
+    }
+
+    runDockerCompose(step: Step, command: Command) : RunResult {
+        let terminal = this.getTerminal('runDockerCompose');
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]), terminal.terminalId, terminal.isRunning);
+
+        this.steps.push({
+            "title": "Execute Docker Compose",
+            "text": "step" +this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: command.parameters[1].port});
+        return null;
+
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
@@ -321,24 +389,16 @@ export class Katacoda extends Runner {
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir;
-        let terminal;
-        let terminalDescr;
-        if(terminalId){
-            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
-            terminal = "T" + terminalId;
-            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
-            
-        }else{
-            dir = dirUtils.getCdParam(this.currentDir, targetDir);
-            terminal = "";
-            terminalDescr = "Please change the folder to " + dir + ".";
+        let dir = terminalId ? dirUtils.getCdParam(path.join("/root"), targetDir) : dirUtils.getCdParam(this.currentDir, targetDir);
+        let terminal = terminalId ? "T" + terminalId : "T1";
+           
+        if(!terminalId){
             this.currentDir = targetDir;
         }
-
+        
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalId: terminalId}); 
     }
 
     private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{

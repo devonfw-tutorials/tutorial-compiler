@@ -8,9 +8,15 @@ The following functions are already implemented:
 * buildJava
 * createFile
 * changeFile
+* createFolder
 * cloneRepository
 * runServerJava
+* buildNg
 * npmInstall
+* dockerCompose
+* downloadFile
+* nextKatacodaStep
+* adaptTemplatesCobiGen
 
 ***
 
@@ -88,7 +94,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
 2. 
- *  path of the file to get the content from or a string, that should be inserted.
+ *  Path of the file to get the content from or a string, that should be inserted.
  * (Optional) Name of a placeholder 
 #### example 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
@@ -98,6 +104,8 @@ If you want to add content from a file:
 {"file": "[path]"}
 If you want to add a string to a file: 
 {"content": "[string]"}
+If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
+{"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
 ##### Name of the placeholder
 If you want to insert content into your code between two existing lines, take the previous line as your placeholder. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
 
@@ -110,6 +118,13 @@ A placeholder is optional. If you do not define a placeholder, the content in th
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
 
+***
+
+### createFolder
+#### parameter 
+1. Path of the folder to be created, relative to the workspace directory. Subdirectories are also created.
+#### example 
+createFolder("directoryPath/subDirectory")
 
 ***
 
@@ -125,6 +140,7 @@ cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-comp
 Repository will be cloned into a newly created subdirectory devonfw-forge.
 
 ***
+
 
 ### runServerJava
 #### parameter 
@@ -148,6 +164,43 @@ npmInstall("my-thai-star/angular")
 
 ***
 
+### dockerCompose
+#### parameter 
+1. Path to the directory where the docker-compose.yml file is located, relative to workspace.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081, "path": "" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
+
+***
+
+### downloadFile
+#### parameter 
+1. URL of the file to be downloaded.
+2. Name of file.
+3. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
+#### example 
+downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+***
+
+### buildNg
+#### parameter 
+1. Path to the angular project relative to workspace
+2. (Optional) Custom output directory.
+#### example 
+buildNg("exampleAngularProject")
+Will build the angular project to default output directory defined in angular.json outputPath key, normally set to dist/.
+
+buildNg("exampleAngularProject", "testOutput")
+Will build the angular project to output directory testOutput.
+
+***
+
 ### runClientNg
 #### parameter 
 1. Path to the angular project from which the frontend server is to be started.
@@ -159,5 +212,31 @@ runClientNg("jump-the-queue/angular", { "startupTime": 200, "port": 4200, "path"
 startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
+
+***
+
+### nextKatacodaStep
+#### parameter
+1. The title of the step.
+2. An array of json objects with files, content, or images to be rendered within the katacoda step.
+3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
+#### example 
+nextKatacodaStep("Step title", [{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
+
+#### Details
+Available attributes in the json objects:
+
+file: Path to a file whose content is to be displayed in the katacoda step (e.g. .md or .txt file).
+content: Plain text to be displayed in the katacoda step.
+image: Path to an image to be displayed in the katacoda step.
+
+***
+
+
+### adaptTemplatesCobiGen
+#### parameter
+* No parameters
+#### example
+adaptTemplatesCobiGen()
 
 ***
