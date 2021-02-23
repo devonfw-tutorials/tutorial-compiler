@@ -5,8 +5,8 @@ import { Command } from "../../engine/command";
 import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
+import { ConsoleUtils } from "./consoleUtils";
 import * as path from 'path';
-import * as child_process from "child_process";
 import * as fs from "fs";
 import * as psList from "ps-list";
 const findProcess = require("find-process");
@@ -66,13 +66,13 @@ export class Console extends Runner {
         }
 
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
-        this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
+        ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         
         let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
-        this.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result);
+        ConsoleUtils.executeCommandSync("git add -A && git config user.email \"devonfw\" && git config user.name \"devonfw\" && git commit -m \"devonfw\"", path.join(settingsDir, "settings.git"), result, this.env);
 
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
@@ -82,12 +82,12 @@ export class Console extends Runner {
             downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + command.parameters[1];
         }
         if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
-            this.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result);
-            this.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+            ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
+            ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
+            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
         } else {
-            this.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result);
-            this.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, "yes");
+            ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
+            ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
@@ -109,7 +109,7 @@ export class Console extends Runner {
             console.warn("Devonfw IDE is not installed"); 
         }
 
-        this.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), result);
+        ConsoleUtils.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
         return result;
     }
 
@@ -123,7 +123,7 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = command.parameters[0];
-        this.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, result);
+        ConsoleUtils.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
         return result;
     }
 
@@ -156,8 +156,8 @@ export class Console extends Runner {
             : "mvn clean install -Dmaven.test.skip=true";
 
         this.getVariable(this.useDevonCommand)
-            ? this.executeDevonCommandSync(buildCommand, projectDir, result)
-            : this.executeCommandSync(buildCommand, projectDir, result);
+            ? ConsoleUtils.executeDevonCommandSync(buildCommand, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandSync(buildCommand, projectDir, result, this.env);
 
         return result;
     }
@@ -171,7 +171,7 @@ export class Console extends Runner {
         }
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+        ConsoleUtils.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env, command.parameters[1].toString());
         return result;
     }
 
@@ -212,7 +212,7 @@ export class Console extends Runner {
         
         let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
 
-        let process = this.executeCommandAsync("docker-compose up", filepath, result);
+        let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
         process.on('close', (code) => {
             if (code !== 0) {
                 result.returnCode = code;
@@ -232,8 +232,8 @@ export class Console extends Runner {
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let process = (this.getVariable(this.useDevonCommand))
-            ? this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result)
-            : this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
+            ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
 
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
@@ -250,7 +250,7 @@ export class Console extends Runner {
         if(command.parameters[0] != "") {
             this.createFolder(directorypath, true);
         }
-        this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
+        ConsoleUtils.executeCommandSync("git clone " + command.parameters[1], directorypath, result, this.env);
 
         return result;
 
@@ -262,8 +262,8 @@ export class Console extends Runner {
 
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         this.getVariable(this.useDevonCommand)
-            ? this.executeDevonCommandSync("npm install", projectPath, result)
-            : this.executeCommandSync("npm install", projectPath, result);
+            ? ConsoleUtils.executeDevonCommandSync("npm install", projectPath, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandSync("npm install", projectPath, result, this.env);
 
         return result;
     }
@@ -281,7 +281,7 @@ export class Console extends Runner {
             ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
             : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
         
-        this.executeCommandSync(command1, downloadlDir, result);
+        ConsoleUtils.executeCommandSync(command1, downloadlDir, result, this.env);
         return result;
     }
         
@@ -291,8 +291,8 @@ export class Console extends Runner {
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let process = this.getVariable(this.useDevonCommand) 
-            ? this.executeDevonCommandAsync("ng serve", projectDir, result)
-            : this.executeCommandAsync("ng serve", projectDir, result);
+            ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
         if(process.pid) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
         }
@@ -309,8 +309,8 @@ export class Console extends Runner {
             command1 = command1 + " --output-path " + command.parameters[1];
         }
         this.getVariable(this.useDevonCommand) 
-            ? this.executeDevonCommandSync(command1, projectDir, result)
-            : this.executeCommandSync(command1, projectDir, result);
+            ? ConsoleUtils.executeDevonCommandSync(command1, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandSync(command1, projectDir, result, this.env);
         
         return result;
     }
@@ -339,7 +339,7 @@ export class Console extends Runner {
         if(!this.getVariable(this.useDevonCommand)){
             console.warn("Devonfw IDE is not installed"); 
         }
-        this.executeDevonCommandSync("cobigen adapt-templates",path.join(this.getWorkingDirectory(), "devonfw"), result);
+        ConsoleUtils.executeDevonCommandSync("cobigen adapt-templates",path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
         return result;
     }
 
@@ -650,22 +650,6 @@ export class Console extends Runner {
         }
     }
 
-    private executeCommandSync(command: string, directory: string, result: RunResult, input?: string) {
-        if(result.returnCode != 0) return;
-
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
-        if(process.status != 0) {
-            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
-            console.log(process.stderr.toString(), process.stdout.toString());
-            result.returnCode = process.status;
-        }
-    }
-
-    private executeDevonCommandSync(devonCommand: string, directory: string, result: RunResult, input?: string) {
-        let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        this.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, input);
-    }
-
     private lookup(obj, lookupkey) {
         for(var key in obj) {
             
@@ -678,21 +662,6 @@ export class Console extends Runner {
             }
         }
         return null;
-    }
-
-    private executeCommandAsync(command: string, directory: string, result: RunResult): child_process.ChildProcess {
-        if(result.returnCode != 0) return;
-
-        let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: this.env });
-        if(!process.pid) {
-            result.returnCode = 1;
-        }
-        return process;
-    }
-
-    private executeDevonCommandAsync(devonCommand: string, directory: string, result: RunResult): child_process.ChildProcess {
-        let scriptsDir = path.join(this.getWorkingDirectory(), "devonfw", "scripts");
-        return this.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result);
     }
 
     private sleep(seconds: number) {
@@ -737,6 +706,4 @@ export class Console extends Runner {
         }
     }
     
-    
-
 }

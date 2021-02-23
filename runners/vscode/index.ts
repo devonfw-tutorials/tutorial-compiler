@@ -3,34 +3,23 @@ import { RunResult } from "../../engine/run_result";
 import { Step } from "../../engine/step";
 import { Command } from "../../engine/command";
 import { Playbook } from "../../engine/playbook";
-import { Console } from "../console/index";
 import { VsCodeUtils } from "./vscodeUtils";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
+import { ConsoleUtils } from "../console/consoleUtils";
+import { Assertions } from "../../assertions";
 
 export class VsCode extends Runner {
 
-    private consoleRunner: Console;
-    private variables: Map<string, any> = new Map<string, any>();
     private installedExtensions: string[] = [];
+    private env: any;
 
     init(playbook: Playbook): void {
-        this.consoleRunner = new Console();
-        let name = "vscode";
-        this.consoleRunner.registerGetVariableCallback((name) => this.variables.get(name));
-        this.consoleRunner.registerSetVariableCallback((name, value) => this.variables.set(name, value));
-        this.consoleRunner.path = __dirname + "/../runners/" + name + "/";
-        this.consoleRunner.name = name;
-        this.consoleRunner.playbookName = playbook.name;
-        this.consoleRunner.playbookPath = playbook.path;
-        this.consoleRunner.playbookTitle = playbook.title;
-        this.consoleRunner.init(playbook);
-
         this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
+        this.env = process.env;
     }
 
     setupVsCode() {
@@ -53,24 +42,14 @@ export class VsCode extends Runner {
     }
 
     destroy(playbook: Playbook): void {
-        this.consoleRunner.destroy(playbook);
         this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
     }
 
-    runInstallDevonfwIde(step: Step, command: Command): RunResult {
-        let result = this.consoleRunner.runInstallDevonfwIde(step, command);
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
-        this.setVariable(this.useDevonCommand, true);
-        return result;
-    }
-
-
-    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
-        return this.runInstallDevonfwIde(step, command);
-    }
-
     runInstallCobiGen(step: Step, command: Command): RunResult {
-        let result = this.consoleRunner.runInstallCobiGen(step, command);
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        ConsoleUtils.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
 
         //Get latest release for cobigen plugin
         let url = "https://api.github.com/repos/devonfw-forge/cobigen-vscode-plugin/releases/latest";
@@ -92,18 +71,6 @@ export class VsCode extends Runner {
         return result;
     }
 
-    runCreateDevon4jProject(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runCreateDevon4jProject(step, command);
-    }
-
-    runCreateFile(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runCreateFile(step, command);
-    }
-    
-    runBuildJava(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runBuildJava(step, command);
-    }
-
     runCobiGenJava(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -118,64 +85,20 @@ export class VsCode extends Runner {
         return result;
     }
 
-    runChangeFile(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runChangeFile(step, command);
-    }
-
-    runRunServerJava(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runRunServerJava(step, command);
-    }
-
-    runCloneRepository(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runCloneRepository(step, command);
-    }
-
-    runNpmInstall(step: Step, command: Command): RunResult {
-        return this.consoleRunner.runNpmInstall(step, command);
-    }
-
-    async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertInstallDevonfwIde(step, command, result);
-    }
-
-    async assertRestoreDevonfwIde(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertRestoreDevonfwIde(step, command, result);
-    }
-
     async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertInstallCobiGen(step, command, result);
-    }
-
-    async assertBuildJava(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertBuildJava(step, command, result);
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
     }
 
     async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertCobiGenJava(step, command, result);
-    }
-
-    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertCreateDevon4jProject(step, command, result);
-    }
-
-    async assertCreateFile(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertCreateFile(step, command, result);
-    }
-
-    async assertChangeFile(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertChangeFile(step, command, result);
-    }
-
-    async assertRunServerJava(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertRunServerJava(step, command, result);
-    }
-
-    async assertCloneRepository(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertCloneRepository(step, command, result);
-    }
-
-    async assertNpmInstall(step: Step, command: Command, result: RunResult) {
-        return this.consoleRunner.assertNpmInstall(step, command, result);
+        new Assertions()
+        .noErrorCode(result)
+        .noException(result)
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
     }
 
     private runTest(testfile: string, result: RunResult) {
