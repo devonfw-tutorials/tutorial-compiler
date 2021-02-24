@@ -41,9 +41,11 @@ export class VsCodeUtils {
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile manifest.json\""
             : "wget -c \"" + url + "\" -O -";
-        child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        let p = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        console.log(p.output.toString())
         let filename = path.join(downloadPath, "manifest.json");
         if(!fs.existsSync(filename)) {
+            console.log("Could't download manifest.json from " + url);
             throw Error("Could't download manifest.json from " + url);
         }
 
@@ -93,6 +95,7 @@ export class VsCodeUtils {
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_" + driverPlatform + ".zip\""
             : "wget -c \"" + url + "\" -O chromedriver_" + driverPlatform + ".zip -";
-        child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        let p = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        console.log(p.output.toString())
     }
 }

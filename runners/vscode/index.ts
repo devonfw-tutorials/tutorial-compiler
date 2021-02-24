@@ -42,6 +42,7 @@ export class VsCode extends Runner {
         console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
         let downloadDirectory = this.createFolder(path.join(__dirname, "resources"), false);
         let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
+        console.log("chromium; " + chromiumVersion);
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
