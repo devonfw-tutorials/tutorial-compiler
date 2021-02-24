@@ -53,6 +53,7 @@ export class VsCode extends Runner {
 
         ConsoleUtils.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
 
+        console.log("install cobigen plugin");
         //Get latest release for cobigen plugin
         let url = "https://api.github.com/repos/devonfw-forge/cobigen-vscode-plugin/releases/latest";
         let cmd = (process.platform == "win32")
