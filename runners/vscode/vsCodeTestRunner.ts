@@ -5,9 +5,9 @@ import { VsCodeUtils } from "./vscodeUtils";
 async function main(args: string[]) {
     if(args && args.length > 2) {
         let testfile = args[2];
-        let vsCodeBinaries = VsCodeUtils.getVsCodeExecutable();
-        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(vsCodeBinaries[1]);
-        return await runTest(vsCodeBinaries[0], testfile, vsCodeVersion);
+        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
+        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.basename(vsCodeExecutable), "bin", "code"));
+        return await runTest(vsCodeExecutable, testfile, vsCodeVersion);
     }
 }
 
