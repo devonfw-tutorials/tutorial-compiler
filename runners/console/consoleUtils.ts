@@ -9,7 +9,7 @@ export class ConsoleUtils {
 
         console.log("Execute command: " + command);
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
-        console.log(process.output.toString(), process.status, process.stderr.toString());
+        console.log("Output: " + process.output.toString(), "Status: " + process.status, "StdErr: " + process.stderr.toString());
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());

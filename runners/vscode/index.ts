@@ -20,6 +20,7 @@ export class VsCode extends Runner {
     init(playbook: Playbook): void {
         //this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
+        this.createFolder(path.join(__dirname, "resources"), false);
         this.env = process.env;
     }
 
