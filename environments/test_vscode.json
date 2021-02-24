@@ -4,5 +4,5 @@
         "vscode",
         "console"
     ],
-    "ciExecution": false
+    "ciExecution": true
 }
