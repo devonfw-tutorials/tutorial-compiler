@@ -276,13 +276,14 @@ export class Katacoda extends Runner {
 
     runNpmInstall(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-        let packageTitle = command.parameters[1].name ? command.parameters[1].name : "the dependencies";
-        let packageArgs = command.parameters[1].args ? command.parameters[1].args.join(" ") : "";
+        let packageTitle = (command.parameters[1].name && command.parameters.length > 1) ? command.parameters[1].name : "the dependencies";
+        let packageArgs = (command.parameters[1].args && command.parameters.length > 1) ? command.parameters[1].args.join(" ") : false;
+        let packageName = (command.parameters[1].name && command.parameters.length > 1) ? command.parameters[1].name : false;
         this.steps.push({
             "title": "Install " + packageTitle,
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), packageName: command.parameters[1].name, global: command.parameters[1].global, packageArgs: packageArgs});
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), packageName: packageName, global: !!command.parameters[1].global, packageArgs: packageArgs});
         return null;
     }
 
