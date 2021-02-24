@@ -40,7 +40,7 @@ export class VsCodeUtils {
         let url = "https://raw.githubusercontent.com/Microsoft/vscode/" + vsCodeVersion + "/cgmanifest.json";
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile manifest.json\""
-            : "wget -c \"" + url + "\" -O -";
+            : "wget -c \"" + url + "\" -o -";
         let p = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
         console.log(p.output.toString())
         let filename = path.join(downloadPath, "manifest.json");
@@ -81,7 +81,7 @@ export class VsCodeUtils {
         let url =  "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_" + chromiumVersion;
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_latestRelease.txt\""
-            : "wget -c \"" + url + "\" -O chromedriver_latestRelease.txt";
+            : "wget -c \"" + url + "\" -o chromedriver_latestRelease.txt";
         child_process.spawnSync(command, { shell: true, cwd: downloadPath });
         if(!fs.existsSync(path.join(downloadPath, "chromedriver_latestRelease.txt"))) {
             throw new Error("Unable to get latest chromedriver release for chromium version " + chromiumVersion);
@@ -94,7 +94,7 @@ export class VsCodeUtils {
 
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_" + driverPlatform + ".zip\""
-            : "wget -c \"" + url + "\" -O chromedriver_" + driverPlatform + ".zip -";
+            : "wget -c \"" + url + "\" -o chromedriver_" + driverPlatform + ".zip -";
         let p = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
         console.log(p.output.toString())
     }
