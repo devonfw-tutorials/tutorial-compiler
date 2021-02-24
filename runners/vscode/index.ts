@@ -32,7 +32,7 @@ export class VsCode extends Runner {
             throw new Error("Visual Studio Code seems not to be installed!");
         }
 
-        let vsCodeVersion = VsCodeUtils.getVsCodeVersion();
+        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(vsCodeExecutable[1]);
         console.log("version: " + vsCodeVersion);
         if(!vsCodeVersion) {
             throw new Error("Unable to get the VS Code version!");
@@ -43,12 +43,12 @@ export class VsCode extends Runner {
         let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
 
-        this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
+        this.installExtension(VsCodeUtils.getVsCodeExecutable()[0], path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
         this.vsCodeSetup = true;
     }
 
     destroy(playbook: Playbook): void {
-        this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
+        this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable()[0]);
     }
 
     runInstallCobiGen(step: Step, command: Command): RunResult {
@@ -63,8 +63,7 @@ export class VsCode extends Runner {
         let cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile cobigen_latestRelease.json\""
             : "wget -c \"" + url + "\" -O cobigen_latestRelease.json";
-        let p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
-        console.log(p.output.toString())
+        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
 
         let cobigenRelease = require(path.join(__dirname, "resources", "cobigen_latestRelease.json"));
         let downloadUrl = cobigenRelease.assets[0].browser_download_url;
@@ -72,10 +71,9 @@ export class VsCode extends Runner {
         cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + downloadUrl + " -OutFile cobigen_plugin.vsix\""
             : "wget -c \"" + downloadUrl + "\" -O cobigen_plugin.vsix -";
-        p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
-        console.log(p.output.toString())
+        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
 
-        this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join(__dirname, "resources", "cobigen_plugin.vsix"))
+        this.installExtension(VsCodeUtils.getVsCodeExecutable()[0], path.join(__dirname, "resources", "cobigen_plugin.vsix"))
 
         return result;
     }

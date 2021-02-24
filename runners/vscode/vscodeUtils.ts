@@ -18,18 +18,23 @@ export class VsCodeUtils {
             executable = path.normalize(path.join(__dirname, "..", "..", "working", "devonfw", "software", "vscode", "Code.exe"));
         }
             
-        if(!fs.existsSync(executable)) return "";
-        return executable;
+        if(!fs.existsSync(executable)) return null;
+        return [executable, vsCodeBin];
     }
     
-   static getVsCodeVersion() {
+   static getVsCodeVersion(vsCodeBin?: string) {
         let cp = child_process.spawnSync("code --version", { shell: true });
         let output = cp.stdout.toString();
-        if(!output) {
-            return "";
+        if(output) {
+            return output.split("\n")[0];
         }
         
-        return output.split("\n")[0];
+        cp = child_process.spawnSync(vsCodeBin + " --version", { shell: true });
+        output = cp.stdout.toString();
+        if(output) {
+            return output.split("\n")[0];
+        }
+        return "";
     }
     
     static getChromiumVersion(vsCodeVersion: string, downloadPath: string) {
