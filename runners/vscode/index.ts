@@ -29,7 +29,7 @@ export class VsCode extends Runner {
         console.log("setupVsCode")
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         console.log("exe: " + vsCodeExecutable);
-        if(!vsCodeExecutable[0]) {
+        if(!vsCodeExecutable) {
             throw new Error("Visual Studio Code seems not to be installed!");
         }
 

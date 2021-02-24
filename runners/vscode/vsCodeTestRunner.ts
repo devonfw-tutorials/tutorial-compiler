@@ -6,7 +6,7 @@ async function main(args: string[]) {
     if(args && args.length > 2) {
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
-        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.basename(vsCodeExecutable), "bin", "code"));
+        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
         return await runTest(vsCodeExecutable, testfile, vsCodeVersion);
     }
 }
