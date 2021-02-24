@@ -25,6 +25,7 @@ export class VsCode extends Runner {
     }
 
     setupVsCode() {
+        this.vsCodeSetup = true;
         console.log("setupVsCode")
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         console.log("exe: " + vsCodeExecutable);
@@ -44,7 +45,6 @@ export class VsCode extends Runner {
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
-        this.vsCodeSetup = true;
     }
 
     destroy(playbook: Playbook): void {
