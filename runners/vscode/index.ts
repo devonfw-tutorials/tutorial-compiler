@@ -58,7 +58,8 @@ export class VsCode extends Runner {
         let cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile cobigen_latestRelease.json\""
             : "wget -c \"" + url + "\" -O cobigen_latestRelease.json";
-        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        let p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        console.log(p.output.toString())
 
         let cobigenRelease = require(path.join(__dirname, "resources", "cobigen_latestRelease.json"));
         let downloadUrl = cobigenRelease.assets[0].browser_download_url;
@@ -66,7 +67,8 @@ export class VsCode extends Runner {
         cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + downloadUrl + " -OutFile cobigen_plugin.vsix\""
             : "wget -c \"" + downloadUrl + "\" -O cobigen_plugin.vsix -";
-        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        console.log(p.output.toString())
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join(__dirname, "resources", "cobigen_plugin.vsix"))
 

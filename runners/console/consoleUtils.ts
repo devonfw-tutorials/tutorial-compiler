@@ -1,12 +1,15 @@
 import { RunResult } from "../../engine/run_result";
 import * as child_process from "child_process";
 import * as path from 'path';
+import { ComboSetting } from "vscode-extension-tester";
 
 export class ConsoleUtils {
     static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string) {
         if(result.returnCode != 0) return;
 
+        console.log("Execute command: " + command);
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
+        console.log(process);
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
@@ -16,6 +19,7 @@ export class ConsoleUtils {
 
     static executeDevonCommandSync(devonCommand: string, directory: string, devonInstallDirectory: string, result: RunResult, env: any, input?: string) {
         let scriptsDir = path.join(devonInstallDirectory, "scripts");
+        console.log("Execute devonCommand: " + devonCommand);
         ConsoleUtils.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, env, input);
     }
 
