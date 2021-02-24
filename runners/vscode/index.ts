@@ -15,9 +15,10 @@ export class VsCode extends Runner {
 
     private installedExtensions: string[] = [];
     private env: any;
+    private vsCodeSetup: boolean = false;
 
     init(playbook: Playbook): void {
-        this.setupVsCode();
+        //this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
         this.env = process.env;
     }
@@ -39,6 +40,7 @@ export class VsCode extends Runner {
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
+        this.vsCodeSetup = true;
     }
 
     destroy(playbook: Playbook): void {
@@ -104,6 +106,9 @@ export class VsCode extends Runner {
     private runTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
 
+        if(!this.vsCodeSetup) {
+            this.setupVsCode();
+        }
         let testrunner = path.join(__dirname, "vsCodeTestRunner.js");
         let process = child_process.spawnSync("node " + testrunner + " " + testfile, { shell: true, cwd: __dirname });
         if(process.status != 0) {
