@@ -8,13 +8,13 @@ export class VsCodeUtils {
         let cp = child_process.spawnSync(cmd, { shell: true });
         let output = cp.stdout.toString();
 
-        let vsCodeBin = "";
         let executable = "";
         if(output) {
-            vsCodeBin = output.toString().split("\n")[0];
-            executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", "Code.exe"));
+            let vsCodeBin = output.toString().split("\n")[0];
+            executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", (process.platform == "win32") ? "Code.exe" : "code"));
         } else {
-            executable = path.normalize(path.join(__dirname, "..", "..", "working", "devonfw", "software", "vscode", "Code.exe"));
+            let vscodeDirectory = path.normalize(path.join(__dirname, "..", "..", "working", "devonfw", "software", "vscode"));
+            executable = (process.platform == "win32") ? path.join(vscodeDirectory, "Code.exe") : path.join(vscodeDirectory, "code");
         }
             
         if(!fs.existsSync(executable)) return null;
