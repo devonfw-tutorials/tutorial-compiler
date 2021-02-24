@@ -262,9 +262,9 @@ export class Console extends Runner {
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
         let npmCommand = "npm install";
         if(command.parameters.length > 1){
-            if (command.parameters[1].global) npmCommand += " -g ";
-            if (command.parameters[1].args) npmCommand += command.parameters[1].args.join(" ") + " ";
-            if (command.parameters[1].name) npmCommand += command.parameters[1].name; 
+            if (command.parameters[1].global) npmCommand += " -g";
+            if (command.parameters[1].args) npmCommand += " " + command.parameters[1].args.join(" ");
+            if (command.parameters[1].name) npmCommand += " " + command.parameters[1].name; 
         }
         this.getVariable(this.useDevonCommand)
             ? this.executeDevonCommandSync(npmCommand, projectPath, result)

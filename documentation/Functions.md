@@ -159,7 +159,10 @@ path: The URL path on which is checked if the server is running
 ### npmInstall
 #### parameter 
 1. Path to the project where the dependencies from the package.json file are to be installed.
-2. (Optional) name of a package, global or local installation, array of npm arguments
+2. Json-object: Name of a package, global or local installation, or array of npm arguments
+* (Optional) name of a package {"name": string }
+* (Optional) global or local installation {"global" : boolean }
+* (Optional) array of npm arguments as json-object {"args": string[]}
 #### example 
 npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 
