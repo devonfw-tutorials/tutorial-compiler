@@ -130,6 +130,10 @@ export class VsCode extends Runner {
 
     private installExtension(vsCodeExecutable: string, vsixPath: string) {
         console.log("Installing extension " + vsixPath);
+
+        if(!this.vsCodeSetup) {
+            this.setupVsCode();
+        }
         let vsCodeBin = path.join(path.dirname(vsCodeExecutable), "bin", "code");
         let process = child_process.spawnSync(vsCodeBin + " --install-extension " + vsixPath, { shell: true });
         if(process.status != 0) {
