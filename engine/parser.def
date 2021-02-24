@@ -46,10 +46,10 @@ steptextafterline
   = !"====" string __
  
 steplines
-  = stepline+
+  = stepline+ { return { "steplines": text()}; }
 
 stepline
-  = !"--" string __ { return { "stepline": text()}; }
+  = !"--" string __
   
 string "string"
   = [^\r\n]+ { return text(); }

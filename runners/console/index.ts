@@ -1,7 +1,6 @@
 import { Runner } from "../../engine/runner"
 import { RunResult } from "../../engine/run_result";
-import { Step } from "../../engine/step";
-import { Command } from "../../engine/command";
+import { RunCommand } from "../../engine/run_command";
 import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
@@ -55,11 +54,11 @@ export class Console extends Runner {
         }
     }
 
-    runInstallDevonfwIde(step: Step, command: Command): RunResult {
+    runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(command.parameters[0].indexOf("npm") > -1 || command.parameters[0].indexOf("ng")) {
+        if(runCommand.command.parameters[0].indexOf("npm") > -1 || runCommand.command.parameters[0].indexOf("ng")) {
             let nodeInstallDir = path.join(this.getWorkingDirectory(), "devonfw", "software", "node");
             this.env["npm_config_prefix"] = nodeInstallDir;
             this.env["npm_config_cache"] = "";
@@ -68,7 +67,7 @@ export class Console extends Runner {
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         this.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result);
         
-        let tools = "DEVON_IDE_TOOLS=(" + command.parameters[0].join(" ") + ")";
+        let tools = "DEVON_IDE_TOOLS=(" + runCommand.command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
@@ -78,8 +77,8 @@ export class Console extends Runner {
         this.createFolder(installDir, true);
 
         let downloadUrl = "https://bit.ly/2BCkFa9";
-        if(command.parameters.length > 1 && command.parameters[1] != "") {
-            downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + command.parameters[1];
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1] != "") {
+            downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + runCommand.command.parameters[1];
         }
         if(this.platform == ConsolePlatform.WINDOWS) {
             this.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result);
@@ -97,11 +96,11 @@ export class Console extends Runner {
     }
 
 
-    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
-        return this.runInstallDevonfwIde(step, command);
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        return this.runInstallDevonfwIde(runCommand);
     }
 
-    runInstallCobiGen(step: Step, command: Command): RunResult {
+    runInstallCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
@@ -113,7 +112,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runCreateDevon4jProject(step: Step, command: Command): RunResult {
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
@@ -122,23 +121,23 @@ export class Console extends Runner {
         }
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        let projectName = command.parameters[0];
+        let projectName = runCommand.command.parameters[0];
         this.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, result);
         return result;
     }
 
-    runCreateFile(step: Step, command: Command): RunResult {
+    runCreateFile(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         if(!fs.existsSync(filepath.substr(0, filepath.lastIndexOf(path.sep)))) {
             fs.mkdirSync(filepath.substr(0, filepath.lastIndexOf(path.sep)), { recursive: true });
         }
 
         let content = "";
-        if(command.parameters.length == 2) {
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
+        if(runCommand.command.parameters.length == 2) {
+            content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
         }
         fs.writeFileSync(filepath, content);
       
@@ -146,12 +145,12 @@ export class Console extends Runner {
     }
     
 
-    runBuildJava(step: Step, command: Command): RunResult {
+    runBuildJava(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        let buildCommand = (command.parameters.length == 2 && command.parameters[1] == true)
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let buildCommand = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true)
             ? "mvn clean install"
             : "mvn clean install -Dmaven.test.skip=true";
 
@@ -162,7 +161,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runCobiGenJava(step: Step, command: Command): RunResult {
+    runCobiGenJava(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
@@ -171,32 +170,32 @@ export class Console extends Runner {
         }
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        this.executeDevonCommandSync("cobigen generate " + command.parameters[0], workspaceDir, result, command.parameters[1].toString());
+        this.executeDevonCommandSync("cobigen generate " + runCommand.command.parameters[0], workspaceDir, result, runCommand.command.parameters[1].toString());
         return result;
     }
 
-    runChangeFile(step: Step, command: Command): RunResult {
+    runChangeFile(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
 
         let content = fs.readFileSync(filepath, { encoding: "utf-8" });
-        if(command.parameters[1].placeholder) {
-            let placeholder = command.parameters[1].placeholder;
-            if(command.parameters[1].content || command.parameters[1].contentConsole) {
-                let contentReplace = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
+        if(runCommand.command.parameters[1].placeholder) {
+            let placeholder = runCommand.command.parameters[1].placeholder;
+            if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
+                let contentReplace = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
                 content = content.replace(placeholder, contentReplace);
-            } else if (command.parameters[1].file || command.parameters[1].fileConsole) {
-                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+            } else if (runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileConsole) {
+                let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
                 let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
         } else {
-            if(command.parameters[1].content || command.parameters[1].contentConsole) {
-                content = command.parameters[1].contentConsole ? command.parameters[1].contentConsole : command.parameters[1].content;
+            if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
+                content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
             } else {
-                let file = command.parameters[1].fileConsole ? command.parameters[1].fileConsole : command.parameters[1].file;
+                let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
                 content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
         }
@@ -206,11 +205,11 @@ export class Console extends Runner {
     }        
 
 
-    runDockerCompose(step: Step, command: Command): RunResult {
+    runDockerCompose(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
         
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
 
         let process = this.executeCommandAsync("docker-compose up", filepath, result);
         process.on('close', (code) => {
@@ -218,49 +217,49 @@ export class Console extends Runner {
                 result.returnCode = code;
             }
           });
-        if(process.pid && command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: command.parameters[1].port });
+        if(process.pid && runCommand.command.parameters.length == 2) {
+            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
         }
         
         return result;
         
     }
 
-    runRunServerJava(step: Step, command: Command): RunResult {
+    runRunServerJava(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let process = (this.getVariable(this.useDevonCommand))
             ? this.executeDevonCommandAsync("mvn spring-boot:run", serverDir, result)
             : this.executeCommandAsync("mvn spring-boot:run", serverDir, result);
 
         if(process.pid) {
-            this.asyncProcesses.push({ pid: process.pid, name: "java", port: command.parameters[1].port });
+            this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
         }
 
         return result;
     }
 
-    runCloneRepository(step: Step, command: Command): RunResult {
+    runCloneRepository(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let directorypath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
-        if(command.parameters[0] != "") {
+        let directorypath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        if(runCommand.command.parameters[0] != "") {
             this.createFolder(directorypath, true);
         }
-        this.executeCommandSync("git clone " + command.parameters[1], directorypath, result);
+        this.executeCommandSync("git clone " + runCommand.command.parameters[1], directorypath, result);
 
         return result;
 
     }
 
-    runNpmInstall(step: Step, command: Command): RunResult {
+    runNpmInstall(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         this.getVariable(this.useDevonCommand)
             ? this.executeDevonCommandSync("npm install", projectPath, result)
             : this.executeCommandSync("npm install", projectPath, result);
@@ -268,45 +267,45 @@ export class Console extends Runner {
         return result;
     }
 
-    runDownloadFile(step: Step, command: Command): RunResult {
+    runDownloadFile(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
         let downloadlDir = this.getVariable(this.workspaceDirectory);
-        if (command.parameters.length == 3) {
-            downloadlDir = path.join(downloadlDir, command.parameters[2]);
+        if (runCommand.command.parameters.length == 3) {
+            downloadlDir = path.join(downloadlDir, runCommand.command.parameters[2]);
             this.createFolder(downloadlDir, false);
         }
         let command1 = (this.platform == ConsolePlatform.WINDOWS) 
-            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   command.parameters[1] + " '" + command.parameters[0] + "'\""
-            : "wget -c " + command.parameters[0] + " -O " + command.parameters[1];
+            ? "powershell.exe \"Invoke-WebRequest -OutFile " +   runCommand.command.parameters[1] + " '" + runCommand.command.parameters[0] + "'\""
+            : "wget -c " + runCommand.command.parameters[0] + " -O " + runCommand.command.parameters[1];
         
         this.executeCommandSync(command1, downloadlDir, result);
         return result;
     }
         
-    runRunClientNg(step: Step, command: Command): RunResult {
+    runRunClientNg(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let process = this.getVariable(this.useDevonCommand) 
             ? this.executeDevonCommandAsync("ng serve", projectDir, result)
             : this.executeCommandAsync("ng serve", projectDir, result);
         if(process.pid) { 
-            this.asyncProcesses.push({ pid: process.pid, name: "node", port: command.parameters[1].port });
+            this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
         }
         return result;
     }
 
-    runBuildNg(step: Step, command: Command): RunResult {
+    runBuildNg(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let command1 = "ng build";
-        if(command.parameters.length == 2) {
-            command1 = command1 + " --output-path " + command.parameters[1];
+        if(runCommand.command.parameters.length == 2) {
+            command1 = command1 + " --output-path " + runCommand.command.parameters[1];
         }
         this.getVariable(this.useDevonCommand) 
             ? this.executeDevonCommandSync(command1, projectDir, result)
@@ -315,11 +314,11 @@ export class Console extends Runner {
         return result;
     }
 
-    runCreateFolder(step: Step, command: Command): RunResult {
+    runCreateFolder(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         if(folderPath && !fs.existsSync(folderPath)) {
             this.createFolder(folderPath, true);
         }
@@ -327,12 +326,12 @@ export class Console extends Runner {
         return result;
     }
 
-    runNextKatacodaStep(step: Step, command: Command): RunResult {
+    runNextKatacodaStep(runCommand: RunCommand): RunResult {
         //Only needed for katacoda runner
         return null;
     }
 
-    runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
+    runAdaptTemplatesCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
@@ -343,9 +342,9 @@ export class Console extends Runner {
         return result;
     }
 
-    async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
+    async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
-            let installedTools = command.parameters[0];
+            let installedTools = runCommand.command.parameters[0];
 
             let assert = new Assertions()
             .noErrorCode(result)
@@ -363,11 +362,11 @@ export class Console extends Runner {
         }
     }
 
-    async assertRestoreDevonfwIde(step: Step, command: Command, result: RunResult) {
-       this.assertInstallDevonfwIde(step, command, result);
+    async assertRestoreDevonfwIde(runCommand: RunCommand, result: RunResult) {
+       this.assertInstallDevonfwIde(runCommand, result);
     }
 
-    async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
+    async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
@@ -381,72 +380,72 @@ export class Console extends Runner {
         }
     }
 
-    async assertBuildJava(step: Step, command: Command, result: RunResult) {
+    async assertBuildJava(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "api", "target"))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "core", "target"))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "server", "target"));
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "api", "target"))
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "core", "target"))
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "server", "target"));
         } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
+    async assertCobiGenJava(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
         } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertCreateDevon4jProject(step: Step, command: Command, result: RunResult) {
+    async assertCreateDevon4jProject(runCommand: RunCommand, result: RunResult) {
         try {
             let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
 
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(workspaceDir, command.parameters[0]))
-            .directoryExits(path.join(workspaceDir, command.parameters[0], "api", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, command.parameters[0], "server", "src", "main", "java"))
-            .fileExits(path.join(workspaceDir, command.parameters[0], "core", "src", "main", "java", "com", "example", "application", command.parameters[0], "SpringBootApp.java"));
+            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0]))
+            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "api", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "server", "src", "main", "java"))
+            .fileExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java", "com", "example", "application", runCommand.command.parameters[0], "SpringBootApp.java"));
         } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertCreateFile(step: Step, command: Command, result: RunResult) {
+    async assertCreateFile(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
         } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertChangeFile(step: Step, command: Command, result: RunResult) {
+    async assertChangeFile(runCommand: RunCommand, result: RunResult) {
         try{
             let content = "";
-            if(command.parameters[1].content) {
-                content = command.parameters[1].content;
-            } else if (command.parameters[1].file) {
-                content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1].file), { encoding: "utf-8" });
+            if(runCommand.command.parameters[1].content) {
+                content = runCommand.command.parameters[1].content;
+            } else if (runCommand.command.parameters[1].file) {
+                content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].file), { encoding: "utf-8" });
             }
     
-            let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -458,27 +457,27 @@ export class Console extends Runner {
         }
     }
 
-    async assertDockerCompose(step: Step, command: Command, result: RunResult) {
+    async assertDockerCompose(runCommand: RunCommand, result: RunResult) {
         try {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
 
-            if(command.parameters.length > 1) {
-                if(!command.parameters[1].startupTime) {
-                    console.warn("No startup time for command dockerCompose has been set")
+            if(runCommand.command.parameters.length > 1) {
+                if(!runCommand.command.parameters[1].startupTime) {
+                    console.warn("No startup time for runCommand.command dockerCompose has been set")
                 }
-                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
-                await this.sleep(command.parameters[1].startupTime);
+                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
+                await this.sleep(runCommand.command.parameters[1].startupTime);
 
-                if(!command.parameters[1].port) {
+                if(!runCommand.command.parameters[1].port) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for runCommand.command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
-                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
                         this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path);
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path);
                     }
                 }
             }
@@ -488,27 +487,27 @@ export class Console extends Runner {
         }  
     }
 
-    async assertRunServerJava(step: Step, command: Command, result: RunResult) {
+    async assertRunServerJava(runCommand: RunCommand, result: RunResult) {
         try {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
 
-            if(command.parameters.length > 1) {
-                if(!command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runServerJava has been set")
+            if(runCommand.command.parameters.length > 1) {
+                if(!runCommand.command.parameters[1].startupTime) {
+                    console.warn("No startup time for runCommand.command runServerJava has been set")
                 }
-                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
-                await this.sleep(command.parameters[1].startupTime);
+                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
+                await this.sleep(runCommand.command.parameters[1].startupTime);
 
-                if(!command.parameters[1].port || !command.parameters[1].path) {
+                if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for runCommand.command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
-                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
                         this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
@@ -518,17 +517,17 @@ export class Console extends Runner {
         }
     }
 
-    async assertCloneRepository(step: Step, command: Command, result: RunResult) {
+    async assertCloneRepository(runCommand: RunCommand, result: RunResult) {
         try {
-            let repository = command.parameters[1];
+            let repository = runCommand.command.parameters[1];
             let repoName = repository.slice(repository.lastIndexOf("/"), -4);
-            let directorypath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], repoName);
+            let directorypath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName);
             
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], repoName))
-            .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], repoName))
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
+            .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
             .repositoryIsClean(directorypath);
         } catch(error) {
             this.cleanUp();
@@ -536,58 +535,58 @@ export class Console extends Runner {
         }
     }
 
-    async assertNpmInstall(step: Step, command: Command, result: RunResult) {
+    async assertNpmInstall(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "node_modules"));
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]))
+            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "node_modules"));
         } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertDownloadFile(step: Step, command: Command, result: RunResult){
+    async assertDownloadFile(runCommand: RunCommand, result: RunResult){
         try {
             let directory = this.getVariable(this.workspaceDirectory);
-            if(command.parameters.length == 3) {
-                directory = path.join(directory, command.parameters[2]);
+            if(runCommand.command.parameters.length == 3) {
+                directory = path.join(directory, runCommand.command.parameters[2]);
             }
             new Assertions()
             .noErrorCode(result)
             .noException(result)
             .directoryExits(directory)
             .directoryNotEmpty(directory)
-            .fileExits(path.join(directory, command.parameters[1]));
+            .fileExits(path.join(directory, runCommand.command.parameters[1]));
          } catch(error) {
             this.cleanUp();
             throw error;
         }
     }
 
-    async assertRunClientNg(step: Step, command: Command, result: RunResult) {
+    async assertRunClientNg(runCommand: RunCommand, result: RunResult) {
         try {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
 
-            if(command.parameters.length > 1) {
-                if(!command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runClientNg has been set")
+            if(runCommand.command.parameters.length > 1) {
+                if(!runCommand.command.parameters[1].startupTime) {
+                    console.warn("No startup time for runCommand.command runClientNg has been set")
                 }
-                let startupTimeInSeconds = command.parameters[1].startupTime ? command.parameters[1].startupTime : 0;
-                await this.sleep(command.parameters[1].startupTime);
+                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
+                await this.sleep(runCommand.command.parameters[1].startupTime);
 
-                if(!command.parameters[1].port) {
+                if(!runCommand.command.parameters[1].port) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for runCommand.command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
                 } else {
-                    let isReachable = await assert.serverIsReachable(command.parameters[1].port, command.parameters[1].path);
+                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
                         this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[1].port + "/" + command.parameters[1].path)
+                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
@@ -597,12 +596,12 @@ export class Console extends Runner {
         }
     }
 
-    async assertBuildNg(step: Step, command: Command, result: RunResult) {
+    async assertBuildNg(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
             var outputpath;
-            if(command.parameters.length == 2) {
-                outputpath = command.parameters[1].trim();
+            if(runCommand.command.parameters.length == 2) {
+                outputpath = runCommand.command.parameters[1].trim();
             } else {
                 let content = fs.readFileSync(path.join(projectPath, "angular.json"), { encoding: "utf-8" });
                 outputpath = this.lookup(JSON.parse(content), "outputPath")[1];
@@ -622,9 +621,9 @@ export class Console extends Runner {
         }
     }
 
-    async assertCreateFolder(step: Step, command: Command, result: RunResult){
+    async assertCreateFolder(runCommand: RunCommand, result: RunResult){
         try {
-            let folderPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -635,7 +634,7 @@ export class Console extends Runner {
         }
     }
 
-    async assertAdaptTemplatesCobiGen(step: Step, command: Command, result: RunResult) {
+    async assertAdaptTemplatesCobiGen(runCommand: RunCommand, result: RunResult) {
         try {
             let templatesDir = path.join(os.homedir(), ".cobigen", "templates");
             new Assertions()
@@ -655,7 +654,7 @@ export class Console extends Runner {
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
         if(process.status != 0) {
-            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
+            console.log("Error executing runCommand.command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }

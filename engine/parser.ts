@@ -12,7 +12,6 @@ export class Parser {
     constructor() {
         let def = fs.readFileSync(__dirname + "/parser.def", 'utf8');
         this.parser = pegjs.generate(def);
-
     }
 
     parse(inputFile: string): Playbook {
@@ -23,7 +22,7 @@ export class Parser {
         result.description = parseResult[1][2].descriptionlines;
         for(let index in parseResult[2]){
             let step = new Step();
-            step.text = this.getText(parseResult,index);;
+            step.text = this.getText(parseResult,index);
             step.lines = this.getLines(parseResult,index);
             step.textAfter = this.getTextAfter(parseResult, index);
 
@@ -43,9 +42,9 @@ export class Parser {
 
     getLines(parseResult, index):Command[]{
         try {
-            return (parseResult[2][index][5][0].stepline || parseResult[2][index][2][5][0].stepline).split("\r\n").filter(e => e != '').map(e => this.createCommand(e));
+            return (parseResult[2][index][5].steplines || parseResult[2][index][2][5].steplines).split("\r\n").filter(e => e != '').map(e => this.createCommand(e));
         } catch (error) {
-            return parseResult[2][index][2][5][0].stepline.split("\r\n").filter(e => e != '').map(e => this.createCommand(e));
+            return parseResult[2][index][2][5].steplines.split("\r\n").filter(e => e != '').map(e => this.createCommand(e));
         }
     }
 
