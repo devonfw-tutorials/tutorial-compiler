@@ -14,8 +14,8 @@ export class VsCodeUtils {
             vsCodeBin = output.toString().split("\n")[0];
             executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", "Code.exe"));
         } else {
-            vsCodeBin = path.normalize(path.join(__dirname, "..", "working", "devonfw", "software", "vscode", "bin", "code"));
-            executable = path.normalize(path.join(__dirname, "..", "working", "devonfw", "software", "vscode", "Code.exe"));
+            vsCodeBin = path.normalize(path.join(__dirname, "..", "..", "working", "devonfw", "software", "vscode", "bin", "code"));
+            executable = path.normalize(path.join(__dirname, "..", "..", "working", "devonfw", "software", "vscode", "Code.exe"));
         }
             
         if(!fs.existsSync(executable)) return "";
