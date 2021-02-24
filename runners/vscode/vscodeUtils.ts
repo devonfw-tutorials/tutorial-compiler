@@ -3,9 +3,9 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 
 export class VsCodeUtils {
-    static getVsCodeExecutable() {
+    static getVsCodeExecutable(directory?: string) {
         let cmd = (process.platform == "win32") ? "where code" : "which code";
-        let cp = child_process.spawnSync(cmd, { shell: true });
+        let cp = child_process.spawnSync(cmd, { shell: true, cwd: directory });
         let output = cp.stdout.toString();
         if(!output) {
             return "";
