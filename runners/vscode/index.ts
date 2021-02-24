@@ -25,7 +25,9 @@ export class VsCode extends Runner {
     }
 
     setupVsCode() {
+        console.log("setupVsCode")
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
+        console.log("vsCodeExecutable: " + vsCodeExecutable)
         if(!vsCodeExecutable) {
             throw new Error("Visual Studio Code seems not to be installed!");
         }
@@ -135,7 +137,9 @@ export class VsCode extends Runner {
             this.setupVsCode();
         }
         let vsCodeBin = path.join(path.dirname(vsCodeExecutable), "bin", "code");
+        console.log("vsCodeBin: " + vsCodeBin);
         let process = child_process.spawnSync(vsCodeBin + " --install-extension " + vsixPath, { shell: true });
+        console.log("process status: " + process.status, process.stdout.toString())
         if(process.status != 0) {
             console.log("Error while installing extension: " + process.output.toString());
             throw new Error("Unable to install externsion " + vsixPath);
