@@ -26,13 +26,14 @@ export class VsCode extends Runner {
 
     setupVsCode() {
         console.log("setupVsCode")
-        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable(path.join(this.getWorkingDirectory(), "devonfw"));
-        console.log("vsCodeExecutable: " + vsCodeExecutable)
+        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
+        console.log("exe: " + vsCodeExecutable);
         if(!vsCodeExecutable) {
             throw new Error("Visual Studio Code seems not to be installed!");
         }
 
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion();
+        console.log("version: " + vsCodeVersion);
         if(!vsCodeVersion) {
             throw new Error("Unable to get the VS Code version!");
         }

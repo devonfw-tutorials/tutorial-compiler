@@ -3,16 +3,21 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 
 export class VsCodeUtils {
-    static getVsCodeExecutable(directory?: string) {
+    static getVsCodeExecutable() {
         let cmd = (process.platform == "win32") ? "where code" : "which code";
-        let cp = child_process.spawnSync(cmd, { shell: true, cwd: directory });
+        let cp = child_process.spawnSync(cmd, { shell: true });
         let output = cp.stdout.toString();
-        if(!output) {
-            return "";
+
+        let vsCodeBin = "";
+        let executable = "";
+        if(output) {
+            vsCodeBin = output.toString().split("\n")[0];
+            executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", "Code.exe"));
+        } else {
+            vsCodeBin = path.normalize(path.join(__dirname, "..", "working", "devonfw", "software", "vscode", "bin", "code"));
+            executable = path.normalize(path.join(__dirname, "..", "working", "devonfw", "software", "vscode", "Code.exe"));
         }
-        
-        let vsCodeBin = output.toString().split("\n")[0];
-        let executable = path.normalize(path.join(path.dirname(vsCodeBin), "..", "Code.exe"));
+            
         if(!fs.existsSync(executable)) return "";
         return executable;
     }
