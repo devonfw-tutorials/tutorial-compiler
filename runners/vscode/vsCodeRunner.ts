@@ -3,7 +3,8 @@ import Mocha = require('mocha');
 import * as glob from 'glob';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { VSBrowser } from 'vscode-extension-tester';
+import { VSBrowser, VSBrowserLogLevel } from './vsCodeBrowser';
+//import { VSBrowser } from 'vscode-extension-tester';
 
 /**
  * Mocha runner wrapper
@@ -31,7 +32,7 @@ export class VSRunner {
     runTests(testFilesPattern: string, logLevel: string = 'info'): Promise<number> {
         return new Promise(resolve => {
             let self = this;
-            let browser: VSBrowser = new VSBrowser(this.codeVersion, this.customSettings, logLevel);
+            let browser: VSBrowser = new VSBrowser(this.codeVersion, this.customSettings, VSBrowserLogLevel.Info);
             const universalPattern = testFilesPattern.replace(/'/g, '');
             const testFiles = glob.sync(universalPattern);
     
