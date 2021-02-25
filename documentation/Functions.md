@@ -163,8 +163,12 @@ path: The URL path on which is checked if the server is running
 * (Optional) name of a package {"name": string }
 * (Optional) global or local installation {"global" : boolean }
 * (Optional) array of npm arguments as json-object {"args": string[]}
-#### example 
+#### example
 npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
+will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
+
+npmInstall("my-thai-star/angular")
+will run 'npm install' in the directory 'my-thai-star/angular'
 
 ***
 
