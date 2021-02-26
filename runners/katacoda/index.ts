@@ -284,7 +284,7 @@ export class Katacoda extends Runner {
         };
 
         this.steps.push({
-            "title": "Install" + packageTitle,
+            "title": "Install " + packageTitle,
             "text": "step" + this.stepsCount + ".md"
         });
         this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
