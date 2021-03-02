@@ -41,18 +41,22 @@ class Run {
     }
 
     parsePlaybooks() {
-        let parser = new Parser();
+        try {
+            let parser = new Parser();
 
-        let playbooksDir = (<string>this.args.get("playbooksDir")) || __dirname + "/../playbooks/";
-        let playbookDirs = fs.readdirSync(playbooksDir);
-        for (let index in playbookDirs) {
-            let indexFile = playbooksDir + playbookDirs[index] + "/index.asciidoc";
-            if (fs.existsSync(indexFile)) {
-                let playbook = parser.parse(indexFile);
-                playbook.name = playbookDirs[index] + "/";
-                playbook.path = playbooksDir + playbookDirs[index] + "/";
-                this.playbooks.push(playbook);
+            let playbooksDir = (<string>this.args.get("playbooksDir")) || __dirname + "/../playbooks/";
+            let playbookDirs = fs.readdirSync(playbooksDir);
+            for (let index in playbookDirs) {
+                let indexFile = playbooksDir + playbookDirs[index] + "/index.asciidoc";
+                if (fs.existsSync(indexFile)) {
+                    let playbook = parser.parse(indexFile);
+                    playbook.name = playbookDirs[index] + "/";
+                    playbook.path = playbooksDir + playbookDirs[index] + "/";
+                    this.playbooks.push(playbook);
+                }
             }
+        } catch(e) {
+            console.log("error while parsing playbook", e);
         }
     }
 
