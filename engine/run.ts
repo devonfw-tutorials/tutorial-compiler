@@ -12,28 +12,34 @@ class Run {
     private args: Map<string, string> = new Map<string, string>();
 
     async run(): Promise<boolean> {
-        this.parseArgs();
-        this.parsePlaybooks();
-        this.parseEnvironments();
         let errors = [];
-        for (let entry of Array.from(this.environments.entries())) {
-            let key = entry[0];
-            let value = entry[1];
-            for (let playbookIndex in this.playbooks) {
-                let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+        try {
+            this.parseArgs();
+            this.parsePlaybooks();
+            this.parseEnvironments();
+            for (let entry of Array.from(this.environments.entries())) {
+                let key = entry[0];
+                let value = entry[1];
+                for (let playbookIndex in this.playbooks) {
+                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
 
-                for (let varEntry of Array.from(this.args.entries())) {
-                    engine.setVariable(varEntry[0], varEntry[1]);
-                }
+                    for (let varEntry of Array.from(this.args.entries())) {
+                        engine.setVariable(varEntry[0], varEntry[1]);
+                    }
 
-                try {
-                    await engine.run();
-                } catch (error) {
-                    console.error(error);
-                    errors.push(error);
+                    try {
+                        await engine.run();
+                    } catch (error) {
+                        console.error(error);
+                        errors.push(error);
+                    }
                 }
             }
+        } catch (error) {
+            console.error(error);
+            errors.push(error);
         }
+        
         if (errors.length != 0) {
             console.log("Errors", errors);
         }
