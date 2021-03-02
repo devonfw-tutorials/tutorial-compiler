@@ -465,14 +465,14 @@ export class Console extends Runner {
 
             if(runCommand.command.parameters.length > 1) {
                 if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for runCommand.command dockerCompose has been set")
+                    console.warn("No startup time for command dockerCompose has been set")
                 }
                 let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for runCommand.command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
@@ -495,14 +495,14 @@ export class Console extends Runner {
 
             if(runCommand.command.parameters.length > 1) {
                 if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for runCommand.command runServerJava has been set")
+                    console.warn("No startup time for command runServerJava has been set")
                 }
                 let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for runCommand.command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
@@ -574,14 +574,14 @@ export class Console extends Runner {
 
             if(runCommand.command.parameters.length > 1) {
                 if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for runCommand.command runClientNg has been set")
+                    console.warn("No startup time for command runClientNg has been set")
                 }
                 let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
                     this.killAsyncProcesses();
-                    throw new Error("Missing arguments for runCommand.command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
+                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
@@ -654,7 +654,7 @@ export class Console extends Runner {
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: this.env });
         if(process.status != 0) {
-            console.log("Error executing runCommand.command: " + command + " (exit code: " + process.status + ")");
+            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
         }

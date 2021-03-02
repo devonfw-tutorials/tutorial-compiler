@@ -6,4 +6,5 @@ export class RunCommand {
     public lineIndex: number;
     public stepIndex: number;
     public textAfter: string;
+    public stepTitle: string;
 }

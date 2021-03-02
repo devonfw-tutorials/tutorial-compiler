@@ -37,6 +37,7 @@ export class Engine {
                 runCommand.command = this.playbook.steps[stepIndex].lines[lineIndex];
                 runCommand.stepIndex = stepIndex;
                 runCommand.lineIndex = lineIndex;
+                runCommand.stepTitle = this.playbook.steps[stepIndex].title;
                 let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
