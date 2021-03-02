@@ -240,3 +240,12 @@ image: Path to an image to be displayed in the katacoda step.
 adaptTemplatesCobiGen()
 
 ***
+
+### executeFile
+#### parameter
+* directory to the script file, relative to workspace 
+#### example
+executeFile("tutorial-compiler/localBuildRun.sh")
+
+***
+

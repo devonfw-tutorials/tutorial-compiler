@@ -343,6 +343,13 @@ export class Console extends Runner {
         return result;
     }
 
+    runExecuteFile(step: Step, command: Command): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        this.executeCommandSync("bash " + path.basename(command.parameters[0]), path.join(this.getWorkingDirectory(), path.dirname(command.parameters[0])), result);
+        return result;
+    }
+
     async assertInstallDevonfwIde(step: Step, command: Command, result: RunResult) {
         try {
             let installedTools = command.parameters[0];
@@ -643,6 +650,18 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(templatesDir)
             .directoryNotEmpty(templatesDir);
+
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertExecuteFile(step: Step, command: Command, result: RunResult) {
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result);
 
         } catch(error) {
             this.cleanUp();

@@ -367,6 +367,20 @@ export class Katacoda extends Runner {
 
     }
 
+    runExecuteFile(step: Step, command: Command) : RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0])))
+        let name = path.basename(command.parameters[0]);
+        this.steps.push({
+            "title": "Execute " + name,
+            "text": "step" +this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("executeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name: name});
+        return null;
+
+    }
+
+
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
