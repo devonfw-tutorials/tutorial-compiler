@@ -18,6 +18,7 @@ export class VsCode extends Runner {
     private vsCodeSetup: boolean = false;
 
     init(playbook: Playbook): void {
+        console.log("init vscode");
         //this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);

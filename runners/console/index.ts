@@ -20,6 +20,7 @@ export class Console extends Runner {
     private env: any;
 
     init(playbook: Playbook): void {
+        console.log("init console");
         if(process.platform=="win32") {
             this.platform = ConsolePlatform.WINDOWS;
         } else {

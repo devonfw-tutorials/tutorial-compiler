@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { WebDriver, Workbench, VSBrowser, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
+import { WebDriver, Workbench, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
+import { VSBrowser } from '../vsCodeBrowser';
 
 describe('CobiGenJava Test', () => {
     let driver: WebDriver;

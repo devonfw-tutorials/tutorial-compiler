@@ -1,7 +1,7 @@
 {
     "failOnIncomplete": true,
     "runners": [
-        "console"
+        "consolee"
     ],
     "ciExecution": true
 }
