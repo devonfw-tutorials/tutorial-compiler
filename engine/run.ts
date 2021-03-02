@@ -56,7 +56,7 @@ class Run {
                 }
             }
         } catch(e) {
-            console.log("error while parsing playbook", e);
+            throw new Error("Error while parsing playbook: " + e);
         }
     }
 
