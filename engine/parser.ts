@@ -53,7 +53,7 @@ export class Parser {
         try {
             return (parseResult[2][index][3][2]|| parseResult[2][index][2][3][2]);
         } catch(error) {
-            return parseResult[2][index][2][3][2];
+            return null;
         }
     }
 
