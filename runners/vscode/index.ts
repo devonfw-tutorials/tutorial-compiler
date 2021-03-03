@@ -27,9 +27,7 @@ export class VsCode extends Runner {
 
     setupVsCode() {
         this.vsCodeSetup = true;
-        console.log("setupVsCode")
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
-        console.log("exe: " + vsCodeExecutable);
         if(!vsCodeExecutable) {
             throw new Error("Visual Studio Code seems not to be installed!");
         }
@@ -43,7 +41,6 @@ export class VsCode extends Runner {
         console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
         let downloadDirectory = this.createFolder(path.join(__dirname, "resources"), false);
         let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
-        console.log("chromium; " + chromiumVersion);
         VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
@@ -59,14 +56,12 @@ export class VsCode extends Runner {
 
         ConsoleUtils.executeDevonCommandSync("cobigen", path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
 
-        console.log("install cobigen plugin");
         //Get latest release for cobigen plugin
         let url = "https://api.github.com/repos/devonfw-forge/cobigen-vscode-plugin/releases/latest";
         let cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile cobigen_latestRelease.json\""
             : "wget -c \"" + url + "\" -O cobigen_latestRelease.json";
         let p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
-        console.log(p.output.toString())
 
         let cobigenRelease = require(path.join(__dirname, "resources", "cobigen_latestRelease.json"));
         let downloadUrl = cobigenRelease.assets[0].browser_download_url;
@@ -75,7 +70,6 @@ export class VsCode extends Runner {
             ? "powershell.exe \"Invoke-WebRequest " + downloadUrl + " -OutFile cobigen_plugin.vsix\""
             : "wget -c \"" + downloadUrl + "\" -O cobigen_plugin.vsix -";
         p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
-        console.log(p.output.toString())
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join(__dirname, "resources", "cobigen_plugin.vsix"))
 
