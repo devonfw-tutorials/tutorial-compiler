@@ -542,7 +542,7 @@ export class Console extends Runner {
 
     async assertNpmInstall(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
