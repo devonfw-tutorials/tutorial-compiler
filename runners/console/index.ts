@@ -254,7 +254,6 @@ export class Console extends Runner {
         ConsoleUtils.executeCommandSync("git clone " + command.parameters[1], directorypath, result, this.env);
 
         return result;
-
     }
 
     runNpmInstall(step: Step, command: Command): RunResult {
@@ -262,9 +261,15 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let npmCommand = "npm install";
+        if(command.parameters.length > 1){
+            if (command.parameters[1].global) npmCommand += " -g";
+            if (command.parameters[1].args) npmCommand += " " + command.parameters[1].args.join(" ");
+            if (command.parameters[1].name) npmCommand += " " + command.parameters[1].name; 
+        }
         this.getVariable(this.useDevonCommand)
-            ? ConsoleUtils.executeDevonCommandSync("npm install", projectPath, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandSync("npm install", projectPath, result, this.env);
+            ? ConsoleUtils.executeDevonCommandSync(npmCommand, projectPath, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandSync(npmCommand, projectPath, result, this.env);
 
         return result;
     }
@@ -539,11 +544,17 @@ export class Console extends Runner {
 
     async assertNpmInstall(step: Step, command: Command, result: RunResult) {
         try {
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0], "node_modules"));
+            .directoryExits(projectDir)
+            if(command.parameters.length < 2 || !command.parameters[1].global){
+                new Assertions()
+                .directoryExits(path.join(projectDir, "node_modules"))
+                .directoryNotEmpty(path.join(projectDir, "node_modules"));
+            }
+            
         } catch(error) {
             this.cleanUp();
             throw error;
