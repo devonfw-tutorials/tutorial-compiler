@@ -276,12 +276,18 @@ export class Katacoda extends Runner {
 
     runNpmInstall(step: Step, command: Command): RunResult {
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-        
+        let packageTitle = (command.parameters.length > 1 && command.parameters[1].name) ? command.parameters[1].name : "the dependencies";
+        let npmCommand = {
+            "name": (command.parameters.length > 1 && command.parameters[1].name) ? command.parameters[1].name : undefined,
+            "global": (command.parameters.length > 1 && command.parameters[1].global) ? command.parameters[1].global : false, 
+            "args": (command.parameters.length > 1 && command.parameters[1].args) ? command.parameters[1].args.join(" ") : undefined
+        };
+
         this.steps.push({
-            "title": "Install the dependencies",
+            "title": "Install " + packageTitle,
             "text": "step" + this.stepsCount + ".md"
         });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
         return null;
     }
 
@@ -342,7 +348,6 @@ export class Katacoda extends Runner {
         
         return null;
     }
-
 
     runAdaptTemplatesCobiGen(step: Step, command: Command): RunResult {
         this.steps.push({
