@@ -1,7 +1,6 @@
 import { RunResult } from "../../engine/run_result";
 import * as child_process from "child_process";
 import * as path from 'path';
-import { ComboSetting } from "vscode-extension-tester";
 
 export class ConsoleUtils {
     static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string) {
