@@ -246,10 +246,18 @@ export class Katacoda extends Runner {
 
     runNpmInstall(runCommand: RunCommand): RunResult {
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
-        
-        this.pushStep(runCommand, "Install the dependencies", "step" + this.getStepsCount(runCommand) + ".md");
-        
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        let packageTitle = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : "the dependencies";
+        let npmCommand = {
+            "name": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : undefined,
+            "global": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].global) ? runCommand.command.parameters[1].global : false, 
+            "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
+        };
+
+        this.steps.push({
+            "title": "Install " + packageTitle,
+            "text": "step" + this.stepsCount + ".md"
+        });
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
         return null;
     }
 
@@ -304,11 +312,11 @@ export class Katacoda extends Runner {
         return null;
     }
 
-
     runAdaptTemplatesCobiGen(runCommand: RunCommand): RunResult {
         this.pushStep(runCommand, "Adapt cobiGen templates", "step" + this.getStepsCount(runCommand) + ".md");
         
         this.renderTemplate("adaptTemplatesCobiGen.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter});
+ 
         return null;
     }
 

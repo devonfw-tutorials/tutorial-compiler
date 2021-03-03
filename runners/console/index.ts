@@ -252,7 +252,6 @@ export class Console extends Runner {
         this.executeCommandSync("git clone " + runCommand.command.parameters[1], directorypath, result);
 
         return result;
-
     }
 
     runNpmInstall(runCommand: RunCommand): RunResult {
@@ -260,9 +259,15 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let npmCommand = "npm install";
+        if(runCommand.command.parameters.length > 1){
+            if (runCommand.command.parameters[1].global) npmCommand += " -g";
+            if (runCommand.command.parameters[1].args) npmCommand += " " + runCommand.command.parameters[1].args.join(" ");
+            if (runCommand.command.parameters[1].name) npmCommand += " " + runCommand.command.parameters[1].name; 
+        }
         this.getVariable(this.useDevonCommand)
-            ? this.executeDevonCommandSync("npm install", projectPath, result)
-            : this.executeCommandSync("npm install", projectPath, result);
+            ? this.executeDevonCommandSync(npmCommand, projectPath, result)
+            : this.executeCommandSync(npmCommand, projectPath, result);
 
         return result;
     }
@@ -537,11 +542,16 @@ export class Console extends Runner {
 
     async assertNpmInstall(runCommand: RunCommand, result: RunResult) {
         try {
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "node_modules"));
+            .directoryExits(projectDir)
+            if(runCommand.command.parameters.length < 2 || !runCommand.command.parameters[1].global){
+                new Assertions()
+                .directoryExits(path.join(projectDir, "node_modules"))
+                .directoryNotEmpty(path.join(projectDir, "node_modules"));
+            }
         } catch(error) {
             this.cleanUp();
             throw error;
