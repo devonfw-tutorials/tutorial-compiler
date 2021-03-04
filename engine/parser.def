@@ -28,10 +28,14 @@ step
   
 stepinner
   = steptextlines?
-   "[step]" ___
-   "--" ___
-   steplines
-   "--" __
+    "[step]" ___
+    stepstitle?
+    "--" ___
+    steplines
+    "--" __
+
+stepstitle
+  = "==" _ string __
 
 steptextlines
   = steptextline* { return { "steptextlines": text()}; }
@@ -46,11 +50,11 @@ steptextafterline
   = !"====" string __
  
 steplines
-  = stepline+
-
-stepline
-  = !"--" string __ { return { "stepline": text()}; }
+  = stepline+ { return { "steplines": text()}; }
   
+stepline
+  = !"--" string __
+
 string "string"
   = [^\r\n]+ { return text(); }
 
