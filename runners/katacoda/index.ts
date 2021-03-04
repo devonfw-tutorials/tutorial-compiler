@@ -331,30 +331,30 @@ export class Katacoda extends Runner {
 
     }
 
-    runExecuteFile(step: Step, command: Command) : RunResult {
-        let fileDir = path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0]));
+    runExecuteFile(runCommand: RunCommand) : RunResult {
+        let fileDir = path.join(this.getVariable(this.workspaceDirectory), path.dirname(runCommand.command.parameters[0]));
 
-        let terminal = (command.parameters.length > 1 && command.parameters[1].asynchronous) 
+        let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
             ? this.getTerminal('executeFile') 
             : undefined;
 
-        let cdCommand = (command.parameters.length > 1 && command.parameters[1].asynchronous) 
+        let cdCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
         ? this.changeCurrentDir(fileDir, terminal.terminalId, terminal.isRunning)
         : this.changeCurrentDir(fileDir);
 
         let bashCommand = {
-            "name" : path.basename(command.parameters[0]),
+            "name" : path.basename(runCommand.command.parameters[0]),
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
-            "args": (command.parameters.length > 1 && command.parameters[1].args) ? command.parameters[1].args.join(" ") : undefined
+            "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
         }
         
         this.steps.push({
-            "title": "Execute " + path.basename(command.parameters[0]),
+            "title": "Execute " + path.basename(runCommand.command.parameters[0]),
             "text": "step" +this.stepsCount + ".md"
         });
 
-        this.renderTemplate("executeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, bashCommand: bashCommand});
+        this.renderTemplate("executeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, bashCommand: bashCommand});
         return null;
 
     }
