@@ -159,10 +159,10 @@ path: The URL path on which is checked if the server is running
 ### npmInstall
 #### parameter 
 1. Path to the project where the dependencies from the package.json file are to be installed.
-2. Json-object: Name of a package, global or local installation, or array of npm arguments
+2. JSON-object: Name of a package, global or local installation, or array of npm arguments
 * (Optional) name of a package {"name": string }
 * (Optional) global or local installation. Default is local, therefore false {"global" : boolean }
-* (Optional) array of npm arguments as json-object {"args": string[]}
+* (Optional) array of npm arguments {"args": string[]}
 #### example
 npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
@@ -251,9 +251,15 @@ adaptTemplatesCobiGen()
 
 ### executeFile
 #### parameter
-* directory to the script file, relative to workspace 
+1. directory to the script file, relative to workspace 
+2. JSON-object: synchronous or asynchronous process, or array of arguments
+* (Optional) synchronous or asynchronous process. Default is synchronous, therefore false. {"asynchronous": boolean } 
+* (Optional) array of arguments{"args": string[]} 
+3. (Optional) Assertion information. Only needed for an aysynchronous process in the console runner to check if the server was started properly.
 #### example
-executeFile("tutorial-compiler/localBuildRun.sh")
+executeFile("tutorial-compiler/localBuildRun.ps1")
+executeFile("tutorial-compiler/localBuildRun.ps1", {"args": ["-e console"]})
+executeFile("tutorial-compiler/localBuildRun.ps1", {"asynchronous":  true, "args": ["-e console"]}, { "startupTime": 200, "port": 4200, "path": "" })
 
 ***
 

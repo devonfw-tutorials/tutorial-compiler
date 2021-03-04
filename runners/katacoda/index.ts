@@ -373,14 +373,29 @@ export class Katacoda extends Runner {
     }
 
     runExecuteFile(step: Step, command: Command) : RunResult {
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0])))
-        let name = path.basename(command.parameters[0]);
+        let fileDir = path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0]));
+
+        let terminal = (command.parameters.length > 1 && command.parameters[1].asynchronous) 
+            ? this.getTerminal('executeFile') 
+            : undefined;
+
+        let cdCommand = (command.parameters.length > 1 && command.parameters[1].asynchronous) 
+        ? this.changeCurrentDir(fileDir, terminal.terminalId, terminal.isRunning)
+        : this.changeCurrentDir(fileDir);
+
+        let bashCommand = {
+            "name" : path.basename(command.parameters[0]),
+            "terminalId" : terminal ? terminal.terminalId : 1,
+            "interrupt" : terminal ?  terminal.isRunning : false,
+            "args": (command.parameters.length > 1 && command.parameters[1].args) ? command.parameters[1].args.join(" ") : undefined
+        }
+        
         this.steps.push({
-            "title": "Execute " + name,
+            "title": "Execute " + path.basename(command.parameters[0]),
             "text": "step" +this.stepsCount + ".md"
         });
 
-        this.renderTemplate("executeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name: name});
+        this.renderTemplate("executeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, bashCommand: bashCommand});
         return null;
 
     }

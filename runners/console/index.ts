@@ -351,7 +351,22 @@ export class Console extends Runner {
     runExecuteFile(step: Step, command: Command): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-        this.executeCommandSync("bash " + path.basename(command.parameters[0]), path.join(this.getWorkingDirectory(), path.dirname(command.parameters[0])), result);
+
+        let exeCommand =  (this.platform == ConsolePlatform.WINDOWS) 
+        ? "powershell.exe  \"& \" \" .\\" + path.basename(command.parameters[0]) + "\""
+        : "bash " + path.basename(command.parameters[0]);
+    
+        if(command.parameters.length > 1 && command.parameters[1].args) 
+            exeCommand += " " + command.parameters[1].args.join(" ");
+
+        if(command.parameters.length > 1 && command.parameters[1].asyncronous) {
+            let process = this.executeCommandAsync(exeCommand, path.join(this.getWorkingDirectory(), path.dirname(command.parameters[0])), result);
+            if(process.pid) 
+                this.asyncProcesses.push({ pid: process.pid, name: "executeFile", port: command.parameters[2].port });
+        }
+        else 
+            this.executeCommandSync(exeCommand, path.join(this.getWorkingDirectory(), path.dirname(command.parameters[0])), result);
+
         return result;
     }
 
@@ -670,10 +685,30 @@ export class Console extends Runner {
 
     async assertExecuteFile(step: Step, command: Command, result: RunResult) {
         try {
-            new Assertions()
+            let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
 
+            if(command.parameters.length > 2) {
+                if(command.parameters[1].asynchonous){
+                    if(!command.parameters[2].startupTime) {
+                        console.warn("No startup time for command executeFile has been set")
+                    }
+                    let startupTimeInSeconds = command.parameters[2].startupTime ? command.parameters[2].startupTime : 0;
+                    await this.sleep(command.parameters[2].startupTime);
+
+                    if(!command.parameters[2].port) {
+                        this.killAsyncProcesses();
+                        throw new Error("Missing arguments for command executeFile. You have to specify a port for the server. For further information read the function documentation.");
+                    } else {
+                        let isReachable = await assert.serverIsReachable(command.parameters[2].port, command.parameters[2].path);
+                        if(!isReachable) {
+                            this.killAsyncProcesses();
+                            throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + command.parameters[2].port + "/" + command.parameters[2].path)
+                        }
+                    }
+                }
+            }
         } catch(error) {
             this.cleanUp();
             throw error;
