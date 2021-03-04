@@ -10,49 +10,44 @@ class Run {
     private playbooks: Playbook[] = [];
     private environments: Map<string, Environment> = new Map<string, Environment>();
     private args: Map<string, string> = new Map<string, string>();
+    private errors = [];
 
     async run(): Promise<boolean> {
-        let errors = [];
-        try {
-            this.parseArgs();
-            this.parsePlaybooks();
-            this.parseEnvironments();
-            for (let entry of Array.from(this.environments.entries())) {
-                let key = entry[0];
-                let value = entry[1];
-                for (let playbookIndex in this.playbooks) {
-                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+        this.parseArgs();
+        this.parsePlaybooks();
+        this.parseEnvironments();
+        for (let entry of Array.from(this.environments.entries())) {
+            let key = entry[0];
+            let value = entry[1];
+            for (let playbookIndex in this.playbooks) {
+                let engine = new Engine(key, value, this.playbooks[playbookIndex]);
 
-                    for (let varEntry of Array.from(this.args.entries())) {
-                        engine.setVariable(varEntry[0], varEntry[1]);
-                    }
+                for (let varEntry of Array.from(this.args.entries())) {
+                    engine.setVariable(varEntry[0], varEntry[1]);
+                }
 
-                    try {
-                        await engine.run();
-                    } catch (error) {
-                        console.error(error);
-                        errors.push(error);
-                    }
+                try {
+                    await engine.run();
+                } catch (error) {
+                    console.error(error);
+                    this.errors.push(error);
                 }
             }
-        } catch (error) {
-            console.error(error);
-            errors.push(error);
         }
         
-        if (errors.length != 0) {
-            console.log("Errors", errors);
+        if (this.errors.length != 0) {
+            console.log("Errors", this.errors);
         }
-        return errors.length == 0;
+        return this.errors.length == 0;
     }
 
     parsePlaybooks() {
-        try {
-            let parser = new Parser();
+        let parser = new Parser();
 
-            let playbooksDir = (<string>this.args.get("playbooksDir")) || __dirname + "/../playbooks/";
-            let playbookDirs = fs.readdirSync(playbooksDir);
-            for (let index in playbookDirs) {
+        let playbooksDir = (<string>this.args.get("playbooksDir")) || __dirname + "/../playbooks/";
+        let playbookDirs = fs.readdirSync(playbooksDir);
+        for (let index in playbookDirs) {
+            try {
                 let indexFile = playbooksDir + playbookDirs[index] + "/index.asciidoc";
                 if (fs.existsSync(indexFile)) {
                     let playbook = parser.parse(indexFile);
@@ -60,9 +55,10 @@ class Run {
                     playbook.path = playbooksDir + playbookDirs[index] + "/";
                     this.playbooks.push(playbook);
                 }
+            } catch(e) {
+                console.error("Error while parsing playbook: " + playbookDirs[index], e);
+                this.errors.push(e);
             }
-        } catch(e) {
-            throw new Error("Error while parsing playbook: " + e);
         }
     }
 
