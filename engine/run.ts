@@ -13,26 +13,31 @@ class Run {
     private errors = [];
 
     async run(): Promise<boolean> {
-        this.parseArgs();
-        this.parsePlaybooks();
-        this.parseEnvironments();
-        for (let entry of Array.from(this.environments.entries())) {
-            let key = entry[0];
-            let value = entry[1];
-            for (let playbookIndex in this.playbooks) {
-                let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+        try {
+            this.parseArgs();
+            this.parsePlaybooks();
+            this.parseEnvironments();
+            for (let entry of Array.from(this.environments.entries())) {
+                let key = entry[0];
+                let value = entry[1];
+                for (let playbookIndex in this.playbooks) {
+                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
 
-                for (let varEntry of Array.from(this.args.entries())) {
-                    engine.setVariable(varEntry[0], varEntry[1]);
-                }
+                    for (let varEntry of Array.from(this.args.entries())) {
+                        engine.setVariable(varEntry[0], varEntry[1]);
+                    }
 
-                try {
-                    await engine.run();
-                } catch (error) {
-                    console.error(error);
-                    this.errors.push(error);
+                    try {
+                        await engine.run();
+                    } catch (error) {
+                        console.error(error);
+                        this.errors.push(error);
+                    }
                 }
             }
+        } catch (error) {
+            console.error(error);
+            this.errors.push(error);
         }
         
         if (this.errors.length != 0) {
