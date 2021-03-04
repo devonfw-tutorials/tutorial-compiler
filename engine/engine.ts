@@ -1,6 +1,7 @@
 import { Environment } from "./environment";
 import { Playbook } from "./playbook";
 import { Runner } from "./runner";
+import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
 
 
@@ -24,25 +25,26 @@ export class Engine {
             (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
 
-        mainloop: for (let stepIndex in this.playbook.steps) {
-            for (let lineIndex in this.playbook.steps[stepIndex].lines) {
+        mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
+            for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
+                let runCommand = this.initRunCommand(stepIndex, lineIndex);
                 let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
                     if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
                         var result = new RunResult();
-                        if(runner.commandIsSkippable(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
-                            console.log("Command " + this.playbook.steps[stepIndex].lines[lineIndex].name + " will be skipped.");
+                        if(runner.commandIsSkippable(runCommand.command.name)) {
+                            console.log("Command " + runCommand.command.name + " will be skipped.");
                             continue;
                         }
                         try {
-                            result = runner.run(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex]);
+                            result = runner.run(runCommand);
                         }
                         catch (e) {
                             result.exceptions.push(e);
                         }
                         
-                        await runner.assert(this.playbook.steps[stepIndex], this.playbook.steps[stepIndex].lines[lineIndex], result);
+                        await runner.assert(runCommand, result);
                         
                         foundRunnerToExecuteCommand = true;
                         break;
@@ -104,5 +106,21 @@ export class Engine {
         runner.playbookPath = this.playbook.path;
         runner.playbookTitle = this.playbook.title;
         this.runners.set(name, runner);
+    }
+
+    private initRunCommand(stepIndex: number, lineIndex: number): RunCommand {
+        let runCommand = new RunCommand();
+        if(lineIndex == 0) {
+            runCommand.text = this.playbook.steps[stepIndex].text;
+        } 
+        if(lineIndex == (this.playbook.steps[stepIndex].lines.length - 1)){
+            runCommand.textAfter = this.playbook.steps[stepIndex].textAfter;
+        }
+        runCommand.command = this.playbook.steps[stepIndex].lines[lineIndex];
+        runCommand.stepIndex = stepIndex;
+        runCommand.lineIndex = lineIndex;
+        runCommand.stepTitle = this.playbook.steps[stepIndex].title;
+
+        return runCommand;
     }
 }
