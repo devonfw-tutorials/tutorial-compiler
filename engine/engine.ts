@@ -27,17 +27,7 @@ export class Engine {
 
         mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
             for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
-                let runCommand = new RunCommand();
-                if(lineIndex == 0) {
-                    runCommand.text = this.playbook.steps[stepIndex].text;
-                } 
-                if(lineIndex == (this.playbook.steps[stepIndex].lines.length - 1)){
-                    runCommand.textAfter = this.playbook.steps[stepIndex].textAfter;
-                }
-                runCommand.command = this.playbook.steps[stepIndex].lines[lineIndex];
-                runCommand.stepIndex = stepIndex;
-                runCommand.lineIndex = lineIndex;
-                runCommand.stepTitle = this.playbook.steps[stepIndex].title;
+                let runCommand = this.initRunCommand(stepIndex, lineIndex);
                 let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
@@ -116,5 +106,21 @@ export class Engine {
         runner.playbookPath = this.playbook.path;
         runner.playbookTitle = this.playbook.title;
         this.runners.set(name, runner);
+    }
+
+    private initRunCommand(stepIndex: number, lineIndex: number): RunCommand {
+        let runCommand = new RunCommand();
+        if(lineIndex == 0) {
+            runCommand.text = this.playbook.steps[stepIndex].text;
+        } 
+        if(lineIndex == (this.playbook.steps[stepIndex].lines.length - 1)){
+            runCommand.textAfter = this.playbook.steps[stepIndex].textAfter;
+        }
+        runCommand.command = this.playbook.steps[stepIndex].lines[lineIndex];
+        runCommand.stepIndex = stepIndex;
+        runCommand.lineIndex = lineIndex;
+        runCommand.stepTitle = this.playbook.steps[stepIndex].title;
+
+        return runCommand;
     }
 }
