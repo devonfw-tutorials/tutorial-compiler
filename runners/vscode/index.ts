@@ -1,7 +1,5 @@
 import { Runner } from "../../engine/runner"
 import { RunResult } from "../../engine/run_result";
-import { Step } from "../../engine/step";
-import { Command } from "../../engine/command";
 import { Playbook } from "../../engine/playbook";
 import { VsCodeUtils } from "./vscodeUtils";
 import * as path from 'path';
@@ -10,6 +8,7 @@ import * as ejs from 'ejs';
 import * as fs from 'fs';
 import { ConsoleUtils } from "../console/consoleUtils";
 import { Assertions } from "../../assertions";
+import { RunCommand } from "../../engine/run_command";
 
 export class VsCode extends Runner {
 
@@ -48,7 +47,7 @@ export class VsCode extends Runner {
         this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
     }
 
-    runInstallCobiGen(step: Step, command: Command): RunResult {
+    runInstallCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
@@ -74,21 +73,21 @@ export class VsCode extends Runner {
         return result;
     }
 
-    runCobiGenJava(step: Step, command: Command): RunResult {
+    runCobiGenJava(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
         
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
         let testfile = path.join(__dirname, "tests", "runCobiGenJava.js");
-        this.createTestFromTemplate("runCobiGenJava.js", testfile, { directoryPath: directoryPath, directoryName: directoryName, filename: path.basename(filepath), cobigenTemplates: command.parameters[1] });
+        this.createTestFromTemplate("runCobiGenJava.js", testfile, { directoryPath: directoryPath, directoryName: directoryName, filename: path.basename(filepath), cobigenTemplates: runCommand.command.parameters[1] });
         this.runTest(testfile, result);
  
         return result;
     }
 
-    async assertInstallCobiGen(step: Step, command: Command, result: RunResult) {
+    async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
@@ -97,11 +96,11 @@ export class VsCode extends Runner {
         .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
     }
 
-    async assertCobiGenJava(step: Step, command: Command, result: RunResult) {
+    async assertCobiGenJava(runCommand: RunCommand, result: RunResult) {
         new Assertions()
         .noErrorCode(result)
         .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", command.parameters[0]));
+        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
     }
 
     private runTest(testfile: string, result: RunResult) {
