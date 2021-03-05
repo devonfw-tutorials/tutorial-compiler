@@ -2,13 +2,13 @@ import { Runner } from "../../engine/runner"
 import { RunResult } from "../../engine/run_result";
 import { Playbook } from "../../engine/playbook";
 import { VsCodeUtils } from "./vscodeUtils";
+import { ConsoleUtils } from "../console/consoleUtils";
+import { Assertions } from "../../assertions";
+import { RunCommand } from "../../engine/run_command";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { ConsoleUtils } from "../console/consoleUtils";
-import { Assertions } from "../../assertions";
-import { RunCommand } from "../../engine/run_command";
 
 export class VsCode extends Runner {
 

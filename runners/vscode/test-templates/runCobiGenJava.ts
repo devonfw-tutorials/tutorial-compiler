@@ -19,7 +19,7 @@ describe('CobiGenJava Test', () => {
         await prompt.sendKeys(Key.ENTER);
 
 
-        let explorer = new ActivityBar().getViewControl("Explorer");
+        let explorer = await new ActivityBar().getViewControl("Explorer");
         await explorer.openView();
 
         let sections = await new SideBarView().getContent().getSections();
