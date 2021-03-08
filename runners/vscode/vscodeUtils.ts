@@ -68,8 +68,8 @@ export class VsCodeUtils {
         let cp = child_process.spawnSync(unzipCommand, { shell: true, cwd: downloadPath });
         console.log(cp.output.toString());
         if(process.platform != "win32") {
-            console.log("ls -R:");
-            cp = child_process.spawnSync("ls -R", { shell: true, cwd: downloadPath });
+            console.log("du -a:");
+            cp = child_process.spawnSync("du -a", { shell: true, cwd: downloadPath });
             console.log(cp.output.toString());
         }
         return file;
