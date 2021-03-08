@@ -20,8 +20,10 @@ export class VsCode extends Runner {
         //this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);
+        this.createFolder(path.join(__dirname, "resources", "settings"), false);
         this.env = process.env;
         this.env["DISPLAY"] = ":1";
+        fs.writeFileSync(path.join(__dirname, "resources", "settings", "DevToolsActivePort"), "54671\n/devtools/browser/8b288f4f-d6ae-4ad7-9806-01d1f6933499");
     }
 
     setupVsCode() {
