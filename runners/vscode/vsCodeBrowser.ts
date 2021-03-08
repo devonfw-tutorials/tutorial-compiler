@@ -75,7 +75,8 @@ export class VSBrowser {
         fs.writeJSONSync(path.join(userSettings, 'settings.json'), defaultSettings);
         console.log(`Writing code settings to ${path.join(userSettings, 'settings.json')}`);
         
-        const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`, "--log-level=3"];
+        //const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`, "--log-level=3"];
+        let args = ['headless', '--disable-gpu', '--no-sandbox', '--disable-extensions', '--disable-dev-shm-usage']
 
         if (this.extensionsFolder) {
             args.push(`--extensions-dir=${this.extensionsFolder}`);
@@ -99,7 +100,7 @@ export class VSBrowser {
 
         this._driver = await new Builder()
             .forBrowser('chrome')
-            .setChromeOptions(options.headless())
+            .setChromeOptions(options)
             .build();
         VSBrowser._instance = this;
 
