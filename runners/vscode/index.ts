@@ -22,6 +22,7 @@ export class VsCode extends Runner {
         this.createFolder(path.join(__dirname, "resources"), false);
         this.env = process.env;
         this.env["DISPLAY"] = ":20";
+        this.env["webdriver.chrome.driver"] = path.join(__dirname, "resources", "chromedriver");
     }
 
     setupVsCode() {
