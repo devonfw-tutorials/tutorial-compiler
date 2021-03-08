@@ -347,6 +347,22 @@ export class Console extends Runner {
         return result;
     }
 
+    runCreateNgProject(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath);
+        console.log(projectDir);
+        let command1 = "ng new " + runCommand.command.parameters[0];
+
+        this.getVariable(this.useDevonCommand) 
+            ? this.executeDevonCommandSync(command1, projectDir, result)
+            : this.executeCommandSync(command1, projectDir, result);
+
+        return result;
+    }
+
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
             let installedTools = runCommand.command.parameters[0];
@@ -653,6 +669,21 @@ export class Console extends Runner {
             .directoryExits(templatesDir)
             .directoryNotEmpty(templatesDir);
 
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertCreateNgProject(runCommand: RunCommand, result: RunResult) {
+        try {
+            let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath, runCommand.command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(projectDir)
+            .directoryNotEmpty(projectDir);
         } catch(error) {
             this.cleanUp();
             throw error;
