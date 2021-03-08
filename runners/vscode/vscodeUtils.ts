@@ -65,13 +65,7 @@ export class VsCodeUtils {
         let unzipCommand = (process.platform == "win32")
             ? "powershell.exe Expand-Archive -LiteralPath chromedriver_" + driverPlatform + ".zip -DestinationPath " + downloadPath
             : "unzip chromedriver_" + driverPlatform + ".zip";
-        let cp = child_process.spawnSync(unzipCommand, { shell: true, cwd: downloadPath });
-        console.log(cp.output.toString());
-        if(process.platform != "win32") {
-            console.log("du -a:");
-            cp = child_process.spawnSync("du -a", { shell: true, cwd: downloadPath });
-            console.log(cp.output.toString());
-        }
+        child_process.spawnSync(unzipCommand, { shell: true, cwd: downloadPath });
         return file;
     }
 

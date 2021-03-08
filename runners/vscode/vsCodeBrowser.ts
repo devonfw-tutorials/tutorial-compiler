@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as child_process from "child_process";
 import compareVersions = require('compare-versions');
 import { WebDriver, Builder, until, By, initPageObjects, logging } from 'monaco-page-objects';
 import { Options } from 'selenium-webdriver/chrome';
@@ -95,6 +96,12 @@ export class VSBrowser {
         const prefs = new logging.Preferences();
         prefs.setLevel(logging.Type.DRIVER, this.logLevel);
         options.setLoggingPrefs(prefs);
+
+        if(process.platform != "win32") {
+            console.log(path.normalize(path.join(__dirname, "..", "resources")));
+            let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "..", "resources")) });
+            console.log(cp.output.toString());
+        }
 
         this._driver = await new Builder()
             .forBrowser('chrome')
