@@ -32,7 +32,7 @@ export class VSRunner {
     runTests(testFilesPattern: string, logLevel: string = 'info'): Promise<number> {
         return new Promise(resolve => {
             let self = this;
-            let browser: VSBrowser = new VSBrowser(this.codeVersion, this.customSettings, VSBrowserLogLevel.Info);
+            let browser: VSBrowser = new VSBrowser(this.codeVersion, this.customSettings, VSBrowserLogLevel.Debug);
             const universalPattern = testFilesPattern.replace(/'/g, '');
             const testFiles = glob.sync(universalPattern);
     
