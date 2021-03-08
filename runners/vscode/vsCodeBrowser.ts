@@ -89,8 +89,9 @@ export class VSBrowser {
         }
 
         let options = new Options().setChromeBinaryPath(codePath).addArguments(...args) as any;
-        options['options_'].windowTypes = ['webview'];
+        //options['options_'].windowTypes = ['webview'];
         options = options as Options;
+        console.log("codePath: " + codePath);
 
         const prefs = new logging.Preferences();
         prefs.setLevel(logging.Type.DRIVER, this.logLevel);
