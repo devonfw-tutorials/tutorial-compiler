@@ -253,11 +253,9 @@ export class Katacoda extends Runner {
             "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
         };
 
-        this.steps.push({
-            "title": "Install " + packageTitle,
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
+        this.pushStep(runCommand, "Install " + packageTitle, "step" + this.getStepsCount(runCommand) + ".md")
+        
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
         return null;
     }
 
