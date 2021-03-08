@@ -85,6 +85,12 @@ export class VsCode extends Runner {
         let testfile = path.join(__dirname, "tests", "runCobiGenJava.js");
         this.createTestFromTemplate("runCobiGenJava.js", testfile, { directoryPath: directoryPath, directoryName: directoryName, filename: path.basename(filepath), cobigenTemplates: runCommand.command.parameters[1] });
         this.runTest(testfile, result);
+
+        if(process.platform != "win32") {
+            console.log(path.normalize(path.join(__dirname, "..", "resources")));
+            let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "..", "resources")) });
+            console.log(cp.output.toString());
+        }
  
         return result;
     }
