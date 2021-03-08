@@ -87,7 +87,7 @@ export class VsCode extends Runner {
         this.runTest(testfile, result);
 
         if(process.platform != "win32") {
-            console.log(path.normalize(path.join(__dirname, "..", "resources")));
+            console.log(path.normalize(path.join(__dirname, "resources")));
             let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "..", "resources")) });
             console.log(cp.output.toString());
         }
