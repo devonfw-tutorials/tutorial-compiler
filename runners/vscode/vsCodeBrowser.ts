@@ -75,7 +75,7 @@ export class VSBrowser {
         fs.writeJSONSync(path.join(userSettings, 'settings.json'), defaultSettings);
         console.log(`Writing code settings to ${path.join(userSettings, 'settings.json')}`);
         
-        const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`, 'headless', '--remote-debugging-port=9222'];
+        const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`, 'headless'];
 
         if (this.extensionsFolder) {
             args.push(`--extensions-dir=${this.extensionsFolder}`);
