@@ -115,7 +115,6 @@ export class Katacoda extends Runner {
             "name": "Restore Devonfw IDE",
             "script": "restoreDevonfwIde.sh"
         });
-
         //update working directory
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
@@ -379,7 +378,7 @@ export class Katacoda extends Runner {
     }
 
     private pushStep(runCommand: RunCommand, title: string, text: string) {
-        if (this.steps.length == this.stepsCount - 1) {
+        if (runCommand.stepIndex == this.stepsCount - 1 && runCommand.lineIndex == 0) {
             let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
             this.steps.push({
                 "title": stepTitle,
