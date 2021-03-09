@@ -24,6 +24,12 @@ export class VsCode extends Runner {
         this.env = process.env;
         this.env["DISPLAY"] = ":1";
         fs.writeFileSync(path.join(__dirname, "resources", "settings", "DevToolsActivePort"), "54671\n/devtools/browser/8b288f4f-d6ae-4ad7-9806-01d1f6933499");
+
+        if(process.platform != "win32") {
+            console.log(path.normalize(path.join(__dirname, "resources")));
+            let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "resources")) });
+            console.log(cp.output.toString());
+        }
     }
 
     setupVsCode() {
