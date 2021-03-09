@@ -4,4 +4,4 @@ cp -r playbooks build
 cp -r environments build
 cp -r runners build
 npm test
-node build/engine/run.js
+sudo node build/engine/run.js
