@@ -17,19 +17,9 @@ export class VsCode extends Runner {
     private vsCodeSetup: boolean = false;
 
     init(playbook: Playbook): void {
-        //this.setupVsCode();
         this.createFolder(path.join(__dirname, "tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);
-        this.createFolder(path.join(__dirname, "resources", "settings"), false);
         this.env = process.env;
-        this.env["DISPLAY"] = ":1";
-        fs.writeFileSync(path.join(__dirname, "resources", "settings", "DevToolsActivePort"), "54671\n/devtools/browser/8b288f4f-d6ae-4ad7-9806-01d1f6933499");
-
-        if(process.platform != "win32") {
-            console.log(path.normalize(path.join(__dirname, "resources")));
-            let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "resources")) });
-            console.log(cp.output.toString());
-        }
     }
 
     setupVsCode() {
@@ -69,7 +59,7 @@ export class VsCode extends Runner {
         let cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile cobigen_latestRelease.json\""
             : "wget -c \"" + url + "\" -O cobigen_latestRelease.json";
-        let p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
 
         let cobigenRelease = require(path.join(__dirname, "resources", "cobigen_latestRelease.json"));
         let downloadUrl = cobigenRelease.assets[0].browser_download_url;
@@ -77,7 +67,7 @@ export class VsCode extends Runner {
         cmd = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + downloadUrl + " -OutFile cobigen_plugin.vsix\""
             : "wget -c \"" + downloadUrl + "\" -O cobigen_plugin.vsix -";
-        p = child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
+        child_process.spawnSync(cmd, { shell: true, cwd: path.join(__dirname, "resources") });
 
         this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join(__dirname, "resources", "cobigen_plugin.vsix"))
 
@@ -94,12 +84,6 @@ export class VsCode extends Runner {
         let testfile = path.join(__dirname, "tests", "runCobiGenJava.js");
         this.createTestFromTemplate("runCobiGenJava.js", testfile, { directoryPath: directoryPath, directoryName: directoryName, filename: path.basename(filepath), cobigenTemplates: runCommand.command.parameters[1] });
         this.runTest(testfile, result);
-
-        if(process.platform != "win32") {
-            console.log(path.normalize(path.join(__dirname, "resources")));
-            let cp = child_process.spawnSync("du -a", { shell: true, cwd: path.normalize(path.join(__dirname, "resources")) });
-            console.log(cp.output.toString());
-        }
  
         return result;
     }

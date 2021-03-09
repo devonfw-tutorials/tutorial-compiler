@@ -75,8 +75,7 @@ export class VSBrowser {
         fs.writeJSONSync(path.join(userSettings, 'settings.json'), defaultSettings);
         console.log(`Writing code settings to ${path.join(userSettings, 'settings.json')}`);
         
-        const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`, "--log-level=3"];
-        //let args = ['headless', '--disable-gpu', '--no-sandbox', '--disable-extensions', '--disable-dev-shm-usage', '--remote-debugging-port=9222']
+        const args = ['--no-sandbox', '--disable-dev-shm-usage', `--user-data-dir=${path.join(this.storagePath, 'settings')}`];
 
         if (this.extensionsFolder) {
             args.push(`--extensions-dir=${this.extensionsFolder}`);
@@ -92,7 +91,6 @@ export class VSBrowser {
         let options = new Options().setChromeBinaryPath(codePath).addArguments(...args) as any;
         options['options_'].windowTypes = ['webview'];
         options = options as Options;
-        console.log("codePath: " + codePath);
 
         const prefs = new logging.Preferences();
         prefs.setLevel(logging.Type.DRIVER, this.logLevel);

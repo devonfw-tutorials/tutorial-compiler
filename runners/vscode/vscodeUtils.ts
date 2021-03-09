@@ -87,6 +87,6 @@ export class VsCodeUtils {
         let command = (process.platform == "win32")
             ? "powershell.exe \"Invoke-WebRequest " + url + " -OutFile chromedriver_" + driverPlatform + ".zip\""
             : "wget "+ url;
-        let p = child_process.spawnSync(command, { shell: true, cwd: downloadPath });
+        child_process.spawnSync(command, { shell: true, cwd: downloadPath });
     }
 }
