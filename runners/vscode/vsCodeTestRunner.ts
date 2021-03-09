@@ -12,16 +12,16 @@ async function main(args: string[]) {
 }
 
 function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: string): Promise<number> {
-    //let downloadFolder = path.join(__dirname, "resources");
+    let downloadFolder = path.join(__dirname, "resources");
 
-    // add chromedriver to process' path
-    // let env: NodeJS.ProcessEnv = {};
-    // Object.assign(env, process.env);
-    // const key = 'PATH';
-    // env[key] = [downloadFolder, process.env[key]].join(path.delimiter);
+    //add chromedriver to process' path
+    let env: NodeJS.ProcessEnv = {};
+    Object.assign(env, process.env);
+    const key = 'PATH';
+    env[key] = [downloadFolder, process.env[key]].join(path.delimiter);
 
-    // process.env = env;
-    // process.env.TEST_RESOURCES = downloadFolder;
+    process.env = env;
+    process.env.TEST_RESOURCES = downloadFolder;
 
     let config = path.join(__dirname, ".mocharc.js");
     let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, config);
