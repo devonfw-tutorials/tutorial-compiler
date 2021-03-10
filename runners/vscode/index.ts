@@ -79,8 +79,8 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        //let devonScriptFile = this.getDevonScriptFile();
-        //console.log("devonScriptFile: " + devonScriptFile);
+        let devonScriptFile = this.getDevonScriptFile();
+        console.log("devonScriptFile: " + devonScriptFile);
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
