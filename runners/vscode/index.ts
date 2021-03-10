@@ -9,7 +9,6 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-const os = require("os");
 
 export class VsCode extends Runner {
 
@@ -79,8 +78,6 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        //let devonScriptFile = this.getDevonScriptFile();
-        //console.log("devonScriptFile: " + devonScriptFile);
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
@@ -89,41 +86,6 @@ export class VsCode extends Runner {
         this.runTest(testfile, result);
  
         return result;
-    }
-
-    getDevonScriptFile() {
-        let env = process.env;
-        console.log(env);
-        if(env.DEVON_IDE_HOME && fs.existsSync(path.join(env.DEVON_IDE_HOME, "scripts", "devon"))) {
-            console.log(1, path.join(env.DEVON_IDE_HOME, "scripts", "devon"));
-            return path.join(env.DEVON_IDE_HOME, "scripts", "devon");
-        } else {
-            let homeDirectory = os.homedir();
-            let homeFile = path.join(homeDirectory, ".devon", "home");
-            console.log(homeDirectory, homeFile);
-            if(fs.existsSync(homeFile)) {
-                let content = fs.readFileSync(homeFile, "utf-8");
-                console.log("content:"  +  content);
-                let lines = content.split("\n");
-                for(let i = 0; i < lines.length; i++) {
-                    let home = lines[i].split("=");
-                    if(home.length == 2 && home[0] == "DEVON_IDE_HOME") {
-                        let ideHomePath = home[1];
-                        console.log("ideHomePath: " + ideHomePath);
-                        if(process.platform == "win32" && ideHomePath.startsWith("/")) {
-                            ideHomePath = path.join(ideHomePath.charAt(1) + ":\\" + ideHomePath.substring(3));
-                        }
-                        
-                        if(fs.existsSync(ideHomePath) && fs.existsSync(path.join(ideHomePath, "scripts", "devon"))) {
-                            console.log("return: " + path.join(ideHomePath, "scripts", "devon"));
-                            return path.join(ideHomePath, "scripts", "devon");
-                        }
-                    }
-                }
-            }
-        }
-        
-        return "";
     }
 
     async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
