@@ -347,18 +347,19 @@ export class Console extends Runner {
         return result;
     }
 
-    runCreateNgProject(runCommand: RunCommand): RunResult {
+    runCreateDevon4ngProject(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
 
         let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath);
-        console.log(projectDir);
-        let command1 = "ng new " + runCommand.command.parameters[0];
+        let command1 = "ng create " + runCommand.command.parameters[0];
 
-        this.getVariable(this.useDevonCommand) 
-            ? this.executeDevonCommandSync(command1, projectDir, result)
-            : this.executeCommandSync(command1, projectDir, result);
+        if(!this.getVariable(this.useDevonCommand)){
+            console.warn("Devonfw IDE is not installed"); 
+        }
+
+        this.executeDevonCommandSync(command1, projectDir, result);
 
         return result;
     }
@@ -675,7 +676,7 @@ export class Console extends Runner {
         }
     }
 
-    async assertCreateNgProject(runCommand: RunCommand, result: RunResult) {
+    async assertCreateDevon4ngProject(runCommand: RunCommand, result: RunResult) {
         try {
             let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
             let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath, runCommand.command.parameters[0]);

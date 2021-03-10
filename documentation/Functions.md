@@ -17,6 +17,7 @@ The following functions are already implemented:
 * downloadFile
 * nextKatacodaStep
 * adaptTemplatesCobiGen
+* createDevon4ngProject
 
 ***
 
@@ -246,5 +247,18 @@ image: Path to an image to be displayed in the katacoda step.
 * No parameters
 #### example
 adaptTemplatesCobiGen()
+
+***
+
+### createDevon4ngProject
+#### parameter 
+1. Name of the Project.
+2. (Optional) Path to where the Project should be created (relative to workspace). Folder should exist.
+#### example 
+createDevon4ngProject("exampleAngularProject")
+Will create the angular project to the current workspace with the name exampleAngularProject.
+
+createDevon4ngProject("exampleAngularProject", "projects")
+Will create the angular project to the directory projects within the current workspace.
 
 ***
