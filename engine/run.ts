@@ -3,7 +3,6 @@ import { Playbook } from "./playbook";
 import { Environment } from "./environment";
 import { Engine } from "./engine";
 import { isObject } from "util";
-import { type } from "os";
 const fs = require('fs');
 const yargs = require('yargs/yargs');
 
