@@ -61,15 +61,19 @@ If you want to pass arguments to this method, you have to do this in the header 
 flag: '-e'
 value: 'katacoda', 'console'
     
-If you don't pass arguments to the file, it will run all environments.
+If you don't pass arguments to the file, it will run the playbooks on all environments.
 
 #### example 
 'bash localBuildRun.sh -e katacoda -e console'
 
-### Playbook 
+### Playbook
+
 flag: '-p'
 value: foldername of the tutorial 
 
 'bash localBuildRun.sh -p cobigen-cli'
+
+If you don't pass playbook arguments to the file, it will run all playbooks in the folder 'tutorials'
+
 
 
