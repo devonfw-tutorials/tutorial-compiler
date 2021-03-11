@@ -241,7 +241,6 @@ image: Path to an image to be displayed in the katacoda step.
 
 ***
 
-
 ### adaptTemplatesCobiGen
 #### parameter
 * No parameters
@@ -260,5 +259,8 @@ Will create the angular project to the current workspace with the name exampleAn
 
 createDevon4ngProject("exampleAngularProject", "projects")
 Will create the angular project to the directory projects within the current workspace.
+
+#### Details
+This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***

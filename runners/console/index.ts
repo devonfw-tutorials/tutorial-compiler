@@ -353,13 +353,10 @@ export class Console extends Runner {
 
         let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath);
-        let command1 = "ng create " + runCommand.command.parameters[0];
 
-        if(!this.getVariable(this.useDevonCommand)){
-            console.warn("Devonfw IDE is not installed"); 
-        }
-
-        this.executeDevonCommandSync(command1, projectDir, result);
+        this.getVariable(this.useDevonCommand)
+            ? this.executeDevonCommandSync("ng create " + runCommand.command.parameters[0], projectDir, result)
+            : this.executeCommandSync("ng new " + runCommand.command.parameters[0], projectDir, result);
 
         return result;
     }
