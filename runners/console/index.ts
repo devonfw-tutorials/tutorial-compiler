@@ -351,12 +351,11 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath);
-
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]);
+        let optional = runCommand.command.parameters.length > 2 ? (" " + runCommand.command.parameters[2]) : "";
         this.getVariable(this.useDevonCommand)
-            ? this.executeDevonCommandSync("ng create " + runCommand.command.parameters[0], projectDir, result)
-            : this.executeCommandSync("ng new " + runCommand.command.parameters[0], projectDir, result);
+            ? this.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + optional, projectDir, result)
+            : this.executeCommandSync("ng new " + runCommand.command.parameters[0] + optional, projectDir, result);
 
         return result;
     }
@@ -675,8 +674,7 @@ export class Console extends Runner {
 
     async assertCreateDevon4ngProject(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
-            let projectDir = path.join(this.getVariable(this.workspaceDirectory), projectPath, runCommand.command.parameters[0]);
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1], runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)

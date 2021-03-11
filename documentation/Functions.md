@@ -252,7 +252,8 @@ adaptTemplatesCobiGen()
 ### createDevon4ngProject
 #### parameter 
 1. Name of the Project.
-2. (Optional) Path to where the Project should be created (relative to workspace). Folder should exist.
+2. Path to where the Project should be created (relative to workspace). Folder should exist.
+3. (Optional) Optional parameters, according to https://angular.io/cli/new .
 #### example 
 createDevon4ngProject("exampleAngularProject")
 Will create the angular project to the current workspace with the name exampleAngularProject.

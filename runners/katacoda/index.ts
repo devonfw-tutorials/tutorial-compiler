@@ -332,12 +332,11 @@ export class Katacoda extends Runner {
     }
 
     runCreateDevon4ngProject(runCommand: RunCommand): RunResult {
-        let projectPath = (runCommand.command.parameters.length > 1) ? runCommand.command.parameters[1] : "";
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), projectPath));
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]));
 
         this.pushStep(runCommand, "Create Angular Project", "step" + this.getStepsCount(runCommand) + ".md");
 
-        this.renderTemplate("createDevon4ngProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, projectName: runCommand.command.parameters[0], useDevonCommand: this.getVariable(this.useDevonCommand) });
+        this.renderTemplate("createDevon4ngProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, projectName: runCommand.command.parameters[0], optional: runCommand.command.parameters[2], useDevonCommand: this.getVariable(this.useDevonCommand) });
         return null;
     }
 
