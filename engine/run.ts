@@ -28,7 +28,6 @@ class Run {
 
                     for (let varEntry of Array.from(this.args.entries())) {
                         engine.setVariable(varEntry[0], varEntry[1]);
-                        
                     }
 
                     try {
@@ -106,11 +105,10 @@ class Run {
         if(!this.args.get('e'))
             return entries;
 
-        let filteredEntries=new Array();
+        let filteredEntries = new Array();
         for(let entry of entries){
-            if(this.args.get('e').includes(entry[0])){
+            if(this.args.get('e').includes(entry[0]))
                 filteredEntries.push(entry)
-            }
         }
         return filteredEntries
     }
@@ -121,10 +119,8 @@ class Run {
             
         let filteredIndecies = [];
         for(let playbook of playbooks){
-            if(this.args.get('p').includes(playbook['name'].replace("/", ""))){
+            if(this.args.get('p').includes(playbook['name'].replace("/", "")))
                 filteredIndecies.push(playbooks.indexOf(playbook))
-                
-            }
         }
         return filteredIndecies
     }
