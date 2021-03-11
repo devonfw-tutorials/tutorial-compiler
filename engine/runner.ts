@@ -1,7 +1,5 @@
-import { Command } from "./command";
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
-import { Step } from "./step";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
 import { RunCommand } from "./run_command";
