@@ -73,7 +73,7 @@ value: foldername of the tutorial
 
 'bash localBuildRun.sh -p cobigen-cli'
 
-If you don't pass playbook arguments to the file, it will run all playbooks in the folder 'tutorials'
+If you don't pass playbook arguments to the file, it will run all playbooks, that are in the folder 'tutorials'.
 
 
 
