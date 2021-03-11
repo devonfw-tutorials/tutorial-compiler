@@ -70,10 +70,9 @@ If you don't pass environment arguments to the file, it will run the playbooks o
 flag: '-p'
 value: foldername of the tutorial 
 
-#### example
-'bash localBuildRun.sh -p cobigen-cli'
-
 If you don't pass playbook arguments to the file, it will run all playbooks, that are in the folder 'tutorials'.
 
+#### example
+'bash localBuildRun.sh -p cobigen-cli'
 
 
