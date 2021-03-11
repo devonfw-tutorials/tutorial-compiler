@@ -61,7 +61,7 @@ If you want to pass arguments to this method, you have to do this in the header 
 flag: '-e'
 value: 'katacoda', 'console'
     
-If you don't pass arguments to the file, it will run the playbooks on all environments.
+If you don't pass environment arguments to the file, it will run the playbooks on all environments.
 
 #### example 
 'bash localBuildRun.sh -e katacoda -e console'
