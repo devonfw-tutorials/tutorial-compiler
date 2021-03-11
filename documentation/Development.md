@@ -55,3 +55,21 @@ public yourAssertionCode(): Assertions {
 ```
 If you want to pass arguments to this method, you have to do this in the header of the 'run' method and in the call of the method.
 
+## Choose the tutorial and the environment
+
+### Environment 
+flag: '-e'
+value: 'katacoda', 'console'
+    
+If you don't pass arguments to the file, it will run all environments.
+
+#### example 
+'bash localBuildRun.sh -e katacoda -e console'
+
+### Playbook 
+flag: '-p'
+value: foldername of the tutorial 
+
+'bash localBuildRun.sh -p cobigen-cli'
+
+

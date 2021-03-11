@@ -3,6 +3,7 @@ import { Playbook } from "./playbook";
 import { Environment } from "./environment";
 import { Engine } from "./engine";
 import { isObject } from "util";
+import { type } from "os";
 const fs = require('fs');
 const yargs = require('yargs/yargs');
 
@@ -17,14 +18,17 @@ class Run {
             this.parseArgs();
             this.parsePlaybooks();
             this.parseEnvironments();
-            for (let entry of Array.from(this.environments.entries())) {
+            let entries = this.filterEnv(Array.from(this.environments.entries()))
+            for (let entry of entries) {
                 let key = entry[0];
                 let value = entry[1];
-                for (let playbookIndex in this.playbooks) {
+                let playbookIndecies = this.filterPlaybooks(this.playbooks)
+                for (let playbookIndex of playbookIndecies) {
                     let engine = new Engine(key, value, this.playbooks[playbookIndex]);
 
                     for (let varEntry of Array.from(this.args.entries())) {
                         engine.setVariable(varEntry[0], varEntry[1]);
+                        
                     }
 
                     try {
@@ -96,6 +100,33 @@ class Run {
                 this.args.set(parentName + index, obj[index]);
             }
         }
+    }
+
+    filterEnv(entries){
+        if(!this.args.get('e'))
+            return entries;
+
+        let filteredEntries=new Array();
+        for(let entry of entries){
+            if(this.args.get('e').includes(entry[0])){
+                filteredEntries.push(entry)
+            }
+        }
+        return filteredEntries
+    }
+
+    filterPlaybooks(playbooks){
+        if(!this.args.get('p'))
+            return Array.from(playbooks.keys());
+            
+        let filteredIndecies = [];
+        for(let playbook of playbooks){
+            if(this.args.get('p').includes(playbook['name'].replace("/", ""))){
+                filteredIndecies.push(playbooks.indexOf(playbook))
+                
+            }
+        }
+        return filteredIndecies
     }
 }
 
