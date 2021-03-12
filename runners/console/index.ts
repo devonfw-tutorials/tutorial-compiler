@@ -100,6 +100,45 @@ export class Console extends Runner {
         return this.runInstallDevonfwIde(runCommand);
     }
 
+    runRestoreWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
+            ? runCommand.command.parameters[0].workspace
+            : this.playbookName.replace("/", ""));
+
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : this.getVariable(this.workspaceDirectory)
+
+        if(this.getVariable(this.useDevonCommand))
+            this.executeCommandSync("rm -r " + workspacesDir + "/*", this.getWorkingDirectory(), result);
+        
+
+        let cloneCommand = "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .";
+
+        if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
+            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName)
+            cloneCommand = fs.existsSync(forkedWorkspacesDir)
+                ? "cp -r " + forkedWorkspacesDir + "/. " + workspacesDir
+                : "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git ."; 
+            console.log("local");
+            
+        }
+        else if(this.getVariable('user') && this.getVariable('branch')){
+            console.log(this.getVariable('user'), this.getVariable('branch'));
+            
+            cloneCommand = "git clone --single-branch -branch " + this.getVariable("branch") + " https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .";
+        
+        }
+        
+        this.executeCommandAsync(cloneCommand, workspacesDir, result);
+
+        return result;
+    }
+
+
     runInstallCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
