@@ -352,10 +352,10 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]);
-        let optional = runCommand.command.parameters.length > 2 ? (" " + runCommand.command.parameters[2]) : "";
+        let params = runCommand.command.parameters.length > 2 && (runCommand.command.parameters[2] instanceof Array) ? (" " + runCommand.command.parameters[2].join(" ")) : "";
         this.getVariable(this.useDevonCommand)
-            ? this.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + optional, projectDir, result)
-            : this.executeCommandSync("ng new " + runCommand.command.parameters[0] + optional, projectDir, result);
+            ? this.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + params, projectDir, result)
+            : this.executeCommandSync("ng new " + runCommand.command.parameters[0] + params, projectDir, result);
 
         return result;
     }
