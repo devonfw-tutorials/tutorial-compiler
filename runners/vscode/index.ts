@@ -17,31 +17,9 @@ export class VsCode extends Runner {
     private vsCodeSetup: boolean = false;
 
     init(playbook: Playbook): void {
-        this.createFolder(path.join(__dirname, "tests"), true);
+        this.createFolder(path.join(this.getWorkingDirectory(), "vscode_tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);
         this.env = process.env;
-    }
-
-    setupVsCode() {
-        this.vsCodeSetup = true;
-        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
-        if(!vsCodeExecutable || vsCodeExecutable == "") {
-            console.error("Visual Studio Code seems not to be installed!");
-            throw new Error("Visual Studio Code seems not to be installed!");
-        }
-
-        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
-        if(!vsCodeVersion || vsCodeVersion == "") {
-            console.error("Unable to get the VS Code version!");
-            throw new Error("Unable to get the VS Code version!");
-        }
-
-        console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
-        let downloadDirectory = this.createFolder(path.join(__dirname, "resources"), false);
-        let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
-        VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
-
-        this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
     }
 
     destroy(playbook: Playbook): void {
@@ -81,9 +59,9 @@ export class VsCode extends Runner {
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
-        let testfile = path.join(__dirname, "tests", "runCobiGenJava.js");
+        let testfile = path.join(this.getWorkingDirectory(), "vscode_tests", "runCobiGenJava.js");
         this.createTestFromTemplate("runCobiGenJava.js", testfile, { directoryPath: directoryPath, directoryName: directoryName, filename: path.basename(filepath), cobigenTemplates: runCommand.command.parameters[1] });
-        this.runTest(testfile, result);
+        this.executeTest(testfile, result);
  
         return result;
     }
@@ -104,7 +82,29 @@ export class VsCode extends Runner {
         .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
     }
 
-    private runTest(testfile: string, result: RunResult) {
+    setupVsCode() {
+        this.vsCodeSetup = true;
+        let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
+        if(!vsCodeExecutable || vsCodeExecutable == "") {
+            console.error("Visual Studio Code seems not to be installed!");
+            throw new Error("Visual Studio Code seems not to be installed!");
+        }
+
+        let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
+        if(!vsCodeVersion || vsCodeVersion == "") {
+            console.error("Unable to get the VS Code version!");
+            throw new Error("Unable to get the VS Code version!");
+        }
+
+        console.log("Setup vs code environment. Executable: " + vsCodeExecutable + ", Version: " + vsCodeVersion);
+        let downloadDirectory = this.createFolder(path.join(__dirname, "resources"), false);
+        let chromiumVersion = VsCodeUtils.getChromiumVersion(vsCodeVersion, downloadDirectory);
+        VsCodeUtils.downloadChromeDriver(chromiumVersion, downloadDirectory);
+
+        this.installExtension(VsCodeUtils.getVsCodeExecutable(), path.join("node_modules", "vscode-extension-tester", "resources", "api-handler.vsix"));
+    }
+
+    private executeTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
 
         if(!this.vsCodeSetup) {

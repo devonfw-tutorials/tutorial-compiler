@@ -4,7 +4,6 @@ import * as glob from 'glob';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { VSBrowser, VSBrowserLogLevel } from './vsCodeBrowser';
-//import { VSBrowser } from 'vscode-extension-tester';
 
 /**
  * Mocha runner wrapper

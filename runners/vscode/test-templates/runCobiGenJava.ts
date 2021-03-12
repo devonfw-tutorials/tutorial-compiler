@@ -1,13 +1,7 @@
 import { expect } from 'chai';
-import { WebDriver, Workbench, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
-import { VSBrowser } from '../vsCodeBrowser';
+import { Workbench, InputBox, ActivityBar, Key, SideBarView, CustomTreeSection, TerminalView } from 'vscode-extension-tester';
 
 describe('CobiGenJava Test', () => {
-    let driver: WebDriver;
-
-    before(() => {
-        driver = VSBrowser.instance.driver;
-    });
 
     it('runCobiGenJava', async function () {
         let workbench = new Workbench();
