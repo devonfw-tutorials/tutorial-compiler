@@ -54,7 +54,7 @@ describe('CobiGenJava Test', () => {
                     }
 
                     if(terminalOutput.indexOf("Please enter the number(s) of increment(s) that you want to generate separated by comma") > -1) {
-                        //await terminal.executeCommand("<%= cobigenTemplates %>");
+                        await terminal.executeCommand("<%= cobigenTemplates %>");
                         terminalOutput = await terminal.getText();
                         while(terminalOutput.indexOf("Exception") == -1 && terminalOutput.indexOf("Commands were executed correctly") == -1 && !timeoutFlag) {
                             await sleep(1);
