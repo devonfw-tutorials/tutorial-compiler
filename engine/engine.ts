@@ -1,9 +1,9 @@
-import { Environment } from "./environment";
+import { Environment, RunnerEnvironment } from "./environment";
 import { Playbook } from "./playbook";
 import { Runner } from "./runner";
 import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
-
+import { WikiRunner } from "../runners/wiki/wikiRunner";
 
 export class Engine {
 
@@ -84,15 +84,15 @@ export class Engine {
         return true;
     }
 
-    private async getRunner(name: string): Promise<Runner> {
-        if (!this.runners.has(name)) {
-            await this.loadRunner(name);
+    private async getRunner(runner: RunnerEnvironment): Promise<Runner> {
+        if (!this.runners.has(runner.name)) {
+            await this.loadRunner(runner.name, runner.path);
         }
-        return this.runners.get(name);
+        return this.runners.get(runner.name);
     }
 
-    private async loadRunner(name: string) {
-        let imp = await import("../runners/" + name + "/index");
+    private async loadRunner(name: string, path: string) {
+        let imp = await import("../runners/" + path + "/index");
         let map = new Map<string, any>();
         for (let index in imp) {
             map.set(index.toLowerCase(), imp[index]);
@@ -100,11 +100,14 @@ export class Engine {
         let runner: Runner = new (map.get(name.toLowerCase()));
         runner.registerGetVariableCallback((name) => this.variables.get(name));
         runner.registerSetVariableCallback((name, value) => this.setVariable(name, value));
-        runner.path = __dirname + "/../runners/" + name + "/";
+        runner.path = __dirname + "/../runners/" + path + "/";
         runner.name = name;
         runner.playbookName = this.playbook.name;
         runner.playbookPath = this.playbook.path;
         runner.playbookTitle = this.playbook.title;
+        if(runner instanceof WikiRunner) {
+            runner.environment = this.environmentName;
+        }
         this.runners.set(name, runner);
     }
 

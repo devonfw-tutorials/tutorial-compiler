@@ -1,0 +1,7 @@
+{
+    "failOnIncomplete": false,
+    "runners": [
+        { "name": "vscodewiki", "path": "wiki/vscode" },
+        { "name": "consolewiki", "path": "wiki/console" }
+    ]
+}

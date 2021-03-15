@@ -1,6 +1,6 @@
 {
     "failOnIncomplete": false,
     "runners": [
-        "katacoda"
+        { "name": "katacoda", "path": "katacoda" }
     ]
 }

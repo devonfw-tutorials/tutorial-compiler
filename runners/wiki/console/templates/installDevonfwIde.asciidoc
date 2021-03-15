@@ -1,0 +1,19 @@
+defonfw setup
+=============
+
+
+Prerequisites
+~~~~~~~~~~~~~~
+* You need to have a tool to extract `.tar.gz` files. On Windows lower Windows 10 use can use https://www.7-zip.org/7-zip[7-Zip]. The most other platforms support this feature by default.
+* You need to have https://git-scm.com/[Git] and https://curl.se/[Curl] installed. On Windows you have to install https://git-scm.com/download/win[Git for Windows]. On Linux systems you might need to install the following tools in case they are not present (`sudo apt-get install git curl` or `sudo yum install git-core curl`)
+
+
+Create a new directory on the location the devonfw IDE should be installed. If you are using the terminal, navigate to the location and execute `mkdir devonfw` and `cd devonfw` to create the directory and navigate into it.
+
+Download
+~~~~~~~~~
+Now you have to download the latest release of the devonfw IDE. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz[here].
+
+In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz https://bit.ly/2BCkFa9` if you are using Windows. On Linux use `wget -c https://bit.ly/2BCkFa9 -O -`.
+
+After this you have to extract the downloaded file. For this execute `tar -xvzf devonfw-ide-scripts.tar.gz`. Or you use a tool (e.g. 7-Zip) for this.

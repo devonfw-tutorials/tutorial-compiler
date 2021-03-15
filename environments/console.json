@@ -1,6 +1,6 @@
 {
     "failOnIncomplete": true,
     "runners": [
-        "console"
+        { "name": "console", "path": "console" }
     ]
 }
