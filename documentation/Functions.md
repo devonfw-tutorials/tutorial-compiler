@@ -17,6 +17,7 @@ The following functions are already implemented:
 * downloadFile
 * nextKatacodaStep
 * adaptTemplatesCobiGen
+* createDevon4ngProject
 
 ***
 
@@ -240,11 +241,27 @@ image: Path to an image to be displayed in the katacoda step.
 
 ***
 
-
 ### adaptTemplatesCobiGen
 #### parameter
 * No parameters
 #### example
 adaptTemplatesCobiGen()
+
+***
+
+### createDevon4ngProject
+#### parameter 
+1. Name of the Project.
+2. Path to where the Project should be created (relative to workspace). Folder should exist.
+3. (Optional) String array of parameters, according to https://angular.io/cli/new.
+#### example 
+createDevon4ngProject("exampleAngularProject", "")
+Will create the angular project to the current workspace with the name exampleAngularProject.
+
+createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
+Will create the angular project to the directory projects within the current workspace and adds more details to output logging.
+
+#### Details
+This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
