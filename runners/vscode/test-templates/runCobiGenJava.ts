@@ -5,7 +5,9 @@ describe('CobiGenJava Test', () => {
 
     it('runCobiGenJava', async function () {
         let workbench = new Workbench();
-        let cobigenOutput = "";
+        let terminalOutput = "";
+        let timeoutFlag = false;
+        let timeout: NodeJS.Timeout;
         let prompt = await workbench.openCommandPrompt() as InputBox;
         await prompt.setText('> Extest: Add Folder To Workspace');
         await prompt.sendKeys(Key.ENTER);
@@ -38,18 +40,37 @@ describe('CobiGenJava Test', () => {
                             break;
                         }
                     }
-                    await sleep(50);
+
+                    //timeout after 5 minutes
+                    timeout = setTimeout(() => {
+                        timeoutFlag = true;
+                    }, 300000);
+
                     let terminal = new TerminalView();
-                    await terminal.executeCommand("<%= cobigenTemplates %>");
-                    await sleep(30);
-                    cobigenOutput = await terminal.getText();
+                    terminalOutput = await terminal.getText();
+                    while(terminalOutput.indexOf("Exception") == -1 && terminalOutput.indexOf("Please enter the number(s) of increment(s) that you want to generate separated by comma") == -1 && !timeoutFlag) {
+                        await sleep(1);
+                        terminalOutput = await terminal.getText();
+                    }
+
+                    if(terminalOutput.indexOf("Please enter the number(s) of increment(s) that you want to generate separated by comma") > -1) {
+                        //await terminal.executeCommand("<%= cobigenTemplates %>");
+                        terminalOutput = await terminal.getText();
+                        while(terminalOutput.indexOf("Exception") == -1 && terminalOutput.indexOf("Commands were executed correctly") == -1 && !timeoutFlag) {
+                            await sleep(1);
+                            terminalOutput = await terminal.getText();
+                        }
+                    }
                 }
             }
         }
 
-        expect(cobigenOutput).to.not.be.empty;
-        expect(cobigenOutput).not.contains("Exception");
-        expect(cobigenOutput).contains("Commands were executed correctly");
+        if(timeout) {
+            clearTimeout(timeout);
+        }
+        expect(terminalOutput).to.not.be.empty;
+        expect(terminalOutput).not.contains("Exception");
+        expect(terminalOutput).contains("Commands were executed correctly");
     });
 });
 
