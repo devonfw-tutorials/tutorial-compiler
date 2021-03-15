@@ -347,6 +347,19 @@ export class Console extends Runner {
         return result;
     }
 
+    runCreateDevon4ngProject(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]);
+        let params = runCommand.command.parameters.length > 2 && (runCommand.command.parameters[2] instanceof Array) ? (" " + runCommand.command.parameters[2].join(" ")) : "";
+        this.getVariable(this.useDevonCommand)
+            ? ConsoleUtils.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + params, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+            : ConsoleUtils.executeCommandSync("ng new " + runCommand.command.parameters[0] + params, projectDir, result, this.env);
+
+        return result;
+    }
+
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
             let installedTools = runCommand.command.parameters[0];
@@ -653,6 +666,20 @@ export class Console extends Runner {
             .directoryExits(templatesDir)
             .directoryNotEmpty(templatesDir);
 
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertCreateDevon4ngProject(runCommand: RunCommand, result: RunResult) {
+        try {
+            let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1], runCommand.command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(projectDir)
+            .directoryNotEmpty(projectDir);
         } catch(error) {
             this.cleanUp();
             throw error;

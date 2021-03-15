@@ -11,7 +11,7 @@ To create a new command you can use in your playbooks, you have to implement a n
 
 The new method must match the following syntax: 'run' + name of the command. The first letter after 'run' has to be in upper case letters.
 ```
-runYourCommand(step: Step, command: Command): RunResult {
+runYourCommand(runCommand: RunCommand): RunResult
     ...your code...
     let result = new RunResult();
     result.returnCode = 1;
@@ -22,7 +22,7 @@ With the RunResult object you can return a value after the function has executed
 
 The assert method has to match the same naming conventions as the run method (except the 'assert' at the beginning) and is located in the same runner class. The RunResult object of the run method is passed to this method as a parameter. 
 ```
-async assertYourCommand(step: Step, command: Command, result: RunResult) {
+async assertYourCommand(runCommand: RunCommand, result: RunResult) {
     new Assertions()
         .yourFirstAssertion(result)
         .yourSecondAssertion(result);
@@ -54,4 +54,25 @@ public yourAssertionCode(): Assertions {
     }
 ```
 If you want to pass arguments to this method, you have to do this in the header of the 'run' method and in the call of the method.
+
+## Choose the tutorial and the environment
+
+### Environment 
+flag: '-e'
+value: 'katacoda', 'console'
+
+If you don't pass environment arguments to the file, it will run the playbooks on all environments.
+
+#### example 
+'bash localBuildRun.sh -e katacoda -e console'
+
+### Playbook
+flag: '-p'
+value: foldername of the tutorial 
+
+If you don't pass playbook arguments to the file, it will run all playbooks, that are in the folder 'tutorials'.
+
+#### example
+'bash localBuildRun.sh -p cobigen-cli'
+
 
