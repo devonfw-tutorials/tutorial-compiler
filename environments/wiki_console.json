@@ -1,6 +1,0 @@
-{
-    "failOnIncomplete": false,
-    "runners": [
-        { "name": "consolewiki", "path": "wiki/console" }
-    ]
-}

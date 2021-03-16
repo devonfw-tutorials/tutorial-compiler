@@ -10,6 +10,7 @@ export abstract class Runner {
     public playbookName: string;
     public playbookPath: string;
     public playbookTitle: string;
+    public environmentName: string;
     protected readonly useDevonCommand: string = "useDevonCommand";
     protected readonly workspaceDirectory: string = "workspaceDirectory";
 
