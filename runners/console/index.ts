@@ -76,7 +76,7 @@ export class Console extends Runner {
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
-        let downloadUrl = "https://bit.ly/2BCkFa9";
+        let downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz";
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1] != "") {
             downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + runCommand.command.parameters[1];
         }
