@@ -20,9 +20,8 @@ export class VsCode extends Runner {
     init(playbook: Playbook): void {
         ConsoleUtils.createBackupDevonDirectory();
         
-        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
-        this.createFolder(path.join(this.getWorkingDirectory(), "vscode_tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);
+        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.env = process.env;
     }
 
@@ -98,6 +97,8 @@ export class VsCode extends Runner {
 
     setupVsCode() {
         this.vsCodeSetup = true;
+        this.createFolder(path.join(this.getWorkingDirectory(), "vscode_tests"), true);
+        
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         if(!vsCodeExecutable || vsCodeExecutable == "") {
             console.error("Visual Studio Code seems not to be installed!");
