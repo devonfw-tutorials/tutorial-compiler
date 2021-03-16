@@ -397,5 +397,32 @@ export class Katacoda extends Runner {
             }); 
         }
     }
+    
+    runExecuteCommand(runCommand: RunCommand) : RunResult {
+        let fileDir = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)   //TDOD relative to Workspace or not ?
+            ? path.join(this.getVariable(this.workspaceDirectory), path.dirname(runCommand.command.parameters[1].dir))
+            : this.getVariable(this.workspaceDirectory);
+
+        let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
+            ? this.getTerminal('executeCommand') 
+            : undefined;
+
+        let bashCommand = {
+            "name" : path.basename(runCommand.command.parameters[0]),
+            "terminalId" : terminal ? terminal.terminalId : 1,
+            "interrupt" : terminal ?  terminal.isRunning : false,
+            "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
+        }
+        
+        this.steps.push({
+            "title": "Execute " + path.basename(runCommand.command.parameters[0]),
+            "text": "step" +this.stepsCount + ".md"
+        });
+
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        return null;
+
+    }
+
 
 }

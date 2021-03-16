@@ -265,3 +265,17 @@ Will create the angular project to the directory projects within the current wor
 This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
+
+### executeCommand
+#### parameter 
+1. The Command what that will be executed
+2. JSON Object with Optional Fields
+   1. OPTIONAL Directory to the executed File if not in current Directory {"dir": string}
+   2. OPTIONAL Synchronous or Asynchronous Process Default is synchronous. {"asynchronous": boolean}
+   3. OPTIONAL Array of Arguments {"args": string[]}
+   
+#### example
+
+TODO
+
+***
