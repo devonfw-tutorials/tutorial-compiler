@@ -31,7 +31,7 @@ export class Engine {
                 let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
-                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
                         var result = new RunResult();
                         if(runner.commandIsSkippable(runCommand.command.name)) {
                             console.log("Command " + runCommand.command.name + " will be skipped.");
@@ -70,7 +70,7 @@ export class Engine {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
                 let isSupported = false;
                 for (let runnerIndex in this.environment.runners) {
-                    if ((await this.getRunner(this.environment.runners[runnerIndex])).supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                    if ((await this.getRunner(this.environment.runners[runnerIndex])).supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
                         isSupported = true;
                         break;
                     }

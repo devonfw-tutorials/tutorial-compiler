@@ -15,15 +15,19 @@ export class VsCode extends Runner {
     private installedExtensions: string[] = [];
     private env: any;
     private vsCodeSetup: boolean = false;
+    private installVsCodeFlag: boolean = false;
 
     init(playbook: Playbook): void {
+        ConsoleUtils.createBackupDevonDirectory();
+        
+        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.createFolder(path.join(this.getWorkingDirectory(), "vscode_tests"), true);
         this.createFolder(path.join(__dirname, "resources"), false);
         this.env = process.env;
     }
 
     destroy(playbook: Playbook): void {
-        this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
+        this.cleanUp();
     }
 
     runInstallCobiGen(runCommand: RunCommand): RunResult {
@@ -67,19 +71,29 @@ export class VsCode extends Runner {
     }
 
     async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     async assertCobiGenJava(runCommand: RunCommand, result: RunResult) {
-        new Assertions()
-        .noErrorCode(result)
-        .noException(result)
-        .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
+        try {
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
+        } catch(error) {
+            this.cleanUp();
+            throw error;
+        }
     }
 
     setupVsCode() {
@@ -146,5 +160,17 @@ export class VsCode extends Runner {
             let vsCodeBin = path.join(path.dirname(vsCodeExecutable), "bin", "code");
             child_process.spawnSync(vsCodeBin + " --uninstall-extension " + extension, { shell: true });
         });
+    }
+
+    private cleanUp(): void {
+        this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
+        ConsoleUtils.restoreDevonDirectory();
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        if((name == "installDevonfwIde" || name == "restoreDevonfwIde") && parameters[0].indexOf("vscode") > -1) {
+            this.installVsCodeFlag = true;
+        }
+        return super.supports(name, parameters) && this.installVsCodeFlag;
     }
 }

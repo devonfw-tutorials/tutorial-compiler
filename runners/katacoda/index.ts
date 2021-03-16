@@ -22,6 +22,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = path.join("/root");
     private terminalCounter: number = 1;
+    private showVsCodeIde: boolean = false;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
@@ -68,13 +69,14 @@ export class Katacoda extends Runner {
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
-        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets());
+        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let cdCommand = this.changeCurrentDir(path.join("/root"));     
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -102,6 +104,7 @@ export class Katacoda extends Runner {
 
     runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings.
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});

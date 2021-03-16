@@ -1,6 +1,8 @@
 import { RunResult } from "../../engine/run_result";
 import * as child_process from "child_process";
+import * as fs from 'fs';
 import * as path from 'path';
+const os = require("os");
 
 export class ConsoleUtils {
     static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string) {
@@ -32,5 +34,22 @@ export class ConsoleUtils {
     static executeDevonCommandAsync(devonCommand: string, directory: string, devonInstallDirectory: string, result: RunResult, env: any): child_process.ChildProcess {
         let scriptsDir = path.join(devonInstallDirectory, "scripts");
         return ConsoleUtils.executeCommandAsync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, env);
+    }
+
+    static createBackupDevonDirectory() {
+        let homedir = os.homedir();
+        if(fs.existsSync(path.join(homedir, ".devon"))) {
+            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
+        }
+    }
+
+    static restoreDevonDirectory() {
+        let homedir = os.homedir();
+        if(fs.existsSync(path.join(homedir, ".devon"))) {
+            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
+        }
+        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
+            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
+        }
     }
 }
