@@ -38,18 +38,19 @@ export class ConsoleUtils {
 
     static createBackupDevonDirectory() {
         let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
+        if(fs.existsSync(path.join(homedir, ".devon")) && !fs.existsSync(path.join(homedir, ".devon_backup")) ) {
+            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"));
         }
     }
 
     static restoreDevonDirectory() {
         let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
+        if(fs.existsSync(path.join(homedir, ".devon")) && fs.existsSync(path.join(homedir, ".devon_backup"))) {
+            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true });
+            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"));
         }
-        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
-            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
+        if(!fs.existsSync(path.join(homedir, ".devon")) && fs.existsSync(path.join(homedir, ".devon_backup"))) {
+            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"));
         }
     }
 }
