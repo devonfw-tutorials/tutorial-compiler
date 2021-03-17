@@ -74,7 +74,7 @@ export abstract class Runner {
         return dir;
     }
 
-    supports(name: string): boolean {
+    supports(name: string, parameters: any[]): boolean {
         return !!this[this.getMethodName("run", name)];
     }
 
@@ -105,7 +105,7 @@ export abstract class Runner {
             if(deleteFolerIfExist) {
                 rimraf.sync(path);
                 fs.mkdirSync(path, { recursive: true });
-            } else return
+            } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
         return path;

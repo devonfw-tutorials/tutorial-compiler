@@ -13,6 +13,10 @@ export class Engine {
     constructor(private environmentName: string, private environment: Environment, private playbook: Playbook) { }
 
     async run() {
+        for (let runnerIndex in this.environment.runners) {
+            (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
+        }
+
         console.log("Environment: " + this.environmentName);
         if (! await this.isEnvironmentComplete()) {
             if (this.environment.failOnIncomplete) {
@@ -21,9 +25,6 @@ export class Engine {
             console.log("Environment incomplete: " + this.environmentName);
             return;
         }
-        for (let runnerIndex in this.environment.runners) {
-            (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
-        }
 
         mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
             for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
@@ -31,7 +32,7 @@ export class Engine {
                 let foundRunnerToExecuteCommand = false;
                 for (let runnerIndex in this.environment.runners) {
                     let runner = await this.getRunner(this.environment.runners[runnerIndex]);
-                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
                         var result = new RunResult();
                         if(runner.commandIsSkippable(runCommand.command.name)) {
                             console.log("Command " + runCommand.command.name + " will be skipped.");
@@ -70,7 +71,7 @@ export class Engine {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
                 let isSupported = false;
                 for (let runnerIndex in this.environment.runners) {
-                    if ((await this.getRunner(this.environment.runners[runnerIndex])).supports(this.playbook.steps[stepIndex].lines[lineIndex].name)) {
+                    if ((await this.getRunner(this.environment.runners[runnerIndex])).supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
                         isSupported = true;
                         break;
                     }
