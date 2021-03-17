@@ -1,8 +1,8 @@
 {
     "failOnIncomplete": false,
     "runners": [
-        "wikivscode",
-        "wikieditor",
-        "wikiconsole"
+        "wikiVsCode",
+        "wikiEditor",
+        "wikiConsole"
     ]
 }
