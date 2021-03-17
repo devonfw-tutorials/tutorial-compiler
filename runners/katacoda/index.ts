@@ -140,14 +140,16 @@ export class Katacoda extends Runner {
         let params = runCommand.command.parameters;
         let cobiGenTemplates = params[1].join(",");
 
-        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
-        this.setupScripts.push({
-            "name": "Install CobiGen plugin",
-            "script": "installCobiGenPlugin.sh"
-        });
+        if(this.showVsCodeIde) {
+            this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
+            this.setupScripts.push({
+                "name": "Install CobiGen plugin",
+                "script": "installCobiGenPlugin.sh"
+            });
+        }
+
         this.pushStep(runCommand, "CobiGen Java", "step" + this.getStepsCount(runCommand) + ".md");
-        
-        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates, useVsCode: this.showVsCodeIde });
         return null;
 
     }
