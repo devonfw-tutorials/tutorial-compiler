@@ -281,7 +281,7 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runDownloadFile(step: Step, command: Command): RunResult {
+    runDownloadFile(runCommand: RunCommand): RunResult {
         this.steps.push({
             "title": "Download a file",
             "text": "step" + this.stepsCount  + ".md"
