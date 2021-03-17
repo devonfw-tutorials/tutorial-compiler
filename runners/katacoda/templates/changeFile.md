@@ -1,6 +1,6 @@
 <%= text; %>
 
-Switch to the IDE and open the file "<%= fileDir; %>".
+Switch to the IDE and open the file '<%= fileDir; %>'.
 
 `<%= fileDir; %>`{{open}}
 

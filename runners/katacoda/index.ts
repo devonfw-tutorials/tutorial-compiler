@@ -1,8 +1,7 @@
 import { Runner } from "../../engine/runner"
 import { RunResult } from "../../engine/run_result";
 import { Playbook } from "../../engine/playbook";
-import { Step } from "../../engine/step";
-import { Command } from "../../engine/command";
+import { RunCommand } from "../../engine/run_command";
 import { KatacodaTools } from "./katacodaTools";
 import { KatacodaStep, KatacodaSetupScript, KatacodaTerminals } from "./katacodaInterfaces";
 import { KatacodaAssetManager } from "./katacodaAssetManager";
@@ -52,7 +51,8 @@ export class Katacoda extends Runner {
     }
 
     destroy(playbook: Playbook): void {
-        fs.writeFileSync(this.outputPathTutorial + 'intro.md', playbook.description);
+        let tutorialDirectoryName = path.basename(playbook.path);
+        this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
         fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
 
         // create and configure required files for the setup process
@@ -68,13 +68,13 @@ export class Katacoda extends Runner {
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
-        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount - 1) * 5), this.steps, this.assetManager.getKatacodaAssets());
+        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets());
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
-    runInstallDevonfwIde(step: Step, command: Command): RunResult {
+    runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let cdCommand = this.changeCurrentDir(path.join("/root"));     
-        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -85,11 +85,9 @@ export class Katacoda extends Runner {
             "script": "cloneDevonfwIdeSettings.sh"
         });
 
-        this.steps.push({
-            "title": "Install devonfw IDE",
-            "text": "step" + this.stepsCount + ".md",
-        });
-        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand});
+        this.pushStep(runCommand, "Install devonfw IDE", "step" + this.getStepsCount(runCommand) + ".md");
+        
+        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand});
         
         //update current and working directory
         this.currentDir = path.join(this.currentDir, "devonfw");
@@ -102,8 +100,8 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runRestoreDevonfwIde(step: Step, command: Command): RunResult {
-        let tools = command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
 
         // create script to download devonfw ide settings.
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -118,7 +116,6 @@ export class Katacoda extends Runner {
             "name": "Restore Devonfw IDE",
             "script": "restoreDevonfwIde.sh"
         });
-
         //update working directory
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
@@ -129,17 +126,15 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runInstallCobiGen(step: Step, command: Command): RunResult {
-        this.steps.push({
-            "title": "Install CobiGen",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter});
+    runInstallCobiGen(runCommand: RunCommand): RunResult {
+        this.pushStep(runCommand, "Install CobiGen", "step" + this.getStepsCount(runCommand) + ".md");
+        
+        this.renderTemplate("installCobiGen.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter});
         return null;
     }
 
-    runCobiGenJava(step: Step, command: Command): RunResult {
-        let params = command.parameters;
+    runCobiGenJava(runCommand: RunCommand): RunResult {
+        let params = runCommand.command.parameters;
         let cobiGenTemplates = params[1].join(",");
 
         this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
@@ -147,168 +142,142 @@ export class Katacoda extends Runner {
             "name": "Install CobiGen plugin",
             "script": "installCobiGenPlugin.sh"
         });
-
-        this.steps.push({
-            "title": "CobiGen Java",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
+        this.pushStep(runCommand, "CobiGen Java", "step" + this.getStepsCount(runCommand) + ".md");
+        
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
         return null;
 
     }
 
-    runCreateDevon4jProject(step: Step, command:Command): RunResult {
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
 
         // generate template to change directory, if the current directory is not equal to the required start directory
        let cdCommand = this.changeCurrentDir(path.join("/root", "devonfw", "workspaces", "main"));
 
-       this.steps.push({
-           "title": "Create a new project",
-           "text": "step" + this.stepsCount + ".md"
-       });
+       this.pushStep(runCommand, "Create a new project", "step" + this.getStepsCount(runCommand) + ".md");
 
-       this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, name : command.parameters[0]});
+       this.renderTemplate("createDevon4jProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, name : runCommand.command.parameters[0]});
        return null;  
     }
 
-    runCreateFile(step: Step, command: Command): RunResult{
+    runCreateFile(runCommand: RunCommand): RunResult{
         let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
-        let filePath = path.join(this.getVariable(this.workspaceDirectory), path.dirname(command.parameters[0])).replace(/\\/g, "/");
-        let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
-        let fileName = path.basename(path.join(command.parameters[0]));
+        let filePath = path.join(this.getVariable(this.workspaceDirectory), path.dirname(runCommand.command.parameters[0])).replace(/\\/g, "/");
+        let fileDir = path.join(workspaceDir, runCommand.command.parameters[0]).replace(/\\/g, "/");
+        let fileName = path.basename(path.join(runCommand.command.parameters[0]));
         let content = "";
-        if(command.parameters.length == 2) {
-            content = fs.readFileSync(path.join(this.playbookPath, command.parameters[1]), { encoding: "utf-8" });
+        if(runCommand.command.parameters.length == 2) {
+            content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
         }
-
-        this.steps.push({
-            "title": "Create a new file",
-            "text": "step" + this.stepsCount + ".md"
-        });
+        this.pushStep(runCommand, "Create a new file", "step" + this.getStepsCount(runCommand) + ".md");
         
-        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
+        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
         return null;
     }
 
-    runChangeFile(step: Step, command: Command): RunResult{
+    runChangeFile(runCommand: RunCommand): RunResult{
         let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
-        let fileName = path.basename(path.join(command.parameters[0]));
-        let fileDir = path.join(workspaceDir, command.parameters[0]).replace(/\\/g, "/");
-        let placeholder = command.parameters[1].placeholder ? command.parameters[1].placeholder : "";
-        let dataTarget = command.parameters[1].placeholder ? "insert" : "replace";
+        let fileName = path.basename(path.join(runCommand.command.parameters[0]));
+        let fileDir = path.join(workspaceDir, runCommand.command.parameters[0]).replace(/\\/g, "/");
+        let placeholder = runCommand.command.parameters[1].placeholder ? runCommand.command.parameters[1].placeholder : "";
+        let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
 
         let content = "";
-        if(command.parameters[1].content || command.parameters[1].contentKatacoda){
-            content = (command.parameters[1].contentKatacoda) ? command.parameters[1].contentKatacoda : command.parameters[1].content;
-        }else if(command.parameters[1].file || command.parameters[1].fileKatacoda){
-            let file = (command.parameters[1].fileKatacoda) ? command.parameters[1].fileKatacoda : command.parameters[1].file;
+        if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentKatacoda){
+            content = (runCommand.command.parameters[1].contentKatacoda) ? runCommand.command.parameters[1].contentKatacoda : runCommand.command.parameters[1].content;
+        }else if(runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileKatacoda){
+            let file = (runCommand.command.parameters[1].fileKatacoda) ? runCommand.command.parameters[1].fileKatacoda : runCommand.command.parameters[1].file;
             content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
-        this.steps.push({
-            "title": "Change " + fileName,
-            "text": "step" + this.stepsCount + ".md"
-        });
+        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md");
         
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
     }
 
-    runBuildJava(step: Step, command: Command): RunResult{
+    runBuildJava(runCommand: RunCommand): RunResult{
         
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
-        let skipTest = (command.parameters.length == 2 && command.parameters[1] == true) ? false : true;
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
     
-        this.steps.push({
-            "title": "Build the java project",
-            "text": "step" + this.stepsCount + ".md"
-        });
+        this.pushStep(runCommand, "Build the java project", "step" + this.getStepsCount(runCommand) + ".md");
         
-        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, skipTest: skipTest, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("buildJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, skipTest: skipTest, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
 
     }
 
 
-    runBuildNg(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+    runBuildNg(runCommand: RunCommand): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
 
-        this.steps.push({
-            "title": "Build the Angular Project",
-            "text": "step" + this.stepsCount + ".md"
-        });
+        this.pushStep(runCommand, "Build the Angular Project", "step" + this.getStepsCount(runCommand) + ".md");
 
-        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, outputDir: command.parameters[1], useDevonCommand: this.getVariable(this.useDevonCommand) });
+        this.renderTemplate("buildNg.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, outputDir: runCommand.command.parameters[1], useDevonCommand: this.getVariable(this.useDevonCommand) });
 
         return null;
     }
   
-    runCloneRepository(step: Step, command: Command): RunResult {
+    runCloneRepository(runCommand: RunCommand): RunResult {
 
         let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory)));
         let directoryPath = "";
-        if(command.parameters[0].trim()) {
-            directoryPath = path.join(command.parameters[0]).replace(/\\/g, "/");
+        if(runCommand.command.parameters[0].trim()) {
+            directoryPath = path.join(runCommand.command.parameters[0]).replace(/\\/g, "/");
             this.currentDir = path.join(this.currentDir, directoryPath);
         }
         
+        this.pushStep(runCommand, "Clones Repository " + runCommand.command.parameters[1], "step" + this.getStepsCount(runCommand) + ".md");
 
-        this.steps.push({
-            "title": "Clones Repository " + command.parameters[1],
-            "text": "step" + this.stepsCount + ".md"
-        });
-
-        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: command.parameters[1] });
+        this.renderTemplate("cloneRepository.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, directoryPath: directoryPath, repository: runCommand.command.parameters[1] });
         return null;
     }
 
-    runRunServerJava(step: Step, command: Command): RunResult{
-        let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+    runRunServerJava(runCommand: RunCommand): RunResult{
+        let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let terminal = this.getTerminal('runServerJava');
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
-        this.steps.push({
-            "title": "Start the java server",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
-        return null;
-    }
-
-    runNpmInstall(step: Step, command: Command): RunResult {
-        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+        this.pushStep(runCommand, "Start the java server", "step" + this.getStepsCount(runCommand) + ".md");
         
-        this.steps.push({
-            "title": "Install the dependencies",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("runServerJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
 
-    runRunClientNg(step: Step, command: Command): RunResult {
-        let serverDir = path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]);
+    runNpmInstall(runCommand: RunCommand): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        let packageTitle = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : "the dependencies";
+        let npmCommand = {
+            "name": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : undefined,
+            "global": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].global) ? runCommand.command.parameters[1].global : false, 
+            "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
+        };
+
+        this.pushStep(runCommand, "Install " + packageTitle, "step" + this.getStepsCount(runCommand) + ".md")
+        
+        this.renderTemplate("npmInstall.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, useDevonCommand: this.getVariable(this.useDevonCommand), npmCommand: npmCommand});
+        return null;
+    }
+
+    runRunClientNg(runCommand: RunCommand): RunResult {
+        let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let terminal = this.getTerminal('runClientNg');
         let cdCommand = this.changeCurrentDir(serverDir, terminal.terminalId, terminal.isRunning);
 
-        this.steps.push({
-            "title": "Start the Angular Project",
-            "text": "step" + this.stepsCount + ".md"
-        });
+        this.pushStep(runCommand, "Start the Angular Project", "step" + this.getStepsCount(runCommand) + ".md");
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NODE_OPTIONS=\"--max-old-space-size=16384\"\' >> /root/.profile\n");
 
-        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, useDevonCommand: this.getVariable(this.useDevonCommand)});
+        this.renderTemplate("runClientNg.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: runCommand.command.parameters[1].port, useDevonCommand: this.getVariable(this.useDevonCommand)});
         return null;
     }
 
-    runCreateFolder(step: Step, command: Command): RunResult {
-        let folderPath = new DirUtils().getCdParam(this.currentDir, path.join(this.getVariable(this.workspaceDirectory), command.parameters[0]));
+    runCreateFolder(runCommand: RunCommand): RunResult {
+        let folderPath = new DirUtils().getCdParam(this.currentDir, path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+
+        this.pushStep(runCommand, "Create a new folder", "step" + this.getStepsCount(runCommand) + ".md");
         
-        this.steps.push({
-            "title": "Create a new folder",
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("createFolder.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, folderPath: folderPath });
+        this.renderTemplate("createFolder.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, folderPath: folderPath });
         return null;
     }
 
@@ -325,11 +294,11 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runNextKatacodaStep(step: Step, command: Command): RunResult {
-        let tempFile = path.join(this.getTempDirectory(), command.name + ".md");
+    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+        let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
-        for(let i = 0; i < command.parameters[1].length; i++) {
-            let param = command.parameters[1][i];
+        for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
+            let param = runCommand.command.parameters[1][i];
             if(param.content) {
                 fs.appendFileSync(tempFile, param.content);
             } else if(param.file) {
@@ -343,18 +312,50 @@ export class Katacoda extends Runner {
         }
 
         let content = fs.readFileSync(tempFile, "utf-8");
-        this.steps.push({
-            "title": command.parameters[0],
-            "text": "step" + this.stepsCount + ".md"
-        });
-        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: step.text, textAfter: step.textAfter, content: content });
+        this.pushStep(runCommand, runCommand.command.parameters[0], "step" + this.getStepsCount(runCommand) + ".md");
+
+        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, content: content });
+        
+        if(runCommand.command.parameters[2]) {
+            this.currentDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2]);
+        }
+        
+        return null;
+    }
+
+    runAdaptTemplatesCobiGen(runCommand: RunCommand): RunResult {
+        this.pushStep(runCommand, "Adapt cobiGen templates", "step" + this.getStepsCount(runCommand) + ".md");
+        
+        this.renderTemplate("adaptTemplatesCobiGen.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter});
+ 
+        return null;
+    }
+
+    runDockerCompose(runCommand: RunCommand) : RunResult {
+        let terminal = this.getTerminal('runDockerCompose');
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]), terminal.terminalId, terminal.isRunning);
+
+        this.pushStep(runCommand, "Execute Docker Compose", "step" + this.getStepsCount(runCommand) + ".md");
+
+        this.renderTemplate("dockerCompose.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, terminalId: terminal.terminalId, interrupt: terminal.isRunning, port: runCommand.command.parameters[1].port});
+        return null;
+
+    }
+
+    runCreateDevon4ngProject(runCommand: RunCommand): RunResult {
+        let cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]));
+        let params = runCommand.command.parameters.length > 2 && (runCommand.command.parameters[2] instanceof Array) ? runCommand.command.parameters[2].join(" ") : "";
+        
+        this.pushStep(runCommand, "Create Angular Project", "step" + this.getStepsCount(runCommand) + ".md");
+
+        this.renderTemplate("createDevon4ngProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, projectName: runCommand.command.parameters[0], params: params, useDevonCommand: this.getVariable(this.useDevonCommand) });
         return null;
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
-        fs.writeFileSync(targetPath, result);
+        fs.writeFileSync(targetPath, result, {flag: "a"});
     }
 
     private writeSetupFile(setupFile: string) {
@@ -373,24 +374,16 @@ export class Katacoda extends Runner {
             return "";
         }
         let dirUtils = new DirUtils();
-        let dir;
-        let terminal;
-        let terminalDescr;
-        if(terminalId){
-            dir = dirUtils.getCdParam(path.join("/root"), targetDir);
-            terminal = "T" + terminalId;
-            terminalDescr = "\n Now you have to open another terminal. Click on the cd command twice and you will change to " + dir + " in terminal " + terminalId + " automatically.\n Alternatively you can click on the + next to \`IDE\`, choose the option \`Open New Terminal\` and run the cd command afterwards. \n"; 
-            
-        }else{
-            dir = dirUtils.getCdParam(this.currentDir, targetDir);
-            terminal = "T1";
-            terminalDescr = "Please change the folder to " + dir + ".";
+        let dir = terminalId ? dirUtils.getCdParam(path.join("/root"), targetDir) : dirUtils.getCdParam(this.currentDir, targetDir);
+        let terminal = terminalId ? "T" + terminalId : "T1";
+           
+        if(!terminalId){
             this.currentDir = targetDir;
         }
-
+        
         //create template to change directory 
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", 'cd.md'), 'utf8');
-        return ejs.render(template, {dir: dir, terminal: terminal, terminalDescr: terminalDescr}); 
+        return ejs.render(template, {dir: dir, terminal: terminal, terminalId: terminalId}); 
     }
 
     private getTerminal(functionName: string): {terminalId:number, isRunning:boolean}{
@@ -401,6 +394,21 @@ export class Katacoda extends Runner {
         this.terminalCounter++;
         this.terminals.push({function: functionName, terminalId: this.terminalCounter});
         return {terminalId: this.terminalCounter, isRunning: false};
+    }
+
+    private getStepsCount(runCommand: RunCommand): number {
+        let returnCount = runCommand.stepIndex == this.stepsCount - 1 ? this.stepsCount : ++this.stepsCount;
+        return returnCount;
+    }
+
+    private pushStep(runCommand: RunCommand, title: string, text: string) {
+        if (runCommand.stepIndex == this.stepsCount - 1 && runCommand.lineIndex == 0) {
+            let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
+            this.steps.push({
+                "title": stepTitle,
+                "text": text
+            }); 
+        }
     }
 
 }

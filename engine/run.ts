@@ -10,34 +10,42 @@ class Run {
     private playbooks: Playbook[] = [];
     private environments: Map<string, Environment> = new Map<string, Environment>();
     private args: Map<string, string> = new Map<string, string>();
+    private errors = [];
 
     async run(): Promise<boolean> {
-        this.parseArgs();
-        this.parsePlaybooks();
-        this.parseEnvironments();
-        let errors = [];
-        for (let entry of Array.from(this.environments.entries())) {
-            let key = entry[0];
-            let value = entry[1];
-            for (let playbookIndex in this.playbooks) {
-                let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+        try {
+            this.parseArgs();
+            this.parsePlaybooks();
+            this.parseEnvironments();
+            let entries = this.filterEnv(Array.from(this.environments.entries()))
+            for (let entry of entries) {
+                let key = entry[0];
+                let value = entry[1];
+                let playbookIndecies = this.filterPlaybooks(this.playbooks)
+                for (let playbookIndex of playbookIndecies) {
+                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
 
-                for (let varEntry of Array.from(this.args.entries())) {
-                    engine.setVariable(varEntry[0], varEntry[1]);
-                }
+                    for (let varEntry of Array.from(this.args.entries())) {
+                        engine.setVariable(varEntry[0], varEntry[1]);
+                    }
 
-                try {
-                    await engine.run();
-                } catch (error) {
-                    console.error(error);
-                    errors.push(error);
+                    try {
+                        await engine.run();
+                    } catch (error) {
+                        console.error(error);
+                        this.errors.push(error);
+                    }
                 }
             }
+        } catch (error) {
+            console.error(error);
+            this.errors.push(error);
         }
-        if (errors.length != 0) {
-            console.log("Errors", errors);
+        
+        if (this.errors.length != 0) {
+            console.log("Errors", this.errors);
         }
-        return errors.length == 0;
+        return this.errors.length == 0;
     }
 
     parsePlaybooks() {
@@ -46,12 +54,17 @@ class Run {
         let playbooksDir = (<string>this.args.get("playbooksDir")) || __dirname + "/../playbooks/";
         let playbookDirs = fs.readdirSync(playbooksDir);
         for (let index in playbookDirs) {
-            let indexFile = playbooksDir + playbookDirs[index] + "/index.asciidoc";
-            if (fs.existsSync(indexFile)) {
-                let playbook = parser.parse(indexFile);
-                playbook.name = playbookDirs[index] + "/";
-                playbook.path = playbooksDir + playbookDirs[index] + "/";
-                this.playbooks.push(playbook);
+            try {
+                let indexFile = playbooksDir + playbookDirs[index] + "/index.asciidoc";
+                if (fs.existsSync(indexFile)) {
+                    let playbook = parser.parse(indexFile);
+                    playbook.name = playbookDirs[index] + "/";
+                    playbook.path = playbooksDir + playbookDirs[index] + "/";
+                    this.playbooks.push(playbook);
+                }
+            } catch(e) {
+                console.error("Error while parsing playbook: " + playbookDirs[index], e);
+                this.errors.push(e);
             }
         }
     }
@@ -77,13 +90,38 @@ class Run {
     traverseArgs(parentName, obj) {
 
         for (let index in obj) {
-            if (isObject(obj[index])) {
+            if (obj[index] instanceof Object) {
+                this.args.set(parentName + index, obj[index]);
                 this.traverseArgs(parentName + index + ".", obj[index]);
             }
             else {
                 this.args.set(parentName + index, obj[index]);
             }
         }
+    }
+
+    filterEnv(entries){
+        if(!this.args.get('e'))
+            return entries;
+
+        let filteredEntries = new Array();
+        for(let entry of entries){
+            if(this.args.get('e').includes(entry[0]))
+                filteredEntries.push(entry)
+        }
+        return filteredEntries
+    }
+
+    filterPlaybooks(playbooks){
+        if(!this.args.get('p'))
+            return Array.from(playbooks.keys());
+            
+        let filteredIndecies = [];
+        for(let playbook of playbooks){
+            if(this.args.get('p').includes(playbook['name'].replace("/", "")))
+                filteredIndecies.push(playbooks.indexOf(playbook))
+        }
+        return filteredIndecies
     }
 }
 

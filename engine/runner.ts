@@ -1,9 +1,8 @@
-import { Command } from "./command";
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
-import { Step } from "./step";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
+import { RunCommand } from "./run_command";
 
 export abstract class Runner {
     public path: string;
@@ -86,14 +85,14 @@ export abstract class Runner {
         this.setVariable(this.useDevonCommand, false);
     }
 
-    run(step: Step, command: Command): RunResult {
-        console.log("Run " + command.name, command.parameters);
-        return this[this.getMethodName("run", command.name)](step, command);
+    run(runCommand: RunCommand): RunResult {
+        console.log("Run " + runCommand.command.name, runCommand.command.parameters);
+        return this[this.getMethodName("run", runCommand.command.name)](runCommand);
     }
 
-    async assert(step: Step, command: Command, runResult: RunResult): Promise<void> {
-        if (this[this.getMethodName("assert", command.name)]) {
-            await this[this.getMethodName("assert", command.name)](step, command, runResult);
+    async assert(runCommand: RunCommand, runResult: RunResult): Promise<void> {
+        if (this[this.getMethodName("assert", runCommand.command.name)]) {
+            await this[this.getMethodName("assert", runCommand.command.name)](runCommand, runResult);
         }
     }
 
@@ -105,9 +104,20 @@ export abstract class Runner {
             if(deleteFolerIfExist) {
                 rimraf.sync(path);
                 fs.mkdirSync(path, { recursive: true });
-            } else return
+            } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
         return path;
+    }
+
+    commandIsSkippable(command: String): Boolean {
+        let returnVal = false; 
+        let runner = this.getVariable("skipCommands." + this.getRunnerName());
+        if(runner) {
+            if((runner instanceof Array && runner.indexOf(command) != -1) || runner == command) {
+                returnVal = true;
+            }
+        } 
+        return returnVal;
     }
 }

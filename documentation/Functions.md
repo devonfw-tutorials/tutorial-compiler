@@ -13,8 +13,11 @@ The following functions are already implemented:
 * runServerJava
 * buildNg
 * npmInstall
+* dockerCompose
 * downloadFile
 * nextKatacodaStep
+* adaptTemplatesCobiGen
+* createDevon4ngProject
 
 ***
 
@@ -157,8 +160,30 @@ path: The URL path on which is checked if the server is running
 ### npmInstall
 #### parameter 
 1. Path to the project where the dependencies from the package.json file are to be installed.
-#### example 
+2. Json-object: Name of a package, global or local installation, or array of npm arguments
+* (Optional) name of a package {"name": string }
+* (Optional) global or local installation. Default is local, therefore false {"global" : boolean }
+* (Optional) array of npm arguments as json-object {"args": string[]}
+#### example
+npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
+will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
+
 npmInstall("my-thai-star/angular")
+will run 'npm install' in the directory 'my-thai-star/angular'
+
+***
+
+### dockerCompose
+#### parameter 
+1. Path to the directory where the docker-compose.yml file is located, relative to workspace.
+2. Assertion information. Only needed for the console runner to check if the server was started properly.
+#### example 
+dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081, "path": "" })
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
 
 ***
 
@@ -203,6 +228,7 @@ path: The URL path on which is checked if the server is running
 #### parameter
 1. The title of the step.
 2. An array of json objects with files, content, or images to be rendered within the katacoda step.
+3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
 #### example 
 nextKatacodaStep("Step title", [{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
@@ -212,5 +238,30 @@ Available attributes in the json objects:
 file: Path to a file whose content is to be displayed in the katacoda step (e.g. .md or .txt file).
 content: Plain text to be displayed in the katacoda step.
 image: Path to an image to be displayed in the katacoda step.
+
+***
+
+### adaptTemplatesCobiGen
+#### parameter
+* No parameters
+#### example
+adaptTemplatesCobiGen()
+
+***
+
+### createDevon4ngProject
+#### parameter 
+1. Name of the Project.
+2. Path to where the Project should be created (relative to workspace). Folder should exist.
+3. (Optional) String array of parameters, according to https://angular.io/cli/new.
+#### example 
+createDevon4ngProject("exampleAngularProject", "")
+Will create the angular project to the current workspace with the name exampleAngularProject.
+
+createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
+Will create the angular project to the directory projects within the current workspace and adds more details to output logging.
+
+#### Details
+This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
