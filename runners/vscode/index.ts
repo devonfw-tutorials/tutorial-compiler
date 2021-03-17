@@ -23,6 +23,14 @@ export class VsCode extends Runner {
         this.createFolder(path.join(__dirname, "resources"), false);
         this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.env = process.env;
+
+        playbook.steps.forEach(step => {
+            step.lines.forEach(stepLine => {
+                if((stepLine.name == "installDevonfwIde" || stepLine.name == "restoreDevonfwIde") && stepLine.parameters[0].indexOf("vscode") > -1) {
+                    this.installVsCodeFlag = true;
+                }
+            });
+        });
     }
 
     destroy(playbook: Playbook): void {
@@ -169,9 +177,6 @@ export class VsCode extends Runner {
     }
 
     supports(name: string, parameters: any[]): boolean {
-        if((name == "installDevonfwIde" || name == "restoreDevonfwIde") && parameters[0].indexOf("vscode") > -1) {
-            this.installVsCodeFlag = true;
-        }
         return super.supports(name, parameters) && this.installVsCodeFlag;
     }
 }

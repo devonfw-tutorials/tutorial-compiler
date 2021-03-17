@@ -13,6 +13,10 @@ export class Engine {
     constructor(private environmentName: string, private environment: Environment, private playbook: Playbook) { }
 
     async run() {
+        for (let runnerIndex in this.environment.runners) {
+            (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
+        }
+
         console.log("Environment: " + this.environmentName);
         if (! await this.isEnvironmentComplete()) {
             if (this.environment.failOnIncomplete) {
@@ -20,9 +24,6 @@ export class Engine {
             }
             console.log("Environment incomplete: " + this.environmentName);
             return;
-        }
-        for (let runnerIndex in this.environment.runners) {
-            (await this.getRunner(this.environment.runners[runnerIndex])).init(this.playbook);
         }
 
         mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
