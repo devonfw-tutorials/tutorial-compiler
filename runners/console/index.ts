@@ -29,29 +29,15 @@ export class Console extends Runner {
         .set("npm", "node")
         .set("ng", "node");
 
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
-        }
+        ConsoleUtils.createBackupDevonDirectory();
+
+        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
-       
     }
 
     destroy(playbook: Playbook): void {
         this.cleanUp();
-    }
-
-    cleanUp(): void {
-        this.killAsyncProcesses();
-
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
-        }
-        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
-            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
-        }
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
@@ -742,4 +728,8 @@ export class Console extends Runner {
         }
     }
 
+    private cleanUp(): void {
+        this.killAsyncProcesses();
+        ConsoleUtils.restoreDevonDirectory();
+    }
 }

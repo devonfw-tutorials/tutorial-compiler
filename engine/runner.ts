@@ -73,7 +73,7 @@ export abstract class Runner {
         return dir;
     }
 
-    supports(name: string): boolean {
+    supports(name: string, parameters: any[]): boolean {
         return !!this[this.getMethodName("run", name)];
     }
 
