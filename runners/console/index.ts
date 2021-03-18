@@ -480,24 +480,13 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command dockerCompose has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path);
-                    }
-                }
+                assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime
+                }, () => this.killAsyncProcesses);
             }
          } catch(error) {
             this.cleanUp();
@@ -512,22 +501,13 @@ export class Console extends Runner {
             .noException(result);
 
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runServerJava has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
-                    this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
-                    }
-                }
+                assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    requirePath: true
+                }, () => this.killAsyncProcesses);
             }
         } catch(error) {
             this.cleanUp();
@@ -596,22 +576,12 @@ export class Console extends Runner {
             .noException(result);
 
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runClientNg has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
-                    }
-                }
+                assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime
+                }, () => this.killAsyncProcesses);
             }
         } catch(error) {
             this.cleanUp();
@@ -698,10 +668,6 @@ export class Console extends Runner {
             }
         }
         return null;
-    }
-
-    private sleep(seconds: number) {
-        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
     private killAsyncProcesses() {

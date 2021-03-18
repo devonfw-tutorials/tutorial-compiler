@@ -1,6 +1,4 @@
 import { RunResult } from "../engine/run_result";
-import { Step } from "../engine/step";
-import { Command } from "../engine/command";
 import { NoErrorCode } from "./noErrorCode";
 import { NoException } from "./noException";
 import { DirectoryExist } from "./directoryExist";
@@ -43,8 +41,9 @@ export class Assertions {
         return this;
     }
 
-    public serverIsReachable(port: number, path: string): Promise<boolean> {
-        return ServerIsReachable.run(port, path);
+    public async serverIsReachable(parameters, callback): Promise<Assertions> {
+        await ServerIsReachable.run(parameters, callback);
+        return this;
     }
 
     public repositoryIsClean(directory: string): Assertions {
