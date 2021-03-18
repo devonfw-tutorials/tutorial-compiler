@@ -3,7 +3,6 @@ import { Playbook } from "./playbook";
 import { Runner } from "./runner";
 import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
-import { WikiRunner } from "./wikiRunner";
 
 export class Engine {
 

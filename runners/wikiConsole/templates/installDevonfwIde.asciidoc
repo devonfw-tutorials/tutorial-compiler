@@ -21,9 +21,10 @@ After that you need to extract the downloaded file. To do this, run `tar -xvzf d
 
 Setup
 ~~~~~~
-First you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. For this clone the repository on https://github.com/devonfw/ide-settings or your own fork of it.
+First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is https://github.com/devonfw/ide-settings.
 
+For now clone the repository on https://github.com/devonfw/ide-settings or your own fork of it.
 For this tutorial you have to write `DEVON_IDE_TOOLS=(<%= tools; %>)` into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw IDE.
 Start the setup process by executing `.\setup 'path/to/settings'` (Windows) or `bash setup path/to/settings.git` (Linux).
 
-You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will download the default settings and install the default tools within the defonfw IDE.
+You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the defonfw IDE.
