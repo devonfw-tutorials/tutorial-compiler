@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+import { Command } from "../../engine/command";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -745,44 +746,36 @@ export class Console extends Runner {
     runExecuteCommand(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-
         let exeCommand;
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
+        let exeCommandWithPath = runCommand.command.parameters[0];
+        
+        if(this.platform == ConsolePlatform.WINDOWS)
         {
-            if(runCommand.command.parameters[1].dir.charAt(runCommand.command.parameters[1].dir.length) == '\\' )
+            if(exeCommandWithPath.includes("bash "))
             {
-                runCommand.command.parameters[1].dir += "\\";
+                exeCommandWithPath =exeCommandWithPath.replace("bash ", ".\\");
             }
-            if(this.platform == ConsolePlatform.WINDOWS)
-            {
-                exeCommand = "powershell.exe " + path.basename(runCommand.command.parameters[1].dir) + ""+runCommand.command.parameters[0];    
-            }
-            else{
-                // TODO exeCommand = "bash  chmod +x " + path.basename(runCommand.command.parameters[1].dir).
-                //this.executeCommandSync(exeCommand, path.join(this.getWorkingDirectory(), result));
-                exeCommand = "bash " + path.basename(runCommand.command.parameters[1].dir)+ ""+runCommand.command.parameters[0];    
-            }
+            exeCommandWithPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
+            ?runCommand.command.parameters[1].dir+"/"+exeCommandWithPath
+            :exeCommandWithPath;
         }
         else{
-            exeCommand = (this.platform == ConsolePlatform.WINDOWS)
-            ? "powershell.exe " + runCommand.command.parameters[0]
-            : "bash " + runCommand.command.parameters[0];
+            let commandSplit= runCommand.command.parameters[0].split(" ");
+            exeCommandWithPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
+            ? commandSplit[0]+" "+ runCommand.command.parameters[1].dir+"/"+commandSplit[commandSplit.length-1]
+            : runCommand.command.parameters[0];
         }
-    
-        /*
-        *
-        
+
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) 
-            exeCommand += " " + runCommand.command.parameters[1].args.join(" ");
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asyncronous) {
-            let process = this.executeCommandAsync(exeCommand, path.join(this.getWorkingDirectory(), path.dirname(runCommand.command.parameters[0])), result);
-            if(process.pid) 
-                this.asyncProcesses.push({ pid: process.pid, name: "executeFile", port: runCommand.command.parameters[2].port });
+            exeCommand = exeCommandWithPath+ " " +runCommand.command.parameters[1].args.join(" ");
+
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asyncronous){
+            ConsoleUtils.executeCommandAsync(exeCommand, this.getWorkingDirectory(), result,this.env );
         }
-        else 
-            this.executeCommandSync(exeCommand, path.join(this.getWorkingDirectory(), path.dirname(runCommand.command.parameters[0])), result);
-        */
-       ConsoleUtils.executeCommandSync(exeCommand, path.join(this.getWorkingDirectory(), path.dirname(runCommand.command.parameters[0])), result, this.env);
+        else
+        {
+            ConsoleUtils.executeCommandSync(exeCommand, this.getWorkingDirectory(), result, this.env); 
+        }
         return result;
     }
 

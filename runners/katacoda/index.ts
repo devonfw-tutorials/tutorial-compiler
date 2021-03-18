@@ -399,21 +399,24 @@ export class Katacoda extends Runner {
     }
     
     runExecuteCommand(runCommand: RunCommand) : RunResult {
-        let fileDir = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)   //TDOD relative to Workspace or not ?
-            ? path.join(this.getVariable(this.workspaceDirectory), path.dirname(runCommand.command.parameters[1].dir))
-            : this.getVariable(this.workspaceDirectory);
-
         let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
             ? this.getTerminal('executeCommand') 
             : undefined;
-
+        
+        let pathAndFile = runCommand.command.parameters[0]; 
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
+        {
+            let commandSplit= runCommand.command.parameters[0].split(" ");
+            pathAndFile = commandSplit[0]+" "+ runCommand.command.parameters[1].dir+"/"+commandSplit[commandSplit.length-1];
+        }
         let bashCommand = {
-            "name" : path.basename(runCommand.command.parameters[0]),
+            "name" : pathAndFile, 
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
             "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
         }
-        
+        console.log(pathAndFile);
+
         this.steps.push({
             "title": "Execute " + path.basename(runCommand.command.parameters[0]),
             "text": "step" +this.stepsCount + ".md"
