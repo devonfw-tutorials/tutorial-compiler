@@ -286,6 +286,17 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runDownloadFile(runCommand: RunCommand): RunResult {
+        this.pushStep(runCommand, "Download a file", "step" + this.getStepsCount(runCommand) + ".md");
+
+        let downloadDir = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/")
+        if (runCommand.command.parameters.length == 3) {
+            downloadDir = downloadDir.concat("/", runCommand.command.parameters[2])
+        }
+        this.renderTemplate("downloadFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", {text: runCommand.text, textAfter: runCommand.textAfter, downloadURL: runCommand.command.parameters[0], downloadDir: downloadDir, downloadFile: runCommand.command.parameters[1]});
+        return null;
+    }
+
     runNextKatacodaStep(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
