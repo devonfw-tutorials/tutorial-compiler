@@ -7,6 +7,9 @@ export class ConsoleUtils {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
+        if(command == "mvn clean install") {
+            console.log(process.stderr.toString(), process.stdout.toString());
+        }
         if(process.status != 0) {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());

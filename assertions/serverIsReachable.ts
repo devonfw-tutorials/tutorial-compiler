@@ -7,26 +7,31 @@ export class ServerIsReachable {
         let interval = this.getValue(parameters, 'intervall', 5);
         let startupTime = this.getValue(parameters, 'startupTime', 600);
         let requirePath = this.getValue(parameters, 'requirePath', false);
+
         if(!port || (requirePath && !path)) {
             callback();
             let optionalString = requirePath? "and a path " : "";
             throw new Error("Missing arguments for command runServerJava. You have to specify a port " + optionalString + "for the server. For further information read the function documentation.");
         } else {
             let endTime = new Date().getTime() + startupTime * 1000;
-            console.log("Ending at: " + endTime);
+            console.log("Ending at: " + new Date(endTime).toISOString());
             const polling = async (): Promise<void> => {
-                let reached = await isReachable("http://localhost:" + port + "/" + path);
-                console.log("Reached: " + reached);
-                let now = new Date().getTime();
-                if (now >= endTime) {
-                    console.log("timeout at " + now);
-                    callback();
-                    throw new Error("The server has not become reachable in " + startupTime + " seconds: " + "http://localhost:" + port + "/" + path);
-                } else if (!reached) {
-                    console.log("Sleeping for " + interval + " seconds at " + now);
-                    setTimeout(polling, interval * 1000);
-                }           
+                try {
+                    let reached = await isReachable("http://localhost:" + port + "/" + path)
+                    
+                    let now = new Date().getTime();
+                    if (now >= endTime) {
+                        console.log("timeout at " + new Date(now).toISOString());
+                        callback();
+                        throw new Error("The server has not become reachable in " + startupTime + " seconds: " + "http://localhost:" + port + "/" + path);
+                    } else if (!reached) {
+                        setTimeout(polling, interval * 1000);
+                    }  
+                } catch(err) {
+                    throw err;
+                }        
             };
+            
             try {
                 polling();
             } catch(err) {

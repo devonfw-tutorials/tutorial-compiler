@@ -41,8 +41,8 @@ export class Assertions {
         return this;
     }
 
-    public async serverIsReachable(parameters, callback): Promise<Assertions> {
-        await ServerIsReachable.run(parameters, callback);
+    public serverIsReachable(parameters, callback): Assertions {
+        ServerIsReachable.run(parameters, callback);
         return this;
     }
 
