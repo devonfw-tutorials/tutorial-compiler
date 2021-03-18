@@ -29,29 +29,15 @@ export class Console extends Runner {
         .set("npm", "node")
         .set("ng", "node");
 
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
-        }
+        ConsoleUtils.createBackupDevonDirectory();
+
+        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
-       
     }
 
     destroy(playbook: Playbook): void {
         this.cleanUp();
-    }
-
-    cleanUp(): void {
-        this.killAsyncProcesses();
-
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
-        }
-        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
-            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
-        }
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
@@ -76,7 +62,7 @@ export class Console extends Runner {
         let installDir = path.join(this.getWorkingDirectory(), "devonfw");
         this.createFolder(installDir, true);
 
-        let downloadUrl = "https://bit.ly/2BCkFa9";
+        let downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz";
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1] != "") {
             downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + runCommand.command.parameters[1];
         }
@@ -714,4 +700,8 @@ export class Console extends Runner {
         }
     }
 
+    private cleanUp(): void {
+        this.killAsyncProcesses();
+        ConsoleUtils.restoreDevonDirectory();
+    }
 }
