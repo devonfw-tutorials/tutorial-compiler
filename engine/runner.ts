@@ -100,11 +100,10 @@ export abstract class Runner {
     destroy(playbook: Playbook): void {
     }
 
-    protected createFolder(path: string, deleteFolerIfExist: boolean) {
+    protected createFolder(path: string, deleteFolderIfExist: boolean) {
         if(fs.existsSync(path)) {
-            if(deleteFolerIfExist) {
-                rimraf.sync(path);
-                fs.mkdirSync(path, { recursive: true });
+            if(deleteFolderIfExist) {
+                fs.rmdirSync(path, { recursive: true });
             } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
