@@ -1,3 +1,4 @@
+[ -d build ] && rm -rf build
 tsc
 cp engine/parser.def build/engine/parser.def
 cp -r ../tutorials build/playbooks

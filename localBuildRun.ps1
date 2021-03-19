@@ -1,3 +1,6 @@
+if(Test-Path $PSScriptRoot){
+    Remove-Item build -Recurse -Force
+}
 tsc
 Copy-Item -Force -Recurse -Path $PSScriptRoot\engine\parser.def -Destination $PSScriptRoot\build\engine\parser.def
 Copy-Item -Force -Recurse -Path $PSScriptRoot\..\tutorials -Destination $PSScriptRoot\build\playbooks
