@@ -42,7 +42,11 @@ export class Assertions {
     }
 
     public serverIsReachable(parameters, callback): Assertions {
-        ServerIsReachable.run(parameters, callback);
+        try {
+            ServerIsReachable.run(parameters, callback);
+        } catch(err) {
+            throw err;
+        }
         return this;
     }
 

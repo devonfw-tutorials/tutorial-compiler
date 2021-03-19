@@ -102,8 +102,7 @@ export abstract class Runner {
     protected createFolder(path: string, deleteFolerIfExist: boolean) {
         if(fs.existsSync(path)) {
             if(deleteFolerIfExist) {
-                rimraf.sync(path);
-                fs.mkdirSync(path, { recursive: true });
+                fs.rmdirSync(path, { recursive: true });
             } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
