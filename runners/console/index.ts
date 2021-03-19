@@ -36,8 +36,8 @@ export class Console extends Runner {
         this.env = process.env;
     }
 
-    destroy(playbook: Playbook): void {
-        this.cleanUp();
+    async destroy(playbook: Playbook): Promise<void> {
+        await this.cleanUp();
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
@@ -690,46 +690,53 @@ export class Console extends Runner {
         return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
-    private killAsyncProcesses() {
-        if(this.asyncProcesses.length > 0) {
-            psList().then(processes => {
-                // Get all processes and check if they are child orprocesses of the processes that should be terminated. If so, kill them first.
-                let killProcessesRecursively = function(processes, processIdToKill) {
-                    let childProcesses = processes.filter(process => {
-                        return process.ppid == processIdToKill;
-                    });
+    private async killAsyncProcesses(): Promise<void> {
+        let killProcessesRecursively = function(processes: psList.ProcessDescriptor[], processIdToKill: number) {
+            let childProcesses = processes.filter(process => {
+                return process.ppid == processIdToKill;
+            });
 
-                    if(childProcesses.length > 0) {
-                        childProcesses.forEach(childProcess => {
-                            killProcessesRecursively(processes, childProcess.pid)
-                        });
-                    }
-
-                    process.kill(processIdToKill);
+            if(childProcesses.length > 0) {
+                for(let childProcess of childProcesses) {
+                    killProcessesRecursively(processes, childProcess.pid)
                 }
+            }
 
-                this.asyncProcesses.forEach(asyncProcess => {
-                    killProcessesRecursively(processes, asyncProcess.pid);
-                });
-            }).then(() => {
-                //Check if there are still running processes on the given ports
-                this.asyncProcesses.forEach(asyncProcess => {
-                    findProcess("port", asyncProcess.port).then((processes) => {
-                        if(processes.length > 0) {
-                            processes.forEach(proc => {
-                                if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                                    process.kill(proc.pid);
-                                }
-                            });
-                        }
-                    })
-                });
-            })
+            console.log("kill id " + processIdToKill);
+            process.kill(processIdToKill);
+            console.log("killed id " + processIdToKill);
         }
+
+        console.log("start killAsyncProcesses")
+        if(this.asyncProcesses.length > 0) {
+            let processes: psList.ProcessDescriptor[] = Array.from((await psList()).values());
+            for(let asyncProcess of this.asyncProcesses) {
+                killProcessesRecursively(processes, asyncProcess.pid);
+            }
+            console.log("after killProcessesRecursively")
+            
+            //Check if there are still running processes on the given ports
+            for(let asyncProcess of this.asyncProcesses) {
+                let processes: any[] = await findProcess("port", asyncProcess.port);
+                console.log("kill processes on ports ", asyncProcess, this.environmentName);
+                if(processes.length > 0) {
+                    for(let proc of processes) {
+                        if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
+                            console.log("kill id on port " + proc.pid);
+                            let killed = process.kill(proc.pid);
+                            console.log("killed id on port " + proc.pid, killed, asyncProcess);
+                        }
+                    }
+                }
+            }
+            console.log("after killing ports")
+            
+        }
+        console.log("end killAsyncProcesses")
     }
 
-    private cleanUp(): void {
-        this.killAsyncProcesses();
+    private async cleanUp(): Promise<void> {
+        await this.killAsyncProcesses();
         ConsoleUtils.restoreDevonDirectory();
     }
 }

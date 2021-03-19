@@ -2,6 +2,7 @@ import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
+import * as path from 'path';
 import { RunCommand } from "./run_command";
 
 export abstract class Runner {
@@ -97,18 +98,30 @@ export abstract class Runner {
         }
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
     }
 
-    protected createFolder(path: string, deleteFolerIfExist: boolean) {
-        if(fs.existsSync(path)) {
+    protected createFolder(dirPath: string, deleteFolerIfExist: boolean) {
+        if(fs.existsSync(dirPath)) {
             if(deleteFolerIfExist) {
-                rimraf.sync(path);
-                fs.mkdirSync(path, { recursive: true });
-            } else return path;
+                let deleteFlag = true;
+                let timeout = setTimeout(() => {
+                    deleteFlag = false;
+                }, 60000);
+                while(fs.existsSync(dirPath) && deleteFlag ) {
+                    try {
+                        rimraf.sync(dirPath);
+                    } catch(e) {
+                        //ignore error
+                    }
+                }
+                
+                clearTimeout(timeout);
+                fs.mkdirSync(dirPath, { recursive: true });
+            } else return dirPath;
         }
-        fs.mkdirSync(path, { recursive: true });
-        return path;
+        fs.mkdirSync(dirPath, { recursive: true });
+        return dirPath;
     }
 
     commandIsSkippable(command: String): Boolean {
