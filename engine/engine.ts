@@ -4,7 +4,6 @@ import { Runner } from "./runner";
 import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
 
-
 export class Engine {
 
     private runners: Map<string, Runner> = new Map<string, Runner>();
@@ -106,6 +105,7 @@ export class Engine {
         runner.playbookName = this.playbook.name;
         runner.playbookPath = this.playbook.path;
         runner.playbookTitle = this.playbook.title;
+        runner.environmentName = this.environmentName;
         this.runners.set(name, runner);
     }
 

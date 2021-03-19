@@ -1,0 +1,8 @@
+{
+    "failOnIncomplete": false,
+    "runners": [
+        "wikiEclipse",
+        "wikiEditor",
+        "wikiConsole"
+    ]
+}
