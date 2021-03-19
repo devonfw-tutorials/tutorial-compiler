@@ -746,35 +746,30 @@ export class Console extends Runner {
     runExecuteCommand(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-        let exeCommand;
         let exeCommandWithPath = runCommand.command.parameters[0];
         
         if(this.platform == ConsolePlatform.WINDOWS)
         {
+            exeCommandWithPath = "powershell.exe -command "+ exeCommandWithPath;
             if(exeCommandWithPath.includes("bash "))
             {
                 exeCommandWithPath =exeCommandWithPath.replace("bash ", ".\\");
             }
-            exeCommandWithPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
-            ?runCommand.command.parameters[1].dir+"/"+exeCommandWithPath
-            :exeCommandWithPath;
-        }
-        else{
-            let commandSplit= runCommand.command.parameters[0].split(" ");
-            exeCommandWithPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
-            ? commandSplit[0]+" "+ runCommand.command.parameters[1].dir+"/"+commandSplit[commandSplit.length-1]
-            : runCommand.command.parameters[0];
         }
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) 
-            exeCommand = exeCommandWithPath+ " " +runCommand.command.parameters[1].args.join(" ");
+            exeCommandWithPath = exeCommandWithPath+ " " +runCommand.command.parameters[1].args.join(" ");
 
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asyncronous){
-            ConsoleUtils.executeCommandAsync(exeCommand, this.getWorkingDirectory(), result,this.env );
+        let dirPath = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir
+        ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
+        : this.getWorkingDirectory();
+
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
+            ConsoleUtils.executeCommandAsync(exeCommandWithPath, dirPath, result,this.env );
         }
         else
         {
-            ConsoleUtils.executeCommandSync(exeCommand, this.getWorkingDirectory(), result, this.env); 
+            ConsoleUtils.executeCommandSync(exeCommandWithPath, this.getWorkingDirectory(), result, this.env); 
         }
         return result;
     }
