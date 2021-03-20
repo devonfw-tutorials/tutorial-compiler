@@ -104,19 +104,16 @@ export abstract class Runner {
     protected createFolder(dirPath: string, deleteFolerIfExist: boolean) {
         if(fs.existsSync(dirPath)) {
             if(deleteFolerIfExist) {
-                let deleteFlag = true;
-                let timeout = setTimeout(() => {
-                    deleteFlag = false;
-                }, 60000);
-                while(fs.existsSync(dirPath) && deleteFlag ) {
+                let timeout = new Date(new Date().getTime() + 180000); //add 3 minutes
+                console.log("before loop", new Date().toString())
+                while(fs.existsSync(dirPath) && new Date() < timeout) {
                     try {
                         rimraf.sync(dirPath);
                     } catch(e) {
                         //ignore error
                     }
                 }
-                
-                clearTimeout(timeout);
+                console.log("after loop", new Date().toString());
                 fs.mkdirSync(dirPath, { recursive: true });
             } else return dirPath;
         }

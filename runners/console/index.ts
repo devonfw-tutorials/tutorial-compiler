@@ -361,7 +361,7 @@ export class Console extends Runner {
                 assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -379,7 +379,7 @@ export class Console extends Runner {
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -393,7 +393,7 @@ export class Console extends Runner {
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "core", "target"))
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "server", "target"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -405,7 +405,7 @@ export class Console extends Runner {
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -423,7 +423,7 @@ export class Console extends Runner {
             .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "server", "src", "main", "java"))
             .fileExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java", "com", "example", "application", runCommand.command.parameters[0], "SpringBootApp.java"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -435,7 +435,7 @@ export class Console extends Runner {
             .noException(result)
             .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -456,7 +456,7 @@ export class Console extends Runner {
             .fileExits(filepath)
             .fileContains(filepath, content);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -475,18 +475,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path);
                     }
                 }
             }
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }  
     }
@@ -505,18 +505,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -534,7 +534,7 @@ export class Console extends Runner {
             .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
             .repositoryIsClean(directorypath);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -552,7 +552,7 @@ export class Console extends Runner {
                 .directoryNotEmpty(path.join(projectDir, "node_modules"));
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -570,7 +570,7 @@ export class Console extends Runner {
             .directoryNotEmpty(directory)
             .fileExits(path.join(directory, runCommand.command.parameters[1]));
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -589,18 +589,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -625,7 +625,7 @@ export class Console extends Runner {
             .directoryNotEmpty(path.join(projectPath, outputpath));
 
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -638,7 +638,7 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(folderPath);
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -653,7 +653,7 @@ export class Console extends Runner {
             .directoryNotEmpty(templatesDir);
 
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -667,7 +667,7 @@ export class Console extends Runner {
             .directoryExits(projectDir)
             .directoryNotEmpty(projectDir);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -702,18 +702,18 @@ export class Console extends Runner {
                 }
             }
 
-            console.log("kill id " + processIdToKill);
-            process.kill(processIdToKill);
-            console.log("killed id " + processIdToKill);
+            try {
+                process.kill(processIdToKill);
+            } catch(e) {
+                console.error("Error killing id " + processIdToKill, e);
+            }
         }
 
-        console.log("start killAsyncProcesses")
         if(this.asyncProcesses.length > 0) {
             let processes: psList.ProcessDescriptor[] = Array.from((await psList()).values());
             for(let asyncProcess of this.asyncProcesses) {
                 killProcessesRecursively(processes, asyncProcess.pid);
             }
-            console.log("after killProcessesRecursively")
             
             //Check if there are still running processes on the given ports
             for(let asyncProcess of this.asyncProcesses) {
@@ -723,16 +723,13 @@ export class Console extends Runner {
                     for(let proc of processes) {
                         if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
                             console.log("kill id on port " + proc.pid);
-                            let killed = process.kill(proc.pid);
-                            console.log("killed id on port " + proc.pid, killed, asyncProcess);
+                            process.kill(proc.pid);
+                            console.log("killed id on port " + proc.pid, asyncProcess);
                         }
                     }
                 }
-            }
-            console.log("after killing ports")
-            
+            }   
         }
-        console.log("end killAsyncProcesses")
     }
 
     private async cleanUp(): Promise<void> {
