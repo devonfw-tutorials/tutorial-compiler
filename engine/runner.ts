@@ -100,24 +100,24 @@ export abstract class Runner {
     async destroy(playbook: Playbook): Promise<void> {
     }
 
-    protected createFolder(dirPath: string, deleteFolerIfExist: boolean) {
-        if(fs.existsSync(dirPath)) {
-            if(deleteFolerIfExist) {
+    protected createFolder(path: string, deleteFolderIfExist: boolean) {
+        if(fs.existsSync(path)) {
+            if(deleteFolderIfExist) {
                 let timeout = new Date(new Date().getTime() + 180000); //add 3 minutes
                 console.log("before loop", new Date().toString())
-                while(fs.existsSync(dirPath) && new Date() < timeout) {
+                while(fs.existsSync(path) && new Date() < timeout) {
                     try {
-                        rimraf.sync(dirPath);
+                        rimraf.sync(path);
                     } catch(e) {
                         //ignore error
                     }
                 }
                 console.log("after loop", new Date().toString());
-                fs.mkdirSync(dirPath, { recursive: true });
-            } else return dirPath;
+                fs.mkdirSync(path, { recursive: true });
+            } else return path;
         }
-        fs.mkdirSync(dirPath, { recursive: true });
-        return dirPath;
+        fs.mkdirSync(path, { recursive: true });
+        return path;
     }
 
     commandIsSkippable(command: String): Boolean {
