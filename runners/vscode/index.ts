@@ -18,7 +18,6 @@ export class VsCode extends Runner {
     private installVsCodeFlag: boolean = false;
 
     init(playbook: Playbook): void {
-        console.log("init vscode");
         ConsoleUtils.createBackupDevonDirectory();
         
         this.createFolder(path.join(__dirname, "resources"), false);

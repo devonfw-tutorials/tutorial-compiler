@@ -2,7 +2,6 @@ import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
-import * as path from 'path';
 import { RunCommand } from "./run_command";
 
 export abstract class Runner {
