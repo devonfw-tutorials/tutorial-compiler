@@ -280,11 +280,8 @@ This command also works if the devonfw IDE is not installed, but then you have t
 executeCommand("node" ,{"args": [-v]})
 Will create a Command for executing node -v .
 
-executeCommand("./someScript.ps1")
-Will create a command for executing the Script what is located in current Workspace.
-
 executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
-Will create a command to execute the script in the directory with the Parameter --help.
+Will create a command to execute the script in the directory with the Parameter --help and in a new Terminal.
 
 
 ***
