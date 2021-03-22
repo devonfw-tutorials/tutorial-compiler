@@ -384,7 +384,7 @@ export class Console extends Runner {
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous)
         {
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "Execute", port: undefined}); // Ist das so ok ?
+            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "Execute", port: undefined});
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
 
