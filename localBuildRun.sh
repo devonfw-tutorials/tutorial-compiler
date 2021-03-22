@@ -1,4 +1,3 @@
-[ -d build ] && rm -rf build
 tsc
 cp engine/parser.def build/engine/parser.def
 cp -r ../tutorials build/playbooks
@@ -11,3 +10,5 @@ if [ $? -eq 1 ]; then
 fi
 
 node build/engine/run.js $*
+
+[ -d build/playbooks ] && rm -rf build/playbooks

@@ -1,6 +1,3 @@
-if(Test-Path $PSScriptRoot){
-    Remove-Item build -Recurse -Force
-}
 tsc
 Copy-Item -Force -Recurse -Path $PSScriptRoot\engine\parser.def -Destination $PSScriptRoot\build\engine\parser.def
 Copy-Item -Force -Recurse -Path $PSScriptRoot\..\tutorials -Destination $PSScriptRoot\build\playbooks
@@ -9,3 +6,6 @@ Copy-Item -Force -Recurse -Path $PSScriptRoot\runners\ -Destination $PSScriptRoo
 npm test
 if(-not $?) { throw 'tests failed' } 
 node $PSScriptRoot\build\engine\run.js $args
+if(Test-Path $PSScriptRoot\build\playbooks){
+    Remove-Item .\build\playbooks -Recurse -Force
+}

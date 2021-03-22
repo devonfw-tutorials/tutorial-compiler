@@ -18,6 +18,7 @@ The following functions are already implemented:
 * nextKatacodaStep
 * adaptTemplatesCobiGen
 * createDevon4ngProject
+* executeCommand
 
 ***
 
@@ -270,20 +271,20 @@ This command also works if the devonfw IDE is not installed, but then you have t
 #### parameter 
 1. The Command what that will be executed
 2. JSON Object with Optional Fields
-   1. OPTIONAL Directory to the executed File if not in current Directory (relative to Workspace){"dir": string}
-   2. OPTIONAL Synchronous or Asynchronous Process Default is synchronous. {"asynchronous": boolean}
-   3. OPTIONAL Array of Arguments {"args": string[]}
+   * (Optional) Directory to the executed File and where the Command will be executed, if not in current Directory (relative to Workspace){"dir": string}
+   * (Optional) Synchronous or Asynchronous Process Default is synchronous. {"asynchronous": boolean}
+   * (Optional) Array of Arguments {"args": string[]}
    
 #### example
 
 executeCommand("node" ,{"args": [-v]})
-Will create a Command for executing node -v in the current Terminal.
+Will create a Command for executing node -v .
 
 executeCommand("./someScript.ps1")
 Will create a command for executing the Script what is located in current Workspace.
 
-executeCommand("bash someScript.sh", [{"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
-Will create a command to execute the script in the directory with the Parameter --help in a new Terminal.
+executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
+Will create a command to execute the script in the directory with the Parameter --help.
 
 
 ***

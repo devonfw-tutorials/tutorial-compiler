@@ -8,7 +8,6 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { Command } from "../../engine/command";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -357,6 +356,37 @@ export class Console extends Runner {
         this.getVariable(this.useDevonCommand)
             ? ConsoleUtils.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + params, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandSync("ng new " + runCommand.command.parameters[0] + params, projectDir, result, this.env);
+
+        return result;
+    }
+
+    runExecuteCommand(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        let exeCommand = runCommand.command.parameters[0];
+        
+        if(this.platform == ConsolePlatform.WINDOWS)
+        {
+            if(exeCommand.includes("bash "))
+            {
+                exeCommand =exeCommand.replace("bash ", ".\\");
+            }
+        }
+
+        exeCommand = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args
+        ? exeCommand+ " " +runCommand.command.parameters[1].args.join(" ")
+        : exeCommand;
+
+        let dirPath = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir
+        ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
+        : this.getWorkingDirectory();
+
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous)
+        {
+            let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "Execute", port: undefined}); // Ist das so ok ?
+        }
+        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
 
         return result;
     }
@@ -742,37 +772,5 @@ export class Console extends Runner {
             })
         }
     }
-
-    runExecuteCommand(runCommand: RunCommand): RunResult {
-        let result = new RunResult();
-        result.returnCode = 0;
-        let exeCommandWithPath = runCommand.command.parameters[0];
-        
-        if(this.platform == ConsolePlatform.WINDOWS)
-        {
-            exeCommandWithPath = "powershell.exe -command "+ exeCommandWithPath;
-            if(exeCommandWithPath.includes("bash "))
-            {
-                exeCommandWithPath =exeCommandWithPath.replace("bash ", ".\\");
-            }
-        }
-
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) 
-            exeCommandWithPath = exeCommandWithPath+ " " +runCommand.command.parameters[1].args.join(" ");
-
-        let dirPath = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir
-        ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
-        : this.getWorkingDirectory();
-
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
-            ConsoleUtils.executeCommandAsync(exeCommandWithPath, dirPath, result,this.env );
-        }
-        else
-        {
-            ConsoleUtils.executeCommandSync(exeCommandWithPath, this.getWorkingDirectory(), result, this.env); 
-        }
-        return result;
-    }
-
 
 }
