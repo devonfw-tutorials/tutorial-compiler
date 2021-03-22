@@ -718,13 +718,14 @@ export class Console extends Runner {
             //Check if there are still running processes on the given ports
             for(let asyncProcess of this.asyncProcesses) {
                 let processes: any[] = await findProcess("port", asyncProcess.port);
-                console.log("kill processes on ports ", asyncProcess, this.environmentName);
                 if(processes.length > 0) {
                     for(let proc of processes) {
                         if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                            console.log("kill id on port " + proc.pid);
-                            process.kill(proc.pid);
-                            console.log("killed id on port " + proc.pid, asyncProcess);
+                            try {
+                                process.kill(proc.pid);
+                            } catch(e) {
+                                console.error("Error killing id " + proc.pid, e);
+                            }
                         }
                     }
                 }
