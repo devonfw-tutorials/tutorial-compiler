@@ -103,12 +103,11 @@ export abstract class Runner {
     protected createFolder(path: string, deleteFolderIfExist: boolean) {
         if(fs.existsSync(path)) {
             if(deleteFolderIfExist) {
-                let timeout = new Date(new Date().getTime() + 180000); //timeout after 3 minutes
-                while(fs.existsSync(path) && new Date() < timeout) {
+                if(fs.existsSync(path)) {
                     try {
                         rimraf.sync(path);
                     } catch(e) {
-                        //ignore error
+                        console.log("Error deleting foler " + path, e);
                     }
                 }
             } else return path;
