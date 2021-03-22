@@ -103,12 +103,10 @@ export abstract class Runner {
     protected createFolder(path: string, deleteFolderIfExist: boolean) {
         if(fs.existsSync(path)) {
             if(deleteFolderIfExist) {
-                if(fs.existsSync(path)) {
-                    try {
-                        rimraf.sync(path);
-                    } catch(e) {
-                        console.log("Error deleting foler " + path, e);
-                    }
+                try {
+                    rimraf.sync(path);
+                } catch(e) {
+                    console.log("Error deleting foler " + path, e);
                 }
             } else return path;
         }
