@@ -191,7 +191,28 @@ export class Console extends Runner {
                 let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
-        } else {
+        } else if(runCommand.command.parameters[1].lineNumber)
+        {
+            let j = 0;
+            let lineNum = parseInt(runCommand.command.parameters[1],10);
+            for(let i = 0; i < lineNum-1; i++)
+            {
+                while(content[j] != "\n")
+                {
+                    j++;
+                }
+            }
+            let secondPart =content.substr(j+1);
+            let firstPart  =content.substr(0,j);
+            let insertContent;
+            if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
+                insertContent = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
+            } else if (runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileConsole) {
+                let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
+                insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
+        }
+        content = firstPart+insertContent+secondPart;
+        }else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
             } else {

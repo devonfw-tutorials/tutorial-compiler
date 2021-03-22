@@ -181,8 +181,23 @@ export class Katacoda extends Runner {
         let fileDir = path.join(workspaceDir, runCommand.command.parameters[0]).replace(/\\/g, "/");
         let placeholder = runCommand.command.parameters[1].placeholder ? runCommand.command.parameters[1].placeholder : "";
         let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
-
         let content = "";
+        let script = "#!/bin/sh \n echo 'Hallo wie gehts' \n sed 'lineNumbera###1234###' textdatei -i";
+
+        if(runCommand.command.parameters[1].lineNumber)
+        {
+            console.log("Scripterstellung undso")
+            console.log(fileDir);
+            script =script.replace("lineNumber", runCommand.command.parameters[1].lineNumber);
+            script =script.replace("textdatei",fileDir);
+            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert.sh"),script, {encoding : "utf-8"});
+
+            this.renderTemplate(path.join("scripts", "insert.sh"), path.join(this.workspaceDirectory, "insert.sh"), { });
+        
+            placeholder = "###1234###"
+            dataTarget = "insert"
+        }
+        
         if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentKatacoda){
             content = (runCommand.command.parameters[1].contentKatacoda) ? runCommand.command.parameters[1].contentKatacoda : runCommand.command.parameters[1].content;
         }else if(runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileKatacoda){
@@ -190,7 +205,7 @@ export class Katacoda extends Runner {
             content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
-        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md");
+        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md", "insert.sh");
         
         this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
@@ -388,12 +403,13 @@ export class Katacoda extends Runner {
         return returnCount;
     }
 
-    private pushStep(runCommand: RunCommand, title: string, text: string) {
+    private pushStep(runCommand: RunCommand, title: string, text: string, script?:string) {
         if (runCommand.stepIndex == this.stepsCount - 1 && runCommand.lineIndex == 0) {
             let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
             this.steps.push({
                 "title": stepTitle,
-                "text": text
+                "text": text,
+                "courseData": script
             }); 
         }
     }
