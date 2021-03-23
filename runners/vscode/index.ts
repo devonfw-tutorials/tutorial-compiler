@@ -138,7 +138,7 @@ export class VsCode extends Runner {
     private executeTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
         if(this.platform == ConsolePlatform.WINDOWS) {
-            let p = child_process.spawnSync("powershell.exe Get-Process | ForEach-Object {$_.ProcessName, $_.Path}", { shell: true, cwd: __dirname });
+            let p = child_process.spawnSync("powershell.exe \"Get-Process | Select-Object ProcessName, Path\"", { shell: true, cwd: __dirname });
             console.log(p.output.toString());
         }
 
