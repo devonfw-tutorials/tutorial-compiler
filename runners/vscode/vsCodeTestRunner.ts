@@ -5,7 +5,7 @@ import { VsCodeUtils } from "./vscodeUtils";
 
 async function main(args: string[]) {
     if(args && args.length > 2) {
-        cleanSettings();
+        await cleanSettings();
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
@@ -30,7 +30,7 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
     return runner.runTests(testFile, "info");
 }
 
-function cleanSettings() {
+async function cleanSettings() {
     let deleteFolderRecursive = function (directory: string) {
         if(fs.existsSync(directory)) {
             let directories = fs.readdirSync(directory);
@@ -43,7 +43,7 @@ function cleanSettings() {
                         console.log("delete file " + currentPath);
                         fs.unlinkSync(currentPath);
                     } catch(e) {
-                        console.error(e);
+                        console.error("error deleting file " + currentPath, e);
                     }
                 }
             }
