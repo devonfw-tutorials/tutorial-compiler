@@ -9,15 +9,23 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
+import { platform } from "os";
+import { ConsolePlatform } from "../console/consoleInterfaces";
 
 export class VsCode extends Runner {
 
+    private platform: ConsolePlatform;
     private installedExtensions: string[] = [];
     private env: any;
     private vsCodeSetup: boolean = false;
     private installVsCodeFlag: boolean = false;
 
     init(playbook: Playbook): void {
+        if(process.platform=="win32") {
+            this.platform = ConsolePlatform.WINDOWS;
+        } else {
+            this.platform = ConsolePlatform.LINUX;
+        }
         ConsoleUtils.createBackupDevonDirectory();
         
         this.createFolder(path.join(__dirname, "resources"), false);
@@ -129,6 +137,10 @@ export class VsCode extends Runner {
 
     private executeTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            let p = child_process.spawnSync("powershell.exe Get-Process | ForEach-Object {$_.ProcessName, $_.Path}", { shell: true, cwd: __dirname });
+            console.log(p.output.toString());
+        }
 
         if(!this.vsCodeSetup) {
             this.setupVsCode();
