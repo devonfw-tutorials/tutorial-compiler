@@ -75,6 +75,11 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            let p = child_process.spawnSync("powershell.exe \"Get-Process | Select-Object ProcessName, Path\"", { shell: true, cwd: __dirname });
+            console.log(p.output.toString());
+        }
+
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
@@ -137,10 +142,6 @@ export class VsCode extends Runner {
 
     private executeTest(testfile: string, result: RunResult) {
         if(result.returnCode != 0) return;
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            let p = child_process.spawnSync("powershell.exe \"Get-Process | Select-Object ProcessName, Path\"", { shell: true, cwd: __dirname });
-            console.log(p.output.toString());
-        }
 
         if(!this.vsCodeSetup) {
             this.setupVsCode();
