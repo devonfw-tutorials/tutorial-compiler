@@ -13,7 +13,7 @@ export abstract class WikiRunner extends Runner {
         this.outputPathTutorial = this.createFolder(path.join(outputDirectory, playbook.name), true);
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
 
     }
 

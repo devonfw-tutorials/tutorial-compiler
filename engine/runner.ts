@@ -97,13 +97,17 @@ export abstract class Runner {
         }
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
     }
 
-    protected createFolder(path: string, deleteFolerIfExist: boolean) {
+    protected createFolder(path: string, deleteFolderIfExist: boolean) {
         if(fs.existsSync(path)) {
-            if(deleteFolerIfExist) {
-                fs.rmdirSync(path, { recursive: true });
+            if(deleteFolderIfExist) {
+                try {
+                    rimraf.sync(path);
+                } catch(e) {
+                    console.log("Error deleting foler " + path, e);
+                }
             } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
