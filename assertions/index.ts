@@ -43,8 +43,13 @@ export class Assertions {
         return this;
     }
 
-    public serverIsReachable(port: number, path: string): Promise<boolean> {
-        return ServerIsReachable.run(port, path);
+    public serverIsReachable(parameters, callback): Assertions {
+        try {
+            ServerIsReachable.run(parameters, callback);
+        } catch(err) {
+            throw err;
+        }
+        return this;
     }
 
     public repositoryIsClean(directory: string): Assertions {
