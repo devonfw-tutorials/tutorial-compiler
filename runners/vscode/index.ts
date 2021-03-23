@@ -9,8 +9,8 @@ import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { platform } from "os";
 import { ConsolePlatform } from "../console/consoleInterfaces";
+const findProcess = require("find-process");
 
 export class VsCode extends Runner {
 
@@ -110,6 +110,19 @@ export class VsCode extends Runner {
             .noErrorCode(result)
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
+
+            let processes: any[] = await findProcess("name", "Code");
+            if(processes.length > 0) {
+                console.log("found code processes " + processes, processes.length);
+                for(let proc of processes) {
+                    try {
+                        console.log("kill process " + proc.pid, proc)
+                        process.kill(proc.pid);
+                    } catch(e) {
+                        console.error("Error killing id " + proc.pid, e);
+                    }
+                }
+            }
         } catch(error) {
             this.cleanUp();
             throw error;
