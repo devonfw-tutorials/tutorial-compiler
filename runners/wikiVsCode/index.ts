@@ -7,7 +7,7 @@ export class WikiVsCode extends WikiRunner {
         super.init(playbook);
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
         super.destroy(playbook);
     }
 }

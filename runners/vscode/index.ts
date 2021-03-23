@@ -33,7 +33,7 @@ export class VsCode extends Runner {
         });
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
         this.cleanUp();
     }
 

@@ -57,7 +57,7 @@ export class Engine {
         }
 
         for (let runnerIndex in this.environment.runners) {
-            (await this.getRunner(this.environment.runners[runnerIndex])).destroy(this.playbook);
+            await (await this.getRunner(this.environment.runners[runnerIndex])).destroy(this.playbook);
         }
     }
 
