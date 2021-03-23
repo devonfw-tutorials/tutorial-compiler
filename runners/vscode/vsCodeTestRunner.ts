@@ -1,9 +1,11 @@
 import * as path from "path";
+import * as fs from "fs";
 import { VSRunner } from "./vsCodeRunner";
 import { VsCodeUtils } from "./vscodeUtils";
 
 async function main(args: string[]) {
     if(args && args.length > 2) {
+        cleanSettings();
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
@@ -26,6 +28,27 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
     let config = path.join(__dirname, ".mocharc.js");
     let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, config);
     return runner.runTests(testFile, "info");
+}
+
+function cleanSettings() {
+    let deleteFolderRecursive = function (directory: string) {
+        if(fs.existsSync(directory)) {
+            let directories = fs.readdirSync(directory);
+            for(let file of directories) {
+                let currentPath = path.join(directory, file);
+                if (fs.lstatSync(currentPath).isDirectory()) {
+                    deleteFolderRecursive(currentPath);
+                } else {
+                    console.log("delete file " + currentPath);
+                    console.log(fs.readFileSync(currentPath, "utf-8"));
+                    fs.unlinkSync(currentPath);
+                }
+            }
+            fs.rmdirSync(directory);
+        }
+    };
+    let settings = path.join(__dirname, "resources", "settings");
+    deleteFolderRecursive(settings);
 }
 
 main(process.argv);
