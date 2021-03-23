@@ -113,7 +113,12 @@ export class VsCode extends Runner {
 
             let processes: any[] = await findProcess("name", "Code");
             if(processes.length > 0) {
-                console.log("found code processes " + processes, processes.length);
+                console.log("found code processes", processes.length);
+                for(let p of processes) {
+                    console.log(p);
+                    let ps = await findProcess("pid", p.pid);
+                    console.log(ps);
+                }
                 for(let proc of processes) {
                     try {
                         console.log("kill process " + proc.pid, proc)

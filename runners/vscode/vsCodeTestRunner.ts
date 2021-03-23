@@ -40,7 +40,6 @@ async function cleanSettings() {
                     deleteFolderRecursive(currentPath);
                 } else {
                     try {
-                        console.log("delete file " + currentPath);
                         fs.unlinkSync(currentPath);
                     } catch(e) {
                         console.error("error deleting file " + currentPath, e);
