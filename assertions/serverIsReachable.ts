@@ -8,6 +8,11 @@ export class ServerIsReachable {
         let startupTime = this.getValue(parameters, 'startupTime', 600);
         let requirePath = this.getValue(parameters, 'requirePath', false);
 
+        process.on('unhandledRejection', function(err) {
+            console.log(err);
+            // sendInTheCalvary(err);
+        });
+
         if(!port || (requirePath && !path)) {
             callback();
             let optionalString = requirePath? "and a path " : "";
@@ -16,8 +21,7 @@ export class ServerIsReachable {
             let endTime = new Date().getTime() + startupTime * 1000;
             console.log("Ending at: " + new Date(endTime).toISOString());
             const polling = async (): Promise<void> => {
-                try {
-                    let reached = await isReachable("http://localhost:" + port + "/" + path).catch((err) => {throw err});
+                    let reached = await isReachable("http://localhost:" + port + "/" + path);
 
                     let now = new Date().getTime();
                     if (now >= endTime) {
@@ -26,18 +30,13 @@ export class ServerIsReachable {
                         throw new Error("The server has not become reachable in " + startupTime + " seconds: " + "http://localhost:" + port + "/" + path);
                     } else if (!reached) {
                         setTimeout(polling, interval * 1000);
-                    }  
-                } catch(err) {
-                    throw err;
-                }        
+                    }         
             };
-
             try {
                 await polling();
             } catch(err) {
                 throw err;
             }
-
         }
     }
 

@@ -219,11 +219,18 @@ export class Console extends Runner {
         let process = (this.getVariable(this.useDevonCommand))
             ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
+        process.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+              
+        process.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
 
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
         }
-
+          
         return result;
     }
 
@@ -467,12 +474,12 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            assert.serverIsReachable({
+            await assert.serverIsReachable({
                 path: runCommand.command.parameters[1].path,
                 port: runCommand.command.parameters[1].port,
                 interval: runCommand.command.parameters[1].interval,
                 startupTime: runCommand.command.parameters[1].startupTime
-            }, () => this.killAsyncProcesses);
+            }, async () => await this.killAsyncProcesses);
          } catch(error) {
             await this.cleanUp();
             throw error;
@@ -485,13 +492,13 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            assert.serverIsReachable({
+            await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
                     interval: runCommand.command.parameters[1].interval,
                     startupTime: runCommand.command.parameters[1].startupTime,
                     requirePath: true
-                }, () => this.killAsyncProcesses);
+                }, async () => await this.killAsyncProcesses);
 
         } catch(error) {
             await this.cleanUp();
@@ -559,12 +566,12 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            assert.serverIsReachable({
+            await assert.serverIsReachable({
                 path: runCommand.command.parameters[1].path,
                 port: runCommand.command.parameters[1].port,
                 interval: runCommand.command.parameters[1].interval,
                 startupTime: runCommand.command.parameters[1].startupTime
-            }, () => this.killAsyncProcesses);
+            }, async () => await this.killAsyncProcesses);
 
         } catch(error) {
             await this.cleanUp();
@@ -651,10 +658,6 @@ export class Console extends Runner {
             }
         }
         return null;
-    }
-
-    private sleep(seconds: number) {
-        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
     private async killAsyncProcesses(): Promise<void> {
