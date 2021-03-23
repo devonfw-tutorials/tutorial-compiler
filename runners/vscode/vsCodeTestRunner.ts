@@ -39,9 +39,12 @@ function cleanSettings() {
                 if (fs.lstatSync(currentPath).isDirectory()) {
                     deleteFolderRecursive(currentPath);
                 } else {
-                    console.log("delete file " + currentPath);
-                    console.log(fs.readFileSync(currentPath, "utf-8"));
-                    fs.unlinkSync(currentPath);
+                    try {
+                        console.log("delete file " + currentPath);
+                        fs.unlinkSync(currentPath);
+                    } catch(e) {
+                        console.error(e);
+                    }
                 }
             }
             fs.rmdirSync(directory);
