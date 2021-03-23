@@ -116,13 +116,14 @@ export class VsCode extends Runner {
                 console.log("found code processes", processes.length);
                 for(let p of processes) {
                     console.log(p);
-                    let ps = await findProcess("pid", p.pid);
-                    console.log(ps);
                 }
                 for(let proc of processes) {
                     try {
-                        console.log("kill process " + proc.pid, proc)
-                        process.kill(proc.pid);
+                        let pids = await findProcess("pid", proc.pid);
+                        if(pids.length > 0) {
+                            console.log("kill process " + proc.pid, proc)
+                            process.kill(proc.pid);
+                        }
                     } catch(e) {
                         console.error("Error killing id " + proc.pid, e);
                     }
