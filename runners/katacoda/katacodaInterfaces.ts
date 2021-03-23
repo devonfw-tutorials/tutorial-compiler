@@ -2,6 +2,7 @@ export interface KatacodaStep {
     title: string
     text: string
     courseData?: string
+    code?: string
 }
 
 export interface KatacodaAsset {

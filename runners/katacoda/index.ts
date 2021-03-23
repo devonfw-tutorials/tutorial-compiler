@@ -182,31 +182,35 @@ export class Katacoda extends Runner {
         let placeholder = runCommand.command.parameters[1].placeholder ? runCommand.command.parameters[1].placeholder : "";
         let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
         let content = "";
-        let script = "#!/bin/sh \n echo 'Hallo wie gehts' \n sed 'lineNumbera###1234###' textdatei -i";
 
         if(runCommand.command.parameters[1].lineNumber)
         {
-            console.log("Scripterstellung undso")
-            console.log(fileDir);
-            script =script.replace("lineNumber", runCommand.command.parameters[1].lineNumber);
-            script =script.replace("textdatei",fileDir);
-            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert.sh"),script, {encoding : "utf-8"});
+            let BGscript = "#!/bin/sh \n  \n sed 'lineNumber!#PLACEHOLDER#!' textdatei -i";
+            let number = parseInt(runCommand.command.parameters[1].lineNumber, 10);
+            let numberStr = (number == 1) ? (number.toString()+"i") : ((number-1).toString()+"a");
+            BGscript =BGscript.replace("lineNumber", numberStr);
+            BGscript =BGscript.replace("textdatei",fileDir);
+            let FGscript = fs.readFileSync(path.join(this.getRunnerDirectory(), "templates", "scripts", "insert_foreground.sh"), {encoding: "utf-8"});
+            FGscript = FGscript.replace("filename", runCommand.command.parameters[0]);
+            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert_background.sh"),BGscript, {encoding : "utf-8"});
+            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert_foreground.sh"),FGscript, {encoding : "utf-8"});
 
-            this.renderTemplate(path.join("scripts", "insert.sh"), path.join(this.workspaceDirectory, "insert.sh"), { });
-        
-            placeholder = "###1234###"
+            this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background.sh"), { });
+            this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground.sh"), { });
+
+            placeholder = "!#PLACEHOLDER#!"
             dataTarget = "insert"
         }
         
         if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentKatacoda){
             content = (runCommand.command.parameters[1].contentKatacoda) ? runCommand.command.parameters[1].contentKatacoda : runCommand.command.parameters[1].content;
+            //TODO was ist der unterschied von Content und Katacoda Content ?? Docu vll verbessern
         }else if(runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileKatacoda){
             let file = (runCommand.command.parameters[1].fileKatacoda) ? runCommand.command.parameters[1].fileKatacoda : runCommand.command.parameters[1].file;
             content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
-        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md", "insert.sh");
-        
+        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md", "insert_background.sh", "insert_foreground.sh");
         this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
     }
@@ -403,13 +407,14 @@ export class Katacoda extends Runner {
         return returnCount;
     }
 
-    private pushStep(runCommand: RunCommand, title: string, text: string, script?:string) {
+    private pushStep(runCommand: RunCommand, title: string, text: string, backgroundscript?:string, foregroundscript?: string) {
         if (runCommand.stepIndex == this.stepsCount - 1 && runCommand.lineIndex == 0) {
             let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
             this.steps.push({
                 "title": stepTitle,
                 "text": text,
-                "courseData": script
+                "courseData": backgroundscript,
+                "code": foregroundscript
             }); 
         }
     }

@@ -1,6 +1,7 @@
 if(Test-Path "playbooks") {
     Get-ChildItem "playbooks" -Recurse | Remove-Item -Recurse -Force
     Get-Item "playbooks" | Remove-Item -Recurse -Force
+    echo "Halllo"
 }
 
 $TUTORIAL_REPO_URL=(Get-Content .\config.properties | Select-String "tutorials_repo_url").ToString().Split("=")[1]
