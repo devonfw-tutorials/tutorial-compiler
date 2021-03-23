@@ -51,7 +51,7 @@ export class Katacoda extends Runner {
         this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
         let tutorialDirectoryName = path.basename(playbook.path);
         this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
         fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
