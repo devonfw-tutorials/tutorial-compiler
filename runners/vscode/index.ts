@@ -5,27 +5,21 @@ import { VsCodeUtils } from "./vscodeUtils";
 import { ConsoleUtils } from "../console/consoleUtils";
 import { Assertions } from "../../assertions";
 import { RunCommand } from "../../engine/run_command";
+import { ConsolePlatform } from "../console/consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { ConsolePlatform } from "../console/consoleInterfaces";
 const findProcess = require("find-process");
 
 export class VsCode extends Runner {
 
-    private platform: ConsolePlatform;
     private installedExtensions: string[] = [];
     private env: any;
     private vsCodeSetup: boolean = false;
     private installVsCodeFlag: boolean = false;
 
     init(playbook: Playbook): void {
-        if(process.platform=="win32") {
-            this.platform = ConsolePlatform.WINDOWS;
-        } else {
-            this.platform = ConsolePlatform.LINUX;
-        }
         ConsoleUtils.createBackupDevonDirectory();
         
         this.createFolder(path.join(__dirname, "resources"), false);
@@ -75,11 +69,6 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            let p = child_process.spawnSync("powershell.exe \"Get-Process | Select-Object ProcessName, Path\"", { shell: true, cwd: __dirname });
-            console.log(p.output.toString());
-        }
-
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
@@ -111,22 +100,15 @@ export class VsCode extends Runner {
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
 
-            let processes: any[] = await findProcess("name", "Code");
-            if(processes.length > 0) {
-                console.log("found code processes", processes.length);
-                for(let p of processes) {
-                    console.log(p);
-                }
-                for(let proc of processes) {
-                    try {
-                        let pids = await findProcess("pid", proc.pid);
-                        if(pids.length > 0) {
-                            console.log("kill process " + proc.pid, proc)
-                            process.kill(proc.pid);
-                        }
-                    } catch(e) {
-                        console.error("Error killing id " + proc.pid, e);
+            let vscodeProcesses: any[] = await findProcess("name", "Code");
+            for(let vscodeProcess of vscodeProcesses) {
+                try {
+                    let pids = await findProcess("pid", vscodeProcess.pid);
+                    if(pids && pids.length > 0) {
+                        process.kill(pids[0].pid);
                     }
+                } catch(e) {
+                    console.error("Cannot kill VS Code process " + vscodeProcess.pid, vscodeProcess, e);
                 }
             }
         } catch(error) {
