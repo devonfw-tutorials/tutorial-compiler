@@ -1,5 +1,6 @@
 ## Functions 
 The following functions are already implemented:
+* executeCommand
 * installDevonfwIde
 * restoreDevonfwIde
 * installCobiGen
@@ -18,7 +19,25 @@ The following functions are already implemented:
 * nextKatacodaStep
 * adaptTemplatesCobiGen
 * createDevon4ngProject
-* executeCommand
+
+
+***
+### executeCommand
+#### parameter 
+1. The command what that will be executed
+2. Json-object with optional fields
+   * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
+   * (Optional) Synchronous or asynchronous process. Default is synchronous. {"asynchronous": boolean}
+   * (Optional) Array of arguments {"args": string[]}
+   
+#### example
+
+executeCommand("node" ,{"args": ["-v"]})
+Will create a command for executing node -v .
+
+executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
+Will create a command to execute the script in the directory with the parameter --help and in a new Terminal.
+
 
 ***
 
@@ -267,21 +286,3 @@ This command also works if the devonfw IDE is not installed, but then you have t
 
 ***
 
-### executeCommand
-#### parameter 
-1. The Command what that will be executed
-2. JSON Object with Optional Fields
-   * (Optional) Directory to the executed File and where the Command will be executed, if not in current Directory (relative to Workspace){"dir": string}
-   * (Optional) Synchronous or Asynchronous Process Default is synchronous. {"asynchronous": boolean}
-   * (Optional) Array of Arguments {"args": string[]}
-   
-#### example
-
-executeCommand("node" ,{"args": [-v]})
-Will create a Command for executing node -v .
-
-executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
-Will create a command to execute the script in the directory with the Parameter --help and in a new Terminal.
-
-
-***
