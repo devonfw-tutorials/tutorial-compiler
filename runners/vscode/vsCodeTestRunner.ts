@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import * as rimraf from "rimraf";
 import { VSRunner } from "./vsCodeRunner";
 import { VsCodeUtils } from "./vscodeUtils";
 
@@ -31,26 +32,10 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
 }
 
 async function cleanSettings() {
-    let deleteFolderRecursive = function (directory: string) {
-        if(fs.existsSync(directory)) {
-            let directories = fs.readdirSync(directory);
-            for(let file of directories) {
-                let currentPath = path.join(directory, file);
-                if (fs.lstatSync(currentPath).isDirectory()) {
-                    deleteFolderRecursive(currentPath);
-                } else {
-                    try {
-                        fs.unlinkSync(currentPath);
-                    } catch(e) {
-                        console.error("error deleting file " + currentPath, e);
-                    }
-                }
-            }
-            fs.rmdirSync(directory);
-        }
-    };
-    let settings = path.join(__dirname, "resources", "settings");
-    deleteFolderRecursive(settings);
+    let settingsDirectory = path.join(__dirname, "resources", "settings");
+    if(fs.existsSync(settingsDirectory)) {
+        rimraf.sync(path);
+    }
 }
 
 main(process.argv);

@@ -104,6 +104,7 @@ export class VsCode extends Runner {
             for(let vscodeProcess of vscodeProcesses) {
                 try {
                     let pids = await findProcess("pid", vscodeProcess.pid);
+                    console.log(vscodeProcesses.toString(), pids.toString());
                     if(pids && pids.length > 0) {
                         process.kill(pids[0].pid);
                     }
@@ -149,7 +150,6 @@ export class VsCode extends Runner {
         }
         let testrunner = path.join(__dirname, "vsCodeTestRunner.js");
         let process = child_process.spawnSync("node " + testrunner + " " + testfile, { shell: true, cwd: __dirname });
-        console.log(process.stderr.toString(), process.stdout.toString());
         if(process.status != 0) {
             console.log("Error while running test: " + testfile + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
