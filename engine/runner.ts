@@ -10,6 +10,7 @@ export abstract class Runner {
     public playbookName: string;
     public playbookPath: string;
     public playbookTitle: string;
+    public environmentName: string;
     protected readonly useDevonCommand: string = "useDevonCommand";
     protected readonly workspaceDirectory: string = "workspaceDirectory";
 
@@ -73,7 +74,7 @@ export abstract class Runner {
         return dir;
     }
 
-    supports(name: string): boolean {
+    supports(name: string, parameters: any[]): boolean {
         return !!this[this.getMethodName("run", name)];
     }
 
@@ -96,14 +97,17 @@ export abstract class Runner {
         }
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
     }
 
-    protected createFolder(path: string, deleteFolerIfExist: boolean) {
+    protected createFolder(path: string, deleteFolderIfExist: boolean) {
         if(fs.existsSync(path)) {
-            if(deleteFolerIfExist) {
-                rimraf.sync(path);
-                fs.mkdirSync(path, { recursive: true });
+            if(deleteFolderIfExist) {
+                try {
+                    rimraf.sync(path);
+                } catch(e) {
+                    console.log("Error deleting foler " + path, e);
+                }
             } else return path;
         }
         fs.mkdirSync(path, { recursive: true });
