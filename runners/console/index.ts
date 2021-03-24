@@ -204,7 +204,6 @@ export class Console extends Runner {
                 insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
             content = "";
-            console.log(lines.length);
             for(let i = 0; i < lines.length; i++)
             {
                 if(lineNum-1 == i){ 
@@ -212,7 +211,7 @@ export class Console extends Runner {
                 }else{
                     content += lines[i]+"\n";}
             }
-            
+
         } else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
