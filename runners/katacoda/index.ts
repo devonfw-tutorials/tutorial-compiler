@@ -204,7 +204,7 @@ export class Katacoda extends Runner {
         
         if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentKatacoda){
             content = (runCommand.command.parameters[1].contentKatacoda) ? runCommand.command.parameters[1].contentKatacoda : runCommand.command.parameters[1].content;
-            //TODO was ist der unterschied von Content und Katacoda Content ?? Docu vll verbessern
+            //TODO was ist der unterschied von Content und Katacoda Content ?
         }else if(runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileKatacoda){
             let file = (runCommand.command.parameters[1].fileKatacoda) ? runCommand.command.parameters[1].fileKatacoda : runCommand.command.parameters[1].file;
             content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
