@@ -36,7 +36,7 @@ export class VsCode extends Runner {
     }
 
     async destroy(playbook: Playbook): Promise<void> {
-        this.cleanUp();
+        await this.cleanUp();
     }
 
     runInstallCobiGen(runCommand: RunCommand): RunResult {
@@ -99,19 +99,7 @@ export class VsCode extends Runner {
             .noErrorCode(result)
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
-
-            let vscodeProcesses: any[] = await findProcess("name", "Code");
-            for(let vscodeProcess of vscodeProcesses) {
-                try {
-                    let pids = await findProcess("pid", vscodeProcess.pid);
-                    console.log(vscodeProcesses.toString(), pids.toString());
-                    if(pids && pids.length > 0) {
-                        process.kill(pids[0].pid);
-                    }
-                } catch(e) {
-                    console.error("Cannot kill VS Code process " + vscodeProcess.pid, vscodeProcess, e);
-                }
-            }
+            await this.cleanVSCodeProcesses();
         } catch(error) {
             this.cleanUp();
             throw error;
@@ -186,9 +174,24 @@ export class VsCode extends Runner {
         });
     }
 
-    private cleanUp(): void {
+    private async cleanUp(): Promise<void> {
+        await this.cleanVSCodeProcesses();
         this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
         ConsoleUtils.restoreDevonDirectory();
+    }
+
+    private async cleanVSCodeProcesses() {
+        let vscodeProcesses: any[] = await findProcess("name", "Code");
+        for(let vscodeProcess of vscodeProcesses) {
+            try {
+                let pids = await findProcess("pid", vscodeProcess.pid);
+                if(pids && pids.length > 0) {
+                    process.kill(pids[0].pid);
+                }
+            } catch(e) {
+                console.error("Cannot kill VS Code process " + vscodeProcess.pid, e);
+            }
+        }
     }
 
     supports(name: string, parameters: any[]): boolean {
