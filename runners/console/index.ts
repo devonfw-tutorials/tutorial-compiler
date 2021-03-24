@@ -209,12 +209,10 @@ export class Console extends Runner {
             {
                 if(lineNum-1 == i){ 
                     content+= insertContent+"\n"+lines[i]+"\n";
-                }
-                else{
-                    content += lines[i]+"\n";
-                }
-                
+                }else{
+                    content += lines[i]+"\n";}
             }
+            
         } else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
