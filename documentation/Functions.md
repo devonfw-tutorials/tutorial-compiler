@@ -108,11 +108,15 @@ If you want to add a string to a file:
 {"content": "[string]"}
 If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
+If you want to insert some content at a specific Line, then use "lineNumber" and dont use a Placeholder: 
+{"lineNumber": "[Line]"}
+
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
 | --- | --- | --- |
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
+
 
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
