@@ -194,25 +194,28 @@ export class Console extends Runner {
         } else if(runCommand.command.parameters[1].lineNumber)
         {
             let j = 0;
-            let lineNum = parseInt(runCommand.command.parameters[1],10);
-            for(let i = 0; i < lineNum-1; i++)
-            {
-                while(content[j] != "\n")
-                {
-                    j++;
-                }
-            }
-            let secondPart =content.substr(j+1);
-            let firstPart  =content.substr(0,j);
+            let lineNum = parseInt(runCommand.command.parameters[1].lineNumber,10);
+            let lines = content.split("\n");
             let insertContent;
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 insertContent = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
             } else if (runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileConsole) {
                 let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
                 insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
-        }
-        content = firstPart+insertContent+secondPart;
-        }else {
+            }
+            content = "";
+            console.log(lines.length);
+            for(let i = 0; i < lines.length; i++)
+            {
+                if(lineNum-1 == i){ 
+                    content+= insertContent+"\n"+lines[i]+"\n";
+                }
+                else{
+                    content += lines[i]+"\n";
+                }
+                
+            }
+        } else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
             } else {
