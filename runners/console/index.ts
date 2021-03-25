@@ -179,7 +179,6 @@ export class Console extends Runner {
             }
         } else if(runCommand.command.parameters[1].lineNumber)
         {
-            let j = 0;
             let lineNum = parseInt(runCommand.command.parameters[1].lineNumber,10);
             let lines = content.split("\n");
             let insertContent;
