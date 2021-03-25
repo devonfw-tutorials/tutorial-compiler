@@ -22,7 +22,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = path.join("/root");
     private terminalCounter: number = 1;
-    private showVsCodeIde: boolean = false;
+    private showVsCodeIde: boolean = true;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
