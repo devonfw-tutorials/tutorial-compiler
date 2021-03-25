@@ -29,29 +29,15 @@ export class Console extends Runner {
         .set("npm", "node")
         .set("ng", "node");
 
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.renameSync(path.join(homedir, ".devon"), path.join(homedir, ".devon_backup"))
-        }
+        ConsoleUtils.createBackupDevonDirectory();
+
+        this.createFolder(path.normalize(this.getWorkingDirectory()), true);
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
         this.env = process.env;
-       
     }
 
-    destroy(playbook: Playbook): void {
-        this.cleanUp();
-    }
-
-    cleanUp(): void {
-        this.killAsyncProcesses();
-
-        let homedir = os.homedir();
-        if(fs.existsSync(path.join(homedir, ".devon"))) {
-            fs.rmdirSync(path.join(homedir, ".devon"), { recursive: true })
-        }
-        if(fs.existsSync(path.join(homedir, ".devon_backup"))) {
-            fs.renameSync(path.join(homedir, ".devon_backup"), path.join(homedir, ".devon"))
-        }
+    async destroy(playbook: Playbook): Promise<void> {
+        await this.cleanUp();
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
@@ -396,7 +382,7 @@ export class Console extends Runner {
                 assert.directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", tool));
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -414,7 +400,7 @@ export class Console extends Runner {
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -428,7 +414,7 @@ export class Console extends Runner {
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "core", "target"))
             .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "server", "target"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -440,7 +426,7 @@ export class Console extends Runner {
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -458,7 +444,7 @@ export class Console extends Runner {
             .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "server", "src", "main", "java"))
             .fileExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java", "com", "example", "application", runCommand.command.parameters[0], "SpringBootApp.java"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -470,7 +456,7 @@ export class Console extends Runner {
             .noException(result)
             .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -491,7 +477,7 @@ export class Console extends Runner {
             .fileExits(filepath)
             .fileContains(filepath, content);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -510,18 +496,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path);
                     }
                 }
             }
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }  
     }
@@ -540,18 +526,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -569,7 +555,7 @@ export class Console extends Runner {
             .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
             .repositoryIsClean(directorypath);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -587,7 +573,7 @@ export class Console extends Runner {
                 .directoryNotEmpty(path.join(projectDir, "node_modules"));
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -605,7 +591,7 @@ export class Console extends Runner {
             .directoryNotEmpty(directory)
             .fileExits(path.join(directory, runCommand.command.parameters[1]));
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -624,18 +610,18 @@ export class Console extends Runner {
                 await this.sleep(runCommand.command.parameters[1].startupTime);
 
                 if(!runCommand.command.parameters[1].port) {
-                    this.killAsyncProcesses();
+                    await this.killAsyncProcesses();
                     throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
                 } else {
                     let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
                     if(!isReachable) {
-                        this.killAsyncProcesses();
+                        await this.killAsyncProcesses();
                         throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
                     }
                 }
             }
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -660,7 +646,7 @@ export class Console extends Runner {
             .directoryNotEmpty(path.join(projectPath, outputpath));
 
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -673,7 +659,7 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(folderPath);
          } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -688,7 +674,7 @@ export class Console extends Runner {
             .directoryNotEmpty(templatesDir);
 
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -702,7 +688,7 @@ export class Console extends Runner {
             .directoryExits(projectDir)
             .directoryNotEmpty(projectDir);
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -725,42 +711,51 @@ export class Console extends Runner {
         return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
-    private killAsyncProcesses() {
-        if(this.asyncProcesses.length > 0) {
-            psList().then(processes => {
-                // Get all processes and check if they are child orprocesses of the processes that should be terminated. If so, kill them first.
-                let killProcessesRecursively = function(processes, processIdToKill) {
-                    let childProcesses = processes.filter(process => {
-                        return process.ppid == processIdToKill;
-                    });
+    private async killAsyncProcesses(): Promise<void> {
+        let killProcessesRecursively = function(processes: psList.ProcessDescriptor[], processIdToKill: number) {
+            let childProcesses = processes.filter(process => {
+                return process.ppid == processIdToKill;
+            });
 
-                    if(childProcesses.length > 0) {
-                        childProcesses.forEach(childProcess => {
-                            killProcessesRecursively(processes, childProcess.pid)
-                        });
-                    }
-
-                    process.kill(processIdToKill);
+            if(childProcesses.length > 0) {
+                for(let childProcess of childProcesses) {
+                    killProcessesRecursively(processes, childProcess.pid)
                 }
+            }
 
-                this.asyncProcesses.forEach(asyncProcess => {
-                    killProcessesRecursively(processes, asyncProcess.pid);
-                });
-            }).then(() => {
-                //Check if there are still running processes on the given ports
-                this.asyncProcesses.forEach(asyncProcess => {
-                    findProcess("port", asyncProcess.port).then((processes) => {
-                        if(processes.length > 0) {
-                            processes.forEach(proc => {
-                                if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                                    process.kill(proc.pid);
-                                }
-                            });
+            try {
+                process.kill(processIdToKill);
+            } catch(e) {
+                console.error("Error killing id " + processIdToKill, e);
+            }
+        }
+
+        if(this.asyncProcesses.length > 0) {
+            let processes: psList.ProcessDescriptor[] = Array.from((await psList()).values());
+            for(let asyncProcess of this.asyncProcesses) {
+                killProcessesRecursively(processes, asyncProcess.pid);
+            }
+            
+            //Check if there are still running processes on the given ports
+            for(let asyncProcess of this.asyncProcesses) {
+                let processes: any[] = await findProcess("port", asyncProcess.port);
+                if(processes.length > 0) {
+                    for(let proc of processes) {
+                        if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
+                            try {
+                                process.kill(proc.pid);
+                            } catch(e) {
+                                console.error("Error killing id " + proc.pid, e);
+                            }
                         }
-                    })
-                });
-            })
+                    }
+                }
+            }   
         }
     }
 
+    private async cleanUp(): Promise<void> {
+        await this.killAsyncProcesses();
+        ConsoleUtils.restoreDevonDirectory();
+    }
 }

@@ -22,6 +22,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = path.join("/root");
     private terminalCounter: number = 1;
+    private showVsCodeIde: boolean = false;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
@@ -50,7 +51,7 @@ export class Katacoda extends Runner {
         this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
     }
 
-    destroy(playbook: Playbook): void {
+    async destroy(playbook: Playbook): Promise<void> {
         let tutorialDirectoryName = path.basename(playbook.path);
         this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
         fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
@@ -68,13 +69,14 @@ export class Katacoda extends Runner {
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
-        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets());
+        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let cdCommand = this.changeCurrentDir(path.join("/root"));     
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -102,6 +104,7 @@ export class Katacoda extends Runner {
 
     runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
+        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings.
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -137,14 +140,16 @@ export class Katacoda extends Runner {
         let params = runCommand.command.parameters;
         let cobiGenTemplates = params[1].join(",");
 
-        this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
-        this.setupScripts.push({
-            "name": "Install CobiGen plugin",
-            "script": "installCobiGenPlugin.sh"
-        });
+        if(this.showVsCodeIde) {
+            this.renderTemplate(path.join("scripts", "installCobiGenPlugin.sh"), path.join(this.setupDir, "installCobiGenPlugin.sh"), { });
+            this.setupScripts.push({
+                "name": "Install CobiGen plugin",
+                "script": "installCobiGenPlugin.sh"
+            });
+        }
+
         this.pushStep(runCommand, "CobiGen Java", "step" + this.getStepsCount(runCommand) + ".md");
-        
-        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates });
+        this.renderTemplate("cobiGenJava.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, javaFile: params[0], cobiGenTemplates: cobiGenTemplates, useVsCode: this.showVsCodeIde });
         return null;
 
     }
@@ -297,6 +302,17 @@ export class Katacoda extends Runner {
         this.pushStep(runCommand, "Create a new folder", "step" + this.getStepsCount(runCommand) + ".md");
         
         this.renderTemplate("createFolder.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, folderPath: folderPath });
+        return null;
+    }
+
+    runDownloadFile(runCommand: RunCommand): RunResult {
+        this.pushStep(runCommand, "Download a file", "step" + this.getStepsCount(runCommand) + ".md");
+
+        let downloadDir = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/")
+        if (runCommand.command.parameters.length == 3) {
+            downloadDir = downloadDir.concat("/", runCommand.command.parameters[2])
+        }
+        this.renderTemplate("downloadFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", {text: runCommand.text, textAfter: runCommand.textAfter, downloadURL: runCommand.command.parameters[0], downloadDir: downloadDir, downloadFile: runCommand.command.parameters[1]});
         return null;
     }
 
