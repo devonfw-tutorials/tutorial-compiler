@@ -42,9 +42,7 @@ export class Assertions {
     }
 
     public async serverIsReachable(parameters, callback): Promise<Assertions> {
-        
-        await ServerIsReachable.run(parameters, callback).catch((err) => {throw err});
-        
+        await ServerIsReachable.run(parameters, callback);
         return this;
     }
 
