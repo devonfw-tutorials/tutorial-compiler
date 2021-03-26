@@ -23,4 +23,6 @@ jobs:
         run: bash checkout.sh
 
       - name: run buildRun.sh
-        run: sh buildRun.sh
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: sh buildRun.sh

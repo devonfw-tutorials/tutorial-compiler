@@ -2,6 +2,7 @@
 
 ## CobiGen Java
 
+<% if(useVsCode) { %>
 Open the following java file in the IDE.
 `devonfw/workspaces/main/<%= javaFile; %>`{{open}}
 
@@ -12,5 +13,14 @@ A terminal will open on the bottom of the IDE and CobiGen CLI will start.
 You can choose the templates CobiGen should use by entering the numbers in the terminal of the IDE.
 
 `<%= cobiGenTemplates; %>`
+<% } else { %>
+Start CobiGen CLI and pass the file as parameter by executing the following command.
+`devon cobigen generate <%= javaFile; %>`{{execute T1}}
+
+CobiGen will ask you which files to generate. You can enter the numbers separated by commas. 
+`<%= cobiGenTemplates; %>`{{execute T1}}
+
+CobiGen will now generate code based on the source file and the templates you have passed.
+<% } %>
 
 <%= textAfter; %>
