@@ -182,10 +182,12 @@ export class VsCode extends Runner {
     private async cleanVSCodeProcesses() {
         let vscodeProcesses: any[] = await findProcess("name", "Code");
         for(let vscodeProcess of vscodeProcesses) {
+            console.log(vscodeProcess);
             try {
                 let pids = await findProcess("pid", vscodeProcess.pid);
-                if(pids && pids.length > 0) {
-                    //process.kill(pids[0].pid);
+                console.log(pids);
+                if(pids && pids.length == 1) {
+                    process.kill(pids[0].pid);
                 }
             } catch(e) {
                 console.error("Cannot kill VS Code process " + vscodeProcess.pid, e);
