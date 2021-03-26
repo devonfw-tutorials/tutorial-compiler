@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+import { Assertion } from "chai";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -17,6 +18,7 @@ export class Console extends Runner {
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
     private env: any;
+    private executeAsyncPort: number= 50000;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -351,30 +353,61 @@ export class Console extends Runner {
         result.returnCode = 0;
         let exeCommand = runCommand.command.parameters[0];
         
-        if(this.platform == ConsolePlatform.WINDOWS)
-        {
-            if(exeCommand.includes("bash "))
-            {
-                exeCommand =exeCommand.replace("bash ", ".\\");
-            }
-        }
 
-        exeCommand = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args
+        exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args)
         ? exeCommand+ " " +runCommand.command.parameters[1].args.join(" ")
         : exeCommand;
 
-        let dirPath = runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir
+        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
         ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
         : this.getWorkingDirectory();
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous)
         {
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "Execute", port: undefined});
+            for(let i = 0; i<this.asyncProcesses.length; i++){
+                if(this.asyncProcesses[i].port == this.executeAsyncPort)
+                {
+                    i = 0;
+                    this.executeAsyncPort++;        
+                }
+            }
+            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: this.executeAsyncPort});
+            result.port=this.executeAsyncPort;
+            this.executeAsyncPort++;
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
 
         return result;
+    }
+
+    async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
+        try{
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+
+            if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
+                await this.sleep(2);
+                let dir = runCommand.command.parameters[1].dir 
+                ? path.join(this.getWorkingDirectory(),runCommand.command.parameters[1].dir)
+                : this.getWorkingDirectory();
+
+                let isReachable = await assert.serverIsReachable(result.port, dir);
+                if(!isReachable)
+                {
+                    console.warn("Cant reach the Server, waiting for 2 more Seconds");
+                    isReachable = await assert.serverIsReachable(result.port, dir);
+                    if(!isReachable){
+                        this.killAsyncProcesses();
+                    }
+                }
+            }
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+
     }
 
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
