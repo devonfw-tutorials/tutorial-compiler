@@ -5,7 +5,6 @@ import { VsCodeUtils } from "./vscodeUtils";
 import { ConsoleUtils } from "../console/consoleUtils";
 import { Assertions } from "../../assertions";
 import { RunCommand } from "../../engine/run_command";
-import { ConsolePlatform } from "../console/consoleInterfaces";
 import * as path from 'path';
 import * as child_process from "child_process";
 import * as ejs from 'ejs';
@@ -88,7 +87,7 @@ export class VsCode extends Runner {
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -101,7 +100,7 @@ export class VsCode extends Runner {
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
             await this.cleanVSCodeProcesses();
         } catch(error) {
-            this.cleanUp();
+            await this.cleanUp();
             throw error;
         }
     }
@@ -186,7 +185,7 @@ export class VsCode extends Runner {
             try {
                 let pids = await findProcess("pid", vscodeProcess.pid);
                 if(pids && pids.length > 0) {
-                    process.kill(pids[0].pid);
+                    //process.kill(pids[0].pid);
                 }
             } catch(e) {
                 console.error("Cannot kill VS Code process " + vscodeProcess.pid, e);
