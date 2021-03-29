@@ -8,7 +8,6 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { NoException } from "../../assertions/noException";
 const findProcess = require("find-process");
 const os = require("os");
 
