@@ -40,6 +40,54 @@ restoreDevonfwIde(["java","mvn"], "2020.08.001")
 In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
 ***
 
+### restoreWorkspace 
+#### parameter
+1. (Optional): 
+    * Name of the workspace repository {"workspace": string} (Default is the playbook-name)
+    * local workspace {"local": boolean} (Default is false)
+
+#### arguments 
+**User**(Optional)
+    flag: --user 
+    value: GitHub-username (Default is 'devonfw-tutorials')
+**Branch**(Optional)
+    flag: --branch
+    value: the working branch (Default is its default-branch)
+
+You can use a forked workspace-repository, if you add the user-name as argument.
+You can use a different branch, if you add the working branch as argument 
+
+buildRun.sh --user [username] --branch [branch]
+
+#### example
+
+restoreWorkspace() 
+will clone "https://github.com/devonfw-tutorials/[playbook-name]" into the workspace directory.
+
+restoreWorkspace({"workspace": [name]})
+will clone "https://github.com/devonfw-tutorials/[name]" into the workspace directory.
+
+**buildRun.sh --user [GitHub-name] --branch [branch]**
+restoreWorkspace()
+will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checkout in branch [branch]
+
+#### details  
+**workspace** 
+    The default name of the workspace repository is a concatenation of "workspace-" and the name of your playbook-folder. 
+    If you want to use another repository as workspace, you can specify the ending with {"workspace": [name]}.
+    **example**
+    "workspace-devon4ng" -> {"workspace" : "devon4ng"}
+
+**local** 
+    You can use a local repository as workspace in your tutorial.
+    Clone the forked repository next to the tutorial-compiler folder and set the "local"-parameter to true {"local": true}
+    
+    folder
+    |__tutorial-compiler
+    |__tutorials 
+    |__workspace-devon4ng
+
+
 ### installCobiGen
 #### parameter
 * No parameters

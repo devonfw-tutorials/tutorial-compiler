@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+import { NoException } from "../../assertions/noException";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -98,27 +99,36 @@ export class Console extends Runner {
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
             : this.getVariable(this.workspaceDirectory);
 
-        let cloneCommand = "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .";
-
         if(this.getVariable(this.useDevonCommand))
-            ConsoleUtils.executeDevonCommandSync("rm -r " + workspacesDir + "/*", this.getWorkingDirectory(), this.getWorkingDirectory(),  result, this.env);
+            ConsoleUtils.executeCommandSync("rm -r " + path.join(workspacesDir, "/*").replace(/\\/g, "/"), this.getWorkingDirectory(), result, this.env);
 
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName)
-            cloneCommand = fs.existsSync(forkedWorkspacesDir)
-                ? "cp -r " + forkedWorkspacesDir + "/. " + workspacesDir
-                : "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git ."; 
-            
+            if( fs.existsSync(forkedWorkspacesDir))
+                ConsoleUtils.executeCommandSync("cp -r " + forkedWorkspacesDir + "/. " + workspacesDir, workspacesDir, result, this.env);  
         }
-        else if(this.getVariable('user') && this.getVariable('branch')){
-            console.log(this.getVariable('user'), this.getVariable('branch'));
-            
-            cloneCommand = "git clone --single-branch -branch " + this.getVariable("branch") + " https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .";
-        
-        }
-        
-        ConsoleUtils.executeDevonCommandSync(cloneCommand, workspacesDir, workspacesDir, result, this.env);
 
+        else if(this.getVariable('user') || this.getVariable('branch')){
+
+            ConsoleUtils.executeCommandSync("git clone https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .", workspacesDir, result, this.env);
+            if(result.returnCode != 0){
+                console.warn("repository not found")
+                result.returnCode = 0;
+                ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName +".git .", workspacesDir, result, this.env);
+            }
+            
+            if(this.getVariable('branch')){
+                ConsoleUtils.executeCommandSync("git checkout " + this.getVariable('branch'), workspacesDir, result, this.env);
+                if(result.returnCode != 0){
+                    console.warn("branch not found")
+                    result.returnCode = 0;
+                }
+            }
+            
+        }else{
+            ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
+        }
+        
         return result;
     }
 
@@ -405,6 +415,23 @@ export class Console extends Runner {
 
     async assertRestoreDevonfwIde(runCommand: RunCommand, result: RunResult) {
        this.assertInstallDevonfwIde(runCommand, result);
+    }
+
+    async assertRestoreWorkspace(runCommand: RunCommand, result: RunResult) {
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+        ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+        : this.getVariable(this.workspaceDirectory);
+
+        try{
+            new Assertions()
+                .noErrorCode(result)
+                .noException(result)
+                .directoryExits(workspacesDir)
+                .directoryNotEmpty(workspacesDir);
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
     }
 
     async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
