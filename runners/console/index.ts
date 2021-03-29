@@ -59,8 +59,7 @@ export class Console extends Runner {
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
-        let tools = "DEVON_IDE_TOOLS=(" + runCommand.command.parameters[0].join(" ").replace("mvn", "") + ")";
-        console.log(tools);
+        let tools = "DEVON_IDE_TOOLS=(" + runCommand.command.parameters[0].join(" ") + ")";
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
@@ -76,11 +75,8 @@ export class Console extends Runner {
         }
         if(this.platform == ConsolePlatform.WINDOWS) {
             ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
-            console.log("after Invoke-WebRequest");
             ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
-            console.log("after tar");
             ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
-            console.log("after setup");
         } else {
             ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
