@@ -51,7 +51,7 @@ In the Katacoda environment the installation of the devonfw IDE is executed in a
     flag: --user 
     value: GitHub-username (Default is 'devonfw-tutorials')
 
-You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfe-tutorials instead. 
+You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
 
 **Branch**(Optional)
     flag: --branch
