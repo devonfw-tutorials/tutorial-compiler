@@ -28,16 +28,3 @@ jobs:
         uses: GabrielBB/xvfb-action@v1.0
         with:
           run: sh buildRun.sh
-
-      - name: Send mail on failure
-        if: ${{ failure() }}
-        uses: dawidd6/action-send-mail@v2
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: GitHub Action 'CI Linux' on devonfw-tutorials/tutorial-compiler has failed
-          body: ${{ github.job }} job in worflow ${{ github.workflow }} of ${{ github.repository }} finished with status ${{ job.status }}. Please check the logs!
-          to: todo
-          from: devonfw-tutorials/tutorial-compiler
