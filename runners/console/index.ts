@@ -104,7 +104,7 @@ export class Console extends Runner {
 
         //copies a local repository into the workspace
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
-            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName)
+            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
             if(fs.existsSync(forkedWorkspacesDir))
                 ConsoleUtils.executeCommandSync("cp -r " + forkedWorkspacesDir + "/. " + workspacesDir, workspacesDir, result, this.env);  
         }
