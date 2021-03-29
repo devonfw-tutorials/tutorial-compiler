@@ -96,20 +96,18 @@ export class Console extends Runner {
 
         let workspacesDir = this.getVariable(this.useDevonCommand)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-            : this.getVariable(this.workspaceDirectory)
-
-        if(this.getVariable(this.useDevonCommand))
-            this.executeCommandSync("rm -r " + workspacesDir + "/*", this.getWorkingDirectory(), result);
-        
+            : this.getVariable(this.workspaceDirectory);
 
         let cloneCommand = "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .";
+
+        if(this.getVariable(this.useDevonCommand))
+            ConsoleUtils.executeDevonCommandSync("rm -r " + workspacesDir + "/*", this.getWorkingDirectory(), this.getWorkingDirectory(),  result, this.env);
 
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName)
             cloneCommand = fs.existsSync(forkedWorkspacesDir)
                 ? "cp -r " + forkedWorkspacesDir + "/. " + workspacesDir
                 : "git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git ."; 
-            console.log("local");
             
         }
         else if(this.getVariable('user') && this.getVariable('branch')){
@@ -119,7 +117,7 @@ export class Console extends Runner {
         
         }
         
-        this.executeCommandAsync(cloneCommand, workspacesDir, result);
+        ConsoleUtils.executeDevonCommandSync(cloneCommand, workspacesDir, workspacesDir, result, this.env);
 
         return result;
     }
