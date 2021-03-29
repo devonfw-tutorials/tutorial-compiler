@@ -54,6 +54,7 @@ export class Console extends Runner {
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
         let tools = "DEVON_IDE_TOOLS=(" + runCommand.command.parameters[0].join(" ").replace("mvn", "") + ")";
+        console.log(tools);
         fs.writeFileSync(path.join(settingsDir, "settings", "devon.properties"), tools);
         fs.appendFileSync(path.join(settingsDir, "settings", "devon", "conf", "npm", ".npmrc"), "\nunsafe-perm=true");
         fs.renameSync(path.join(settingsDir, "settings"), path.join(settingsDir, "settings.git"));
