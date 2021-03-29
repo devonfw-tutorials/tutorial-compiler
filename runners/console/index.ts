@@ -50,6 +50,12 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
+        let homeDirectory = os.homedir();
+        if(!fs.existsSync(path.join(homeDirectory, ".devon"))) {
+            fs.mkdirSync(path.join(homeDirectory, ".devon"));
+        }
+        fs.writeFileSync(path.join(homeDirectory, ".devon", ".license.agreement"), "You accepted the devonfw-ide License.\nhttps://github.com/devonfw/ide/blob/master/documentation/LICENSE.asciidoc");
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
