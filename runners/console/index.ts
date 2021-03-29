@@ -98,7 +98,7 @@ export class Console extends Runner {
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
             : this.getVariable(this.workspaceDirectory);
 
-        //remove all the directories and files inside workspace
+        //removes all the directories and files inside workspace
         if(this.getVariable(this.useDevonCommand))
             ConsoleUtils.executeCommandSync("rm -r " + path.join(workspacesDir, "/*").replace(/\\/g, "/"), this.getWorkingDirectory(), result, this.env);
 
