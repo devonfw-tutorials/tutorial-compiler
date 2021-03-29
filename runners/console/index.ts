@@ -107,7 +107,6 @@ export class Console extends Runner {
             if( fs.existsSync(forkedWorkspacesDir))
                 ConsoleUtils.executeCommandSync("cp -r " + forkedWorkspacesDir + "/. " + workspacesDir, workspacesDir, result, this.env);  
         }
-
         else if(this.getVariable('user') || this.getVariable('branch')){
 
             ConsoleUtils.executeCommandSync("git clone https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .", workspacesDir, result, this.env);
@@ -125,7 +124,8 @@ export class Console extends Runner {
                 }
             }
             
-        }else{
+        }
+        else{
             ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
         }
         
