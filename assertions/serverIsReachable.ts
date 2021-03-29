@@ -8,8 +8,6 @@ export class ServerIsReachable {
         let startupTime = this.getValue(parameters, 'startupTime', 600);
         let requirePath = this.getValue(parameters, 'requirePath', false);
 
-        
-
         if(!port || (requirePath && !path)) {
             callback();
             let optionalString = requirePath? "and a path " : "";
@@ -45,7 +43,7 @@ export class ServerIsReachable {
         return parameters && parameters[name]!==undefined ? parameters[name] : defaultVal;
    }
 
-   private static sleep(seconds: number) {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
+    private static sleep(seconds: number) {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    }
 }

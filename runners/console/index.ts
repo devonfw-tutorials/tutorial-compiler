@@ -219,7 +219,13 @@ export class Console extends Runner {
         let process = (this.getVariable(this.useDevonCommand))
             ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
-       
+        process.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+              
+        process.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
         if(process.pid) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
         }
