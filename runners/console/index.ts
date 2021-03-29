@@ -98,19 +98,23 @@ export class Console extends Runner {
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
             : this.getVariable(this.workspaceDirectory);
 
+        //remove all the directories and files inside workspace
         if(this.getVariable(this.useDevonCommand))
             ConsoleUtils.executeCommandSync("rm -r " + path.join(workspacesDir, "/*").replace(/\\/g, "/"), this.getWorkingDirectory(), result, this.env);
 
+        //copies a local repository into the workspace
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName)
-            if( fs.existsSync(forkedWorkspacesDir))
+            if(fs.existsSync(forkedWorkspacesDir))
                 ConsoleUtils.executeCommandSync("cp -r " + forkedWorkspacesDir + "/. " + workspacesDir, workspacesDir, result, this.env);  
         }
+
+        //uses GitHub-username and branch if user and branch are specified
         else if(this.getVariable('user') || this.getVariable('branch')){
 
             ConsoleUtils.executeCommandSync("git clone https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .", workspacesDir, result, this.env);
             if(result.returnCode != 0){
-                console.warn("repository not found")
+                console.warn("repository not found");
                 result.returnCode = 0;
                 ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName +".git .", workspacesDir, result, this.env);
             }
@@ -118,7 +122,7 @@ export class Console extends Runner {
             if(this.getVariable('branch')){
                 ConsoleUtils.executeCommandSync("git checkout " + this.getVariable('branch'), workspacesDir, result, this.env);
                 if(result.returnCode != 0){
-                    console.warn("branch not found")
+                    console.warn("branch not found");
                     result.returnCode = 0;
                 }
             }
