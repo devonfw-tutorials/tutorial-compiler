@@ -75,7 +75,7 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes\r\n \r\n");
+            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes\n \n");
         } else {
             ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
