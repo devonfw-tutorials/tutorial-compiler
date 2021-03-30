@@ -50,11 +50,11 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
-        console.log(this.env["PATH"]);
+        console.log(this.env["PATH"], this.env["PATH"].length);
         let pathVariables = this.env["PATH"]
-        pathVariables += ":" + path.join(os.homedir(), "scripts");
+        pathVariables += ";" + path.join(os.homedir(), "scripts");
         this.env["PATH"] = pathVariables;
-        console.log(this.env["PATH"]);
+        console.log(this.env["PATH"], this.env["PATH"].length);
 
         // let homedir = os.homedir();
         // if(!fs.existsSync(path.join(homedir, ".devon"))) {
