@@ -75,10 +75,10 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes\n \n");
+            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, ["yes", " "]);
         } else {
             ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
+            ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, ["yes"]);
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
@@ -162,7 +162,7 @@ export class Console extends Runner {
         }
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-        ConsoleUtils.executeDevonCommandSync("cobigen generate " + runCommand.command.parameters[0], workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env, runCommand.command.parameters[1].toString());
+        ConsoleUtils.executeDevonCommandSync("cobigen generate " + runCommand.command.parameters[0], workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env, [runCommand.command.parameters[1].toString()]);
         return result;
     }
 
