@@ -5,30 +5,18 @@ import * as path from 'path';
 const os = require("os");
 
 export class ConsoleUtils {
-    static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string[]) {
+    static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string) {
         if(result.returnCode != 0) return;
 
-        if(input) {
-            const { Readable } = require("stream")
-            const readable = Readable.from(input);
-            const stdio = [readable, process.stdout, process.stderr]
-            let proc = child_process.spawnSync(command, { shell: true, cwd: directory, maxBuffer: Infinity, env: env, stdio: stdio });
-            if(proc.status != 0) {
-                console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
-                console.log(proc.stderr.toString(), proc.stdout.toString());
-                result.returnCode = proc.status;
-            }
-        } else {
-            let proc = child_process.spawnSync(command, { shell: true, cwd: directory, maxBuffer: Infinity, env: env });
-            if(proc.status != 0) {
-                console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
-                console.log(proc.stderr.toString(), proc.stdout.toString());
-                result.returnCode = proc.status;
-            } 
+        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
+        if(process.status != 0) {
+            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
+            console.log(process.stderr.toString(), process.stdout.toString());
+            result.returnCode = process.status;
         }
     }
 
-    static executeDevonCommandSync(devonCommand: string, directory: string, devonInstallDirectory: string, result: RunResult, env: any, input?: string[]) {
+    static executeDevonCommandSync(devonCommand: string, directory: string, devonInstallDirectory: string, result: RunResult, env: any, input?: string) {
         let scriptsDir = path.join(devonInstallDirectory, "scripts");
         ConsoleUtils.executeCommandSync(path.join(scriptsDir, "devon") + " " + devonCommand, directory, result, env, input);
     }
