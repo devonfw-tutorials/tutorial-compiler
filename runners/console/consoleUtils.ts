@@ -8,14 +8,23 @@ export class ConsoleUtils {
     static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string[]) {
         if(result.returnCode != 0) return;
 
-        const { Readable } = require("stream")
-        const readable = Readable.from(input);
-        const stdio = [readable, process.stdout, process.stderr]
-        let proc = child_process.spawnSync(command, { shell: true, cwd: directory, maxBuffer: Infinity, env: env, stdio: stdio });
-        if(proc.status != 0) {
-            console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
-            console.log(proc.stderr.toString(), proc.stdout.toString());
-            result.returnCode = proc.status;
+        if(input) {
+            const { Readable } = require("stream")
+            const readable = Readable.from(input);
+            const stdio = [readable, process.stdout, process.stderr]
+            let proc = child_process.spawnSync(command, { shell: true, cwd: directory, maxBuffer: Infinity, env: env, stdio: stdio });
+            if(proc.status != 0) {
+                console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
+                console.log(proc.stderr.toString(), proc.stdout.toString());
+                result.returnCode = proc.status;
+            }
+        } else {
+            let proc = child_process.spawnSync(command, { shell: true, cwd: directory, maxBuffer: Infinity, env: env });
+            if(proc.status != 0) {
+                console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
+                console.log(proc.stderr.toString(), proc.stdout.toString());
+                result.returnCode = proc.status;
+            } 
         }
     }
 
