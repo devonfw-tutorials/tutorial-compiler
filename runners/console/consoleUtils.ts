@@ -8,11 +8,14 @@ export class ConsoleUtils {
     static executeCommandSync(command: string, directory: string, result: RunResult, env: any, input?: string) {
         if(result.returnCode != 0) return;
 
-        let process = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env });
-        if(process.status != 0) {
-            console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
-            console.log(process.stderr.toString(), process.stdout.toString());
-            result.returnCode = process.status;
+        const { Readable } = require("stream")
+        const readable = Readable.from(["yes", "\n"]);
+        const stdio = [readable, process.stdout, process.stderr]
+        let proc = child_process.spawnSync(command, { shell: true, cwd: directory, input: input, maxBuffer: Infinity, env: env, stdio: stdio });
+        if(proc.status != 0) {
+            console.log("Error executing command: " + command + " (exit code: " + proc.status + ")");
+            console.log(proc.stderr.toString(), proc.stdout.toString());
+            result.returnCode = proc.status;
         }
     }
 
