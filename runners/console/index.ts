@@ -50,7 +50,7 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
-        if(this.platform = ConsolePlatform.WINDOWS) {
+        if(this.platform == ConsolePlatform.WINDOWS) {
             let pathVariables = this.env["PATH"];
             pathVariables += ";" + path.join(os.homedir(), "scripts");
             this.env["PATH"] = pathVariables;
