@@ -50,18 +50,12 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
-        console.log(this.env["PATH"], this.env["PATH"].length);
-        let pathVariables = this.env["PATH"]
-        pathVariables += ";" + path.join(os.homedir(), "scripts");
-        this.env["PATH"] = pathVariables;
-        console.log(this.env["PATH"], this.env["PATH"].length);
-
-        // let homedir = os.homedir();
-        // if(!fs.existsSync(path.join(homedir, ".devon"))) {
-        //     fs.mkdirSync(path.join(homedir, ".devon"));
-        // }
-        // fs.writeFileSync(path.join(homedir, ".devon", ".license.agreement"), "On 2020-12-22 at 16:10:14 you accepted the devonfw-ide License.\nhttps://github.com/devonfw/ide/blob/master/documentation/LICENSE.asciidoc");
-
+        if(this.platform = ConsolePlatform.WINDOWS) {
+            let pathVariables = this.env["PATH"];
+            pathVariables += ";" + path.join(os.homedir(), "scripts");
+            this.env["PATH"] = pathVariables;
+        }
+       
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
@@ -75,7 +69,6 @@ export class Console extends Runner {
         this.createFolder(installDir, true);
 
         let downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz";
-        //let downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + "2020.12.002";
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1] != "") {
             downloadUrl = "https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&p=tar.gz&v=" + runCommand.command.parameters[1];
         }
