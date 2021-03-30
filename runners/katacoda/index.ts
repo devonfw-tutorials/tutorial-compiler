@@ -9,6 +9,7 @@ import { DirUtils } from "./dirUtils";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
+import { timeStamp } from "console";
 
 export class Katacoda extends Runner {
 
@@ -22,7 +23,7 @@ export class Katacoda extends Runner {
     private setupDir: string;
     private currentDir: string = path.join("/root");
     private terminalCounter: number = 1;
-    private showVsCodeIde: boolean = true;
+    private showVsCodeIde: boolean = false;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
  
     init(playbook: Playbook): void {
@@ -188,22 +189,14 @@ export class Katacoda extends Runner {
         let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
         let content = "";
 
-        if(runCommand.command.parameters[1].lineNumber)
-        {
-            let BGscript = "#!/bin/sh \n  \n sed 'lineNumber!#PLACEHOLDER#!' textdatei -i";
-            let number = parseInt(runCommand.command.parameters[1].lineNumber, 10);
+        if(runCommand.command.parameters[1].lineNumber){
+            let number = parseInt(runCommand.command.parameters[1].lineNumber);
             let numberStr = (number == 1) ? (number.toString()+"i") : ((number-1).toString()+"a");
-            BGscript =BGscript.replace("lineNumber", numberStr);
-            BGscript =BGscript.replace("textdatei",fileDir);
-            let FGscript = fs.readFileSync(path.join(this.getRunnerDirectory(), "templates", "scripts", "insert_foreground.sh"), {encoding: "utf-8"});
-            FGscript = FGscript.replace("filename", runCommand.command.parameters[0]);
-            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert_background.sh"),BGscript, {encoding : "utf-8"});
-            fs.writeFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "insert_foreground.sh"),FGscript, {encoding : "utf-8"});
 
-            this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background.sh"), { });
-            this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground.sh"), { });
+            this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background"+this.getStepsCount(runCommand)+".sh"), { lineNumber: numberStr, filename: runCommand.command.parameters[0] });
+            this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground"+this.getStepsCount(runCommand)+".sh"), { filename: runCommand.command.parameters[0], lineNumber: runCommand.command.parameters[1].lineNumber });
 
-            placeholder = "!#PLACEHOLDER#!"
+            placeholder = "##PLACEHOLDER##"
             dataTarget = "insert"
         }
         
@@ -214,7 +207,11 @@ export class Katacoda extends Runner {
             content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
         }
 
-        this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md", "insert_background.sh", "insert_foreground.sh");
+        if(runCommand.command.parameters[1].lineNumber){
+            this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md", "insert_background"+this.getStepsCount(runCommand)+".sh", "insert_foreground"+this.getStepsCount(runCommand)+".sh");
+        }else{
+            this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md");
+        }
         this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
         return null;
     }

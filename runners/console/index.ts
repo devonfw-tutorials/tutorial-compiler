@@ -177,8 +177,7 @@ export class Console extends Runner {
                 let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
-        } else if(runCommand.command.parameters[1].lineNumber)
-        {
+        } else if(runCommand.command.parameters[1].lineNumber){
             let lineNum = parseInt(runCommand.command.parameters[1].lineNumber,10);
             let lines = content.split("\n");
             let insertContent;
@@ -189,8 +188,7 @@ export class Console extends Runner {
                 insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
             content = "";
-            for(let i = 0; i < lines.length; i++)
-            {
+            for(let i = 0; i < lines.length; i++){
                 if(lineNum-1 == i){ 
                     content+= insertContent+"\n"+lines[i]+"\n";
                 }else{

@@ -1,3 +1,9 @@
 #!/bin/bash
-
-while [ grep -Fxq "!#Placeholder#!" filename ]; do sleep 2; done
+FILE="/root/<%= filename; %>"
+PH="##PLACEHOLDER##"
+INSERTED=$(sed -n <%= lineNumber%>p $FILE)
+while [ $INSERTED != $PH ] ;
+do
+    sleep 1
+    INSERTED=$(sed -n <%= lineNumber%>p $FILE)
+done
