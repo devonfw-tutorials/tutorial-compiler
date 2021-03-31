@@ -50,6 +50,12 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            let pathVariables = this.env["PATH"];
+            pathVariables += ";" + path.join(os.homedir(), "scripts");
+            this.env["PATH"] = pathVariables;
+        }
+        
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
