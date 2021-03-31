@@ -98,7 +98,7 @@ export class VsCode extends Runner {
             .noErrorCode(result)
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
-            //await this.cleanVSCodeProcesses();
+            await this.cleanVSCodeProcesses();
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -174,7 +174,7 @@ export class VsCode extends Runner {
     }
 
     private async cleanUp(): Promise<void> {
-        //await this.cleanVSCodeProcesses();
+        await this.cleanVSCodeProcesses();
         this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
         ConsoleUtils.restoreDevonDirectory();
     }
@@ -182,10 +182,8 @@ export class VsCode extends Runner {
     private async cleanVSCodeProcesses() {
         let vscodeProcesses: any[] = await findProcess("name", "Code");
         for(let vscodeProcess of vscodeProcesses) {
-            console.log(vscodeProcess);
             try {
                 let pids = await findProcess("pid", vscodeProcess.pid);
-                console.log(pids);
                 if(pids && pids.length == 1) {
                     process.kill(pids[0].pid);
                 }
