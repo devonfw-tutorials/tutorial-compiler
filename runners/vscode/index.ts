@@ -98,7 +98,7 @@ export class VsCode extends Runner {
             .noErrorCode(result)
             .noException(result)
             .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main", runCommand.command.parameters[0]));
-            await this.cleanVSCodeProcesses();
+            //await this.cleanVSCodeProcesses();
         } catch(error) {
             await this.cleanUp();
             throw error;
