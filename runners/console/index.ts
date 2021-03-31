@@ -92,7 +92,7 @@ export class Console extends Runner {
 
         let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
             ? runCommand.command.parameters[0].workspace
-            : this.playbookName.replace("/", ""));
+            : this.playbookName.replace("/", "").replace(" ","-"));
 
         let workspacesDir = this.getVariable(this.useDevonCommand)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
