@@ -29,6 +29,7 @@ The following functions are already implemented:
    * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
    * (Optional) Synchronous or asynchronous process. Default is synchronous. {"asynchronous": boolean}
    * (Optional) Array of arguments {"args": string[]}
+   * (Optional) Assert inormation. Only needed if a server has been started to check if the server was started properly{"port": number , "startupTime", "path": ""}
    
 #### example
 
@@ -37,6 +38,11 @@ Will create a command for executing node -v .
 
 executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
 Will create a command to execute the script in the directory with the parameter --help and in a new Terminal.
+
+#### Assertion Information
+startupTime: Time in seconds to wait before checking if the server is running
+port: Port on which the server is running 
+path: The URL path on which is checked if the server is running
 
 
 ***

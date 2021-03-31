@@ -18,7 +18,6 @@ export class Console extends Runner {
     private asyncProcesses: AsyncProcess[] = [];
     private mapIdeTools: Map<String, String> = new Map();
     private env: any;
-    private executeAsyncPort: number= 50000;
 
     init(playbook: Playbook): void {
         if(process.platform=="win32") {
@@ -362,19 +361,14 @@ export class Console extends Runner {
         ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
         : this.getWorkingDirectory();
 
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous)
-        {
+        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            for(let i = 0; i<this.asyncProcesses.length; i++){
-                if(this.asyncProcesses[i].port == this.executeAsyncPort)
-                {
-                    i = 0;
-                    this.executeAsyncPort++;        
-                }
+            console.log(exeCommand);
+            if(process.pid && runCommand.command.parameters[2].port) {
+                console.log("push to async prozess")
+                this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[2].port});
+                console.log(this.asyncProcesses);
             }
-            if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: this.executeAsyncPort});
-            result.port=this.executeAsyncPort;
-            this.executeAsyncPort++;
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
 
@@ -387,20 +381,31 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
-                await this.sleep(2);
-                let dir = runCommand.command.parameters[1].dir 
-                ? path.join(this.getWorkingDirectory(),runCommand.command.parameters[1].dir)
-                : this.getWorkingDirectory();
 
-                let isReachable = await assert.serverIsReachable(result.port, dir);
-                if(!isReachable)
-                {
-                    console.warn("Cant reach the Server, waiting for 2 more Seconds");
-                    isReachable = await assert.serverIsReachable(result.port, dir);
+            if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[1].asynchronous){
+                console.log("Server reachable test");
+                console.log(runCommand.command.parameters[2]);
+                if(runCommand.command.parameters[2].port){
+                    let startupTime = runCommand.command.parameters[2].startupTime
+                    ? runCommand.command.parameters[2].startupTime
+                    : 15;
+                    let isReachable;
+                    for(let i = 0; i< startupTime; i++) {
+                        isReachable = await assert.serverIsReachable(runCommand.command.parameters[2].port, runCommand.command.parameters[2].path );
+                        if(!isReachable)
+                        {
+                            console.warn("Cant reach the Server");
+                            console.log(isReachable);
+                            this.sleep(300);
+                        }
+                    }
                     if(!isReachable){
                         this.killAsyncProcesses();
                     }
+
+                }
+                else{
+                    throw new Error("Missing port number");
                 }
             }
         } catch(error) {
