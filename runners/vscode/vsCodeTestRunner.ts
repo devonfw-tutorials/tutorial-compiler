@@ -6,7 +6,7 @@ import { VsCodeUtils } from "./vscodeUtils";
 
 async function main(args: string[]) {
     if(args && args.length > 2) {
-        await cleanSettings();
+        //await cleanSettings();
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));

@@ -174,7 +174,7 @@ export class VsCode extends Runner {
     }
 
     private async cleanUp(): Promise<void> {
-        await this.cleanVSCodeProcesses();
+        //await this.cleanVSCodeProcesses();
         this.uninstallExtensions(VsCodeUtils.getVsCodeExecutable());
         ConsoleUtils.restoreDevonDirectory();
     }
