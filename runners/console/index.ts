@@ -5,7 +5,7 @@ import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
 import * as path from 'path';
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
 const findProcess = require("find-process");
@@ -99,14 +99,16 @@ export class Console extends Runner {
             : this.getVariable(this.workspaceDirectory);
 
         //removes all the directories and files inside workspace
-        if(this.getVariable(this.useDevonCommand))
-            ConsoleUtils.executeCommandSync("rm -r " + path.join(workspacesDir, "/*").replace(/\\/g, "/"), this.getWorkingDirectory(), result, this.env);
+        if(this.getVariable(this.useDevonCommand)){
+            fs.rmdirSync(path.join(workspacesDir), { recursive: true });
+            fs.mkdirSync(workspacesDir);
+        }
 
         //copies a local repository into the workspace
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
             if(fs.existsSync(forkedWorkspacesDir))
-                ConsoleUtils.executeCommandSync("cp -r " + forkedWorkspacesDir + "/. " + workspacesDir, workspacesDir, result, this.env);  
+                fs.copySync(path.join(forkedWorkspacesDir, '/.',), workspacesDir)  
         }
 
         //uses GitHub-username and branch if user and branch are specified
@@ -422,8 +424,8 @@ export class Console extends Runner {
 
     async assertRestoreWorkspace(runCommand: RunCommand, result: RunResult) {
         let workspacesDir = this.getVariable(this.useDevonCommand)
-        ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-        : this.getVariable(this.workspaceDirectory);
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : this.getVariable(this.workspaceDirectory);
 
         try{
             new Assertions()
