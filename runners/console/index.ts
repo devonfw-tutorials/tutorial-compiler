@@ -477,8 +477,9 @@ export class Console extends Runner {
                 path: runCommand.command.parameters[1].path,
                 port: runCommand.command.parameters[1].port,
                 interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime
-            }, async () => this.killAsyncProcesses);
+                startupTime: runCommand.command.parameters[1].startupTime,
+                command: runCommand.command.name
+            });
          } catch(error) {
             await this.cleanUp();
             throw error;
@@ -496,8 +497,9 @@ export class Console extends Runner {
                     port: runCommand.command.parameters[1].port,
                     interval: runCommand.command.parameters[1].interval,
                     startupTime: runCommand.command.parameters[1].startupTime,
-                    requirePath: true
-                }, async () => this.killAsyncProcesses);
+                    requirePath: true,
+                    command: runCommand.command.name
+                });
 
         } catch(error) {
             await this.cleanUp();
@@ -569,8 +571,9 @@ export class Console extends Runner {
                 path: runCommand.command.parameters[1].path,
                 port: runCommand.command.parameters[1].port,
                 interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime
-            }, async () => this.killAsyncProcesses);
+                startupTime: runCommand.command.parameters[1].startupTime,
+                command: runCommand.command.name
+            });
 
         } catch(error) {
             await this.cleanUp();

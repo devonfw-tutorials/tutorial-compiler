@@ -1,17 +1,17 @@
 import * as isReachable from "is-reachable";
 
 export class ServerIsReachable {
-    public static async run(parameters, callback): Promise<void> {
+    public static async run(parameters): Promise<void> {
         let port = this.getValue(parameters, 'port', undefined);
         let path = this.getValue(parameters, 'path', "");
         let interval = this.getValue(parameters, 'intervall', 5);
         let startupTime = this.getValue(parameters, 'startupTime', 600);
         let requirePath = this.getValue(parameters, 'requirePath', false);
+        let command = this.getValue(parameters, 'command', "");
 
         if(!port || (requirePath && !path)) {
-            callback();
             let optionalString = requirePath? "and a path " : "";
-            throw new Error("Missing arguments for command runServerJava. You have to specify a port " + optionalString + "for the server. For further information read the function documentation.");
+            throw new Error("Missing arguments for the command " + command + ". You have to specify a port " + optionalString + "for the server. For further information read the function documentation.");
         } else {
             let timeoutFlag = false;
             let reached = false;
@@ -30,7 +30,6 @@ export class ServerIsReachable {
                 }         
             }
             if (timeoutFlag) {
-                callback();
                 throw new Error("The server has not become reachable in " + startupTime + " seconds: " + "http://localhost:" + port + "/" + path);
             }
             if(timeout) {
