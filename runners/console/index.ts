@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+import { ServerIsReachableParameterInterface } from "../../assertions/serverIsReachableParameterInterface";
 const findProcess = require("find-process");
 const os = require("os");
 

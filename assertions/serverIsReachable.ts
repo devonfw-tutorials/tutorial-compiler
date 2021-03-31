@@ -1,7 +1,8 @@
 import * as isReachable from "is-reachable";
+import { ServerIsReachableParameterInterface } from "./serverIsReachableParameterInterface";
 
 export class ServerIsReachable {
-    public static async run(parameters): Promise<void> {
+    public static async run(parameters: ServerIsReachableParameterInterface): Promise<void> {
         let port = this.getValue(parameters, 'port', undefined);
         let path = this.getValue(parameters, 'path', "");
         let interval = this.getValue(parameters, 'intervall', 5);

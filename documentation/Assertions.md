@@ -12,27 +12,35 @@ The following assertions are already implemented:
 ***
 
 ### directoryExist
+#### description
+Checks if a given path leads to an existing directory.
 #### parameter
 1. Path as a string, which should lead to an existing directory.
 
 ***
 
 ### directoryNotEmpty
+#### description
+Checks if a given directory contain at least one file or subdirectory.
 #### parameter
-1. Path as a string of a directory, which should contain at least one file or subdirectory.
+1. Path as a string of a directory.
 
 ***
 
 ### fileExist
+#### description
+Checks if a given path leads to an existing file.
 #### parameter
-1. Path as a string, which should lead to an existing file.
+1. Path as a string
 
 ***
 
 ### fileContains
+#### description
+Checks if content is included in a file
 #### parameter
 1. Path of a file as a string.
-2. Content which should be included in the given file.
+2. Content as a string.
 
 ***
 
