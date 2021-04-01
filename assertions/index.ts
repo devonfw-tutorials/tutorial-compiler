@@ -7,6 +7,7 @@ import { DirectoryNotEmpty } from "./directoryNotEmpty";
 import { FileContains } from "./fileContains";
 import { ServerIsReachable } from "./serverIsReachable";
 import { RepositoryIsClean } from "./repositoryIsClean";
+import { ServerIsReachableParameterInterface } from "./serverIsReachableParameterInterface";
 
 
 export class Assertions {
@@ -41,7 +42,7 @@ export class Assertions {
         return this;
     }
 
-    public async serverIsReachable(parameters): Promise<Assertions> {
+    public async serverIsReachable(parameters: ServerIsReachableParameterInterface): Promise<Assertions> {
         await ServerIsReachable.run(parameters);
         return this;
     }
