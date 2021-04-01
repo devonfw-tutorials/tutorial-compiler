@@ -42,32 +42,38 @@ Create your own commands as shown in tutorial-compilers's [Developement](https:/
 Add assertions by adding a new class into the "./tutorial-compiler/assertions"-folder 
 Learn more about it in [Development](https://github.com/devonfw-forge/tutorials/wiki/Development)
 
+## Working directory
+
+**Console**
+    |-- tutorial-compiler
+        |--build
+            |--working
+
+**Katacoda**
+    |-- root
+
+The working directory is start directory of each runner.  
+
 ## Workspace
 
-### Workspace without Devonfw IDE  
-    |-- tutorial-compiler
-        |--build
-            |--working
+### Workspace without devonfw IDE  
+Without the devonfw IDE the workspace directory equals the working directory.
 
-The default workspace is "./tutorial-compiler/build/working". 
-The console runner will run all commands inside the working folder.
-You will find in the [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) page the phrase "relative to workspace", which means relative to "./working".
+You will find in the [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) page the phrase "relative to workspace", which means relative to the working directory.
 You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
 
-### Workspace with Devonfw IDE 
+### Workspace with devonfw IDE 
 
-    |-- tutorial-compiler
-        |--build
-            |--working
-                |--devonfw
-                    |--workspaces
-                        |--main
+    |--[working-directory]
+        |--devonfw
+            |--workspaces
+                |--main
 
 The functions 
 * [restoreDevonfwIde](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions)
 * [installDevonfwIde](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions)
 
-will change the workspace to the "./tutorial-compiler/build/working/devonfw/workspaces/main".
+will change the workspace to the "[working-directory]/devonfw/workspaces/main".
 The phrase "relative to workspace" means in this case relative to "./main"
 You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
 
