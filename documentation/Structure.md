@@ -46,7 +46,7 @@ Add assertions by adding a new class into the "./tutorial-compiler/assertions"-f
 Learn more about it in [Development](https://github.com/devonfw-forge/tutorials/wiki/Development)
 
 
-### Katacoda tutorials
+## Katacoda tutorials
 
     |-- tutorial-compiler
         |--build
