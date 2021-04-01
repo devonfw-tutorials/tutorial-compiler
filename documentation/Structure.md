@@ -52,7 +52,7 @@ Learn more about it in [Development](https://github.com/devonfw-forge/tutorials/
 **Katacoda**
     |-- root
 
-The working directory is start directory of each runner.  
+The working directory is the start directory of each runner.  
 
 ## Workspace
 
