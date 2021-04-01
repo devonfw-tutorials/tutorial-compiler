@@ -50,6 +50,14 @@ export class Katacoda extends Runner {
         this.setVariable(this.workspaceDirectory, path.join("/root"));
 
         this.assetManager = new KatacodaAssetManager(path.join(this.outputPathTutorial, "assets"));
+        
+        playbook.steps.forEach(step => {
+            step.lines.forEach(stepLine => {
+                if((stepLine.name == "installDevonfwIde" || stepLine.name == "restoreDevonfwIde") && stepLine.parameters[0].indexOf("vscode") > -1) {
+                    this.showVsCodeIde = true;
+                }
+            });
+        });
     }
 
     async destroy(playbook: Playbook): Promise<void> {
@@ -77,7 +85,6 @@ export class Katacoda extends Runner {
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let cdCommand = this.changeCurrentDir(path.join("/root"));     
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
-        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -105,7 +112,6 @@ export class Katacoda extends Runner {
 
     runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
         let tools = runCommand.command.parameters[0].join(" ").replace(/vscode/,"").replace(/eclipse/, "").trim();
-        if(runCommand.command.parameters[0].indexOf("vscode") > -1) this.showVsCodeIde = true;
 
         // create script to download devonfw ide settings.
         this.renderTemplate(path.join("scripts", "cloneDevonfwIdeSettings.sh"), path.join(this.setupDir, "cloneDevonfwIdeSettings.sh"), { tools: tools, cloneDir: "/root/devonfw-settings/"});
@@ -188,16 +194,17 @@ export class Katacoda extends Runner {
         let placeholder = runCommand.command.parameters[1].placeholder ? runCommand.command.parameters[1].placeholder : "";
         let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
         let content = "";
-
+        let lineInsert= false;
         if(runCommand.command.parameters[1].lineNumber){
             let number = parseInt(runCommand.command.parameters[1].lineNumber);
             let numberStr = (number == 1) ? (number.toString()+"i") : ((number-1).toString()+"a");
 
-            this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background"+this.getStepsCount(runCommand)+".sh"), { lineNumber: numberStr, filename: runCommand.command.parameters[0] });
-            this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground"+this.getStepsCount(runCommand)+".sh"), { filename: runCommand.command.parameters[0], lineNumber: runCommand.command.parameters[1].lineNumber });
+            this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background"+this.getStepsCount(runCommand)+".sh"), { lineNumber: numberStr, filename: fileDir});
+            this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground"+this.getStepsCount(runCommand)+".sh"), { filename: fileDir, lineNumber: runCommand.command.parameters[1].lineNumber });
 
             placeholder = "##PLACEHOLDER##"
             dataTarget = "insert"
+            lineInsert = true;
         }
         
         if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentKatacoda){
@@ -212,7 +219,7 @@ export class Katacoda extends Runner {
         }else{
             this.pushStep(runCommand, "Change " + fileName, "step" + this.getStepsCount(runCommand) + ".md");
         }
-        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget });
+        this.renderTemplate("changeFile.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, fileDir: fileDir, content: content, placeholder: placeholder, dataTarget: dataTarget, lineInsert: lineInsert});
         return null;
     }
 
@@ -428,6 +435,20 @@ export class Katacoda extends Runner {
                 "courseData": backgroundscript,
                 "code": foregroundscript
             }); 
+        }
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        if(name == "changeFile" && parameters[1].lineNumber){
+            if(this.showVsCodeIde){
+                return super.supports(name, parameters);
+            }else{
+                console.error("THE USAGE OF LINE NUMBER NEEDS A INSTALLED VSCODE VERSION");
+                return false;
+            }
+        }
+        else{
+            return super.supports(name, parameters);
         }
     }
 

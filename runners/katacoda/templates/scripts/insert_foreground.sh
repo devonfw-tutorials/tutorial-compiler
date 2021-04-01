@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE="/root/<%= filename; %>"
+FILE="<%= filename; %>"
 PH="##PLACEHOLDER##"
 INSERTED=$(sed -n <%= lineNumber%>p $FILE)
 while [[ $INSERTED != $PH ]] ;
