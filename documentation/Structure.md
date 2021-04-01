@@ -55,7 +55,7 @@ Learn more about it in [Development](https://github.com/devonfw-forge/tutorials/
                     |--[playbook-name]
 
 You can find the generated katacoda tutorial inside "./tutorial-compiler/build/output/katacoda/[playbook-name]"
-You can copy the whole folder to add it to you katacoda repository.
+You can copy the whole folder and add it to your katacoda repository.
 
 # File system inside the runners
 
@@ -78,7 +78,7 @@ Without the devonfw IDE the workspace directory equals the working directory.
 
     |--[working-directory]
 
-You will find in the [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) page the phrase "relative to workspace", which means relative to the working directory.
+In [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) you will find the phrase "relative to workspace", which means relative to the working directory.
 You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
 
 ### Workspace with devonfw IDE 
