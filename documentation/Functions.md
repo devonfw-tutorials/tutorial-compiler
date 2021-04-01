@@ -85,10 +85,9 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
     You can use a local repository as workspace in your tutorial.
     Clone the forked repository next to the tutorial-compiler folder and set the "local"-parameter to true {"local": true}
     
-    folder
-    |__tutorial-compiler
-    |__tutorials 
-    |__workspace-devon4ng
+    |--tutorial-compiler
+    |--tutorials 
+    |--workspace-devon4ng
 
 ### changeWorkspace
 #### parameter
