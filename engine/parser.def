@@ -3,10 +3,10 @@ start
     description
     step+
 
-headline
+headline "headline starting with ="
   = "=" _ string ___
   
-description
+description "description surrounded by ===="
   = "====" ___
     descriptionlines
   	"====" ___ 
@@ -19,20 +19,23 @@ descriptionline
   
 step
   = (
-      "====" ___
+      blockmarker ___
       stepinner
       steptextafterlines
-      "====" __
+      blockmarker __
     )
   / stepinner
   
 stepinner
-  = steptextlines?
+  = !"====" steptextlines?
     "[step]" ___
     stepstitle?
     "--" ___
     steplines
     "--" __
+
+blockmarker "===="
+  = "===="
 
 stepstitle
   = "==" _ string __
@@ -47,13 +50,16 @@ steptextafterlines
   = steptextafterline* { return { "steptextafterlines": text()}; }
 
 steptextafterline
-  = !"====" string __
+  = !"====" !"[step]" string __
  
 steplines
   = stepline+ { return { "steplines": text()}; }
   
 stepline
-  = !"--" string __
+  = function __
+
+function "function call"
+  = [^\r\n(]+[(][^\r\n)]*[)] { return text(); }
 
 string "string"
   = [^\r\n]+ { return text(); }
