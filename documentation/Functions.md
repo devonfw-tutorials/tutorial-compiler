@@ -89,6 +89,14 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
     |__tutorials 
     |__workspace-devon4ng
 
+### changeWorkspace
+#### parameter
+1. path to a new workspace (relative to working directory)
+#### example 
+changeWorkspace("devonfw/workspaces/project")
+will set the workspace directory to ".../working/devonfw/workspaces/project"
+
+
 
 ### installCobiGen
 #### parameter

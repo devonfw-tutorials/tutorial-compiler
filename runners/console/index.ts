@@ -404,6 +404,13 @@ export class Console extends Runner {
         return result;
     }
 
+    runChangeWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]));
+        return result;
+    }
+
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
             let installedTools = runCommand.command.parameters[0];
