@@ -15,7 +15,7 @@ export class Katacoda extends Runner {
     private outputPathTutorial: string;
     private tempPath: string;
     private tempPathTutorial: string;
-    private stepsCount = 1;
+    private stepsCount = 0;
     private steps: KatacodaStep[] = [];
     private setupScripts: KatacodaSetupScript[] = [];
     private assetManager: KatacodaAssetManager;
@@ -122,6 +122,7 @@ export class Katacoda extends Runner {
         //update working directory
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
+        this.getStepsCount(runCommand);
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
