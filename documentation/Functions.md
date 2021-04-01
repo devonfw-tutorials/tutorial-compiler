@@ -117,7 +117,7 @@ example:{...,"placeholder": "private int age;"}
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
 
 ##### Prerequisite
-The usage of the line number function requires having VSCode installed on your System. Not having VSCode installed will not create any Output for Katacoda.
+The usage of the line number function requires having VSCode installed on your System. Not having VSCode installed will not create any output for Katacoda.
 
 ##### Name of the placeholder
 If you want to insert content into your code between two existing lines, take the previous line as your placeholder or use the option to insert at a line number. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
