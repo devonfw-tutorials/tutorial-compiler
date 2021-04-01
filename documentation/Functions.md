@@ -2,6 +2,7 @@
 The following functions are already implemented:
 * installDevonfwIde
 * restoreDevonfwIde
+* restoreWorkspace
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
@@ -94,7 +95,9 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
 1. path to a new workspace (relative to working directory)
 #### example 
 changeWorkspace("devonfw/workspaces/project")
-will set the workspace directory to ".../working/devonfw/workspaces/project"
+will set the workspace directory to "[working directory]/devonfw/workspaces/project"
+
+Learn more about the workspace directory and working direktory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
 
 
 
