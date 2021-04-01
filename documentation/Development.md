@@ -1,6 +1,8 @@
 # Development
 
 In this section we will describe how you can implement your own tutorials.
+Learn more about the file system and where you can add your commands in 
+https://github.com/devonfw-forge/tutorials/wiki/Structure
 
 ### How to create a playbook
 The playbooks for the tutorial-compiler are contained in the tutorials repository. There you will find a description of how to create your own playbook.
