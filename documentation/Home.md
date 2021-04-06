@@ -9,3 +9,7 @@ If you want to implement your own tutorials the Development section may help you
 You find a list of functions which are already implemented in the Functions section.<br/>
 [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions)
 
+Learn more about the project structure.<br/>
+[Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+
+
