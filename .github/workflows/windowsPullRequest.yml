@@ -22,5 +22,5 @@ jobs:
       - name: run checkout.ps1
         run: .\checkout.ps1
 
-      - name: run buildRun.ps1
+      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{github.ref}}
         run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${GITHUB_REF##*/}
