@@ -22,5 +22,5 @@ jobs:
       - name: run checkout.ps1
         run: .\checkout.ps1
 
-      - name: run buildRun.ps1 
-        run: .\buildRun.ps1 
+      - name: run buildRun.ps1
+        run: .\buildRun.ps1
