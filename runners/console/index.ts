@@ -106,16 +106,15 @@ export class Console extends Runner {
             : this.getVariable(this.workspaceDirectory);
 
         //removes all the directories and files inside workspace
-        if(this.getVariable(this.useDevonCommand)){
-            fs.rmdirSync(path.join(workspacesDir), { recursive: true });
-            fs.mkdirSync(workspacesDir);
-        }
+        if(this.getVariable(this.useDevonCommand))
+            this.createFolder(workspacesDir, true)
+        
 
         //copies a local repository into the workspace
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
             if(fs.existsSync(forkedWorkspacesDir))
-                fs.copySync(path.join(forkedWorkspacesDir, '/.',), workspacesDir)  
+                fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
         }
 
         //uses GitHub-username and branch if user and branch are specified
@@ -408,7 +407,12 @@ export class Console extends Runner {
     runChangeWorkspace(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]));
+
+        let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+        if(!fs.existsSync(workspacesDir))
+            fs.mkdirSync(workspacesDir);
+        this.setVariable(this.workspaceDirectory, workspacesDir);
+
         return result;
     }
 
@@ -720,6 +724,20 @@ export class Console extends Runner {
             .directoryExits(projectDir)
             .directoryNotEmpty(projectDir);
         } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertChangeWorkspace(runCommand: RunCommand, result: RunResult) {
+        try {
+            let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(workspacesDir);
+        }
+        catch(error) {
             await this.cleanUp();
             throw error;
         }
