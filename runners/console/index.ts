@@ -109,7 +109,6 @@ export class Console extends Runner {
         if(this.getVariable(this.useDevonCommand))
             this.createFolder(workspacesDir, true)
         
-
         //copies a local repository into the workspace
         if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
             let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
