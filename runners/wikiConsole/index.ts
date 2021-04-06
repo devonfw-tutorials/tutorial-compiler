@@ -16,7 +16,14 @@ export class WikiConsole extends WikiRunner {
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let tools = runCommand.command.parameters[0].join(" ");
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools });
+        return null;
+    }
+
+    runCloneRepository(runCommand: RunCommand): RunResult {
+        let path = runCommand.command.parameters[0];
+        let url = runCommand.command.parameters[1];
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), {path: path, url: url});
         return null;
     }
 }

@@ -1,0 +1,14 @@
+Clone Repository
+=============
+
+Prerequisites
+~~~~~~~~~~~~~~
+
+* You need to have https://git-scm.com/[Git] installed on your machine in order to clone Git repositories.
+
+Cloning Repository
+~~~~~~~~~~~~~~~~~~
+
+Execute the following command to clone the repository <%= url; %> to <%= path; %> on your local machine:
+
+`git clone <%= url; %> <%= path; %>`
