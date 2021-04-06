@@ -1,6 +1,4 @@
 import * as path from "path";
-import * as fs from "fs";
-import * as rimraf from "rimraf";
 import { VSRunner } from "./vsCodeRunner";
 import { VsCodeUtils } from "./vscodeUtils";
 
