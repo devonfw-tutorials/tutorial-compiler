@@ -3,6 +3,7 @@ The following functions are already implemented:
 * installDevonfwIde
 * restoreDevonfwIde
 * restoreWorkspace
+* changeWorkspace
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
