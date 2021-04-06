@@ -1,13 +1,13 @@
-name: CI Windows
+name: CI Linux
 on:
-  push:
+  pull_request:
     branches: [ main ]
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
   build:
-    runs-on: 	windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -19,8 +19,10 @@ jobs:
       - name: npm install
         run: npm install
 
-      - name: run checkout.ps1
-        run: .\checkout.ps1
+      - name: run checkout.sh
+        run: bash checkout.sh
 
-      - name: run buildRun.ps1
-        run: .\buildRun.ps1
+      - name: run buildRun.sh
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: sh buildRun.sh --user ${{ github.actor }} --branch ${GITHUB_REF##*/}
