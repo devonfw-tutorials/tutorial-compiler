@@ -65,9 +65,7 @@ value:
     * katacoda 
     * test_console
     * test_vscode
-    * wiki_console 
     * wiki_eclipse
-    * wiki_editor
     * wiki_vscode
 
 If you don't pass environment arguments to the file, it will run the playbooks on all environments.
