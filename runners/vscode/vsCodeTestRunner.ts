@@ -6,7 +6,6 @@ import { VsCodeUtils } from "./vscodeUtils";
 
 async function main(args: string[]) {
     if(args && args.length > 2) {
-        //await cleanSettings();
         let testfile = args[2];
         let vsCodeExecutable = VsCodeUtils.getVsCodeExecutable();
         let vsCodeVersion = VsCodeUtils.getVsCodeVersion(path.join(path.dirname(vsCodeExecutable), "bin", "code"));
@@ -29,13 +28,6 @@ function runTest(vsCodeExecutable: string, testFile: string, vscodeVersion: stri
     let config = path.join(__dirname, ".mocharc.js");
     let runner = new VSRunner(vsCodeExecutable, vscodeVersion, {}, false, config);
     return runner.runTests(testFile, "info");
-}
-
-async function cleanSettings() {
-    let settingsDirectory = path.join(__dirname, "resources", "settings");
-    if(fs.existsSync(settingsDirectory)) {
-        rimraf.sync(path);
-    }
 }
 
 main(process.argv);
