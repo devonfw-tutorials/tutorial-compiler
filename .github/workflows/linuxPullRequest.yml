@@ -22,7 +22,7 @@ jobs:
       - name: run checkout.sh
         run: bash checkout.sh
 
-      - name: run buildRun.sh --user ${{ github.actor }} --branch ${{github.base_ref}}
+      - name: run buildRun.sh --user ${{ github.actor }} --branch ${{github.ref}}
         uses: GabrielBB/xvfb-action@v1.0
         with:
-          run: sh buildRun.sh --user ${{ github.actor }} --branch ${{github.base_ref}}
+          run: sh buildRun.sh --user ${{ github.actor }} --branch ${{github.ref}}
