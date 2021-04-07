@@ -202,8 +202,8 @@ export class Katacoda extends Runner {
             this.renderTemplate(path.join("scripts", "insert_background.sh"), path.join(this.outputPathTutorial, "insert_background"+this.getStepsCount(runCommand)+".sh"), { lineNumber: numberStr, filename: fileDir});
             this.renderTemplate(path.join("scripts", "insert_foreground.sh"), path.join(this.outputPathTutorial, "insert_foreground"+this.getStepsCount(runCommand)+".sh"), { filename: fileDir, lineNumber: runCommand.command.parameters[1].lineNumber });
 
-            placeholder = "##PLACEHOLDER##"
-            dataTarget = "insert"
+            placeholder = "##PLACEHOLDER##";
+            dataTarget = "insert";
             lineInsert = true;
         }
         
