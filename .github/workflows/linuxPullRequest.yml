@@ -1,9 +1,7 @@
-name: CI Linux
+name: CI Linux PR
 on:
-  push:
+  pull_request:
     branches: [ main ]
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -22,7 +20,7 @@ jobs:
       - name: run checkout.sh
         run: bash checkout.sh
 
-      - name: run buildRun.sh
+      - name: run buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
         uses: GabrielBB/xvfb-action@v1.0
         with:
-          run: sh buildRun.sh
+          run: sh buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}

@@ -3,6 +3,8 @@ The following functions are already implemented:
 * executeCommand
 * installDevonfwIde
 * restoreDevonfwIde
+* restoreWorkspace
+* changeWorkspace
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
@@ -59,6 +61,65 @@ restoreDevonfwIde(["java","mvn"], "2020.08.001")
 #### details 
 In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
 ***
+
+### restoreWorkspace 
+#### parameter
+1. (Optional): 
+    * Name of the workspace repository {"workspace": string} (Default is the playbook-name)
+    * local workspace {"local": boolean} (Default is false)
+
+#### arguments 
+**User**(Optional)
+    flag: --user 
+    value: GitHub-username (Default is 'devonfw-tutorials')
+
+You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
+
+**Branch**(Optional)
+    flag: --branch
+    value: the working branch (Default is its default-branch)
+
+You can use a different branch, if you add the working branch as argument. If the runner cannot find the branch in the cloned repository, it will use the default branch instead. 
+
+buildRun.sh --user [username] --branch [branch]
+
+#### example
+
+restoreWorkspace() 
+will clone "https://github.com/devonfw-tutorials/[playbook-name]" into the workspace directory.
+
+restoreWorkspace({"workspace": [name]})
+will clone "https://github.com/devonfw-tutorials/[name]" into the workspace directory.
+
+**buildRun.sh --user [GitHub-name] --branch [branch]**
+restoreWorkspace()
+will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checkout in branch [branch]
+
+#### details  
+**workspace** 
+    The default name of the workspace repository is a concatenation of "workspace-" and the name of your playbook-folder. 
+    If you want to use another repository as workspace, you can specify the ending with {"workspace": [name]}.
+    **example**
+    "workspace-devon4ng" -> {"workspace" : "devon4ng"}
+
+**local** 
+    You can use a local repository as workspace in your tutorial.
+    Clone the forked repository next to the tutorial-compiler folder and set the "local"-parameter to true {"local": true}
+    
+    |--tutorial-compiler
+    |--tutorials 
+    |--workspace-devon4ng
+
+### changeWorkspace
+#### parameter
+1. path to a new workspace (relative to working directory)
+#### example 
+changeWorkspace("devonfw/workspaces/project")
+will set the workspace directory to "[working directory]/devonfw/workspaces/project"
+
+Learn more about the workspace directory and working direktory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+
+
 
 ### installCobiGen
 #### parameter
@@ -183,7 +244,7 @@ path: The URL path on which is checked if the server is running
 2. Json-object: Name of a package, global or local installation, or array of npm arguments
 * (Optional) name of a package {"name": string }
 * (Optional) global or local installation. Default is local, therefore false {"global" : boolean }
-* (Optional) array of npm arguments as json-object {"args": string[]}
+* (Optional) array of npm arguments {"args": string[]}
 #### example
 npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.

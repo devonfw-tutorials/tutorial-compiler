@@ -1,9 +1,7 @@
-name: CI Windows
+name: CI Windows PR
 on:
-  push:
+  pull_request:
     branches: [ main ]
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -22,5 +20,5 @@ jobs:
       - name: run checkout.ps1
         run: .\checkout.ps1
 
-      - name: run buildRun.ps1
-        run: .\buildRun.ps1
+      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
+        run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
