@@ -191,7 +191,7 @@ export class Console extends Runner {
             for(let i = 0; i < lines.length; i++){
                 content += (lineNum-1 == i) 
                 ? insertContent+"\n"+lines[i]+"\n";
-                : lines[i]+"\n";}
+                : lines[i]+"\n";
             }
 
         } else {
