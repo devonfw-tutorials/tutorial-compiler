@@ -276,7 +276,7 @@ export class Console extends Runner {
             ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
         
-        if(process.pid) {
+        if(process.pid && runCommand.command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
         }
           
@@ -339,7 +339,7 @@ export class Console extends Runner {
         let process = this.getVariable(this.useDevonCommand) 
             ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
-        if(process.pid) { 
+        if(process.pid && runCommand.command.parameters.length == 2) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
         }
         return result;
