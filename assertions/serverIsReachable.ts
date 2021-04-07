@@ -11,6 +11,7 @@ export class ServerIsReachable {
 
         if(!port) {
             throw new Error("Missing arguments for the command " + command + ". You have to specify a port for the server. For further information read the function documentation.");
+
         } else {
             let timeoutFlag = false;
             let reached = false;
