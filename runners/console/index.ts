@@ -8,7 +8,6 @@ import * as path from 'path';
 import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { ServerIsReachableParameterInterface } from "../../assertions/serverIsReachableParameterInterface";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -553,7 +552,7 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            if(runCommand.command.parameters.length < 1) {
+            if(runCommand.command.parameters.length > 1) {
                 await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
@@ -574,7 +573,7 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
           
-            if(runCommand.command.parameters.length < 1) {
+            if(runCommand.command.parameters.length > 1) {
                 await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
@@ -649,7 +648,7 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            if(runCommand.command.parameters.length < 1) {
+            if(runCommand.command.parameters.length > 1) {
                 await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
