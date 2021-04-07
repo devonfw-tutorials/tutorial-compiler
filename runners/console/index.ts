@@ -189,10 +189,9 @@ export class Console extends Runner {
             }
             content = "";
             for(let i = 0; i < lines.length; i++){
-                if(lineNum-1 == i){ 
-                    content+= insertContent+"\n"+lines[i]+"\n";
-                }else{
-                    content += lines[i]+"\n";}
+                content += (lineNum-1 == i) 
+                ? insertContent+"\n"+lines[i]+"\n";
+                : lines[i]+"\n";}
             }
 
         } else {
