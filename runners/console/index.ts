@@ -8,7 +8,6 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { ServerIsReachableParameterInterface } from "../../assertions/serverIsReachableParameterInterface";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -474,13 +473,15 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            await assert.serverIsReachable({
-                path: runCommand.command.parameters[1].path,
-                port: runCommand.command.parameters[1].port,
-                interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime,
-                command: runCommand.command.name
-            });
+            if(runCommand.command.parameters.length < 1) {
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
+            }
          } catch(error) {
             await this.cleanUp();
             throw error;
@@ -492,16 +493,15 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-
-            await assert.serverIsReachable({
+            if(runCommand.command.parameters.length < 1) {
+                await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
                     interval: runCommand.command.parameters[1].interval,
                     startupTime: runCommand.command.parameters[1].startupTime,
-                    requirePath: true,
                     command: runCommand.command.name
                 });
-
+            }
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -568,14 +568,15 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            await assert.serverIsReachable({
-                path: runCommand.command.parameters[1].path,
-                port: runCommand.command.parameters[1].port,
-                interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime,
-                command: runCommand.command.name
-            });
-
+            if(runCommand.command.parameters.length < 1) {
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
+            }
         } catch(error) {
             await this.cleanUp();
             throw error;
