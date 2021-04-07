@@ -19,4 +19,11 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
         return null;
     }
+
+    runBuildNg(runCommand: RunCommand): RunResult {
+        let angularPath = runCommand.command.parameters[0];
+        let outputPath = runCommand.command.parameters.length < 1 ? runCommand.command.parameters[1] : "";
+        this.renderWiki(path.join(this.getRunnerDirectory(), "template", "buildNg.asciidoc"), {angularPath: angularPath, outputPath: outputPath});
+        return null;
+    }
 }
