@@ -1,0 +1,19 @@
+Clone Repository
+=============
+
+Prerequisites
+~~~~~~~~~~~~~~
+* Install git
+
+Download
+~~~~~~~~~
+Open a terminal in your current workspace.
+<% if (directoryPath) { %>
+Firstly, you have to move to the directory where the repository should be cloned to.
+If the directory does not exist yet, you can create by using the `mkdir` command in the terminal.
+In this case execute `mkdir -p <%= directoryPath; %>`.
+
+After that, move to the target directory by executing `cd  <%= directoryPath; %>` in the terminal.
+<% } %>
+To clone a git repository execute `git clone <%= url; %>` in the terminal.
+
