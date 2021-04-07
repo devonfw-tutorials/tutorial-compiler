@@ -40,7 +40,6 @@ interval: The availability of the server is checked in the given interval
 * (Optional) path: subpath which should be pinged, i.e: if localhost:8081/jumpthequeue should be checked path should be "jumpthequeue". DEFAULT: ""
 * (Optional) interval: interval in seconds in which the server should be pinged until it is available or timeouted. DEFAULT: 5 seconds
 * (Optional) startupTime: seconds until a timeout will occur and an error will be thrown. DEFAULT: 10 minutes
-* (Optional) requirePath: boolean which determines wheter your path is needed. DEFAULT: false 
 
 #### example
 
@@ -50,7 +49,7 @@ Will create a command for executing node -v .
 executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
 Will create a command to execute the script in the directory with the parameter --help and in a new Terminal.
 
-executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2, "requiredPath": true})
+executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
 Starting a Server in a new Terminal with some assert information 
 
 
