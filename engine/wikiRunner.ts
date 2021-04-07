@@ -23,5 +23,5 @@ export abstract class WikiRunner extends Runner {
         let tempFile = path.join(this.outputPathTutorial, "wiki.asciidoc");
         fs.writeFileSync(tempFile, result, { flag: "a" });
     }
-
+    
 }
