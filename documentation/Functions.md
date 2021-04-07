@@ -1,6 +1,5 @@
 ## Functions 
 The following functions are already implemented:
-* executeCommand
 * installDevonfwIde
 * restoreDevonfwIde
 * installCobiGen
@@ -20,17 +19,27 @@ The following functions are already implemented:
 * adaptTemplatesCobiGen
 * createDevon4ngProject
 
-
 ***
 ### executeCommand
 #### parameter 
 1. The command what that will be executed
 2. Json-object with optional fields
    * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
-   * (Optional) Synchronous or asynchronous process. Default is synchronous. {"asynchronous": boolean}
+   * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server.Default is synchronous. {"asynchronous": boolean}
    * (Optional) Array of arguments {"args": string[]}
-   * (Optional) Assert inormation. Only needed if a server has been started to check if the server was started properly{"port": number , "startupTime", "path": ""}
-   
+3. Assert information needed if you start a server to check server availability
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
+interval: The availability of the server is checked in the given interval
+* (Required) port: will throw error if no port is given.
+* (Optional) path: subpath which should be pinged, i.e: if localhost:8081/jumpthequeue should be checked path should be "jumpthequeue". DEFAULT: ""
+* (Optional) interval: interval in seconds in which the server should be pinged until it is available or timeouted. DEFAULT: 5 seconds
+* (Optional) startupTime: seconds until a timeout will occur and an error will be thrown. DEFAULT: 10 minutes
+* (Optional) requirePath: boolean which determines wheter your path is needed. DEFAULT: false 
+
 #### example
 
 executeCommand("node" ,{"args": ["-v"]})
@@ -39,13 +48,9 @@ Will create a command for executing node -v .
 executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
 Will create a command to execute the script in the directory with the parameter --help and in a new Terminal.
 
-#### Assertion Information
-startupTime: Time in seconds to wait before checking if the server is running
-port: Port on which the server is running 
-path: The URL path on which is checked if the server is running
+executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2, "requiredPath": true})
+Starting a Server in a new Terminal with some assert information 
 
-
-***
 
 ### installDevonfwIde
 #### parameter
@@ -123,6 +128,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 2. 
  *  Path of the file to get the content from or a string, that should be inserted.
  * (Optional) Name of a placeholder 
+ * (Optional) Line number where u want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### example 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### details
@@ -133,17 +139,25 @@ If you want to add a string to a file:
 {"content": "[string]"}
 If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
-##### Name of the placeholder
-If you want to insert content into your code between two existing lines, take the previous line as your placeholder. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
+If you want to insert some content at a specific line, then use "lineNumber" and dont use a placeholder: 
+{"lineNumber": "[Line]"}
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
 | --- | --- | --- |
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
 
+##### Prerequisite
+The usage of the line number function requires having VSCode installed on your System. Not having VSCode installed will not create any Output for Katacoda.
+
+##### Name of the placeholder
+If you want to insert content into your code between two existing lines, take the previous line as your placeholder or use the option to insert at a line number. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
+
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
+
+The option to insert at a linenumber uses a placeholder inserted by a script and just adds it at the step you also insert the content. 
 
 ***
 
@@ -291,4 +305,3 @@ Will create the angular project to the directory projects within the current wor
 This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
-

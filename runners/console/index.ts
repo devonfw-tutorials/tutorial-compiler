@@ -359,7 +359,6 @@ export class Console extends Runner {
         result.returnCode = 0;
         let exeCommand = runCommand.command.parameters[0];
         
-
         exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args)
         ? exeCommand+ " " +runCommand.command.parameters[1].args.join(" ")
         : exeCommand;
@@ -370,11 +369,8 @@ export class Console extends Runner {
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            console.log(exeCommand);
             if(process.pid && runCommand.command.parameters[2].port) {
-                console.log("push to async prozess")
                 this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[2].port});
-                console.log(this.asyncProcesses);
             }
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
@@ -387,33 +383,15 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-
-
             if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[1].asynchronous){
-                console.log("Server reachable test");
-                console.log(runCommand.command.parameters[2]);
-                if(runCommand.command.parameters[2].port){
-                    let startupTime = runCommand.command.parameters[2].startupTime
-                    ? runCommand.command.parameters[2].startupTime
-                    : 15;
-                    let isReachable;
-                    for(let i = 0; i< startupTime; i++) {
-                        isReachable = await assert.serverIsReachable(runCommand.command.parameters[2].port, runCommand.command.parameters[2].path );
-                        if(!isReachable)
-                        {
-                            console.warn("Cant reach the Server");
-                            console.log(isReachable);
-                            this.sleep(300);
-                        }
-                    }
-                    if(!isReachable){
-                        this.killAsyncProcesses();
-                    }
-
-                }
-                else{
-                    throw new Error("Missing port number");
-                }
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[2].path,
+                    port: runCommand.command.parameters[2].port,
+                    interval: runCommand.command.parameters[2].interval,
+                    startupTime: runCommand.command.parameters[2].startupTime,
+                    requirePath: runCommand.command.parameters[2].requirePath,
+                    command: runCommand.command.parameters[0]
+                });
             }
         } catch(error) {
             await this.cleanUp();
