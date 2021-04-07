@@ -451,7 +451,6 @@ export class Console extends Runner {
                     port: runCommand.command.parameters[2].port,
                     interval: runCommand.command.parameters[2].interval,
                     startupTime: runCommand.command.parameters[2].startupTime,
-                    requirePath: runCommand.command.parameters[2].requirePath,
                     command: runCommand.command.parameters[0]
                 });
             }
