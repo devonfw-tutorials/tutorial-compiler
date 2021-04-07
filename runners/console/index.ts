@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from "fs";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { ServerIsReachableParameterInterface } from "../../assertions/serverIsReachableParameterInterface";
+
 
 const findProcess = require("find-process");
 const os = require("os");
@@ -389,7 +389,6 @@ export class Console extends Runner {
                     port: runCommand.command.parameters[2].port,
                     interval: runCommand.command.parameters[2].interval,
                     startupTime: runCommand.command.parameters[2].startupTime,
-                    requirePath: runCommand.command.parameters[2].requirePath,
                     command: runCommand.command.parameters[0]
                 });
             }
