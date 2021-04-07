@@ -3,6 +3,5 @@ export interface ServerIsReachableParameterInterface {
     path?: string;
     interval?: number;
     startupTime?: number;
-    requirePath?: boolean;
     command?: string;
 }

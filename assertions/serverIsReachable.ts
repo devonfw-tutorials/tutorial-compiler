@@ -7,12 +7,10 @@ export class ServerIsReachable {
         let path = this.getValue(parameters, 'path', "");
         let interval = this.getValue(parameters, 'intervall', 5);
         let startupTime = this.getValue(parameters, 'startupTime', 600);
-        let requirePath = this.getValue(parameters, 'requirePath', false);
         let command = this.getValue(parameters, 'command', "");
-        console.log(requirePath);
-        if(!port || (requirePath && !path)) {
-            let optionalString = requirePath? "and a path " : "";
-            throw new Error("Missing arguments for the command " + command + ". You have to specify a port " + optionalString + "for the server. For further information read the function documentation.");
+
+        if(!port) {
+            throw new Error("Missing arguments for the command " + command + ". You have to specify a port for the server. For further information read the function documentation.");
         } else {
             let timeoutFlag = false;
             let reached = false;
