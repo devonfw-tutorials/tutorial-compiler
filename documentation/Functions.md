@@ -216,7 +216,7 @@ startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
-When the tutorial should be tested in the console environment, you have to specify a port.
+If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
 ### npmInstall
@@ -247,7 +247,7 @@ startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
-When the tutorial should be tested in the console environment, you have to specify a port.
+If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
 ### downloadFile
@@ -285,7 +285,7 @@ startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
-When the tutorial should be tested in the console environment, you have to specify a port.
+If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
 ### nextKatacodaStep
