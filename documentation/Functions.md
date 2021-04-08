@@ -212,7 +212,7 @@ Repository will be cloned into a newly created subdirectory devonfw-forge.
 runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
 
 ##### Assertion information
-startupTime = Time in seconds to wait before checking if the server is running 
+startupTime = Time in seconds to wait before checking if the server is running
 port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
@@ -248,7 +248,6 @@ port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
 When the tutorial should be tested in the console environment, you have to specify a port.
-
 ***
 
 ### downloadFile
