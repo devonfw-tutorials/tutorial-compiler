@@ -9,7 +9,6 @@ import { DirUtils } from "./dirUtils";
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { timeStamp } from "console";
 
 export class Katacoda extends Runner {
 
