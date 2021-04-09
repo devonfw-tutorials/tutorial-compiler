@@ -358,20 +358,21 @@ export class Katacoda extends Runner {
 
     runExecuteCommand(runCommand: RunCommand) : RunResult {
         let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
-            ? this.getTerminal('executeCommand') 
+            ? this.getTerminal("executeCommand"+this.stepsCount) 
             : undefined;
         
-        let command = runCommand.command.parameters[0];
         let filepath;
-        let currentDir = true;
+        let useCurrentDir = true;
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir){
-            filepath = runCommand.command.parameters[1].dir;
-            currentDir = false;
+            filepath = runCommand.command.parameters[1].asynchronous 
+            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].dir).replace(/\\/g, "/")
+            : runCommand.command.parameters[1].dir;
+            useCurrentDir = false;
         }
 
         let bashCommand = {
-            "name" : command,
-            "currentDir" : currentDir,
+            "name" : runCommand.command.parameters[0],
+            "currentDir" : useCurrentDir,
             "path" : filepath, 
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
@@ -380,7 +381,7 @@ export class Katacoda extends Runner {
 
         this.pushStep(runCommand, "ExecuteCommand "+ runCommand.command.parameters[0], "step"+ this.getStepsCount(runCommand) + ".md");
 
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (this.stepsCount) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
         return null;
 
     }

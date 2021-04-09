@@ -8,7 +8,6 @@ export class ServerIsReachable {
         let interval = this.getValue(parameters, 'intervall', 5);
         let startupTime = this.getValue(parameters, 'startupTime', 600);
         let command = this.getValue(parameters, 'command', "");
-
         if(!port) {
             throw new Error("Missing arguments for the command " + command + ". You have to specify a port for the server. For further information read the function documentation.");
         } else {

@@ -417,16 +417,15 @@ export class Console extends Runner {
 
     runExecuteCommand(runCommand: RunCommand): RunResult {
         let result = new RunResult();
-        result.returnCode = 0;
-        let exeCommand = runCommand.command.parameters[0];
+        result.returnCode = 0; 
         
-        exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args)
-        ? exeCommand+ " " +runCommand.command.parameters[1].args.join(" ")
-        : exeCommand;
+        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args)
+        ? runCommand.command.parameters[0]+ " " +runCommand.command.parameters[1].args.join(" ")
+        : runCommand.command.parameters[0];
 
         let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
-        ? path.join(this.getWorkingDirectory(), runCommand.command.parameters[1].dir)
-        : this.getWorkingDirectory();
+        ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].dir)
+        : this.getVariable(this.workspaceDirectory)
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);

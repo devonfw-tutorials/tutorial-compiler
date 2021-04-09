@@ -29,7 +29,7 @@ The following functions are already implemented:
    * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
    * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server.Default is synchronous. {"asynchronous": boolean}
    * (Optional) Array of arguments {"args": string[]}
-3. Assert information needed if you start a server to check server availability
+3. Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. 
 
 ##### Assertion information
 startupTime = Time in seconds to wait before checking if the server is running
@@ -46,11 +46,11 @@ interval: The availability of the server is checked in the given interval
 executeCommand("node" ,{"args": ["-v"]})
 Will create a command for executing node -v .
 
-executeCommand("bash someScript.sh", {"dir": "data/setup","asynchronous": "true", "args": ["--help"]})
-Will create a command to execute the script in the directory with the parameter --help and in a new Terminal.
+executeCommand("bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
+Will create a command to execute the script in the directory with the parameter --params 5 and in a new Terminal.
 
 executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
-Starting a Server in a new Terminal with some assert information 
+Starting a Server in a new Terminal. You have to specify the port for testing, the other Parameters are optional. The StartupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that will should be reached.
 
 
 ### installDevonfwIde
@@ -188,7 +188,6 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 2. 
  *  Path of the file to get the content from or a string, that should be inserted.
  * (Optional) Name of a placeholder 
- * (Optional) Line number where u want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### example 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### details
@@ -199,8 +198,6 @@ If you want to add a string to a file:
 {"content": "[string]"}
 If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
-If you want to insert some content at a specific line, then use "lineNumber" and dont use a placeholder: 
-{"lineNumber": "[Line]"}
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
@@ -216,8 +213,6 @@ If you want to insert content into your code between two existing lines, take th
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
-
-The option to insert at a linenumber uses a placeholder inserted by a script and just adds it at the step you also insert the content. 
 
 ***
 
