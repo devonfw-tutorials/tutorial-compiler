@@ -1,9 +1,5 @@
 #!/bin/bash 
 
-echo "<%= user; %> <%= branch; %>"
-echo "<%= workspaceDir; %> <%= workspace; %>"
-branch = "<%= branch; %>"
-
 if <%= useDevonCommand; %>; then
     rm -r <%= workspaceDir; %> 
 fi
