@@ -3,18 +3,13 @@ buildNg command
 
 Prerequisites
 ~~~~~~~~~~~~~~
-* You need to have either installed the devonIDE with ng or installed https://angular.io/[Angular] seperatly on your system.
+* You need to have either installed the devonfwIDE with an angular installation or installed https://angular.io/[Angular] seperatly on your system.
 * You need to have created or downloaded a Angular Project to a local directory.
 
-For this tutorial move to the directory `(<%= angularPath; %>)`
+For this tutorial move to the angular directory by executing `cd <%= angularPath; %>`
 
 Execution
 ~~~~~~
-Now you can execute the console command `ng build` on both Linux and Windows. 
-This will compile your angular app into an output directory named dist/ by default.
-
-If you want to compile the app to a custom output directory, you can execute the command `ng build --output-path (<%= outputPath; %>). The output path must me relative to your current workspace.
-
 <% if(outputPath){ %>
 If you want to compile the app to a custom output directory, you can execute the command `ng build --output-path (<%= outputPath; %>). The output path must me relative to your current workspace.
 <% } else { %>
