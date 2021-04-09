@@ -131,7 +131,6 @@ export class Katacoda extends Runner {
     }
 
     runRestoreWorkspace(runCommand: RunCommand): RunResult {
-
         let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
         ? runCommand.command.parameters[0].workspace
         : this.playbookName.replace("/", "").replace(" ","-"));
