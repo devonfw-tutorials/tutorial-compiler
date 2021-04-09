@@ -50,7 +50,7 @@ executeCommand("bash somePollingScript.sh", {"dir": "data/setup","asynchronous":
 Will create a command to execute the script in the directory with the parameter --params 5 and in a new Terminal.
 
 executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
-Starting a Server in a new Terminal. You have to specify the port for testing, the other Parameters are optional. The StartupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that will should be reached.
+Starting a Server in a new Terminal. You have to specify the port for testing, the other Parameters are optional. The StartupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that should be reached.
 
 
 ### installDevonfwIde
