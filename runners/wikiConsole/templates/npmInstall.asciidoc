@@ -13,7 +13,7 @@ Execution
 Now, you can install the package <%= npmCommand.name; %><% if(!npmCommand.global){ %> and add it to the dependencies<% } %>.<% } else {%>
 Now, you can install the dependencies from the package.json file.<% } %>
 
-For that exetute this command in the terminal `npm install<% if(npmCommand.global){ %> -g<% } %> <%= npmCommand.args; %> <%= npmCommand.name; %>`
+For that execute `npm install<% if(npmCommand.global){ %> -g<% } %> <%= npmCommand.args; %> <%= npmCommand.name; %>` in the terminal. 
 
 <% if(npmCommand.global){ %>Due to the argument '-g' the package will be installed globally.<% } %>
 This may take some time.
