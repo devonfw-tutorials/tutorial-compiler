@@ -1,0 +1,19 @@
+Install npm
+===========
+
+Prerequisites
+~~~~~~~~~~~~~~
+First make sure to have installed npm. We recommend to install the devonfwIDE which includes an npm installation. Alternatively, you can download npm https://www.npmjs.com/get-npm[here] and follow the installation instructions. 
+Then, you need to be located in the project directory where the package.json file lies.
+For this tutorial it is `<%= projectPath; %>`. You can either move there manually and open the terminal there or open the terminal and move there by executing `cd <%= projectPath; %>`.
+
+Execution
+~~~~~~~~~
+<% if(npmCommand.name){ %>
+Now, you can install the package <%= npmCommand.name; %><% if(!npmCommand.global){ %> and add it to the dependencies<% } %>.<% } else {%>
+Now, you can install the dependencies from the package.json file.<% } %>
+
+For that exetute this command in the terminal `npm install<% if(npmCommand.global){ %> -g<% } %> <%= npmCommand.args; %> <%= npmCommand.name; %>`
+
+<% if(npmCommand.global){ %>Due to the argument '-g' the package will be installed globally.<% } %>
+This may take some time.
