@@ -178,7 +178,7 @@ export class Console extends Runner {
                 content = content.replace(placeholder, contentFile);
             }
         } else if(runCommand.command.parameters[1].lineNumber){
-            let lineNum = parseInt(runCommand.command.parameters[1].lineNumber,10);
+            let lineNum = parseInt(runCommand.command.parameters[1].lineNumber);
             let lines = content.split("\n");
             let insertContent;
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
