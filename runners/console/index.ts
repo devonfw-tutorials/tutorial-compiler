@@ -252,17 +252,20 @@ export class Console extends Runner {
         result.returnCode = 0;
         
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-
-        let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
-        process.on('close', (code) => {
-            if (code !== 0) {
-                result.returnCode = code;
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
+            process.on('close', (code) => {
+                if (code !== 0) {
+                    result.returnCode = code;
+                }
+            });
+            if(process.pid) {
+                this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
             }
-          });
-        if(process.pid && runCommand.command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runDockerCompose(). You have to specify a port for the server. For further information read the function documentation.")
         }
-        
         return result;
         
     }
@@ -272,12 +275,17 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = (this.getVariable(this.useDevonCommand))
-            ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
-        
-        if(process.pid && runCommand.command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = (this.getVariable(this.useDevonCommand))
+                ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
+
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runServerJava(). You have to specify a port for the server. For further information read the function documentation.")
         }
           
         return result;
@@ -336,11 +344,16 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = this.getVariable(this.useDevonCommand) 
-            ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
-        if(process.pid && runCommand.command.parameters.length == 2) { 
-            this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = this.getVariable(this.useDevonCommand) 
+                ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
+            if(process.pid) { 
+                this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+            }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runClientNg(). You have to specify a port for the server. For further information read the function documentation.")
         }
         return result;
     }
