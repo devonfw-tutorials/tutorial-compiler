@@ -5,10 +5,9 @@ import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
 import * as path from 'path';
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
-import { ServerIsReachableParameterInterface } from "../../assertions/serverIsReachableParameterInterface";
 const findProcess = require("find-process");
 const os = require("os");
 
@@ -92,6 +91,56 @@ export class Console extends Runner {
     runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
         return this.runInstallDevonfwIde(runCommand);
     }
+
+    runRestoreWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
+            ? runCommand.command.parameters[0].workspace
+            : this.playbookName.replace("/", "").replace(" ","-"));
+
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : this.getVariable(this.workspaceDirectory);
+
+        //removes all the directories and files inside workspace
+        if(this.getVariable(this.useDevonCommand))
+            this.createFolder(workspacesDir, true)
+        
+        //copies a local repository into the workspace
+        if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
+            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
+            if(fs.existsSync(forkedWorkspacesDir))
+                fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
+        }
+
+        //uses GitHub-username and branch if user and branch are specified
+        else if(this.getVariable('user') || this.getVariable('branch')){
+
+            ConsoleUtils.executeCommandSync("git clone https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .", workspacesDir, result, this.env);
+            if(result.returnCode != 0){
+                console.warn("repository not found");
+                result.returnCode = 0;
+                ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName +".git .", workspacesDir, result, this.env);
+            }
+            
+            if(this.getVariable('branch')){
+                ConsoleUtils.executeCommandSync("git checkout " + this.getVariable('branch'), workspacesDir, result, this.env);
+                if(result.returnCode != 0){
+                    console.warn("branch not found");
+                    result.returnCode = 0;
+                }
+            }
+            
+        }
+        else{
+            ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
+        }
+        
+        return result;
+    }
+
 
     runInstallCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
@@ -227,7 +276,7 @@ export class Console extends Runner {
             ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
         
-        if(process.pid) {
+        if(process.pid && runCommand.command.parameters.length == 2) {
             this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
         }
           
@@ -290,7 +339,7 @@ export class Console extends Runner {
         let process = this.getVariable(this.useDevonCommand) 
             ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
-        if(process.pid) { 
+        if(process.pid && runCommand.command.parameters.length == 2) { 
             this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
         }
         return result;
@@ -380,6 +429,18 @@ export class Console extends Runner {
             if(process.pid) this.asyncProcesses.push({ pid: process.pid, name: "Execute", port: undefined});
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
+        return result;
+    }
+
+    runChangeWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+        if(!fs.existsSync(workspacesDir))
+            fs.mkdirSync(workspacesDir);
+        this.setVariable(this.workspaceDirectory, workspacesDir);
+
 
         return result;
     }
@@ -406,6 +467,23 @@ export class Console extends Runner {
 
     async assertRestoreDevonfwIde(runCommand: RunCommand, result: RunResult) {
        this.assertInstallDevonfwIde(runCommand, result);
+    }
+
+    async assertRestoreWorkspace(runCommand: RunCommand, result: RunResult) {
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : this.getVariable(this.workspaceDirectory);
+
+        try{
+            new Assertions()
+                .noErrorCode(result)
+                .noException(result)
+                .directoryExits(workspacesDir)
+                .directoryNotEmpty(workspacesDir);
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
     }
 
     async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
@@ -505,13 +583,15 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            await assert.serverIsReachable({
-                path: runCommand.command.parameters[1].path,
-                port: runCommand.command.parameters[1].port,
-                interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime,
-                command: runCommand.command.name
-            });
+            if(runCommand.command.parameters.length > 1) {
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
+            }
          } catch(error) {
             await this.cleanUp();
             throw error;
@@ -523,16 +603,16 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-
-            await assert.serverIsReachable({
+          
+            if(runCommand.command.parameters.length > 1) {
+                await assert.serverIsReachable({
                     path: runCommand.command.parameters[1].path,
                     port: runCommand.command.parameters[1].port,
                     interval: runCommand.command.parameters[1].interval,
                     startupTime: runCommand.command.parameters[1].startupTime,
-                    requirePath: true,
                     command: runCommand.command.name
                 });
-
+            }
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -599,14 +679,15 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result);
 
-            await assert.serverIsReachable({
-                path: runCommand.command.parameters[1].path,
-                port: runCommand.command.parameters[1].port,
-                interval: runCommand.command.parameters[1].interval,
-                startupTime: runCommand.command.parameters[1].startupTime,
-                command: runCommand.command.name
-            });
-
+            if(runCommand.command.parameters.length > 1) {
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
+            }
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -675,6 +756,20 @@ export class Console extends Runner {
             .directoryExits(projectDir)
             .directoryNotEmpty(projectDir);
         } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertChangeWorkspace(runCommand: RunCommand, result: RunResult) {
+        try {
+            let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(workspacesDir);
+        }
+        catch(error) {
             await this.cleanUp();
             throw error;
         }

@@ -1,6 +1,8 @@
 # Development
 
 In this section we will describe how you can implement your own tutorials.
+Learn more about the file system and where you can add your commands in 
+https://github.com/devonfw-forge/tutorials/wiki/Structure
 
 ### How to create a playbook
 The playbooks for the tutorial-compiler are contained in the tutorials repository. There you will find a description of how to create your own playbook.
@@ -59,7 +61,12 @@ If you want to pass arguments to this method, you have to do this in the header 
 
 ### Environment 
 flag: '-e'
-value: 'katacoda', 'console'
+value: 
+    * katacoda 
+    * test_console
+    * test_vscode
+    * wiki_eclipse
+    * wiki_vscode
 
 If you don't pass environment arguments to the file, it will run the playbooks on all environments.
 
