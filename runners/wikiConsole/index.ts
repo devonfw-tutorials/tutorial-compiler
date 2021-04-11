@@ -19,4 +19,12 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
         return null;
     }
+
+    runDockerCompose(runCommand: RunCommand): RunResult {
+        let dir = runCommand.command.parameters[0];
+        let port = runCommand.command.parameters[1].port;
+        let app_path = runCommand.command.parameters[1].path;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: port, app_path: app_path })
+        return null;
+    }
 }
