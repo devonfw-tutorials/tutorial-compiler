@@ -18,9 +18,7 @@ Now you have to download version <%= version; %> of the devonfw IDE. You can dow
 
 In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz'` if you are using Windows.
 
-On Linux use `wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=   <%= version; %>&p=tar.gz' -O devonfw-ide-scripts.tar.gz -`.
-
-After that you need to extract the downloaded file. To do this, run `tar -xvzf devonfw-ide-scripts.tar.gz`. Or you can simply use a tool (e.g. 7-Zip) for this.
+On Linux use `wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz' -O devonfw-ide-scripts.tar.gz -`.
 
 <% } else { %>
 
@@ -30,9 +28,9 @@ In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz '
 
 On Linux use `wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O devonfw-ide-scripts.tar.gz -`.
 
-After that you need to extract the downloaded file. To do this, run `tar -xvzf devonfw-ide-scripts.tar.gz`. Or you can simply use a tool (e.g. 7-Zip) for this.
-
 <% } %>
+
+After that you need to extract the downloaded file. To do this, run `tar -xvzf devonfw-ide-scripts.tar.gz`. Or you can simply use a tool (e.g. 7-Zip) for this.
 
 Setup
 ~~~~~~
