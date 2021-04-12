@@ -104,17 +104,17 @@ export class Console extends Runner {
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
             : this.getVariable(this.workspaceDirectory);
 
+
         //removes all the directories and files inside workspace
         if(this.getVariable(this.useDevonCommand))
-            this.createFolder(workspacesDir, true)
+            this.createFolder(workspacesDir, true);
         
         //copies a local repository into the workspace
-        if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
-            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
-            if(fs.existsSync(forkedWorkspacesDir))
-                fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
+        let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
+        if(fs.existsSync(forkedWorkspacesDir)){
+            fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
         }
-
+        
         //uses GitHub-username and branch if user and branch are specified
         else if(this.getVariable('user') || this.getVariable('branch')){
 

@@ -139,7 +139,8 @@ export class Katacoda extends Runner {
         ? (path.join('/root', "devonfw", "workspaces")).replace(/\\/g, "/")
         : (path.join('/root', "workspaces")).replace(/\\/g, "/");
 
-        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: this.getVariable("user"), branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)})
+        let user = this.getVariable('user') ? this.getVariable('user') : 'devonfw-tutorials';
+        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: user, branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)})
         
         this.setupScripts.push({
             "name": "Restore Workspace",

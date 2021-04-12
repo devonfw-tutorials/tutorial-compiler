@@ -9,7 +9,7 @@ if ! git clone https://github.com/<%= user; %>/<%= workspace; %>.git <%= workspa
 fi
 
 cd <%= workspaceDir; %>
-git checkout <%= branch; %>
+git checkout <%= branch; %> || true
 cd ~/.
 
 
