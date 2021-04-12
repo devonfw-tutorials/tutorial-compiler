@@ -198,14 +198,14 @@ If you want to add a string to a file:
 {"content": "[string]"}
 If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
+##### Name of the placeholder
+If you want to insert content into your code between two existing lines, take the previous line as your placeholder or use the option to insert at a line number. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
 | --- | --- | --- |
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
 
-##### Name of the placeholder
-If you want to insert content into your code between two existing lines, take the previous line as your placeholder or use the option to insert at a line number. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
 
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
