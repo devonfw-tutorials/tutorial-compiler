@@ -428,9 +428,12 @@ export class Console extends Runner {
         : this.getVariable(this.workspaceDirectory)
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
+            let port = runCommand.command.parameters[2].port 
+            ? runCommand.command.parameters[2].port
+            : 8333; 
             let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            if(process.pid && runCommand.command.parameters[2].port) {
-                this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[2].port});
+            if(process.pid) {
+                this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: port});
             }
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
