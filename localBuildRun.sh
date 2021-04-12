@@ -10,5 +10,3 @@ if [ $? -eq 1 ]; then
 fi
 
 node build/engine/run.js $*
-
-[ -d build/playbooks ] && rm -rf build/playbooks

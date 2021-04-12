@@ -356,35 +356,6 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runExecuteCommand(runCommand: RunCommand) : RunResult {
-        let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
-            ? this.getTerminal('executeCommand') 
-            : undefined;
-        
-        let command = runCommand.command.parameters[0];
-        let filepath;
-        let currentDir = true;
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir){
-            filepath = runCommand.command.parameters[1].dir;
-            currentDir = false;
-        }
-
-        let bashCommand = {
-            "name" : command,
-            "currentDir" : currentDir,
-            "path" : filepath, 
-            "terminalId" : terminal ? terminal.terminalId : 1,
-            "interrupt" : terminal ?  terminal.isRunning : false,
-            "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
-        }
-
-        this.pushStep(runCommand, "ExecuteCommand "+ runCommand.command.parameters[0], "step"+ this.getStepsCount(runCommand) + ".md");
-
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (this.stepsCount++) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
-        return null;
-
-    }
-
     private renderTemplate(name: string, targetPath: string, variables) {
         let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
         let result = ejs.render(template, variables);
@@ -443,7 +414,5 @@ export class Katacoda extends Runner {
             }); 
         }
     }
-    
+
 }
-
-
