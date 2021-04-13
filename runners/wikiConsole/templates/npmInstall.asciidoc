@@ -1,5 +1,5 @@
-npmInstall
-==========
+Installation of packages with npm install
+=========================================
 
 Prerequisites
 ~~~~~~~~~~~~~~
