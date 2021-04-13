@@ -11,8 +11,3 @@ fi
 cd <%= workspaceDir; %>
 git checkout <%= branch; %> || true
 cd ~/.
-
-
-if ! <%= useDevonCommand; %>; then
-    cp -r ./workspaces/* /root && rm -R workspaces
-fi

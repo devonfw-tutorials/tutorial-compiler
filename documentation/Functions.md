@@ -46,7 +46,6 @@ In the Katacoda environment the installation of the devonfw IDE is executed in a
 #### parameter
 1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
-
 #### arguments 
 **User**(Optional)
     flag: --user 
@@ -91,6 +90,20 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
     |--tutorials 
     |--workspace-devon4ng
 
+**workspace directory**
+
+    If you call 'restoreDevonfwIde' or 'installDevonfwIde' before the 'restoreWorkspace'-function the workspace directory remains: 
+
+        `'/root/workspaces/main'`
+
+    If you don't call them, the workspace is changed to:
+
+        `'/root/workspaces'`
+
+    
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+
+        
 ### changeWorkspace
 #### parameter
 1. path to a new workspace (relative to working directory)

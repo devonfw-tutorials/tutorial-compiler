@@ -102,12 +102,10 @@ export class Console extends Runner {
 
         let workspacesDir = this.getVariable(this.useDevonCommand)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-            : this.getVariable(this.workspaceDirectory);
-
+            : path.join(this.getWorkingDirectory(), 'workspaces');
 
         //removes all the directories and files inside workspace
-        if(this.getVariable(this.useDevonCommand))
-            this.createFolder(workspacesDir, true);
+        this.createFolder(workspacesDir, true);
         
         //copies a local repository into the workspace
         let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
@@ -137,7 +135,11 @@ export class Console extends Runner {
         else{
             ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
         }
-        
+
+        if(!this.getVariable(this.useDevonCommand)){
+            this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), 'workspaces'));
+        }
+
         return result;
     }
 

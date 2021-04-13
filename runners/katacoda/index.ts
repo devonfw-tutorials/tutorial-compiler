@@ -147,6 +147,9 @@ export class Katacoda extends Runner {
             "script": "restoreWorkspace.sh"
         })
 
+        if(!this.getVariable(this.useDevonCommand))
+            this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"))
+            
         this.getStepsCount(runCommand);
 
         return null;
