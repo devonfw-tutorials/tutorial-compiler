@@ -20,6 +20,8 @@ In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz '
 
 On Linux use `wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz' -O devonfw-ide-scripts.tar.gz -`.
 
+On MacOS, depending on your setup, you can either use the same `wget` command specified for the Linux installation (install wget via homebrew `brew install wget`) or use any other available download command i.e. `curl -o devonfw-ide-scripts.tar.gz https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz`.
+
 <% } else { %>
 
 Now you have to download the latest release of the devonfw IDE. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz[here].
@@ -27,6 +29,8 @@ Now you have to download the latest release of the devonfw IDE. You can download
 In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz'` if you are using Windows.
 
 On Linux use `wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O devonfw-ide-scripts.tar.gz -`.
+
+On MacOS, depending on your setup, you can either use the same `wget` command specified for the Linux installation (install wget via homebrew `brew install wget`) or use any other available download command i.e. `curl -o devonfw-ide-scripts.tar.gz https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz`.
 
 <% } %>
 
