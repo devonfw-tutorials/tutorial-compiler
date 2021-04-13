@@ -172,6 +172,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 2. 
  *  Path of the file to get the content from or a string, that should be inserted.
  * (Optional) Name of a placeholder 
+ * (Optional) Line number where u want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### example 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### details
@@ -182,17 +183,25 @@ If you want to add a string to a file:
 {"content": "[string]"}
 If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
-##### Name of the placeholder
-If you want to insert content into your code between two existing lines, take the previous line as your placeholder. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
+If you want to insert some content at a specific line, then use "lineNumber" and dont use a placeholder: 
+{"lineNumber": "[Line]"}
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
 | --- | --- | --- |
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
 
+##### Prerequisite
+The usage of the line number function requires having VSCode installed on your System. Not having VSCode installed will not create any output for Katacoda.
+
+##### Name of the placeholder
+If you want to insert content into your code between two existing lines, take the previous line as your placeholder or use the option to insert at a line number. Add your placeholder into the new file or string, otherwise it will be replaced entirely.
+
 A placeholder is optional. If you do not define a placeholder, the content in the existing file will be simply replaced by the new content.
 
 Please try not to use custom placeholders. Keep in mind that you might want to build the project before changing them. Custom placeholders with a comment-syntax (e.g. "//PLACEHOLDER") will be removed by the console-environment and others might cause errors.
+
+The option to insert at a linenumber uses a placeholder inserted by a script and just adds it at the step you also insert the content. 
 
 ***
 
