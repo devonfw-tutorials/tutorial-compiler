@@ -29,4 +29,11 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
+
+    runBuildJava(runCommand: RunCommand): RunResult {
+        let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
+        return null;
+    }
 }

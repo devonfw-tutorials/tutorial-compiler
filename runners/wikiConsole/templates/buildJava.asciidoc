@@ -1,0 +1,19 @@
+Build a Java Project with Maven
+===============================
+
+Prerequisites
+~~~~~~~~~~~~~
+* You need to have Maven installed. If not already installed, you can download it https://maven.apache.org/download.cgi[here]. Alternativly, you can make use of the DevonfwIDE, where you can install Maven directly to your workspace. For more details on how to do that, see the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc[DevonfwIDE setup].
+
+Execution
+~~~~~~~~~
+Now move to your project directory manually or by executing `cd <%= directoryPath; %>` in the console.
+Next, use the following command to build the java project.
+
+`mvn clean install<% if(skipTest){ %> -Dmaven.test.skip=true<% } %>`
+
+The maven command 'clean' will clear the target directory beforehand. So your build will start from a clean state.
+Install will then compile, test and package your Java project and copy your built .jar/.war file into your local Maven repository.
+<% if(skipTest){ %>
+We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.
+<% } %>
