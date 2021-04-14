@@ -3,6 +3,7 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
+import * as fs from 'fs';
 
 export class WikiConsole extends WikiRunner {
 
@@ -27,6 +28,15 @@ export class WikiConsole extends WikiRunner {
     runCloneRepository(runCommand: RunCommand): RunResult {
         let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
+        return null;
+    }
+
+    runCreateFile(runCommand: RunCommand): RunResult{
+        let filePath = runCommand.command.parameters[0];
+        let contentPath = runCommand.command.parameters[1];
+        let directoryPath = filePath.substring(0,filePath.lastIndexOf("/"));
+        let directoryExists = fs.existsSync(directoryPath);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, directoryExists: directoryExists, directoryPath: directoryPath});
         return null;
     }
 }
