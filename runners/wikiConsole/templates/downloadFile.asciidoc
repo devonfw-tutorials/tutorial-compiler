@@ -1,0 +1,22 @@
+Download a File
+===============
+
+Download
+~~~~~~~~
+First, you need to open a command prompt in your current Workspace. For Windows you can use Powershell and on Linux you can use the Terminal.
+
+<%if(!directoryExists){ %>
+You can specify a folder for your download, but this folder should be existing. We create a folder with this command where we can load the files into.
+`mkdir <%=dir;%>`
+<% } %>
+
+Now we can start download the file with the wget command. You can read some Information about the usage on Linux https://manpages.ubuntu.com/manpages/hirsute/en/man1/wget.1.html[here].
+
+On Windows wget command is an alias for Invoke-WebRequest and mostly works like wget on Linux, but a detailed documentation can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.1[here].
+
+.OS
+. Windows + 
+So we can start download a file with `wget <%= url; %>  -O <%= dir; %>/<%= fileName;%>` with the -OutFile parameter we set the name of the file to: "<%= fileName;%>"<%if(dir){%>, and the destination where the file we be saved to<% }%>. 
+
+. Linux + 
+So we can start download a file with `wget <%= url; %>  -O <%= fileName;%><% if(dir){ %> -P <%= dir; %><%}%>` with the -O parameter we set the name of the file to: "<%= fileName;%>"<%if(dir){%>, and with the -P parameter we set the folder the file will be saved to<% }%>. 
