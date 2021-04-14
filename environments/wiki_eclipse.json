@@ -1,5 +1,6 @@
 {
     "failOnIncomplete": false,
+    "skipMissingFunctions": true,
     "runners": [
         "wikiEclipse",
         "wikiEditor",

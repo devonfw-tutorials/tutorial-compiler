@@ -20,9 +20,10 @@ export class Engine {
         if (! await this.isEnvironmentComplete()) {
             if (this.environment.failOnIncomplete) {
                 throw "Environment incomplete: " + this.environmentName;
+            } else if(!this.environment.skipMissingFunctions) {
+                console.log("Environment incomplete: " + this.environmentName);
+                return;
             }
-            console.log("Environment incomplete: " + this.environmentName);
-            return;
         }
 
         mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
