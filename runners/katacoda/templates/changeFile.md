@@ -4,6 +4,10 @@ Switch to the IDE and open the file '<%= fileDir; %>'.
 
 `<%= fileDir; %>`{{open}}
 
+<% if(lineInsert ){ %>
+A script created a placeholder in the background to insert data at a specific line number.
+<% } %>
+
 <% if(dataTarget == "replace") { %>
 Replace the content of the file with the following code.
 <% } else if(dataTarget == "insert") { %>

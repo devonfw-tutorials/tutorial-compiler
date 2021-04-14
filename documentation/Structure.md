@@ -96,3 +96,23 @@ will change the workspace to the "[working-directory]/devonfw/workspaces/main".
 The phrase "relative to workspace" means in this case relative to "./main"
 You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
 
+### Workspace with restoreWorkspace
+
+The function [restoreWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) will change the workspace.
+
+#### WIthout devonfw IDE
+
+    |--[working-directory]
+        |--workspaces
+
+The phrase "relative to workspace" means in this case relative to "./workspaces"
+
+
+#### With devonfw IDE
+
+    |--[working-directory]
+        |--devonfw
+            |--workspaces
+                |--main
+
+The phrase "relative to workspace" means in this case relative to "./main"

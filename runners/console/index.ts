@@ -103,19 +103,17 @@ export class Console extends Runner {
 
         let workspacesDir = this.getVariable(this.useDevonCommand)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-            : this.getVariable(this.workspaceDirectory);
+            : path.join(this.getWorkingDirectory(), 'workspaces');
 
         //removes all the directories and files inside workspace
-        if(this.getVariable(this.useDevonCommand))
-            this.createFolder(workspacesDir, true)
+        this.createFolder(workspacesDir, true);
         
         //copies a local repository into the workspace
-        if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
-            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
-            if(fs.existsSync(forkedWorkspacesDir))
-                fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
+        let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
+        if(fs.existsSync(forkedWorkspacesDir)){
+            fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
         }
-
+        
         //uses GitHub-username and branch if user and branch are specified
         else if(this.getVariable('user') || this.getVariable('branch')){
 
@@ -138,7 +136,11 @@ export class Console extends Runner {
         else{
             ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
         }
-        
+
+        if(!this.getVariable(this.useDevonCommand)){
+            this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), 'workspaces'));
+        }
+
         return result;
     }
 
@@ -234,6 +236,23 @@ export class Console extends Runner {
                 let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
+        } else if(runCommand.command.parameters[1].lineNumber){
+            let lineNum = parseInt(runCommand.command.parameters[1].lineNumber);
+            let lines = content.split("\n");
+            let insertContent;
+            if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
+                insertContent = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
+            } else if (runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileConsole) {
+                let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
+                insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
+            }
+            content = "";
+            for(let i = 0; i < lines.length; i++){
+                content += (lineNum-1 == i) 
+                ? insertContent+"\n"+lines[i]+"\n"
+                : lines[i]+"\n";
+            }
+
         } else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
@@ -253,17 +272,20 @@ export class Console extends Runner {
         result.returnCode = 0;
         
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-
-        let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
-        process.on('close', (code) => {
-            if (code !== 0) {
-                result.returnCode = code;
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
+            process.on('close', (code) => {
+                if (code !== 0) {
+                    result.returnCode = code;
+                }
+            });
+            if(process.pid) {
+                this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
             }
-          });
-        if(process.pid && runCommand.command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runDockerCompose(). You have to specify a port for the server. For further information read the function documentation.")
         }
-        
         return result;
         
     }
@@ -273,12 +295,17 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = (this.getVariable(this.useDevonCommand))
-            ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
-        
-        if(process.pid && runCommand.command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = (this.getVariable(this.useDevonCommand))
+                ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
+
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runServerJava(). You have to specify a port for the server. For further information read the function documentation.")
         }
           
         return result;
@@ -337,11 +364,16 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = this.getVariable(this.useDevonCommand) 
-            ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
-        if(process.pid && runCommand.command.parameters.length == 2) { 
-            this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = this.getVariable(this.useDevonCommand) 
+                ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
+            if(process.pid) { 
+                this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+            }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runClientNg(). You have to specify a port for the server. For further information read the function documentation.")
         }
         return result;
     }
