@@ -428,13 +428,15 @@ export class Console extends Runner {
         : this.getVariable(this.workspaceDirectory)
 
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
-            let port = runCommand.command.parameters[2].port 
-            ? runCommand.command.parameters[2].port
-            : 8333; 
-            let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
-            if(process.pid) {
-                this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: port});
+            if(runCommand.command.parameters[2].port){
+                let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[2].port});
+                }
             }
+            else{
+                throw new Error("Missing arguments for the command " + exeCommand + ". You have to specify a port for the server. For further information read the function documentation.");
+            } 
         }
         else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
         
