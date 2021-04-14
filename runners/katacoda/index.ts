@@ -493,9 +493,6 @@ export class Katacoda extends Runner {
         }
     }
     
-}
-
-
     supports(name: string, parameters: any[]): boolean {
         if(name == "changeFile" && parameters[1].lineNumber){
             if(this.showVsCodeIde){
