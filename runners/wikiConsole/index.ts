@@ -19,4 +19,11 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
         return null;
     }
+
+    runRunServerJava(runCommand: RunCommand): RunResult {
+        let server_path = runCommand.command.parameters[0];
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "runServerJava.asciidoc"), { server_path: server_path, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
+        return null;
+    }
+
 }
