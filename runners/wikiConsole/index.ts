@@ -19,4 +19,10 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
         return null;
     }
+
+    runCreateFolder(runCommand: RunCommand): RunResult {
+        let folder = runCommand.command.parameters[0];
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folder: folder });
+        return null;
+    }
 }
