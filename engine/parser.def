@@ -1,12 +1,16 @@
 start
   = headline
+    subtitle?
     description
     steps
     conclusion?
 
 headline
   = "=" _ string ___
-  
+
+subtitle
+  = !"====" "==" _ string ___
+
 description
   = "====" ___
     descriptionlines

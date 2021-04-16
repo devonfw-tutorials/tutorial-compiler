@@ -69,7 +69,7 @@ export class Katacoda extends Runner {
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
-        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
+        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, playbook.subtitle, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
