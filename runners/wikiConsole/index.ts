@@ -21,9 +21,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runCloneRepository(runCommand: RunCommand): RunResult {
-        let path = runCommand.command.parameters[0];
-        let url = runCommand.command.parameters[1];
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), {path: path, url: url});
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), {path: runCommand.command.parameters[0], url: runCommand.command.parameters[1]});
         return null;
     }
 }
