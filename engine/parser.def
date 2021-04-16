@@ -7,15 +7,15 @@ headline "headline starting with ="
   = "=" _ string ___
   
 description "description surrounded by ===="
-  = "====" ___
+  = blockmarker ___
     descriptionlines
-  	"====" ___ 
+  	blockmarker ___ 
 
 descriptionlines
   = descriptionline+ { return { "descriptionlines": text()}; }
   
 descriptionline
-  = !"====" string __ 
+  = !blockmarker string __ 
   
 step
   = (
@@ -27,7 +27,7 @@ step
   / stepinner
   
 stepinner
-  = !"====" steptextlines?
+  = !blockmarker steptextlines?
     "[step]" ___
     stepstitle?
     "--" ___
@@ -50,7 +50,7 @@ steptextafterlines
   = steptextafterline* { return { "steptextafterlines": text()}; }
 
 steptextafterline
-  = !"====" !"[step]" string __
+  = !blockmarker !"[step]" string __
  
 steplines
   = stepline+ { return { "steplines": text()}; }
