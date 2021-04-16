@@ -20,6 +20,7 @@ export class Parser {
         let result = new Playbook();
         result.title = parseResult[0][2];
         result.description = parseResult[1][2].descriptionlines;
+        result.conclusion = parseResult[3][2].conclusionlines;
         for(let index in parseResult[2]){
             let step = new Step();
             step.text = this.getText(parseResult, index);

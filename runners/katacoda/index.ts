@@ -54,7 +54,7 @@ export class Katacoda extends Runner {
     async destroy(playbook: Playbook): Promise<void> {
         let tutorialDirectoryName = path.basename(playbook.path);
         this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
-        fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
+        fs.writeFileSync(this.outputPathTutorial + 'finish.md', playbook.conclusion);
 
         // create and configure required files for the setup process
         this.renderTemplate(path.join("scripts", "intro_foreground.sh"), path.join(this.outputPathTutorial, "intro_foreground.sh"), { });

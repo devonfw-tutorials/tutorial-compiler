@@ -1,7 +1,8 @@
 start
   = headline
     description
-    step+
+    steps
+    conclusion?
 
 headline
   = "=" _ string ___
@@ -16,7 +17,10 @@ descriptionlines
   
 descriptionline
   = !"====" string __ 
-  
+ 
+steps
+	= step+
+
 step
   = (
       "====" ___
@@ -55,6 +59,14 @@ steplines
 stepline
   = !"--" string __
 
+conclusion
+	= "====" ___
+    conclusionlines
+  	"====" ___ 
+    
+conclusionlines
+  = descriptionline+ { return { "conclusionlines": text()}; }
+  
 string "string"
   = [^\r\n]+ { return text(); }
 
