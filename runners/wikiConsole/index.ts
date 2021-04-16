@@ -16,12 +16,23 @@ export class WikiConsole extends WikiRunner {
 
     runInstallDevonfwIde(runCommand: RunCommand): RunResult {
         let tools = runCommand.command.parameters[0].join(" ");
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools })
+        let version = "";
+        if(runCommand.command.parameters.length == 2) {
+            version = runCommand.command.parameters[1];
+        }
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools, version:version })
+        return null;
+    }
+
+    runCloneRepository(runCommand: RunCommand): RunResult {
+        let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
 
     runCreateFolder(runCommand: RunCommand): RunResult {
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folder: runCommand.command.parameters[0] });
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
         return null;
     }
 }
