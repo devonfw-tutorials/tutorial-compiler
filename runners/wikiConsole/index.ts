@@ -21,8 +21,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runCreateFolder(runCommand: RunCommand): RunResult {
-        let folder = runCommand.command.parameters[0];
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folder: folder });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folder: runCommand.command.parameters[0] });
         return null;
     }
 }
