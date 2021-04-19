@@ -4,6 +4,7 @@ The following functions are already implemented:
 * restoreDevonfwIde
 * restoreWorkspace
 * changeWorkspace
+* executeCommand
 * installCobiGen
 * cobiGenJava
 * createDevon4jProject
@@ -22,36 +23,6 @@ The following functions are already implemented:
 * createDevon4ngProject
 
 ***
-### executeCommand
-#### parameter 
-1. The command what that will be executed
-2. Json-object with optional fields
-   * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
-   * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server.Default is synchronous. {"asynchronous": boolean}
-   * (Optional) Array of arguments {"args": string[]}
-3. Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. 
-
-##### Assertion information
-startupTime = Time in seconds to wait before checking if the server is running
-port: Port on which the server is running
-path: The URL path on which is checked if the server is running
-interval: The availability of the server is checked in the given interval
-* (Required) port: will throw error if no port is given.
-* (Optional) path: subpath which should be pinged, i.e: if localhost:8081/jumpthequeue should be checked path should be "jumpthequeue". DEFAULT: ""
-* (Optional) interval: interval in seconds in which the server should be pinged until it is available or timeouted. DEFAULT: 5 seconds
-* (Optional) startupTime: seconds until a timeout will occur and an error will be thrown. DEFAULT: 10 minutes
-
-#### example
-
-executeCommand("node" ,{"args": ["-v"]})
-Will create a command for executing node -v .
-
-executeCommand("bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
-Will create a command to execute the script in the directory with the parameter --params 5 and in a new Terminal.
-
-executeCommand("bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
-Starting a Server in a new Terminal. You have to specify the port for testing, the other Parameters are optional. The StartupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that should be reached.
-
 
 ### installDevonfwIde
 #### parameter
@@ -143,6 +114,39 @@ will set the workspace directory to "[working directory]/devonfw/workspaces/proj
 
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
 
+### executeCommand
+#### parameter 
+1. The command that will be executed on Windows OS
+2. The command that will be executed on Linux OS
+3. Json-object with optional fields
+   * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
+   * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server.Default is synchronous. {"asynchronous": boolean}
+   * (Optional) Array of arguments {"args": string[]}
+4. Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. 
+
+#### Commands
+It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
+
+##### Assertion information
+startupTime = Time in seconds to wait before checking if the server is running
+port: Port on which the server is running
+path: The URL path on which is checked if the server is running
+interval: The availability of the server is checked in the given interval
+* (Required) port: will throw error if no port is given.
+* (Optional) path: subpath which should be pinged, i.e: if localhost:8081/jumpthequeue should be checked path should be "jumpthequeue". DEFAULT: ""
+* (Optional) interval: interval in seconds in which the server should be pinged until it is available or timeouted. DEFAULT: 5 seconds
+* (Optional) startupTime: seconds until a timeout will occur and an error will be thrown. DEFAULT: 10 minutes
+
+#### example
+
+executeCommand("node", "node" ,{"args": ["-v"]})
+Will create a command for executing node -v .
+
+executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
+Will create a command to execute the script in the directory with the parameter --params 5 and in a new Terminal.
+
+executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
+Starting a Server in a new Terminal. You have to specify the port for testing, the other Parameters are optional. The StartupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that should be reached.
 
 
 ### installCobiGen

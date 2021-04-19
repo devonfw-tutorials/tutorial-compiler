@@ -450,27 +450,36 @@ export class Console extends Runner {
     runExecuteCommand(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0; 
-        
-        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args)
-        ? runCommand.command.parameters[0]+ " " +runCommand.command.parameters[1].args.join(" ")
-        : runCommand.command.parameters[0];
+        let commandIndex;
+        let exeCommand;
+        if(runCommand.command.parameters[0] && runCommand.command.parameters[1]){
+            commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
+            exeCommand = this.platform == ConsolePlatform.LINUX ? "bash " : "powershell.exe ";
+        }
+        else{
+            throw new Error("You have to pass a Command for Windows and Linux based OS");
+        }
 
-        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir)
-        ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].dir)
+        exeCommand += (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
+        ? runCommand.command.parameters[commandIndex]+ " " +runCommand.command.parameters[2].args.join(" ")
+        : runCommand.command.parameters[commandIndex];
+
+        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].dir)
+        ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2].dir)
         : this.getVariable(this.workspaceDirectory)
 
-        if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous){
-            if(runCommand.command.parameters[2].port){
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
+            if(runCommand.command.parameters[3].port){
                 let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
                 if(process.pid) {
-                    this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[2].port});
+                    this.asyncProcesses.push({ pid: process.pid, name: "ExecuteCommand", port: runCommand.command.parameters[3].port});
                 }
             }
             else{
                 throw new Error("Missing arguments for the command " + exeCommand + ". You have to specify a port for the server. For further information read the function documentation.");
             } 
         }
-        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env); 
+        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
         
       return result;
     }
@@ -482,13 +491,15 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-            if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[1].asynchronous){
+            if(runCommand.command.parameters.length > 3 && runCommand.command.parameters[2].asynchronous){
                 await assert.serverIsReachable({
-                    path: runCommand.command.parameters[2].path,
-                    port: runCommand.command.parameters[2].port,
-                    interval: runCommand.command.parameters[2].interval,
-                    startupTime: runCommand.command.parameters[2].startupTime,
-                    command: runCommand.command.parameters[0]
+                    path: runCommand.command.parameters[3].path,
+                    port: runCommand.command.parameters[3].port,
+                    interval: runCommand.command.parameters[3].interval,
+                    startupTime: runCommand.command.parameters[3].startupTime,
+                    command: this.platform == ConsolePlatform.WINDOWS 
+                    ? runCommand.command.parameters[0] 
+                    : runCommand.command.parameters[1] 
                 });
             }
         } catch(error) {
