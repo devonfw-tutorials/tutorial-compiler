@@ -32,6 +32,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runCreateFile(runCommand: RunCommand): RunResult{
+        //path join with current workspace
         let filePath = runCommand.command.parameters[0];
         let contentPath = runCommand.command.parameters[1];
         let directoryPath = filePath.substring(0,filePath.lastIndexOf("/"));
