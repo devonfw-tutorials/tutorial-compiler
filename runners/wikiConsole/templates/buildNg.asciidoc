@@ -1,12 +1,12 @@
-Build an Angular Project with build ng
-======================================
+Build an Angular Project
+========================
 
 Prerequisites
 ~~~~~~~~~~~~~~
 * You need to have either installed the devonfwIDE with an Angular installation or installed https://angular.io/[Angular] seperatly on your system.
 * You need to have created or downloaded a Angular Project to a local directory.
 
-For this tutorial move to the Angular directory by executing `cd <%= angularPath; %>`
+For this tutorial navigate to the Angular directory by executing `cd <%= angularPath; %>` in your terminal.
 
 Execution
 ~~~~~~~~~
@@ -14,6 +14,6 @@ Execution
 If you want to compile the app to a custom output directory, you can execute the command `ng build --output-path <%= outputPath; %>`. The output path must me relative to your current workspace.
 <% } else { %>
 Now you can execute the console command `ng build` on both Linux and Windows. 
-This will compile your Angular app into an output directory named dist/ by default.
+This will compile your Angular app into an output directory named `dist/` by default.
 <% } %>  
 
