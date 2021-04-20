@@ -136,6 +136,31 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runRestoreWorkspace(runCommand: RunCommand): RunResult {
+        let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
+            ? runCommand.command.parameters[0].workspace
+            : this.playbookName.replace("/", "").replace(" ","-"));
+
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join('/root', "devonfw", "workspaces").replace(/\\/g, "/")
+            : path.join('/root', "workspaces").replace(/\\/g, "/");
+
+        let user = this.getVariable('user') ? this.getVariable('user') : 'devonfw-tutorials';
+        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: user, branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)})
+        
+        this.setupScripts.push({
+            "name": "Restore Workspace",
+            "script": "restoreWorkspace.sh"
+        })
+
+        if(!this.getVariable(this.useDevonCommand))
+            this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"))
+            
+        this.getStepsCount(runCommand);
+
+        return null;
+    }
+
     runInstallCobiGen(runCommand: RunCommand): RunResult {
         this.pushStep(runCommand, "Install CobiGen", "step" + this.getStepsCount(runCommand) + ".md");
         

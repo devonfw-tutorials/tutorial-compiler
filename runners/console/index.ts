@@ -102,19 +102,17 @@ export class Console extends Runner {
 
         let workspacesDir = this.getVariable(this.useDevonCommand)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-            : this.getVariable(this.workspaceDirectory);
+            : path.join(this.getWorkingDirectory(), 'workspaces');
 
         //removes all the directories and files inside workspace
-        if(this.getVariable(this.useDevonCommand))
-            this.createFolder(workspacesDir, true)
+        this.createFolder(workspacesDir, true);
         
         //copies a local repository into the workspace
-        if(runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].local){
-            let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
-            if(fs.existsSync(forkedWorkspacesDir))
-                fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
+        let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
+        if(fs.existsSync(forkedWorkspacesDir)){
+            fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
         }
-
+        
         //uses GitHub-username and branch if user and branch are specified
         else if(this.getVariable('user') || this.getVariable('branch')){
 
@@ -137,7 +135,11 @@ export class Console extends Runner {
         else{
             ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
         }
-        
+
+        if(!this.getVariable(this.useDevonCommand)){
+            this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), 'workspaces'));
+        }
+
         return result;
     }
 
