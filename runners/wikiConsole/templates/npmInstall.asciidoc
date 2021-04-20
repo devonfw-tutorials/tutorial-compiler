@@ -1,5 +1,10 @@
-Installation of packages with npm install
-=========================================
+<% if(npmCommand.name){ %>
+Installation of package <%= npmCommand.name; %>
+===============================================
+<% } else {%>
+Install dependencies
+====================
+<% } %>
 
 Prerequisites
 ~~~~~~~~~~~~~~
