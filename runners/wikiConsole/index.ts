@@ -11,6 +11,9 @@ export class WikiConsole extends WikiRunner {
     }
 
     async destroy(playbook: Playbook): Promise<void> {
+        if(playbook.conclusion) {
+            this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "conclusion.asciidoc"), { conclusion: playbook.conclusion});
+        }
         super.destroy(playbook);
     }
 
