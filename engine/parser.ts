@@ -27,27 +27,25 @@ export class Parser {
             step.lines = this.getLines(parseResult, index);
             step.textAfter = this.getTextAfter(parseResult, index);
             step.title = this.getTitle(parseResult, index);
-
             result.steps.push(step);
         }
-
         return result;
     }
 
     getText(parseResult, index){
         try {
-            return parseResult[2][index][0].steptextlines || parseResult[2][index][2][0].steptextlines;
+            return parseResult[2][index][1].steptextlines || parseResult[2][index][2][1].steptextlines;
         } catch (error) {
-            return parseResult[2][index][2][0].steptextlines;
+            return parseResult[2][index][2][1].steptextlines;
         }
     }
 
     getLines(parseResult, index):Command[]{
         let linebreak = process.platform=="win32" ? "\r\n" : "\n";
         try {
-            return (parseResult[2][index][6].steplines || parseResult[2][index][2][6].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return (parseResult[2][index][7].steplines || parseResult[2][index][2][7].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
         } catch (error) {
-            return parseResult[2][index][2][6].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return parseResult[2][index][2][7].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
         }
     }
 
