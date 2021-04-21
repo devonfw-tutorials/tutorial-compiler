@@ -9,7 +9,7 @@ Prerequisites
 Starting Docker Compose Application
 ~~~~~~~~~~~~~~~~~~~~~
 
-Docker Compose can be used via your console. Change the directory to the location where the `docker-compose.yml` file for your application is located:
+Docker Compose can be used via your Terminal (Linux/MacOS) or Command Line (Windows). Change the directory to the location where the `docker-compose.yml` file for your application is located:
 
 `cd <%= dir; %>`
 
