@@ -406,7 +406,6 @@ export class Katacoda extends Runner {
     runAddSetupScript(runCommand: RunCommand): RunResult {
         let scriptName = path.basename(runCommand.command.parameters[0]); 
         let content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), 'utf8');
-    
         fs.writeFileSync(path.join(this.setupDir, scriptName), content, {flag: "a"});
         
         this.setupScripts.push({
@@ -415,8 +414,7 @@ export class Katacoda extends Runner {
         });
 
         this.getStepsCount(runCommand);
-
-        return null
+        return null;
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
