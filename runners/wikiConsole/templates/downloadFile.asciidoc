@@ -11,9 +11,9 @@ The folder you want to load the file has to be existing. If the folder doesn't e
 
 .Operating system
 . Windows + 
-Execute the command to create a Folder if not already existing `if not exists downloads mkdir downloads`.
+Execute the command to create a Folder if not already existing `if not exists <%= dir;%> mkdir <%= dir;%>`.
 . Linux + 
-Execute the command `mkdir -p downloads`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
+Execute the command `mkdir -p <%= dir;%>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
 
 Download
 ~~~~~~~~
@@ -26,7 +26,7 @@ On Windows, we use the *Invoke-WebRequest* command but you can also use wget her
 
 .Operating system
 . Windows + 
-The Windows command to download a file is `Invoke-WebRequest https://bit.ly/2BCkFa9 -O downloads/file` with the *-OutFile* parameter we set the name of the file to *file*, and the destination where the file will be saved. 
+The Windows command to download a file is `Invoke-WebRequest <%= url;%> -O <%= dir;%>/<%= fileName;%>` with the *-OutFile* parameter we set the name of the file to *file*, and the destination where the file will be saved. 
 
 . Linux + 
-The Linux command to download a file is `wget https://bit.ly/2BCkFa9 -O file -P downloads` with the *-O* parameter we set the name of the file to *file*, and with the *-P* parameter we set the folder where the file will be saved. 
+The Linux command to download a file is `wget <%= url;%> -O <%= fileName;%> -P <%= dir;%>` with the *-O* parameter we set the name of the file to *file*, and with the *-P* parameter we set the folder where the file will be saved. 
