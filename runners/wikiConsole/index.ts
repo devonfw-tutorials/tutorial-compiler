@@ -3,7 +3,6 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
-import * as fs from "fs";
 
 export class WikiConsole extends WikiRunner {
 
