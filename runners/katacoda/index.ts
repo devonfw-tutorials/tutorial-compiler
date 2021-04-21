@@ -146,15 +146,15 @@ export class Katacoda extends Runner {
             : path.join('/root', "workspaces").replace(/\\/g, "/");
 
         let user = this.getVariable('user') ? this.getVariable('user') : 'devonfw-tutorials';
-        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: user, branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)})
+        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: user, branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)});
         
         this.setupScripts.push({
             "name": "Restore Workspace",
             "script": "restoreWorkspace.sh"
-        })
+        });
 
         if(!this.getVariable(this.useDevonCommand))
-            this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"))
+            this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"));
             
         this.getStepsCount(runCommand);
 
@@ -399,6 +399,21 @@ export class Katacoda extends Runner {
         this.pushStep(runCommand, "Create Angular Project", "step" + this.getStepsCount(runCommand) + ".md");
 
         this.renderTemplate("createDevon4ngProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, projectName: runCommand.command.parameters[0], params: params, useDevonCommand: this.getVariable(this.useDevonCommand) });
+        return null;
+    }
+
+    
+    runAddSetupScript(runCommand: RunCommand): RunResult {
+        let scriptName = path.basename(runCommand.command.parameters[0]); 
+        let content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), 'utf8');
+        fs.writeFileSync(path.join(this.setupDir, scriptName), content, {flag: "a"});
+        
+        this.setupScripts.push({
+            "name": "Run " + scriptName,
+            "script": scriptName
+        });
+
+        this.getStepsCount(runCommand);
         return null;
     }
 
