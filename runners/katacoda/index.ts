@@ -62,7 +62,7 @@ export class Katacoda extends Runner {
     async destroy(playbook: Playbook): Promise<void> {
         let tutorialDirectoryName = path.basename(playbook.path);
         this.renderTemplate("intro.md", path.join(this.outputPathTutorial, "intro.md"), { description: playbook.description, tutorialPath: tutorialDirectoryName });
-        fs.writeFileSync(this.outputPathTutorial + 'finish.md', "");
+        fs.writeFileSync(this.outputPathTutorial + 'finish.md', playbook.conclusion);
 
         // create and configure required files for the setup process
         this.renderTemplate(path.join("scripts", "intro_foreground.sh"), path.join(this.outputPathTutorial, "intro_foreground.sh"), { });
@@ -77,7 +77,7 @@ export class Katacoda extends Runner {
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
-        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
+        let indexJsonObject = KatacodaTools.generateIndexJson(playbook.title, playbook.subtitle, ((this.stepsCount) * 5), this.steps, this.assetManager.getKatacodaAssets(), this.showVsCodeIde);
         fs.writeFileSync(this.outputPathTutorial + 'index.json', JSON.stringify(indexJsonObject, null, 2));
     }
 
@@ -132,6 +132,31 @@ export class Katacoda extends Runner {
 
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
+
+        return null;
+    }
+
+    runRestoreWorkspace(runCommand: RunCommand): RunResult {
+        let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
+            ? runCommand.command.parameters[0].workspace
+            : this.playbookName.replace("/", "").replace(" ","-"));
+
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join('/root', "devonfw", "workspaces").replace(/\\/g, "/")
+            : path.join('/root', "workspaces").replace(/\\/g, "/");
+
+        let user = this.getVariable('user') ? this.getVariable('user') : 'devonfw-tutorials';
+        this.renderTemplate(path.join("scripts", "restoreWorkspace.sh"), path.join(this.setupDir, "restoreWorkspace.sh"), {user: user, branch: this.getVariable("branch"), workspace: workspacesName, workspaceDir: workspacesDir, useDevonCommand: !!this.getVariable(this.useDevonCommand)})
+        
+        this.setupScripts.push({
+            "name": "Restore Workspace",
+            "script": "restoreWorkspace.sh"
+        })
+
+        if(!this.getVariable(this.useDevonCommand))
+            this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"))
+            
+        this.getStepsCount(runCommand);
 
         return null;
     }
