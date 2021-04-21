@@ -1,11 +1,15 @@
 start
   = headline
+    subtitle?
     description
     steps
     conclusion?
 
 headline "headline starting with ="
   = "=" _ string ___
+
+subtitle "subtitle starting with =="
+  = !blockmarker "==" _ string ___
   
 description "description surrounded by ===="
   = blockmarker ___
@@ -16,7 +20,7 @@ descriptionlines
   = descriptionline+ { return { "descriptionlines": text()}; }
   
 descriptionline
-  = !blockmarker string __ 
+  = !blockmarker string __
  
 steps
 	= step+

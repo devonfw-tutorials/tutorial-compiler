@@ -21,6 +21,7 @@ The following functions are already implemented:
 * nextKatacodaStep
 * adaptTemplatesCobiGen
 * createDevon4ngProject
+* addSetupScript
 
 ***
 
@@ -388,3 +389,11 @@ Will create the angular project to the directory projects within the current wor
 This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
+
+### addSetupScript 
+#### parameter
+1. Path of the script (Linux). Relative to the playbook directory
+2. Path of the script (Windows). Relative to the playbook directory 
+
+#### example
+addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
