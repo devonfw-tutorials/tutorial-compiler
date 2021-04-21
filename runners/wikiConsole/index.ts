@@ -35,10 +35,7 @@ export class WikiConsole extends WikiRunner {
         let url = runCommand.command.parameters[0];
         let fileName = runCommand.command.parameters[1];
         let dir = runCommand.command.parameters[2];
-        let directoryExists = dir 
-        ? fs.existsSync(path.join(this.getWorkingDirectory(), dir))
-        : undefined;
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "downloadFile.asciidoc"), {url: url, dir: dir, fileName: fileName, directoryExists : directoryExists});
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "downloadFile.asciidoc"), {url: url, dir: dir, fileName: fileName});
         return null;
     }
 }
