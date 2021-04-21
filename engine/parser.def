@@ -65,7 +65,7 @@ stepline
 function "function call"
   = [^\r\n(]+[(][^\r\n)]*[)] { return text(); }
 
-conclusion
+conclusion "conclusion surrounded by ===="
 	= blockmarker ___
     conclusionlines
   	blockmarker ___ 
