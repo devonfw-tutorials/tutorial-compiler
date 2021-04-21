@@ -451,16 +451,14 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0; 
         let commandIndex;
-        let exeCommand;
         if(runCommand.command.parameters[0] && runCommand.command.parameters[1]){
             commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
-            exeCommand = this.platform == ConsolePlatform.LINUX ? "bash " : "powershell.exe ";
         }
         else{
             throw new Error("You have to pass a Command for Windows and Linux based OS");
         }
 
-        exeCommand += (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
+        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
         ? runCommand.command.parameters[commandIndex]+ " " +runCommand.command.parameters[2].args.join(" ")
         : runCommand.command.parameters[commandIndex];
 
