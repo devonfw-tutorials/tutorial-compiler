@@ -1,7 +1,8 @@
 start
   = headline
     description
-    step+
+    steps
+    conclusion?
 
 headline "headline starting with ="
   = "=" _ string ___
@@ -16,7 +17,10 @@ descriptionlines
   
 descriptionline
   = !blockmarker string __ 
-  
+ 
+steps
+	= step+
+
 step
   = (
       blockmarker ___
@@ -60,6 +64,17 @@ stepline
 
 function "function call"
   = [^\r\n(]+[(][^\r\n)]*[)] { return text(); }
+
+conclusion "conclusion surrounded by ===="
+	= blockmarker ___
+    conclusionlines
+  	blockmarker ___ 
+    
+conclusionlines
+  = conclusionline+ { return { "conclusionlines": text()}; }
+
+conclusionline
+  = !blockmarker string __ 
 
 string "string"
   = [^\r\n]+ { return text(); }

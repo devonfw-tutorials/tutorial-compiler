@@ -5,5 +5,6 @@ export class Playbook{
     public path: string;
     public title: string;
     public description: string;
+    public conclusion: string;
     public steps: Step[] = [];
 }
