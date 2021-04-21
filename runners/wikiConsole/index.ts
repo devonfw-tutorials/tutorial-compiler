@@ -41,4 +41,11 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
+
+    runBuildNg(runCommand: RunCommand): RunResult {
+        let angularPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let outputPath = runCommand.command.parameters.length < 1 ? runCommand.command.parameters[1] : "";
+        this.renderWiki(path.join(this.getRunnerDirectory(), "template", "buildNg.asciidoc"), {angularPath: angularPath, outputPath: outputPath});
+        return null;
+    }
 }
