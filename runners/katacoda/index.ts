@@ -161,22 +161,6 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runRestoreSetup(runCommand: RunCommand): RunResult {
-        let scriptName = path.basename(runCommand.command.parameters[0]); 
-        let content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), 'utf8');
-    
-        fs.writeFileSync(path.join(this.setupDir, scriptName), content, {flag: "a"});
-        
-        this.setupScripts.push({
-            "name": "Run " + scriptName,
-            "script": scriptName
-        });
-
-        this.getStepsCount(runCommand);
-
-        return null
-    }
-
     runInstallCobiGen(runCommand: RunCommand): RunResult {
         this.pushStep(runCommand, "Install CobiGen", "step" + this.getStepsCount(runCommand) + ".md");
         
@@ -416,6 +400,23 @@ export class Katacoda extends Runner {
 
         this.renderTemplate("createDevon4ngProject.md", this.outputPathTutorial + "step" + this.stepsCount + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, projectName: runCommand.command.parameters[0], params: params, useDevonCommand: this.getVariable(this.useDevonCommand) });
         return null;
+    }
+
+    
+    runAddSetupScript(runCommand: RunCommand): RunResult {
+        let scriptName = path.basename(runCommand.command.parameters[0]); 
+        let content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), 'utf8');
+    
+        fs.writeFileSync(path.join(this.setupDir, scriptName), content, {flag: "a"});
+        
+        this.setupScripts.push({
+            "name": "Run " + scriptName,
+            "script": scriptName
+        });
+
+        this.getStepsCount(runCommand);
+
+        return null
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
