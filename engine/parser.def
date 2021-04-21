@@ -69,14 +69,17 @@ stepline
 function "function call"
   = [^\r\n(]+[(][^\r\n)]*[)] { return text(); }
 
-conclusion
-	= "====" ___
+conclusion "conclusion surrounded by ===="
+	= blockmarker ___
     conclusionlines
-  	"====" ___ 
+  	blockmarker ___ 
     
 conclusionlines
-  = descriptionline+ { return { "conclusionlines": text()}; }
-  
+  = conclusionline+ { return { "conclusionlines": text()}; }
+
+conclusionline
+  = !blockmarker string __ 
+
 string "string"
   = [^\r\n]+ { return text(); }
 
