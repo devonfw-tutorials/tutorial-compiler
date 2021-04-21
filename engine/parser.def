@@ -1,38 +1,45 @@
 start
   = headline
     description
-    step+
+    steps
+    conclusion?
 
-headline
+headline "headline starting with ="
   = "=" _ string ___
   
-description
-  = "====" ___
+description "description surrounded by ===="
+  = blockmarker ___
     descriptionlines
-  	"====" ___ 
+  	blockmarker ___ 
 
 descriptionlines
   = descriptionline+ { return { "descriptionlines": text()}; }
   
 descriptionline
-  = !"====" string __ 
-  
+  = !blockmarker string __ 
+ 
+steps
+	= step+
+
 step
   = (
-      "====" ___
+      blockmarker ___
       stepinner
       steptextafterlines
-      "====" __
+      blockmarker __
     )
   / stepinner
   
 stepinner
-  = steptextlines?
+  = !blockmarker steptextlines?
     "[step]" ___
     stepstitle?
     "--" ___
     steplines
     "--" __
+
+blockmarker "===="
+  = "===="
 
 stepstitle
   = "==" _ string __
@@ -47,13 +54,27 @@ steptextafterlines
   = steptextafterline* { return { "steptextafterlines": text()}; }
 
 steptextafterline
-  = !"====" string __
+  = !blockmarker !"[step]" string __
  
 steplines
   = stepline+ { return { "steplines": text()}; }
   
 stepline
-  = !"--" string __
+  = function __
+
+function "function call"
+  = [^\r\n(]+[(][^\r\n)]*[)] { return text(); }
+
+conclusion "conclusion surrounded by ===="
+	= blockmarker ___
+    conclusionlines
+  	blockmarker ___ 
+    
+conclusionlines
+  = conclusionline+ { return { "conclusionlines": text()}; }
+
+conclusionline
+  = !blockmarker string __ 
 
 string "string"
   = [^\r\n]+ { return text(); }
