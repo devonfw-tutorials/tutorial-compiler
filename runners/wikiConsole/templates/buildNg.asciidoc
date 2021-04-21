@@ -3,7 +3,7 @@ Build an Angular Project
 
 Prerequisites
 ~~~~~~~~~~~~~~
-* You need to have either installed the devonfwIDE with an Angular installation or installed https://angular.io/[Angular] seperatly on your system.
+* You need to have either installed the devonfw-ide with an Angular installation or installed https://angular.io/[Angular] seperatly on your system.
 * You need to have created or downloaded a Angular Project to a local directory.
 
 For this tutorial navigate to the Angular directory by executing `cd <%= angularPath; %>` in your terminal.
