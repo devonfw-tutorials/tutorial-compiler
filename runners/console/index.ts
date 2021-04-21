@@ -793,8 +793,7 @@ export class Console extends Runner {
         try{
             new Assertions()
             .noErrorCode(result)
-            .noException(result)
-
+            .noException(result);
         }        
         catch(error) {
             await this.cleanUp();
