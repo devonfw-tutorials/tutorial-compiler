@@ -1,7 +1,7 @@
-Download a File
+Download a file
 ===============
 
-Download the File in a Terminal
+Download the file in a terminal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal.
 
@@ -9,7 +9,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 The folder you want to load the file has to be existing. If the folder doesn't exist you can create it from terminal.
 
-.Operating System
+.Operating system
 . Windows + 
 Execute the command to create a Folder if not already existing `if not exists downloads mkdir downloads`.
 . Linux + 
@@ -24,7 +24,7 @@ On Windows, we use the *Invoke-WebRequest* command but you can also use wget her
 
 
 
-.Operating System
+.Operating system
 . Windows + 
 The Windows command to download a file is `Invoke-WebRequest https://bit.ly/2BCkFa9 -O downloads/file` with the *-OutFile* parameter we set the name of the file to *file*, and the destination where the file will be saved. 
 
