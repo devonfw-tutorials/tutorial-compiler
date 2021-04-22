@@ -72,7 +72,7 @@ function "function call"
 conclusion "conclusion surrounded by ===="
 	= blockmarker ___
     conclusionlines
-  	blockmarker ___ 
+  	blockmarker __ 
     
 conclusionlines
   = conclusionline+ { return { "conclusionlines": text()}; }
