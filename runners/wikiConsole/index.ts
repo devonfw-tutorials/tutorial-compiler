@@ -51,4 +51,10 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "template", "buildNg.asciidoc"), {angularPath: angularPath, outputPath: outputPath});
         return null;
     }
+
+    runDockerCompose(runCommand: RunCommand): RunResult {
+        let dir = runCommand.command.parameters[0];
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
+        return null;
+    }
 }
