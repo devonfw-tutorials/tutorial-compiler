@@ -1,6 +1,10 @@
-Change File
-===========
+Change a File
+=============
 
+using cat with Terminal and linux
+
+get content und set content in Windows
+oder append content
 
 Prerequisites
 ~~~~~~~~~~~~~

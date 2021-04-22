@@ -23,8 +23,15 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools, version:version })
         return null;
     }
+    runCreateFile(runCommand: RunCommand): RunResult{
+        console.log("HalloCOnsole");
+        console.log(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        return null
+    }
+
     runChangeFile(runCommand: RunCommand): RunResult{
         let filePath = runCommand.command.parameters[0];
+        console.log(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
         let contentPath = runCommand.command.parameters[1].file;
         let placeholder = runCommand.command.parameters[1].placeholder;
         let lineNumber = runCommand.command.parameters[1].lineNumber;
