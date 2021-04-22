@@ -1,0 +1,32 @@
+Download a file
+===============
+
+Download the file in a terminal
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal.
+
+Prerequisites
+~~~~~~~~~~~~~
+The folder you want to load the file has to be existing. If the folder doesn't exist you can create it from terminal.
+
+.Operating system
+. Windows + 
+Execute the command to create a folder if not already existing `if not exists <%= dir;%> mkdir <%= dir;%>`.
+. Linux + 
+Execute the command `mkdir -p <%= dir;%>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
+
+Download
+~~~~~~~~
+
+Now we can start to download the file with the *wget* command. You can read some information about the usage on Linux https://manpages.ubuntu.com/manpages/hirsute/en/man1/wget.1.html[here].
+
+On Windows, we use the *Invoke-WebRequest* command but you can also use wget here. *Wget* on Windows is an alias for *Invoke-WebRequest* and mostly works like *wget* on Linux, detailed documentation can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.1[here].
+
+
+
+.Operating system
+. Windows + 
+The Windows command to download a file is `Invoke-WebRequest <%= url;%> -O <%= dir;%>/<%= fileName;%>` with the *-OutFile* parameter we set the name of the file to *file*, and the destination where the file will be saved. 
+
+. Linux + 
+The Linux command to download a file is `wget <%= url;%> -O <%= fileName;%> -P <%= dir;%>` with the *-O* parameter we set the name of the file to *file*, and with the *-P* parameter we set the folder where the file will be saved. 

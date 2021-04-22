@@ -446,6 +446,19 @@ export class Console extends Runner {
         return result;
     }
 
+    runAddSetupScript(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let scriptCommand = (this.platform == ConsolePlatform.WINDOWS)
+            ? "powershell.exe " + path.join(this.playbookPath, runCommand.command.parameters[1])
+            : "bash " + path.join(this.playbookPath, runCommand.command.parameters[0]);
+
+        ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.workspaceDirectory), result, this.env);
+        
+        return result;
+    }
+
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
             let installedTools = runCommand.command.parameters[0];
@@ -770,6 +783,18 @@ export class Console extends Runner {
             .noException(result)
             .directoryExits(workspacesDir);
         }
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertAddSetupScript(runCommand: RunCommand, result: RunResult) {
+        try{
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+        }        
         catch(error) {
             await this.cleanUp();
             throw error;
