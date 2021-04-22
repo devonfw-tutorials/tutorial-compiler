@@ -15,19 +15,16 @@ export class WikiEditor extends WikiRunner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
+        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = runCommand.command.parameters[0].replace(fileName, ""); // current workspace path hinzufügen oder irgendwie anders lösen. path alle nur mit / replaces reinhaun.
-        let contentPath;
-        let contentFile; 
-        let contentString;
-        //let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+        let filePath = path.join(workspacePath,runCommand.command.parameters[0].replace(fileName, "")); 
+        let contentPath, contentFile, contentString;
         if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].contentConsole){
             contentPath = runCommand.command.parameters[1].fileConsole;
             contentString = runCommand.command.parameters[1].contentConsole;
         }else{
             contentPath = runCommand.command.parameters[1].file;
             contentString = runCommand.command.parameters[1].content;
-            console.log(runCommand.command.parameters[1].content);
         }
         contentFile = contentPath ? 
         path.basename(contentPath)

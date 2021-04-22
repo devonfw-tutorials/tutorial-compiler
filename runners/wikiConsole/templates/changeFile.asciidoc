@@ -1,14 +1,52 @@
 Change a File
 =============
 
-using cat with Terminal and linux
-
-get content und set content in Windows
-oder append content
+using cat with Terminal and Linux
+using get-content, add-content and set-content powershell.
 
 Prerequisites
 ~~~~~~~~~~~~~
 
 
-Change a File in a Terminal
+Change a file in a Terminal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+.Operating system
+
+WINDOWS
+
+microsoft get-content in Powershell https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[here].
+            add-content  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-7.1[here].
+            Set-content  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[here].
+        select-Object    https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.1[here].
+
+
+Append the text in file 
+`Add-Content -Path <%= filePath; %> -Value <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% } %>`
+
+Command to insert at a specific line number 
+`(Get-Content -Path <%= filePath; %> -TotalCount <%= lineNumber; %>) , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> ,(Get-Content -Path <%= filePath; %> |Select-Object -skip <%= lineNumber; %>) | Set-Content -Path <%= filePath; %>`
+
+
+
+Command to replace the placeholder in the Powershell
+(Get-Content -Path  <%= filePath; %>) -replace <%= placeholder; %> , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> | Set-Content -Path <%= filePath; %> 
+
+
+Linux
+Append the text in file
+<%if(contentPath){ %>The command to append is `cat <%= contentPath; %> >> <%= filePath;%>` <% }else{%>The command to append is `echo "<%= contentString;%>" >> <%= filePath;%>`.
+
+Command to insert at a specfific line number
+the command to insert is `sed "<%= lineNumber;%>i <%if(contentPath){%>$(cat <%= contentPath;%>)<% }else{%><%= contentString; %>" <%= filePath; %>`
+
+command to replace a placeholder 
+`sed s/<%= placeholder;%>/<if(contentPath){%>$(cat <%= contentPath; %>)<%}else{%><% <%= contentString;%><% } %>/g <%= filePath;%>`
+
+
+
+Mac ???
+
+{filePath : filePath,
+                 contentPath: contentPath, contentString: contentString, placeholder: placeholder, lineNumber: lineNumber}
