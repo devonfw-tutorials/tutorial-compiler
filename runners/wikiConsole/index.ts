@@ -8,6 +8,7 @@ export class WikiConsole extends WikiRunner {
 
     init(playbook: Playbook): void {
         super.init(playbook);
+        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
     }
 
     async destroy(playbook: Playbook): Promise<void> {
