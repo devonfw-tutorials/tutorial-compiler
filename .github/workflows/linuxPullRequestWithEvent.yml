@@ -1,4 +1,4 @@
-name: CI Linux PR
+name: CI Linux PR Test
 on:
   pull_request:
     branches: [ main ]
