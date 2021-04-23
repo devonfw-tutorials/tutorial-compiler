@@ -17,7 +17,10 @@ class Run {
             this.parseArgs();
             this.parsePlaybooks();
             this.parseEnvironments();
-            let entries = this.filterEnv(Array.from(this.environments.entries()))
+            let entries = this.filterEnv(Array.from(this.environments.entries()));
+            if(!this.args.has("debug")) {
+                console.debug = function(){}
+            }
             for (let entry of entries) {
                 let key = entry[0];
                 let value = entry[1];

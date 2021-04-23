@@ -13,6 +13,8 @@ export class ConsoleUtils {
             console.log("Error executing command: " + command + " (exit code: " + process.status + ")");
             console.log(process.stderr.toString(), process.stdout.toString());
             result.returnCode = process.status;
+        } else {
+            console.debug("========================== DEBUG ==========================\n", process.stderr.toString(), process.stdout.toString());
         }
     }
 
@@ -25,6 +27,13 @@ export class ConsoleUtils {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: env });
+        let output = "========================== DEBUG ==========================\n";
+        process.stdout.on('data', function(data) {
+            output += data.toString();
+        });
+        process.on('close', function(code) {
+            console.debug(output);
+        });
         if(!process.pid) {
             result.returnCode = 1;
         }
