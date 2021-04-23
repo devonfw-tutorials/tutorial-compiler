@@ -2,6 +2,10 @@ name: CI Linux PR
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test scenario tags'
 
 jobs:
   build:
@@ -20,7 +24,7 @@ jobs:
       - name: run checkout.sh
         run: bash checkout.sh
 
-      - name: run buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
+      - name: run buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
         uses: GabrielBB/xvfb-action@v1.0
         with:
-          run: sh buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
+          run: sh buildRun.sh --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
