@@ -20,6 +20,7 @@ The following functions are already implemented:
 * nextKatacodaStep
 * adaptTemplatesCobiGen
 * createDevon4ngProject
+* addSetupScript
 
 ***
 
@@ -44,9 +45,7 @@ In the Katacoda environment the installation of the devonfw IDE is executed in a
 
 ### restoreWorkspace 
 #### parameter
-1. (Optional): 
-    * Name of the workspace repository {"workspace": string} (Default is the playbook-name)
-    * local workspace {"local": boolean} (Default is false)
+1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
 #### arguments 
 **User**(Optional)
@@ -82,14 +81,30 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
     **example**
     "workspace-devon4ng" -> {"workspace" : "devon4ng"}
 
-**local** 
-    You can use a local repository as workspace in your tutorial.
-    Clone the forked repository next to the tutorial-compiler folder and set the "local"-parameter to true {"local": true}
-    
+**local repository**
+    You can use a local repository as workspace in the console environment for your tutorial. 
+    Clone the forked repository next to the tutorial-compiler folder. Before cloning the GitHub repository, the console runner will always check, if there is a 'workspace-[name]'-folder next to the tutorial compiler first, and will use it instead. 
+
+    Keep in mind, that it is a feature only implemented in the console environment. Other runners will clone the environment from GitHub.  
+
     |--tutorial-compiler
     |--tutorials 
     |--workspace-devon4ng
 
+**workspace directory**
+
+    If you call 'restoreDevonfwIde' or 'installDevonfwIde' before the 'restoreWorkspace'-function the workspace directory remains: 
+
+        `'/root/workspaces/main'`
+
+    If you don't call them, the workspace is changed to:
+
+        `'/root/workspaces'`
+
+    
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+
+        
 ### changeWorkspace
 #### parameter
 1. path to a new workspace (relative to working directory)
@@ -97,7 +112,7 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
 changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
-Learn more about the workspace directory and working direktory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
 
 
 
@@ -338,3 +353,11 @@ Will create the angular project to the directory projects within the current wor
 This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
+
+### addSetupScript 
+#### parameter
+1. Path of the script (Linux). Relative to the playbook directory
+2. Path of the script (Windows). Relative to the playbook directory 
+
+#### example
+addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
