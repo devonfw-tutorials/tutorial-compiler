@@ -4,8 +4,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-      tags:
-        description: 'Test scenario tags'
+      logLevel:
+        description: 'Log level'
+        default: '--debug'
 
 jobs:
   build:
@@ -24,5 +25,5 @@ jobs:
       - name: run checkout.ps1
         run: .\checkout.ps1
 
-      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
-        run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
+      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.logLevel }}
+        run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.logLevel }}
