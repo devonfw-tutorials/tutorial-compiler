@@ -1,52 +1,25 @@
 Change a File
 =============
 
-using cat with Terminal and Linux
-using get-content, add-content and set-content powershell.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-
 Change a file in a Terminal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Changing a file can be done in an editor like VSCode or Eclipse. Another approach is to use the terminal. We show how to insert, append or replace some data in a file using the terminal on either Windows or Linux. First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal. 
 
 .Operating system
+. Windows +
+In Powershell, we use multiple commands to *Get*, *Set*, and *Add-Content* to our file. The usage of the three commands is nearly the same but if you need more information about the functionality you can find here for https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[Get-Content],
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-7.1[Add-Content],
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[Set-Content]. 
+We also use the command *Select-Object* to get just the required Strings from a collection. Some more information about the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.1[here]. + 
+<% if(placeholder) { %>To replace *<%= placeholder; %>* in the file *<%= fileName; %>* with<% if(contentPath){%> some text from the other file *<%= contentFile; %>*<%}else{%> the string *<%= contentString; %>* <%} %> you can execute the command `(Get-Content -Path  <%= filePath; %>) -replace "<%= placeholder; %>" , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> | Set-Content -Path <%= filePath; %>`
+<% }else if(lineNumber) {%> To insert <% if(contentPath) {%> text from the file *<%= contentFile; %>* <%}else{%> the string *<%= contentString; %>* <%}%> into the file *<%= fileName; %>* at specific line number you can execute the command `(Get-Content -Path <%= filePath; %> -TotalCount <%= lineNumber; %>) , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> ,(Get-Content -Path <%= filePath; %> |Select-Object -skip <%= lineNumber; %>) | Set-Content -Path <%= filePath; %>`
+<%}else{%>To append <%if(contentPath){ %>some data from the file *<%= contentFile; %>* <%}else{%>the string *<%= contentString; %>* <%}%>to the file *<%= fileName; %>* you can execute the command `Add-Content -Path <%= filePath; %> -Value <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% } %>`<% } %>
 
-WINDOWS
-
-microsoft get-content in Powershell https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[here].
-            add-content  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-7.1[here].
-            Set-content  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[here].
-        select-Object    https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.1[here].
-
-
-Append the text in file 
-`Add-Content -Path <%= filePath; %> -Value <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% } %>`
-
-Command to insert at a specific line number 
-`(Get-Content -Path <%= filePath; %> -TotalCount <%= lineNumber; %>) , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> ,(Get-Content -Path <%= filePath; %> |Select-Object -skip <%= lineNumber; %>) | Set-Content -Path <%= filePath; %>`
-
-
-
-Command to replace the placeholder in the Powershell
-(Get-Content -Path  <%= filePath; %>) -replace <%= placeholder; %> , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> | Set-Content -Path <%= filePath; %> 
+. Linux +
+For the Linux Terminal, we use the commands *cat* and *sed*. We use cat to print the text to the terminal and redirect it as input for another file. Some more information about the functionality of cat can be found https://man7.org/linux/man-pages/man1/cat.1.html[here]. The command sed is a powerful command we use to insert and replace some data in a file. Some more information about the functionality of sed can be found https://linux.die.net/man/1/sed[here]. +
+<% if(placeholder) { %>To replace *<%= placeholder; %>* in the file *<%= fileName; %>* with<% if(contentPath){%> some text from another file *<%= contentFile; %>*<%}else{%> the string *<%= contentString; %>* <% } %> you can execute the command `sed s/<%= placeholder; %>/<% if(contentPath){ %>$(cat <%= contentPath; %>)<% }else{ %><%= contentString;%><% } %>/g <%= filePath;%>`
+<% }else if(lineNumber) {%>To insert <% if(contentPath) {%> a text from the file *<%= contentFile; %>* <% }else{ %> the string *<%= contentString; %>* <% } %> into the file *<%= fileName; %>* at specific line number you can execute the command `sed "<%= lineNumber; %>i <% if(contentPath){ %>$(cat <%= contentPath; %>)<% }else{ %><%= contentString; %><% } %>" <%= filePath; %>` 
+<% }else{%>To append <%if(contentPath){ %>some data from the file *<%= contentFile; %>* <%}else{%>the string *<%= contentString; %>* <%}%>to the file *<%= fileName; %>* you can execute the command `<% if(contentPath){ %>cat <%= contentPath; %><% }else{%>echo "<%= contentString;%>" <% } %> >> <%= filePath;%>` <% } %>
 
 
-Linux
-Append the text in file
-<%if(contentPath){ %>The command to append is `cat <%= contentPath; %> >> <%= filePath;%>` <% }else{%>The command to append is `echo "<%= contentString;%>" >> <%= filePath;%>`.
-
-Command to insert at a specfific line number
-the command to insert is `sed "<%= lineNumber;%>i <%if(contentPath){%>$(cat <%= contentPath;%>)<% }else{%><%= contentString; %>" <%= filePath; %>`
-
-command to replace a placeholder 
-`sed s/<%= placeholder;%>/<if(contentPath){%>$(cat <%= contentPath; %>)<%}else{%><% <%= contentString;%><% } %>/g <%= filePath;%>`
-
-
-
-Mac ???
-
-{filePath : filePath,
-                 contentPath: contentPath, contentString: contentString, placeholder: placeholder, lineNumber: lineNumber}
