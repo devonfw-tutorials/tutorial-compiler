@@ -29,7 +29,7 @@ export class WikiConsole extends WikiRunner {
 
 
     runRunServerJava(runCommand: RunCommand): RunResult {
-        let server_path = runCommand.command.parameters[0];
+        let server_path = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "runServerJava.asciidoc"), { server_path: server_path, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
