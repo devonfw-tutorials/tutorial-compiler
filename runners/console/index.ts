@@ -5,7 +5,7 @@ import { Assertions } from "../../assertions";
 import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
 import * as path from 'path';
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
 const findProcess = require("find-process");
@@ -50,6 +50,12 @@ export class Console extends Runner {
             this.env["npm_config_cache"] = "";
         }
 
+        if(this.platform == ConsolePlatform.WINDOWS) {
+            let pathVariables = this.env["PATH"];
+            pathVariables += ";" + path.join(os.homedir(), "scripts");
+            this.env["PATH"] = pathVariables;
+        }
+        
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
@@ -85,6 +91,58 @@ export class Console extends Runner {
     runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
         return this.runInstallDevonfwIde(runCommand);
     }
+
+    runRestoreWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspacesName = "workspace-" + ((runCommand.command.parameters.length > 0 && runCommand.command.parameters[0].workspace)
+            ? runCommand.command.parameters[0].workspace
+            : this.playbookName.replace("/", "").replace(" ","-"));
+
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : path.join(this.getWorkingDirectory(), 'workspaces');
+
+        //removes all the directories and files inside workspace
+        this.createFolder(workspacesDir, true);
+        
+        //copies a local repository into the workspace
+        let forkedWorkspacesDir = path.join(this.getWorkingDirectory(),'..','..','..', workspacesName);
+        if(fs.existsSync(forkedWorkspacesDir)){
+            fs.copySync(path.join(forkedWorkspacesDir, '/.'), workspacesDir); 
+        }
+        
+        //uses GitHub-username and branch if user and branch are specified
+        else if(this.getVariable('user') || this.getVariable('branch')){
+
+            ConsoleUtils.executeCommandSync("git clone https://github.com/" + this.getVariable("user") + "/" + workspacesName +".git .", workspacesDir, result, this.env);
+            if(result.returnCode != 0){
+                console.warn("repository not found");
+                result.returnCode = 0;
+                ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName +".git .", workspacesDir, result, this.env);
+            }
+            
+            if(this.getVariable('branch')){
+                ConsoleUtils.executeCommandSync("git checkout " + this.getVariable('branch'), workspacesDir, result, this.env);
+                if(result.returnCode != 0){
+                    console.warn("branch not found");
+                    result.returnCode = 0;
+                }
+            }
+            
+        }
+        else{
+            ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
+        }
+
+        if(!this.getVariable(this.useDevonCommand)){
+            this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), 'workspaces'));
+        }
+
+        return result;
+    }
+
 
     runInstallCobiGen(runCommand: RunCommand): RunResult {
         let result = new RunResult();
@@ -177,6 +235,23 @@ export class Console extends Runner {
                 let contentFile = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
                 content = content.replace(placeholder, contentFile);
             }
+        } else if(runCommand.command.parameters[1].lineNumber){
+            let lineNum = parseInt(runCommand.command.parameters[1].lineNumber);
+            let lines = content.split("\n");
+            let insertContent;
+            if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
+                insertContent = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
+            } else if (runCommand.command.parameters[1].file || runCommand.command.parameters[1].fileConsole) {
+                let file = runCommand.command.parameters[1].fileConsole ? runCommand.command.parameters[1].fileConsole : runCommand.command.parameters[1].file;
+                insertContent = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
+            }
+            content = "";
+            for(let i = 0; i < lines.length; i++){
+                content += (lineNum-1 == i) 
+                ? insertContent+"\n"+lines[i]+"\n"
+                : lines[i]+"\n";
+            }
+
         } else {
             if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole) {
                 content = runCommand.command.parameters[1].contentConsole ? runCommand.command.parameters[1].contentConsole : runCommand.command.parameters[1].content;
@@ -196,17 +271,20 @@ export class Console extends Runner {
         result.returnCode = 0;
         
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-
-        let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
-        process.on('close', (code) => {
-            if (code !== 0) {
-                result.returnCode = code;
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
+            process.on('close', (code) => {
+                if (code !== 0) {
+                    result.returnCode = code;
+                }
+            });
+            if(process.pid) {
+                this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
             }
-          });
-        if(process.pid && runCommand.command.parameters.length == 2) {
-            this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runDockerCompose(). You have to specify a port for the server. For further information read the function documentation.")
         }
-        
         return result;
         
     }
@@ -216,14 +294,19 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = (this.getVariable(this.useDevonCommand))
-            ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = (this.getVariable(this.useDevonCommand))
+                ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
 
-        if(process.pid) {
-            this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runServerJava(). You have to specify a port for the server. For further information read the function documentation.")
         }
-
+          
         return result;
     }
 
@@ -280,11 +363,16 @@ export class Console extends Runner {
         result.returnCode = 0;
 
         let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
-        let process = this.getVariable(this.useDevonCommand) 
-            ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
-            : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
-        if(process.pid) { 
-            this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+        if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
+            let process = this.getVariable(this.useDevonCommand) 
+                ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
+                : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
+            if(process.pid) { 
+                this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+            }
+        }else{
+            result.returnCode = 1; 
+            console.error("Missing arguments in runClientNg(). You have to specify a port for the server. For further information read the function documentation.")
         }
         return result;
     }
@@ -346,6 +434,31 @@ export class Console extends Runner {
         return result;
     }
 
+    runChangeWorkspace(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+        if(!fs.existsSync(workspacesDir))
+            fs.mkdirSync(workspacesDir);
+        this.setVariable(this.workspaceDirectory, workspacesDir);
+
+        return result;
+    }
+
+    runAddSetupScript(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+
+        let scriptCommand = (this.platform == ConsolePlatform.WINDOWS)
+            ? "powershell.exe " + path.join(this.playbookPath, runCommand.command.parameters[1])
+            : "bash " + path.join(this.playbookPath, runCommand.command.parameters[0]);
+
+        ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.workspaceDirectory), result, this.env);
+        
+        return result;
+    }
+
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
             let installedTools = runCommand.command.parameters[0];
@@ -368,6 +481,23 @@ export class Console extends Runner {
 
     async assertRestoreDevonfwIde(runCommand: RunCommand, result: RunResult) {
        this.assertInstallDevonfwIde(runCommand, result);
+    }
+
+    async assertRestoreWorkspace(runCommand: RunCommand, result: RunResult) {
+        let workspacesDir = this.getVariable(this.useDevonCommand)
+            ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
+            : this.getVariable(this.workspaceDirectory);
+
+        try{
+            new Assertions()
+                .noErrorCode(result)
+                .noException(result)
+                .directoryExits(workspacesDir)
+                .directoryNotEmpty(workspacesDir);
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
     }
 
     async assertInstallCobiGen(runCommand: RunCommand, result: RunResult) {
@@ -468,22 +598,13 @@ export class Console extends Runner {
             .noException(result);
 
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command dockerCompose has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port) {
-                    await this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command dockerCompose. You have to specify a port and a path for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        await this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path);
-                    }
-                }
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
             }
          } catch(error) {
             await this.cleanUp();
@@ -496,24 +617,15 @@ export class Console extends Runner {
             let assert = new Assertions()
             .noErrorCode(result)
             .noException(result);
-
+          
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runServerJava has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port || !runCommand.command.parameters[1].path) {
-                    await this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runServerJava. You have to specify a port and a path for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        await this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
-                    }
-                }
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
             }
         } catch(error) {
             await this.cleanUp();
@@ -582,22 +694,13 @@ export class Console extends Runner {
             .noException(result);
 
             if(runCommand.command.parameters.length > 1) {
-                if(!runCommand.command.parameters[1].startupTime) {
-                    console.warn("No startup time for command runClientNg has been set")
-                }
-                let startupTimeInSeconds = runCommand.command.parameters[1].startupTime ? runCommand.command.parameters[1].startupTime : 0;
-                await this.sleep(runCommand.command.parameters[1].startupTime);
-
-                if(!runCommand.command.parameters[1].port) {
-                    await this.killAsyncProcesses();
-                    throw new Error("Missing arguments for command runClientNg. You have to specify a port for the server. For further information read the function documentation.");
-                } else {
-                    let isReachable = await assert.serverIsReachable(runCommand.command.parameters[1].port, runCommand.command.parameters[1].path);
-                    if(!isReachable) {
-                        await this.killAsyncProcesses();
-                        throw new Error("The server has not become reachable in " + startupTimeInSeconds + " seconds: " + "http://localhost:" + runCommand.command.parameters[1].port + "/" + runCommand.command.parameters[1].path)
-                    }
-                }
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[1].path,
+                    port: runCommand.command.parameters[1].port,
+                    interval: runCommand.command.parameters[1].interval,
+                    startupTime: runCommand.command.parameters[1].startupTime,
+                    command: runCommand.command.name
+                });
             }
         } catch(error) {
             await this.cleanUp();
@@ -672,6 +775,32 @@ export class Console extends Runner {
         }
     }
 
+    async assertChangeWorkspace(runCommand: RunCommand, result: RunResult) {
+        try {
+            let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .directoryExits(workspacesDir);
+        }
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
+    async assertAddSetupScript(runCommand: RunCommand, result: RunResult) {
+        try{
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+        }        
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
     private lookup(obj, lookupkey) {
         for(var key in obj) {
             
@@ -684,10 +813,6 @@ export class Console extends Runner {
             }
         }
         return null;
-    }
-
-    private sleep(seconds: number) {
-        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
     }
 
     private async killAsyncProcesses(): Promise<void> {

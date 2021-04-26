@@ -1,5 +1,6 @@
 {
     "failOnIncomplete": true,
+    "skipMissingFunctions": false,
     "runners": [
         "console"
     ]

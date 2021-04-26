@@ -1,6 +1,4 @@
 import { RunResult } from "../engine/run_result";
-import { Step } from "../engine/step";
-import { Command } from "../engine/command";
 import { NoErrorCode } from "./noErrorCode";
 import { NoException } from "./noException";
 import { DirectoryExist } from "./directoryExist";
@@ -9,6 +7,7 @@ import { DirectoryNotEmpty } from "./directoryNotEmpty";
 import { FileContains } from "./fileContains";
 import { ServerIsReachable } from "./serverIsReachable";
 import { RepositoryIsClean } from "./repositoryIsClean";
+import { ServerIsReachableParameterInterface } from "./serverIsReachableParameterInterface";
 
 
 export class Assertions {
@@ -43,8 +42,9 @@ export class Assertions {
         return this;
     }
 
-    public serverIsReachable(port: number, path: string): Promise<boolean> {
-        return ServerIsReachable.run(port, path);
+    public async serverIsReachable(parameters: ServerIsReachableParameterInterface): Promise<Assertions> {
+        await ServerIsReachable.run(parameters);
+        return this;
     }
 
     public repositoryIsClean(directory: string): Assertions {

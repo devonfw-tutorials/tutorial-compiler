@@ -20,9 +20,12 @@ export class Engine {
         if (! await this.isEnvironmentComplete()) {
             if (this.environment.failOnIncomplete) {
                 throw "Environment incomplete: " + this.environmentName;
-            }
-            console.log("Environment incomplete: " + this.environmentName);
-            return;
+            } else if(!this.environment.skipMissingFunctions) {
+                console.log("Environment incomplete: " + this.environmentName);
+                return;
+            } else {
+                console.log("Environment incomplete: " + this.environmentName + " (ignored)");
+           }
         }
 
         mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
@@ -50,7 +53,7 @@ export class Engine {
                         break;
                     }
                 }
-                if(!foundRunnerToExecuteCommand) {
+                if(!foundRunnerToExecuteCommand && !this.environment.skipMissingFunctions) {
                     break mainloop;
                 }   
             }
