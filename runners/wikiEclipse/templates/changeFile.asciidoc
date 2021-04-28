@@ -1,8 +1,6 @@
-Change a file
-=============
+== Changing of the <%= fileName; %> File
 
-Change a file in the Eclipse IDE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Changing of <%= fileName; %> in the Eclipse IDE
 
 <% if(contentPath) {%> 
 First, you want to open the file <%= contentFile; %> where you get the content from, you want to put into the new file.
@@ -11,8 +9,8 @@ Based on your operating system a window with the file explorer opens. You have t
 You confirm this with the *Open* button in the bottom right corner.
 The file will be opened in a new Eclipse editor window where you can select the whole text with the keyboard shortcut ctrl+a or just select the text you want to copy and copy the text with ctrl+c.<% } %>
 
-To change a File you have to open it in VS Code. 
-Go to the context menu in the top left corner right and choose *Open File...*. 
+To change a File you have to open it in the Eclipse IDE. 
+Open Eclipse and choose in the file context menu in the top left corner  *Open File...*. 
 Based on your operating system a window with the file explorer opens. You have to navigate to your file and select it. This can be done by, inserting the path `<%= filePath; %>` into the path bar, so you can jump into the right folder and select the file `<%= fileName; %>`. 
 You confirm this with the *Open* button in the bottom right corner.
 The file will be opened in a new Eclipse editor window.

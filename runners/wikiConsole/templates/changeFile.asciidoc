@@ -1,14 +1,14 @@
-Change a File
-=============
+== Changing of the <%= fileName; %> File
 
-Change a file in a Terminal
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Changing a file can be done in an editor like VSCode or Eclipse. Another approach is to use the terminal. We show how to insert, append or replace some data in a file using the terminal on either Windows or Linux. First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal. 
+=== Changing of <%= fileName; %> in a Terminal
+
+
+Changing a file can be done in an editor like VSCode or Eclipse. Another approach is to use the terminal. We show how to insert, append or replace some data in a file using the terminal on either Windows or Linux. First, you need to open a command prompt in your current Workspace. For Windows, you can use PowerShell and on Linux, you can use the Terminal. 
 
 .Operating system
 . Windows +
-In Powershell, we use multiple commands to *Get*, *Set*, and *Add-Content* to our file. The usage of the three commands is nearly the same but if you need more information about the functionality you can find here for https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[Get-Content],
+In PowerShell, we use multiple commands to *Get*, *Set*, and *Add-Content* to our file. The usage of the three commands is nearly the same but if you need more information about the functionality you can find here for https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[Get-Content],
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-7.1[Add-Content],
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[Set-Content]. 
 We also use the command *Select-Object* to get just the required Strings from a collection. Some more information about the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.1[here]. + 

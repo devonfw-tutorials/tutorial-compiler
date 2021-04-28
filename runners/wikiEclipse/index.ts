@@ -26,12 +26,12 @@ export class WikiEclipse extends WikiRunner {
             contentPath = runCommand.command.parameters[1].file;
             contentString = runCommand.command.parameters[1].content;
         }
-        contentFile = contentPath ? 
-        path.basename(contentPath)
-        : undefined;
-        contentPath = contentPath ?
-        path.join(this.getPlaybookPath(), contentPath.replace(contentFile, ""))
-        : undefined;
+        contentFile = contentPath 
+            ? path.basename(contentPath)
+            : undefined;
+        contentPath = contentPath 
+            ? path.join(this.getPlaybookPath(), contentPath.replace(contentFile, ""))
+            : undefined;
         let placeholder = runCommand.command.parameters[1].placeholder;
         let lineNumber = runCommand.command.parameters[1].lineNumber;
 

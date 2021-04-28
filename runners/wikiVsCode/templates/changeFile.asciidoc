@@ -1,21 +1,19 @@
-Change a file
-=============
+== Changing of the <%= fileName; %> File
 
-Change a file in the VS Code Editor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Changing of <%= fileName; %> in the VSCode Editor
 
 <% if(contentPath) {%> 
 First, you want to open the file <%= contentFile; %> where you get the content from, you want to put into the new file.
-Go to the file context menu in the top left corner right next to the VS Code symbol and choose *Open File...* or you can do this with the keyboard shortcut ctrl+o. 
+Go to the file context menu in the top left corner right next to the VSCode symbol and choose *Open File...* or you can do this with the keyboard shortcut ctrl+o. 
 Based on your operating system a window with the file explorer opens. You have to navigate to your file and select it.  This can be done by, inserting the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
 You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new VS Code editor window where you can select the whole text with the keyboard shortcut ctrl+a or just select the text you want to copy and copy the text with ctrl+c.<% } %>
+The file will be opened in a new VSCode editor window where you can select the whole text with the keyboard shortcut ctrl+a or just select the text you want to copy and copy the text with ctrl+c.<% } %>
 
-To change a File you have to open it in VS Code. 
-Go to the context menu in the top left corner right next to the VS Code symbol and choose *Open File...* or you can do this with the keyboard shortcut ctrl+o. 
+To change a File you have to open it in VSCode. 
+Open VSCode and choose in the file context menu in the top left corner right next to the VSCode symbol *Open File...* or just use the keyboard shortcut ctrl+o. 
 Based on your operating system a window with the file explorer opens. You have to navigate to your file and select it. This can be done by, inserting the path `<%= filePath; %>` into the path bar, so you can jump into the right folder and select the file `<%= fileName; %>`. 
 You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new VS Code editor window.
+The file will be opened in a new VSCode editor window.
 
 <% if(contentString) { %>Now we can copy the content *<%= contentString; %>* with ctrl+c we want to insert into the file. <% } %>
 <% if(lineNumber) { %>Inserting the content into a specific line number can be done by a left mouse click into the line *<%= lineNumber%>* and using the keyboard shortcut ctrl+v.

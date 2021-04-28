@@ -38,11 +38,11 @@ export class WikiConsole extends WikiRunner {
                 contentString = runCommand.command.parameters[1].content;
             }
             contentPath = contentPath 
-            ? path.join(this.getPlaybookPath(), contentPath)
-            : undefined;
+                ? path.join(this.getPlaybookPath(), contentPath)
+                : undefined;
             let contentFile = contentPath 
-            ? path.basename(contentPath)
-            : undefined;
+                ? path.basename(contentPath)
+                : undefined;
             let placeholder = runCommand.command.parameters[1].placeholder;
             let lineNumber = runCommand.command.parameters[1].lineNumber;
     
