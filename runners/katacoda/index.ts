@@ -411,8 +411,8 @@ export class Katacoda extends Runner {
         let useCurrentDir = true;
         if(runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].dir){
             filepath = runCommand.command.parameters[1].asynchronous 
-            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].dir).replace(/\\/g, "/")
-            : runCommand.command.parameters[1].dir;
+                ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].dir).replace(/\\/g, "/")
+                : runCommand.command.parameters[1].dir;
             useCurrentDir = false;
         }
 
