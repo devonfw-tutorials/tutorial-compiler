@@ -2,11 +2,6 @@ name: CI Linux PR
 on:
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        default: '--debug'
 
 jobs:
   build:
