@@ -174,7 +174,7 @@ export class Console extends Runner {
 
         let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         if(!fs.existsSync(filepath.substr(0, filepath.lastIndexOf(path.sep)))) {
-            throw new Error("Path does not exist. You have to specify an existing path, if you need to create a Directory use the createDirectory function");
+            fs.mkdirSync(filepath.substr(0, filepath.lastIndexOf(path.sep)), { recursive: true });
         }
 
         let content = "";

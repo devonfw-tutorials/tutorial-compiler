@@ -106,7 +106,7 @@ export abstract class Runner {
                 try {
                     rimraf.sync(path);
                 } catch(e) {
-                    console.log("Error deleting foler " + path, e);
+                    console.log("Error deleting folder " + path, e);
                 }
             } else return path;
         }

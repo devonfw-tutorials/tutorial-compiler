@@ -32,12 +32,12 @@ export class WikiConsole extends WikiRunner {
     }
 
     runCreateFile(runCommand: RunCommand): RunResult{
-        //path join with current workspace
-        let filePath = runCommand.command.parameters[0];
-        let contentPath = runCommand.command.parameters[1];
-        let directoryPath = filePath.substring(0,filePath.lastIndexOf("/"));
-        let directoryExists = fs.existsSync(directoryPath);
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, directoryExists: directoryExists, directoryPath: directoryPath});
+        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+        let fileName = path.basename(runCommand.command.parameters[0]);
+        let filePath = path.join(workspacePath, runCommand.command.parameters[0].replace(fileName, ""));
+        let contentFile = path.basename(runCommand.command.parameters[1]);
+        let contentPath = path.join(workspacePath, runCommand.command.parameters[1].replace(contentFile, ""));
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, fileName: fileName, contentFile: contentFile});
         return null;
     }
 }
