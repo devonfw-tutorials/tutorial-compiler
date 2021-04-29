@@ -1,10 +1,11 @@
 import { KatacodaStep, KatacodaAsset } from "./katacodaInterfaces";
 
 export class KatacodaTools {
-    public static generateIndexJson(title: string, minutes: number, steps: KatacodaStep[], assets: KatacodaAsset[], showVsCodeIde: boolean) {
+    public static generateIndexJson(title: string, description: string, minutes: number, steps: KatacodaStep[], assets: KatacodaAsset[], showVsCodeIde: boolean) {
         let environment = showVsCodeIde ? { "uilayout": "terminal", "showide": true } : { "uilayout": "editor-terminal", "showide": false };
         let indexJsonObject = {
             "title": title,
+            "description": description,
             "difficulty": "Beginner",
             "time": minutes + " Minutes",
             "details": {
