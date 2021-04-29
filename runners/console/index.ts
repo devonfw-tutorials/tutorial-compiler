@@ -262,7 +262,7 @@ export class Console extends Runner {
                 content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
         }
-        fs.writeFileSync(filepath, content);
+        fs.writeFileSync(filepath, content, {encoding: "utf-8", flag: "w+"});
 
         return result;
     }        
