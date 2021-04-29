@@ -1,24 +1,23 @@
-Create a file
-=============
+== Create the file <%= fileName; %>
 
-Creating a file in the VS Code Editor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create a File in the VS Code Editor<% if(contentFile) { %> and put some data in it.
+=== Creating <%= fileName; %> in the VSCode Editor
 
-First, you want to open the file where you get the data you want to put into the new file.
-Go to the file context menu in the top left corner right next to the VS Code symbol and choose *Open File* or you can do this with the keyboard shortcut ctrl+o. 
-Based on your Operating system a window with the file explorer opens. You have to navigate to your file and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new VS Code Editor window where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
+Create <%= fileName; %> in the VSCode editor<% if(contentFile) { %> and insert some data from <%= contentFile; %> into it.
 
-Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting *New File* or by just using the keyboard shortcut ctrl+n and a new VS Code Editor windows will be opened with an untitled-1 filename.
+First, you want to open <%= contentFile; %> to get the data we want to put into <%= fileName; %>.
+Go to the file context menu in the top left corner right next to the VS Code symbol and choose *Open File...* or use the keyboard shortcut ctrl+o. 
+Based on your operating system a window with the file explorer opens.Navigate to <%= contentFile; %> and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
+Now confirm your inputs with the *Open* button in the bottom right corner.
+A new VS Code Editor window <%= fileName; %> will be opened, where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
+
+Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting *New File* or use the keyboard shortcut ctrl+n and a new VS Code Editor windows will be opened with an untitled-1 filename.
 <% if(contentPath) { %> 
-Inserting the previously copied text with a keyboard shortcut ctrl+v or with a right-click in the Editor window and the paste function. <% } %>
+Insert the previously copied text with the keyboard shortcut ctrl+v or with a right-click in the Editor window and the paste function. <% } %>
 
 The next step is to save the file by selecting *Save* or *Save as* in the file context menu or by using the keyboard shortcut ctrl+s.
-A file explorer window opens again.
-You should check if you are currently in the right directory where you want to save the File. 
-Changing the directory can be done by inserting the path `<%= filePath; %>` in the path bar. If the directory doesnt exist you have to create it 
-To save the file you have to specify the name of the File. Paste `<%= fileName; %>` in the text field *file name*. 
-The last step is to confirm this with the *Save* button in the bottom right corner and a file has been created<% if(contentPath) { %> and filled with some data<%} %>.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <%= filePath; %><%= fileName;%>. 
+Changing the directory can be done by inserting the path `<%= filePath; %>` in the path bar. If the directory does not exist, create the missing folders.
+To save the file specify the name of the File. Paste `<%= fileName; %>` in the text field *File name:*. 
+The last step is to save the file with the *Save* button in the bottom right corner and <%= fileName; %> has been created<% if(contentFile) { %> and filled with some data from <%= contentFile; %><%} %>.

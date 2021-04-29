@@ -1,21 +1,18 @@
-Create a file
-=============
+== Create the file <%= fileName; %>
 
-Creating a file in Eclipse IDE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Creating <%= fileName; %> in the Eclipse IDE
 
-Create a File in the Eclipse IDE<% if(contentFile) { %> and put some data in it.
+Create <%= fileName; %> in the Eclipse IDE<% if(contentFile) { %> and insert some data from <%= contentFile; %> into it.
 
-First, you want to open a file you get the data you want to put into the new file.
-Go to the file context menu in the top left corner and choose *Open File*. 
-Based on your Operating system a window with the file explorer opens. You have to navigate to your file and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new Eclipse editor window where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
+First, you want to open <%= contentFile; %> to get the data we want to put into <%= fileName; %>.
+Go to the file context menu in the top left corner and choose *Open File...*. 
+Based on your operating system a window with the file explorer opens. Navigate to <%= contentFile; %> and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
+Now confirm your inputs with the *Open* button in the bottom right corner.
+A new Eclipse editor window with <%= fileName; %> will be opened, where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
 
-Opening a new file can be done by going to the file context menu in the top left corner and select *New* or by just using the keyboard shortcut alt+shift+n and a dropdown menu will open where you have to select *File*.
-Eclipse opens a *Create New File* window where you have to select the folder for saving the file. This can be done by inserting `<%= parentFolder; %>` at the top text field named *enter or select the parent folder*.
+Opening a new file can be done by going to the file context menu in the top left corner and select *New* or use the keyboard shortcut alt+shift+n and a dropdown menu will open where you have to select *File*.
+Eclipse opens a *Create New File* window. Select the folder you want to save the file into. Insert `<%= filePath; %>` at the top text field named *enter or select the parent folder*. If the directory doesnt exist you must create the missing folders.
 Also, a name for the file is needed, so you can insert `<%= fileName; %>` in the text field *File name* or type it yourself. 
-Confirm this with the *Finish* button in the bottom right corner and an empty file has been created.
-<% if(contentPath) { %> 
-Inserting the previously copied text with a keyboard shortcut ctrl+v or with a right-click in the editor window and the paste function.
-The next step is to save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s and a file has been created and filled with some data<%} %>.
+Confirm your inputs with the *Finish* button in the bottom right corner and an empty <%= fileName; %> has been created and can be edited.<% if(contentPath) { %> 
+Insert the previously copied text with a keyboard shortcut ctrl+v or with a right-click in the editor window and the paste function.
+The next step is to save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s and <%= fileName; %> has been created and filled with some data from <%= contentFile; %><%}else{ %> After editing save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s<% }%>.

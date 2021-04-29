@@ -15,23 +15,16 @@ export class WikiEclipse extends WikiRunner {
     }
 
     runCreateFile(runCommand: RunCommand): RunResult{
-        let filePathAndName = runCommand.command.parameters[0];
-        let contentPathAndName = runCommand.command.parameters[1];
-        let filePath = filePathAndName.substring(0,filePathAndName.lastIndexOf("/"));
-        let fileName = filePathAndName.substring(filePathAndName.lastIndexOf("/")+1);
         let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
-        workspacePath = workspacePath.substr(0,workspacePath.lastIndexOf("/"));
-        let parentFolder = filePath.lastIndexOf("/") == -1 
-        ? workspacePath.substr(workspacePath.lastIndexOf("/")+1)
-        : filePath.substring(filePath.lastIndexOf("/")+1);
-        let contentPath = contentPathAndName 
-        ? contentPathAndName.substring(0,contentPathAndName.lastIndexOf("/"))
-        : undefined;
-        let contentFile = contentPathAndName 
-        ? contentPathAndName.substring(contentPathAndName.lastIndexOf("/")+1)
-        : undefined;
-        console.log(parentFolder);
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, fileName: fileName, contentFile : contentFile, parentFolder: parentFolder });
+        let fileName = path.basename(runCommand.command.parameters[0]);
+        let filePath = path.join(workspacePath, runCommand.command.parameters[0].replace(fileName, ""));
+        let contentFile = runCommand.command.parameters[1] 
+            ? path.basename(runCommand.command.parameters[1])
+            : undefined;
+        let contentPath = runCommand.command.parameters[1] 
+            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].replace(contentFile, ""))
+            : undefined;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, fileName: fileName, contentFile : contentFile});
         return null;
     }
 }
