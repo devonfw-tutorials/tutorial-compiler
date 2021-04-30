@@ -15,9 +15,12 @@ class Run {
     async run(): Promise<boolean> {
         try {
             this.parseArgs();
+            if(!this.args.has("debug")) {
+                console.debug = function(){}
+            }
             this.parsePlaybooks();
             this.parseEnvironments();
-            let entries = this.filterEnv(Array.from(this.environments.entries()))
+            let entries = this.filterEnv(Array.from(this.environments.entries()));
             for (let entry of entries) {
                 let key = entry[0];
                 let value = entry[1];
