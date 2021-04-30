@@ -9,6 +9,7 @@ export class WikiConsole extends WikiRunner {
 
     init(playbook: Playbook): void {
         super.init(playbook);
+        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
     }
 
     async destroy(playbook: Playbook): Promise<void> {
@@ -84,6 +85,13 @@ export class WikiConsole extends WikiRunner {
     runDockerCompose(runCommand: RunCommand): RunResult {
         let dir = runCommand.command.parameters[0];
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
+        return null;
+    }
+
+    runBuildJava(runCommand: RunCommand): RunResult {
+        let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
         return null;
     }
 }
