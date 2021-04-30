@@ -4,4 +4,4 @@ Copy-Item -Force -Recurse -Path $PSScriptRoot\playbooks\ -Destination $PSScriptR
 Copy-Item -Force -Recurse -Path $PSScriptRoot\environments\ -Destination $PSScriptRoot\build
 Copy-Item -Force -Recurse -Path $PSScriptRoot\runners\ -Destination $PSScriptRoot\build
 npm test
-node $PSScriptRoot\build\engine\run.js --skipCommands.console dockerCompose $args --debug
+node $PSScriptRoot\build\engine\run.js --skipCommands.console dockerCompose $args
