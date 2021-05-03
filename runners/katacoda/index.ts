@@ -129,6 +129,8 @@ export class Katacoda extends Runner {
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
 
+        this.pushStep(runCommand);
+
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
 
@@ -155,6 +157,7 @@ export class Katacoda extends Runner {
         if(!this.getVariable(this.useDevonCommand))
             this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"));
 
+            this.pushStep(runCommand);
         return null;
     }
 
@@ -410,6 +413,7 @@ export class Katacoda extends Runner {
             "script": scriptName
         });
 
+        this.pushStep(runCommand);
         return null;
     }
 
@@ -457,7 +461,7 @@ export class Katacoda extends Runner {
         return {terminalId: this.terminalCounter, isRunning: false};
     }
 
-    private pushStep(runCommand: RunCommand, title: string, text: string, backgroundscript?:string, foregroundscript?: string) {
+    private pushStep(runCommand: RunCommand, title?: string, text?: string, backgroundscript?:string, foregroundscript?: string) {
         if (this.currentStepIndex != runCommand.stepIndex) {
             let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
             this.steps.push({
