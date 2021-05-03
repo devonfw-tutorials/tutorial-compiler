@@ -129,11 +129,10 @@ export class Katacoda extends Runner {
         this.setVariable(this.workspaceDirectory, path.join("/root", "devonfw", "workspaces", "main"));
         this.setVariable(this.useDevonCommand, true);
 
-        this.pushStep(runCommand);
-
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_foreground.sh"), "\n. ~/.bashrc\nexport NG_CLI_ANALYTICS=CI");
         fs.appendFileSync(path.join(this.getRunnerDirectory(),"templates","scripts", "intro_background.sh"), "\necho \'export NG_CLI_ANALYTICS=CI\' >> /root/.profile\n");
 
+        this.pushStep(runCommand);
         return null;
     }
 
@@ -157,7 +156,7 @@ export class Katacoda extends Runner {
         if(!this.getVariable(this.useDevonCommand))
             this.setVariable(this.workspaceDirectory, path.join('/root', "workspaces"));
 
-            this.pushStep(runCommand);
+        this.pushStep(runCommand);
         return null;
     }
 
