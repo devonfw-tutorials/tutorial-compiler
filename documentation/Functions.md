@@ -145,7 +145,7 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 #### parameter 
 1. The base package name
 #### example 
-createDevon4jProject("com.example.application.cobigenexample")
+createDevon4jProject("com.mycustomer.myapplication")
 
 
 ***
