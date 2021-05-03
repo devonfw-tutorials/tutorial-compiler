@@ -13,7 +13,7 @@
             /--index.asciidoc
 
 Write your own tutorials in "./tutorials/[playbook-name]/index.asciidoc".
-You will find all the details in the tutorials [Developement](https://github.com/devonfw-forge/tutorials/wiki/Development) page.
+You will find all the details in the tutorials [Developement](https://github.com/devonfw-tutorials/tutorials/wiki/Development) page.
 
 
 # File system of the "tutorial-compiler" - repository 
@@ -35,7 +35,7 @@ You will find all the details in the tutorials [Developement](https://github.com
 * wikiEclipse
 * wikiEditor
 
-Create your own commands as shown in tutorial-compilers's [Developement](https://github.com/devonfw-forge/tutorials/wiki/Development) page inside the "./index.ts"-files.
+Create your own commands as shown in tutorial-compilers's [Developement](https://github.com/devonfw-tutorials/tutorials/wiki/Development) page inside the "./index.ts"-files.
 
 ### Assertions 
 
@@ -43,7 +43,7 @@ Create your own commands as shown in tutorial-compilers's [Developement](https:/
         |--assertions
 
 Add assertions by adding a new class into the "./tutorial-compiler/assertions"-folder 
-Learn more about it in [Development](https://github.com/devonfw-forge/tutorials/wiki/Development)
+Learn more about it in [Development](https://github.com/devonfw-tutorials/tutorials/wiki/Development)
 
 
 ## Katacoda tutorials
@@ -78,8 +78,8 @@ Without the devonfw IDE the workspace directory equals the working directory.
 
     |--[working-directory]
 
-In [Functions](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) you will find the phrase "relative to workspace", which means relative to the working directory.
-You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
+In [Functions](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions) you will find the phrase "relative to workspace", which means relative to the working directory.
+You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions).
 
 ### Workspace with devonfw IDE 
 
@@ -89,16 +89,16 @@ You can set a new workspace with the function [changeWorkspace](https://github.c
                 |--main
 
 The functions 
-* [restoreDevonfwIde](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions)
-* [installDevonfwIde](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions)
+* [restoreDevonfwIde](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions)
+* [installDevonfwIde](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions)
 
 will change the workspace to the "[working-directory]/devonfw/workspaces/main".
 The phrase "relative to workspace" means in this case relative to "./main"
-You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions).
+You can set a new workspace with the function [changeWorkspace](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions).
 
 ### Workspace with restoreWorkspace
 
-The function [restoreWorkspace](https://github.com/devonfw-forge/tutorial-compiler/wiki/Functions) will change the workspace.
+The function [restoreWorkspace](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions) will change the workspace.
 
 #### WIthout devonfw IDE
 

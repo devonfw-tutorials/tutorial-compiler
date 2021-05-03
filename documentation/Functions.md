@@ -102,7 +102,7 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
         `'/root/workspaces'`
 
     
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
         
 ### changeWorkspace
@@ -112,7 +112,7 @@ Learn more about the workspace directory and working directory on [Structure](ht
 changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
 
 
@@ -220,11 +220,11 @@ createFolder("directoryPath/subDirectory")
 1. Path into which the repository is to be cloned, relative to workspace.
 2. Git repository URL
 #### example 
-cloneRepository("", "https://github.com/devonfw-forge/tutorial-compiler.git")
+cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
 Repository will be cloned directly into the workspace directory.
 
-cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
-Repository will be cloned into a newly created subdirectory devonfw-forge.
+cloneRepository(devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory devonfw-tutorials.
 
 ***
 
