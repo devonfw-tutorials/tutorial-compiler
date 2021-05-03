@@ -166,7 +166,7 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = runCommand.command.parameters[0];
-        ConsoleUtils.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
+        ConsoleUtils.executeDevonCommandSync("java create " + projectName, workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
         return result;
     }
 
@@ -543,15 +543,18 @@ export class Console extends Runner {
     async assertCreateDevon4jProject(runCommand: RunCommand, result: RunResult) {
         try {
             let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-
+            let lastDot = runCommand.command.parameters[0].lastIndexOf('.') + 1;
+            let projectFolder = runCommand.command.parameters[0].substr(lastDot);
+            let package2Folder = path.join(runCommand.command.parameters[0].replace(/\./g, path.sep));
+        
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0]))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "api", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "server", "src", "main", "java"))
-            .fileExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java", "com", "example", "application", runCommand.command.parameters[0], "SpringBootApp.java"));
+            .directoryExits(path.join(workspaceDir, projectFolder))
+            .directoryExits(path.join(workspaceDir, projectFolder, "api", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, projectFolder, "core", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, projectFolder, "server", "src", "main", "java"))
+            .fileExits(path.join(workspaceDir, projectFolder, "core", "src", "main", "java", package2Folder, "SpringBootApp.java"));
         } catch(error) {
             await this.cleanUp();
             throw error;
