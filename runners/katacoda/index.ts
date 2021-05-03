@@ -463,13 +463,15 @@ export class Katacoda extends Runner {
 
     private pushStep(runCommand: RunCommand, title?: string, text?: string, backgroundscript?:string, foregroundscript?: string) {
         if (this.currentStepIndex != runCommand.stepIndex) {
-            let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
-            this.steps.push({
-                "title": stepTitle,
-                "text": text,
-                "courseData": backgroundscript,
-                "code": foregroundscript
-            });
+            if(title && text){
+                let stepTitle = runCommand.stepTitle ? runCommand.stepTitle : title;
+                this.steps.push({
+                    "title": stepTitle,
+                    "text": text,
+                    "courseData": backgroundscript,
+                    "code": foregroundscript
+                });
+            }
             this.currentStepIndex++; 
         }
     }
