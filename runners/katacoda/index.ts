@@ -401,7 +401,7 @@ export class Katacoda extends Runner {
 
     runExecuteCommand(runCommand: RunCommand) : RunResult {
         let terminal = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].asynchronous) 
-            ? this.getTerminal("executeCommand"+this.stepsCount) 
+            ? this.getTerminal("executeCommand"+runCommand.stepIndex) 
             : undefined;
         
         let filepath;
@@ -422,9 +422,9 @@ export class Katacoda extends Runner {
             "args": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
         }
 
-        this.pushStep(runCommand, "ExecuteCommand "+ runCommand.command.parameters[0], "step"+ this.getStepsCount(runCommand) + ".md");
+        this.pushStep(runCommand, "ExecuteCommand "+ runCommand.command.parameters[0], "step"+ runCommand.stepIndex + ".md");
 
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (this.stepsCount) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
         return null;
     }
     
