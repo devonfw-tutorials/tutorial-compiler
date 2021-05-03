@@ -3,7 +3,7 @@
 ==== Prerequisites
 First, you need to open a command prompt in your current workspace. For Windows, you can use PowerShell and on Linux, you can use the Terminal.
 
-The folder where you want to create the file has to be existing. If the folder doesn’t exist you have to create it.
+If the directory the file will be created into does not exist, you have to create the missing folder.
 
 .Operating system
 . Windows + 
@@ -11,7 +11,7 @@ Execute the command to create a folder if not already existing `New-Item -ItemTy
 . Linux + 
 Execute the command `mkdir -p <%= filePath; %>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
 
-=== Create <%= fileName; %> in a Terminal
+=== Create <%= fileName; %> from command prompt
 
 Now you can start to create <%= fileName; %>.
 
