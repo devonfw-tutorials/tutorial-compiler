@@ -28,6 +28,9 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        return this.runInstallDevonfwIde(runCommand);
+    }
 
     runRunServerJava(runCommand: RunCommand): RunResult {
         let server_path = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
