@@ -404,6 +404,7 @@ export class Katacoda extends Runner {
     runChangeWorkspace(runCommand: RunCommand): RunResult {
         let workspacesDir = path.join('/root', runCommand.command.parameters[0]); 
         this.setVariable(this.workspaceDirectory, workspacesDir);
+        this.pushStep(runCommand);
         return null;
     }
     
