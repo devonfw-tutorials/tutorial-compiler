@@ -2,10 +2,6 @@ name: CI Windows PR
 on:
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Test scenario tags'
 
 jobs:
   build:
@@ -24,5 +20,6 @@ jobs:
       - name: run checkout.ps1
         run: .\checkout.ps1
 
-      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
-        run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }} ${{ github.event.inputs.tags }}
+      - name: run buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
+        run: .\buildRun.ps1 --user ${{ github.actor }} --branch ${{ github.event.pull_request.head.ref }}
+
