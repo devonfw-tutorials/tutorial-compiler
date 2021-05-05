@@ -262,7 +262,7 @@ export class Console extends Runner {
                 content = fs.readFileSync(path.join(this.playbookPath, file), { encoding: "utf-8" });
             }
         }
-        fs.writeFileSync(filepath, content, {encoding: "utf-8", flag: "w+"});
+        fs.writeFileSync(filepath, content);
 
         return result;
     }        
@@ -456,7 +456,7 @@ export class Console extends Runner {
             commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
         }
         else{
-            throw new Error("You have to pass a Command for Windows and Linux based OS");
+            throw new Error("You have to pass a command for Windows and Linux based OS");
         }
 
         let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
@@ -496,8 +496,8 @@ export class Console extends Runner {
                     interval: runCommand.command.parameters[3].interval,
                     startupTime: runCommand.command.parameters[3].startupTime,
                     command: this.platform == ConsolePlatform.WINDOWS 
-                    ? runCommand.command.parameters[0] 
-                    : runCommand.command.parameters[1] 
+                        ? runCommand.command.parameters[0] 
+                        : runCommand.command.parameters[1] 
                 });
             }
         } catch(error) {
