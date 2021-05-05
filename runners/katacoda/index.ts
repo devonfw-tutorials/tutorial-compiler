@@ -399,6 +399,11 @@ export class Katacoda extends Runner {
         return null;
     }
 
+    runChangeWorkspace(runCommand: RunCommand): RunResult {
+        let workspacesDir = path.join('/root', runCommand.command.parameters[0]); 
+        this.setVariable(this.workspaceDirectory, workspacesDir);
+        return null;
+    }
     
     runAddSetupScript(runCommand: RunCommand): RunResult {
         let scriptName = path.basename(runCommand.command.parameters[0]); 
