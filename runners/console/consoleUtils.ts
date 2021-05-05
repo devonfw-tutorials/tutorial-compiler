@@ -27,12 +27,6 @@ export class ConsoleUtils {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: env });
-<<<<<<< HEAD
-        let output = "========================== DEBUG ==========================\n";
-        process.stdout.on('data', function(data) {
-            output += data.toString();
-        });
-=======
         let output = "";
         process.stdout.on('data', function(data) {
             output += data.toString();
@@ -40,7 +34,6 @@ export class ConsoleUtils {
         process.stderr.on('data', function(data) {
             output += data.toString();
         });
->>>>>>> upstream/main
         process.on('close', function(code) {
             console.debug(output);
         });
