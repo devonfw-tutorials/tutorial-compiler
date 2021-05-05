@@ -102,7 +102,7 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
         `'/root/workspaces'`
 
     
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
         
 ### changeWorkspace
@@ -112,7 +112,7 @@ Learn more about the workspace directory and working directory on [Structure](ht
 changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-forge/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
 
 
@@ -143,9 +143,10 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 
 ### createDevon4jProject
 #### parameter 
-1. The project name
+1. The base package name
 #### example 
-createDevon4jProject("cobigenexample")
+createDevon4jProject("com.mycustomer.myapplication")
+
 
 ***
 
@@ -171,7 +172,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
 2. 
- *  Path of the file to get the content from or a string, that should be inserted.
+ *  Path of the file to get the content from or a string, that should be inserted.(relative path to the playbook directory)
  * (Optional) Name of a placeholder 
  * (Optional) Line number where u want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### example 
@@ -219,11 +220,11 @@ createFolder("directoryPath/subDirectory")
 1. Path into which the repository is to be cloned, relative to workspace.
 2. Git repository URL
 #### example 
-cloneRepository("", "https://github.com/devonfw-forge/tutorial-compiler.git")
+cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
 Repository will be cloned directly into the workspace directory.
 
-cloneRepository("devonfw-forge", "https://github.com/devonfw-forge/tutorial-compiler.git")
-Repository will be cloned into a newly created subdirectory devonfw-forge.
+cloneRepository(devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory devonfw-tutorials.
 
 ***
 
