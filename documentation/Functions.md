@@ -172,7 +172,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
 2. 
- *  Path of the file to get the content from or a string, that should be inserted.
+ *  Path of the file to get the content from or a string, that should be inserted.(relative path to the playbook directory)
  * (Optional) Name of a placeholder 
  * (Optional) Line number where u want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### example 
