@@ -11,6 +11,7 @@ export abstract class WikiRunner extends Runner {
     init(playbook: Playbook): void {
         let outputDirectory = this.createFolder(path.join(this.getOutputDirectory(), "wiki", this.environmentName), false)
         this.outputPathTutorial = this.createFolder(path.join(outputDirectory, playbook.name), true);
+        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
     }
 
     async destroy(playbook: Playbook): Promise<void> {
