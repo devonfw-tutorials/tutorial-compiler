@@ -51,13 +51,10 @@ export class Parser {
     }
 
     getTitle(parseResult, index) {
-        console.log(parseResult[3][index][2]);
-        
-        if(parseResult[3][index][2][4] && parseResult[3][index][2][4][2] && parseResult[3][index][2][4][2].stepstitle){
-        console.log(parseResult[3][index][2][4][2].steptitle);
-        }
         try {
-            return (parseResult[3][index][2][4][2].steptitle);
+            // parseResult[3][index][4][2] step without block
+            // parseResult[3][index][2][4][2] step inside a block
+            return (parseResult[3][index][4][2].steptitle || parseResult[3][index][2][4][2].steptitle);
         } catch(error) {
             return null;
         }
