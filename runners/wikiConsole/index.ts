@@ -73,7 +73,6 @@ export class WikiConsole extends WikiRunner {
         };
 
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "npmInstall.asciidoc"), { projectPath: projectPath, npmCommand: npmCommand });
-        // add NPM tools
         return null;
     }
   
@@ -116,7 +115,6 @@ export class WikiConsole extends WikiRunner {
     runInstallCobiGen(runCommand: RunCommand): RunResult{
         let devonPath = this.getWorkingDirectory();
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {devonPath: devonPath});
-        // vielleicht auch cobigen als Tools
         return null;
     }
 }
