@@ -77,7 +77,6 @@ export class WikiConsole extends WikiRunner {
         };
 
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "npmInstall.asciidoc"), { projectPath: projectPath, npmCommand: npmCommand });
-        // add NPM tools
         return null;
     }
   
