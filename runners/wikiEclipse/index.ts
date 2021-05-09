@@ -40,4 +40,16 @@ export class WikiEclipse extends WikiRunner {
             contentFile: contentFile, fileName: fileName});
         return null;
     }
+    
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {});
+        return null;
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        return this.getVariable(this.installedTools).includes("eclipse")
+            ? super.supports(name, parameters)
+            : false;
+    }
 }

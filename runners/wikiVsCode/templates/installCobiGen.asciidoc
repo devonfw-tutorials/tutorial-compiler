@@ -1,0 +1,13 @@
+== Install GobiGen
+Installing devonfw CodeGenerator(i.e. CobiGen).
+
+=== Prerequisites
+CobiGen VSCode extension is installed inside your devonfw distribution. In order to execute it, you have to install the devonfw IDE first.
+
+=== Install CobiGen for VSCode Editor
+
+CobiGen is already installed for your VSCode Editor if you have installed it with the devonfw setup.
+You can open the *Extensions* menu with ctrl+shift+X and you will see CobiGen under the installed extensions.
+You can use CobiGen by right-click on a file and selecting CobiGen in the opened menu. This will execute CobiGen generate for the selected file.
+
+Some further information about the usage of CobiGen can be found https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html[here]. 

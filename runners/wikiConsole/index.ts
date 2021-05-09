@@ -26,6 +26,7 @@ export class WikiConsole extends WikiRunner {
         }
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools, version:version })
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+        this.setVariable(this.installedTools, tools);
         return null;
     }
 
@@ -72,6 +73,7 @@ export class WikiConsole extends WikiRunner {
         };
 
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "npmInstall.asciidoc"), { projectPath: projectPath, npmCommand: npmCommand });
+        // add NPM tools
         return null;
     }
   
@@ -108,6 +110,13 @@ export class WikiConsole extends WikiRunner {
         let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
+        return null;
+    }
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        let devonPath = this.getWorkingDirectory();
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {devonPath: devonPath});
+        // vielleicht auch cobigen als Tools
         return null;
     }
 }
