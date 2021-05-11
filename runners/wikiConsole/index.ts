@@ -103,6 +103,12 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
+  
+    runCreateFolder(runCommand: RunCommand): RunResult {
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
+        return null;
+    }
 
     runBuildJava(runCommand: RunCommand): RunResult {
         let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
