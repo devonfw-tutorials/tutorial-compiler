@@ -3,13 +3,14 @@ import { Playbook } from "./playbook";
 import { Runner } from "./runner";
 import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
+import { SyntaxChecker } from "./syntax_checker";
 
 export class Engine {
 
     private runners: Map<string, Runner> = new Map<string, Runner>();
     private variables: Map<string, any> = new Map<string, any>();
 
-    constructor(private environmentName: string, private environment: Environment, private playbook: Playbook) { }
+    constructor(private environmentName: string, private environment: Environment, private playbook: Playbook, private syntaxChecker: SyntaxChecker) { }
 
     async run() {
         for (let runnerIndex in this.environment.runners) {
@@ -69,6 +70,7 @@ export class Engine {
     }
 
     private async isEnvironmentComplete(): Promise<boolean> {
+        let missingFunctions = [];
         for (let stepIndex in this.playbook.steps) {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
                 let isSupported = false;
@@ -79,12 +81,16 @@ export class Engine {
                     }
                 }
                 if (!isSupported) {
-                    return false;
+                    missingFunctions.push(this.playbook.steps[stepIndex].lines[lineIndex].name);
                 }
             }
         }
-
-        return true;
+        if(missingFunctions.length > 0) {
+            this.syntaxChecker.handle("Environment incomplete: " + this.environmentName + " | Missing functions: \n - " + missingFunctions.join("\n - "));
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private async getRunner(name: string): Promise<Runner> {

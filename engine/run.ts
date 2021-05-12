@@ -2,6 +2,7 @@ import { Parser } from "./parser";
 import { Playbook } from "./playbook";
 import { Environment } from "./environment";
 import { Engine } from "./engine";
+import { SyntaxChecker } from "./syntax_checker";
 const fs = require('fs');
 const yargs = require('yargs/yargs');
 
@@ -10,12 +11,16 @@ class Run {
     private environments: Map<string, Environment> = new Map<string, Environment>();
     private args: Map<string, string> = new Map<string, string>();
     private errors = [];
+    private syntaxChecker = new SyntaxChecker();
 
     async run(): Promise<boolean> {
         try {
             this.parseArgs();
             if(!this.args.has("debug")) {
                 console.debug = function(){}
+            }
+            if(this.args.has("commentErrors")) {
+                this.syntaxChecker.activate();
             }
             this.parsePlaybooks();
             this.parseEnvironments();
@@ -26,7 +31,7 @@ class Run {
                 let value = entry[1];
                 let playbookIndecies = this.filterPlaybooks(this.playbooks)
                 for (let playbookIndex of playbookIndecies) {
-                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+                    let engine = new Engine(key, value, this.playbooks[playbookIndex], this.syntaxChecker);
 
                     for (let varEntry of Array.from(this.args.entries())) {
                         engine.setVariable(varEntry[0], varEntry[1]);
@@ -67,6 +72,7 @@ class Run {
                 }
             } catch(e) {
                 console.error("Error while parsing playbook: " + playbookDirs[index], e);
+                this.syntaxChecker.handle("Error while parsing playbook: " + playbookDirs[index] + "\n"+ "- " + e);
                 this.errors.push(e);
             }
         }
