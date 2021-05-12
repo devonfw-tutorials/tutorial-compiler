@@ -1,13 +1,13 @@
 == Create the file <%= fileName; %>
 
 
-=== Creating <%= fileName; %> in the VSCode Editor
+=== Creating <%= fileName; %> in the VS Code Editor
 
-Create <%= fileName; %> in the VSCode editor<% if(contentFile) { %> and insert some data from <%= contentFile; %> into it.
+Create <%= fileName; %> in the VS Code editor<% if(contentFile) { %> and insert some data from <%= contentFile; %> into it.
 
 First, you want to open <%= contentFile; %> to get the data we want to put into <%= fileName; %>.
 Go to the file context menu in the top left corner right next to the VS Code symbol and choose *Open File...* or use the keyboard shortcut ctrl+o. 
-Based on your operating system a window with the file explorer opens.Navigate to <%= contentFile; %> and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
+Based on your operating system a window with the file explorer opens. Navigate to <%= contentFile; %> and select it. Also, you can insert the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
 Now confirm your inputs with the *Open* button in the bottom right corner.
 A new VS Code Editor window <%= fileName; %> will be opened, where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
 

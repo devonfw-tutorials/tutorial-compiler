@@ -1,9 +1,8 @@
 == Create the file <%= fileName; %>
 
 ==== Prerequisites
-First, you need to open a command prompt in your current workspace. For Windows, you can use PowerShell and on Linux, you can use the Terminal.
+* Existing folder you want to load the file. (If the folder doesn't exist you can create it from terminal.)
 
-If the directory the file will be created into does not exist, you have to create the missing folder.
 
 .Operating system
 . Windows + 
@@ -12,8 +11,7 @@ Execute the command to create a folder if not already existing `New-Item -ItemTy
 Execute the command `mkdir -p <%= filePath; %>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
 
 === Create <%= fileName; %> from command prompt
-
-Now you can start to create <%= fileName; %>.
+First, you need to open a command prompt in your current workspace. For Windows, you can use PowerShell and on Linux, you can use the Terminal.
 
 .Operating System
 . Windows + 
