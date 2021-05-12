@@ -1,12 +1,11 @@
-Build the Java Project with Maven
-=================================
+== Build the Java Project with Maven
 
-Prerequisites
-~~~~~~~~~~~~~
+=== Prerequisites
+
 * You need to have Maven installed. If not already installed, you can download it https://maven.apache.org/download.cgi[here]. Alternativly, you can make use of the devonfw-ide, where you can install Maven directly to your workspace. For more details on how to do that, see the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc[devonfw-ide setup].
 
-Execution
-~~~~~~~~~
+=== Execution
+
 Now move to your project directory manually or by executing `cd <%= directoryPath; %>` in the terminal.
 Next, use the following command to build the java project.
 
