@@ -1,24 +1,26 @@
-== Create a new Devon4j Project
+== Create a new devon4j project
 
-=== Create a new Devon4j Project from command prompt
+=== Create a new devon4j project from command prompt
 
 ==== Prerequisites
 
 In order to create a new application you must use the archetype provided by devon4j which uses the https://maven.apache.org/guides/introduction/introduction-to-archetypes.html[maven archetype functionality].
 
-To create a new application, you should have installed devonfw IDE. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
+To create a new application, you should have installed devonfw-ide. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
 
-==== Create the Project
+==== Create the project
 
 Now you can use devonfw to setup a java project for you by executing the following devon command in terminal.
 
 `devon java create <%= name; %>`
 
-==== What is generated
+There is also is also an alternative way, where you can customize the project setup with optional parameters. More informations you will find https://devonfw.com/website/pages/docs/devon4j.asciidoc_tutorials.html[here].
+
+==== What is generated?
 
 The application template (archetype) generates a Maven multi-module project. It has the following modules:
 
-- *api*: module with the API (REST service interfaces, transferobjects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.
+- *api*: module with the API (REST service interfaces, transfer-objects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.
 
 - *core*: maven module containing the core of the application.
 

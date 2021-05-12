@@ -1,24 +1,24 @@
-== Create a new Devon4j Project
+== Create a new devon4j project
 
-=== Create a new Devon4j Project in the Eclipse IDE
+=== Create a new devon4j project in the Eclipse IDE
 
 ==== Prerequisites
 
 In order to create a new application you must use the archetype provided by devon4j which uses the https://maven.apache.org/guides/introduction/introduction-to-archetypes.html[maven archetype functionality].
 
-To create a new application, you should have installed devonfw IDE. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
+To create a new application, you should have installed devonfw-ide. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
 
-==== Create the Project
+==== Create the project
 
-Firstly, create a new Maven Project.
+Firstly, create a new maven project.
 Then, choose the 'devon4j-template-server' archetype.
-Fill the Group Id, Artifact Id, Version and Package for your project. The package name should be <%= name; %>.
+Fill the _Group Id_, _Artifact Id_, _version_ and _package_ for your project. The _package_ name should be <%= name; %>. If you want to add an EAR generation mechanism to your project, you should fill the property _earProjectName_ with the value _Artifact Id_ + "-ear". For example, "sampleapp-ear".
 
-==== What is generated
+==== What is generated?
 
-The application template (archetype) generates a Maven multi-module project. It has the following modules:
+The application template (archetype) generates a maven multi-module project. It has the following modules:
 
-- *api*: module with the API (REST service interfaces, transferobjects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.
+- *api*: module with the API (REST service interfaces, transfer-objects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.
 
 - *core*: maven module containing the core of the application.
 
