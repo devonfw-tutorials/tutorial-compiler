@@ -2,7 +2,7 @@
 Installing devonfw code generator (i.e. CobiGen).
 
 === Prerequisites
-CobiGen Eclipse plugin is installed inside your devonfw distribution. In order to execute it, you have to install the devonfw IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
+* An installed devonfw Eclipse installation is needed. CobiGen Eclipse plugin will be installed with your devonfw distribution. In order to execute it, you have to install the devonfw IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
 
 === Install CobiGen for Eclipse IDE
 
