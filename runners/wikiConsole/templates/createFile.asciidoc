@@ -25,6 +25,6 @@ To create a new empty <%= fileName; %> <% if(contentPath){ %>and insert some dat
 . Linux +
 In the Terminal, we start using the function *cat* to create a new file <% if(contentPath) { %>and also write the content from another file into it <% } %> 
 more information about the usage you can get https://man7.org/linux/man-pages/man1/cat.1.htm[here].<% if(contentPath) { %>
-Tho create a new empty <%= fileName; %> and write some data from <%= contentFile; %> into it, you can execute the command `cat <%= contentPath; %> > <%= filePath; %>`.
+To create a new empty <%= fileName; %> and write some data from <%= contentFile; %> into it, you can execute the command `cat <%= contentPath; %> > <%= filePath; %>`.
 <% }else{ %>To create a new empty <%= fileName; %> you can execute the command `cat <%= filePath; %>`.<% } %>
 
