@@ -43,7 +43,8 @@ export class WikiVsCode extends WikiRunner {
     }
 
     runInstallCobiGen(runCommand: RunCommand): RunResult{
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {});
+        let dir = this.getWorkingDirectory();
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {dir: dir});
         return null;
     }
 
