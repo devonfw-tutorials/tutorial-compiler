@@ -1,0 +1,15 @@
+== Create devon4ng project
+
+<% if (cdCommand) { %>
+
+=== Prerequisites
+
+As the project should be created at `<%= cdCommand; %>`, make sure that this directory exists before proceeding with the next step. 
+
+<% } %>
+
+=== Creating the Angular project
+
+Use the `ng` command provided by the `devonfw-ide` to create the project <%= projectName; %>:
+
+`devon ng create <%= projectName; %><% if(ngParams){ %><%= ngParams; %><% } %>`
