@@ -124,3 +124,4 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 }
+

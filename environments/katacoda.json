@@ -1,5 +1,6 @@
 {
     "failOnIncomplete": false,
+    "skipMissingFunctions": false,
     "runners": [
         "katacoda"
     ]

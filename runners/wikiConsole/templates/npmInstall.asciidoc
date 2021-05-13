@@ -1,0 +1,22 @@
+<% if(npmCommand.name){ %>
+== Installation of package <%= npmCommand.name; %>
+
+<% } else {%>
+== Install dependencies
+<% } %>
+
+=== Prerequisites
+
+* Install Node.js. You can download Node.js https://nodejs.org/en/download/[here].
+* Installed npm. You can download npm https://www.npmjs.com/get-npm[here] and follow the installation instructions.
+
+=== Execution
+<% if(npmCommand.name){ %>
+You can install the package <%= npmCommand.name; %><% if(!npmCommand.global){ %> and add it to the dependencies<% } %>.<% } else {%>
+You need to be located in the project directory where the package.json file lies.
+For this tutorial it is `<%= projectPath; %>`. You can either move there manually and open the terminal there or open the terminal and move there by executing `cd <%= projectPath; %>`.<% } %>
+
+Now execute `npm install<% if(npmCommand.global){ %> -g<% } %> <%= npmCommand.args; %> <%= npmCommand.name; %>` in the terminal. 
+
+<% if(npmCommand.global){ %>Due to the argument '-g' the package will be installed globally.<% } %>
+This may take some time.

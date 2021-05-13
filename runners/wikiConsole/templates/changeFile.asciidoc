@@ -1,0 +1,24 @@
+== Changing of the <%= fileName; %> File
+
+
+=== Changing of <%= fileName; %> from command prompt
+
+Changing a file can be done in an editor like VS Code or Eclipse. Another approach is to use the command prompt. We show how to insert, append or replace some data in a file using the command prompt on either Windows or Linux. First, you need to open a command prompt in your current Workspace. For Windows, you can use PowerShell and on Linux, you can use the Terminal. 
+
+.Operating system
+. Windows +
+In PowerShell, we use multiple commands to *Get*, *Set*, and *Add-Content* to our file. The usage of the three commands is nearly the same but if you need more information about the functionality you can find here for https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1[Get-Content],
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-content?view=powershell-7.1[Add-Content],
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[Set-Content]. 
+We also use the command *Select-Object* to get just the required Strings from a collection. Some more information about the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.1[here]. + 
+<% if(placeholder) { %>To replace *<%= placeholder; %>* in the file *<%= fileName; %>* with<% if(contentPath){%> some text from the other file *<%= contentFile; %>*<%}else{%> the string *<%= contentString; %>* <%} %> you can execute the command `(Get-Content -Path  <%= filePath; %>) -replace "<%= placeholder; %>" , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> | Set-Content -Path <%= filePath; %>`
+<% }else if(lineNumber) {%> To insert <% if(contentPath) {%> text from the file *<%= contentFile; %>* <%}else{%> the string *<%= contentString; %>* <%}%> into the file *<%= fileName; %>* at specific line number you can execute the command `(Get-Content -Path <%= filePath; %> -TotalCount <%= lineNumber; %>) , <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% }%> ,(Get-Content -Path <%= filePath; %> |Select-Object -skip <%= lineNumber; %>) | Set-Content -Path <%= filePath; %>`
+<%}else{%>To append <%if(contentPath){ %>some data from the file *<%= contentFile; %>* <%}else{%>the string *<%= contentString; %>* <%}%>to the file *<%= fileName; %>* you can execute the command `Add-Content -Path <%= filePath; %> -Value <% if(contentPath){%>(Get-Content -Path <%= contentPath; %>)<%}else{%>"<%= contentString;%>"<% } %>`<% } %>
+
+. Linux and macOS +
+For the Linux Terminal, we use the commands *cat* and *sed*. We use cat to print the text to the terminal and redirect it as input for another file. Some more information about the functionality of cat can be found https://man7.org/linux/man-pages/man1/cat.1.html[here]. The command sed is a powerful command we use to insert and replace some data in a file. Some more information about the functionality of sed can be found https://linux.die.net/man/1/sed[here]. +
+<% if(placeholder) { %>To replace *<%= placeholder; %>* in the file *<%= fileName; %>* with<% if(contentPath){%> some text from another file *<%= contentFile; %>*<%}else{%> the string *<%= contentString; %>* <% } %> you can execute the command `sed s/<%= placeholder; %>/<% if(contentPath){ %>$(cat <%= contentPath; %>)<% }else{ %><%= contentString;%><% } %>/g <%= filePath;%>`
+<% }else if(lineNumber) {%>To insert <% if(contentPath) {%> a text from the file *<%= contentFile; %>* <% }else{ %> the string *<%= contentString; %>* <% } %> into the file *<%= fileName; %>* at specific line number you can execute the command `sed "<%= lineNumber; %>i <% if(contentPath){ %>$(cat <%= contentPath; %>)<% }else{ %><%= contentString; %><% } %>" <%= filePath; %>` 
+<% }else{%>To append <%if(contentPath){ %>some data from the file *<%= contentFile; %>* <%}else{%>the string *<%= contentString; %>* <%}%>to the file *<%= fileName; %>* you can execute the command `<% if(contentPath){ %>cat <%= contentPath; %><% }else{%>echo "<%= contentString;%>" <% } %> >> <%= filePath;%>` <% } %>
+
+

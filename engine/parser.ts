@@ -19,40 +19,42 @@ export class Parser {
         let parseResult = this.parser.parse(input);
         let result = new Playbook();
         result.title = parseResult[0][2];
-        result.description = parseResult[1][2].descriptionlines;
-        for(let index in parseResult[2]){
+        result.subtitle = parseResult[1]? parseResult[1][3]: "";
+        result.description = parseResult[2][2].descriptionlines;
+        result.conclusion = parseResult[4]? parseResult[4][2].conclusionlines: "";
+        for(let index in parseResult[3]){
             let step = new Step();
             step.text = this.getText(parseResult, index);
             step.lines = this.getLines(parseResult, index);
             step.textAfter = this.getTextAfter(parseResult, index);
             step.title = this.getTitle(parseResult, index);
-
             result.steps.push(step);
         }
-
         return result;
     }
 
     getText(parseResult, index){
         try {
-            return parseResult[2][index][0].steptextlines || parseResult[2][index][2][0].steptextlines;
+            return parseResult[3][index][1].steptextlines || parseResult[3][index][2][1].steptextlines;
         } catch (error) {
-            return parseResult[2][index][2][0].steptextlines;
+            return parseResult[3][index][2][1].steptextlines;
         }
     }
 
     getLines(parseResult, index):Command[]{
         let linebreak = process.platform=="win32" ? "\r\n" : "\n";
         try {
-            return (parseResult[2][index][6].steplines || parseResult[2][index][2][6].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return (parseResult[3][index][7].steplines || parseResult[3][index][2][7].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
         } catch (error) {
-            return parseResult[2][index][2][6].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return parseResult[3][index][2][7].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
         }
     }
 
     getTitle(parseResult, index) {
         try {
-            return (parseResult[2][index][3][2]|| parseResult[2][index][2][3][2]);
+            // parseResult[3][index][4][2] step without block
+            // parseResult[3][index][2][4][2] step inside a block
+            return (parseResult[3][index][4][2].steptitle || parseResult[3][index][2][4][2].steptitle);
         } catch(error) {
             return null;
         }
@@ -69,7 +71,7 @@ export class Parser {
 
     getTextAfter(parseResult, index){
         try {
-            return parseResult[2][index][3].steptextafterlines || "";
+            return parseResult[3][index][3].steptextafterlines || "";
         } catch (error) {
             return "";
         }

@@ -1,0 +1,43 @@
+== Docker Compose
+
+
+
+=== Prerequisites
+
+* You need to install https://docs.docker.com/compose/install/#install-compose[Docker Compose] on your local machine.
+
+=== Starting Docker Compose Application
+
+
+Docker Compose can be used via your Terminal (Linux/MacOS) or Command Line (Windows). Change the directory to the location where the `docker-compose.yml` file for your application is located:
+
+`cd <%= dir; %>`
+
+The following command will then start your Docker Compose multi-container application:
+
+`docker-compose up`
+
+If you would like to start the Docker Compose application in detached mode such that you can continue using the terminal, simply use the `-d` flag:
+
+`docker-compose up -d`
+
+<% if(port){ %>
+=== Startup Assertion
+
+
+In order to check if your application was started successfully, you can check if it's accessible on `localhost:<%= port; %>/<%app_path%>` either from your browser or by using the `curl` or `wget` programs.
+
+Example: `curl -Is localhost:<%= port; %>/<%app_path%> | head -n 1`
+
+This command should return an `200 OK` header if the service is available.
+
+<% } %>
+
+=== Stopping Docker Compose Application
+
+
+If your application was started with the detached flag, you can stop it with the following command.
+
+`docker-compose down`
+
+Otherwise, if your application is running in an interactive shell, you can stop it by simply using `ctrl + c`

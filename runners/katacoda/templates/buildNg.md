@@ -10,4 +10,6 @@ Run ng build command to build the Angular Project to the output directory specif
 `<% if(useDevonCommand){ %>devon<% } %> ng build`{{execute}}
 <% } %>  
 
+This may take some time.
+
 <%= textAfter; %>

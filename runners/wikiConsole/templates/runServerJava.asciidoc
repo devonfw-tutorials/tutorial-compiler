@@ -1,0 +1,25 @@
+== Run Java Server
+
+
+
+=== Prerequisites
+* Maven (can be included in your devonfw environment)
+
+=== Starting the server
+
+First, change the current working directory to where your server is located, i.e. `cd <%= server_path; %>`.
+
+Afterwards, use maven to start the server: `mvn spring-boot:run`.
+This command will start the Java server.
+
+<% if(port){ %>
+
+=== Startup Assertion
+
+You can check if the server is running correctly by checking if `localhost:<%= port; %>/<%= app_path; %>` is accessible by either using a tool like `curl`, `Postman` or simply accessing the service via your webbrowser.
+
+Example: `curl -Is localhost:<%= port; %>/<%app_path%> | head -n 1`
+
+This command should return an `200 OK` header if the service is available.
+
+<% } %>

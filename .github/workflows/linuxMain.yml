@@ -1,9 +1,14 @@
-name: CI
+name: CI Linux
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        default: '--debug'
 
 jobs:
   build:
@@ -22,7 +27,7 @@ jobs:
       - name: run checkout.sh
         run: bash checkout.sh
 
-      - name: run buildRun.sh
+      - name: run buildRun.sh ${{ github.event.inputs.logLevel }}
         uses: GabrielBB/xvfb-action@v1.0
         with:
-          run: sh buildRun.sh
+          run: sh buildRun.sh ${{ github.event.inputs.logLevel }}

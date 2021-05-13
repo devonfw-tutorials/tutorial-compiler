@@ -1,10 +1,12 @@
 # Development
 
 In this section we will describe how you can implement your own tutorials.
+Learn more about the file system and where you can add your commands in 
+https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure
 
 ### How to create a playbook
 The playbooks for the tutorial-compiler are contained in the tutorials repository. There you will find a description of how to create your own playbook.
-https://github.com/devonfw-forge/tutorials/wiki/Development
+https://github.com/devonfw-tutorials/tutorials/wiki/Development
 
 ### How to create your own command
 To create a new command you can use in your playbooks, you have to implement a new function for this command in all runner class you want to support this command. If you want to use the command only in katacoda tutorials for example, you have to implement the function only in the katacoda runner class.
@@ -59,7 +61,12 @@ If you want to pass arguments to this method, you have to do this in the header 
 
 ### Environment 
 flag: '-e'
-value: 'katacoda', 'console'
+value: 
+    * katacoda 
+    * test_console
+    * test_vscode
+    * wiki_eclipse
+    * wiki_vscode
 
 If you don't pass environment arguments to the file, it will run the playbooks on all environments.
 
