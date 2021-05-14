@@ -11,13 +11,13 @@ Based on your operating system a window with the file explorer opens. Navigate t
 Now confirm your inputs with the *Open* button in the bottom right corner.
 A new VS Code Editor window <%= fileName; %> will be opened, where you can select the whole text with the keyboard shortcut ctrl+a and copy the selected text with ctrl+c.<% } %>
 
-Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting *New File* or use the keyboard shortcut ctrl+n and a new VS Code Editor windows will be opened with an untitled-1 filename.
+Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting *New File* or use the keyboard shortcut ctrl+n and a new VS Code editor window will be opened with an untitled-1 filename.
 <% if(contentPath) { %> 
-Insert the previously copied text with the keyboard shortcut ctrl+v or with a right-click in the Editor window and the paste function. <% } %>
+Insert the previously copied text with the keyboard shortcut ctrl+v or with a right-click in the editor window and the paste function. <% } %>
 
 The next step is to save the file by selecting *Save* or *Save as* in the file context menu or by using the keyboard shortcut ctrl+s.
 A file explorer window opens.
 You should check if you are currently in the right directory where you want to save <%= filePath; %><%= fileName;%>. 
 Changing the directory can be done by inserting the path `<%= filePath; %>` in the path bar. If the directory does not exist, create the missing folders.
-To save the file specify the name of the File. Paste `<%= fileName; %>` in the text field *File name:*. 
+To save the file specify the name of the file. Paste `<%= fileName; %>` in the text field *File name:*. 
 The last step is to save the file with the *Save* button in the bottom right corner and <%= fileName; %> has been created<% if(contentFile) { %> and filled with some data from <%= contentFile; %><%} %>.

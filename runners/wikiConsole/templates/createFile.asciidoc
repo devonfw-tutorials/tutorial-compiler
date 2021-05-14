@@ -7,7 +7,7 @@
 .Operating system
 . Windows + 
 Execute the command to create a folder if not already existing `New-Item -ItemType Directory -Force -Path <%= filePath; %>`.
-. Linux + 
+. Linux and macOS + 
 Execute the command `mkdir -p <%= filePath; %>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
 
 === Create <%= fileName; %> from command prompt
@@ -20,7 +20,7 @@ More information about the *New-Item* function and the usage can be found https:
 To create a new empty <%= fileName; %> <% if(contentPath){ %>and insert some data from into it, <%= contentFile; %> <% } %>you can execute the command `New-Item  -Path "<%= filePath; %>" -Name 
 <%= fileName; %> -ItemType "file" <% if(contentPath) { %> -Value $(Get-Content -Path <%= contentPath; %>)`<% } %>. 
 
-. Linux +
+. Linux and macOS +
 In the Terminal, we start using the function *cat* to create a new file <% if(contentPath) { %>and also write the content from another file into it <% } %> 
 more information about the usage you can get https://man7.org/linux/man-pages/man1/cat.1.htm[here].<% if(contentPath) { %>
 To create a new empty <%= fileName; %> and write some data from <%= contentFile; %> into it, you can execute the command `cat <%= contentPath; %> > <%= filePath; %>`.
