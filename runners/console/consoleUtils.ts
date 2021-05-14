@@ -27,6 +27,7 @@ export class ConsoleUtils {
         if(result.returnCode != 0) return;
 
         let process = child_process.spawn(command, [], { shell: true, cwd: directory, env: env });
+
         let output = "";
         process.stdout.on('data', function(data) {
             output += data.toString();

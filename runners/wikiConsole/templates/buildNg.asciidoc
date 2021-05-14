@@ -1,15 +1,13 @@
-Build an Angular Project
-========================
+== Build an Angular Project
 
-Prerequisites
-~~~~~~~~~~~~~~
+
+=== Prerequisites
 * You need to have either installed the devonfw-ide with an Angular installation or installed https://angular.io/[Angular] seperatly on your system.
-* You need to have created or downloaded a Angular Project to a local directory.
+* You need to have created or downloaded a Angular project to a local directory.
 
 For this tutorial navigate to the Angular directory by executing `cd <%= angularPath; %>` in your terminal.
 
-Execution
-~~~~~~~~~
+=== Execution
 <% if(outputPath){ %>
 If you want to compile the app to a custom output directory, you can execute the command `ng build --output-path <%= outputPath; %>`. The output path must me relative to your current workspace.
 <% } else { %>

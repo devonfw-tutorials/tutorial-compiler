@@ -30,6 +30,9 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        return this.runInstallDevonfwIde(runCommand);
+    }
 
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
@@ -104,6 +107,12 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
+  
+    runCreateFolder(runCommand: RunCommand): RunResult {
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
+        return null;
+    }
 
     runBuildJava(runCommand: RunCommand): RunResult {
         let directoryPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
@@ -115,6 +124,11 @@ export class WikiConsole extends WikiRunner {
     runInstallCobiGen(runCommand: RunCommand): RunResult{
         let devonPath = this.getWorkingDirectory();
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {devonPath: devonPath});
+        return null;
+    }
+
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
         return null;
     }
 }
