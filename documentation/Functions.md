@@ -362,3 +362,13 @@ This command also works if the devonfw IDE is not installed, but then you have t
 
 #### example
 addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
+
+
+***
+
+### openFile
+#### parameter 
+1. Path of the file to be opened (relative path to the workspace directory)
+
+#### example 
+openFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java")
