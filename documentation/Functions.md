@@ -363,7 +363,6 @@ This command also works if the devonfw IDE is not installed, but then you have t
 #### example
 addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
 
-
 ***
 
 ### openFile
