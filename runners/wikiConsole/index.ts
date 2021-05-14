@@ -109,7 +109,7 @@ export class WikiConsole extends WikiRunner {
     }
   
     runCreateFolder(runCommand: RunCommand): RunResult {
-        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let folderPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
         return null;
     }
