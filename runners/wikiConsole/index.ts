@@ -29,6 +29,9 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        return this.runInstallDevonfwIde(runCommand);
+    }
 
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
