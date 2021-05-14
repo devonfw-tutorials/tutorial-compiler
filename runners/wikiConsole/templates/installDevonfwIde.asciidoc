@@ -1,19 +1,19 @@
 == devonfw setup
 
-If you already installed the devonfw-ide, you can skip this step.
+If you already installed the devonfw IDE, you can skip this step.
 
 === Prerequisites
 
 * You need to have a tool to extract `.tar.gz` files. On Windows lower Windows 10 use can use https://www.7-zip.org/7-zip[7-Zip]. The most other platforms support this feature by default.
 * You need to have https://git-scm.com/[Git] and https://curl.se/[Curl] installed. On Windows you have to install https://git-scm.com/download/win[Git for Windows]. On Linux systems you might need to install the following tools in case they are not present (`sudo apt-get install git curl` or `sudo yum install git-core curl`)
 
-Create a new directory in the location where you want to install the devonfw-ide. If you are using the terminal, navigate to this location and run `mkdir devonfw` and `cd devonfw` to create the directory and navigate into it.
+Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run `mkdir devonfw` and `cd devonfw` to create the directory and navigate into it.
 
 === Download
 
 <% if(version) {%>
 
-Now you have to download version <%= version; %> of the devonfw-ide. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz[here].
+Now you have to download version <%= version; %> of the devonfw IDE. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz[here].
 
 In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=<%= version; %>&p=tar.gz'` if you are using Windows.
 
@@ -23,7 +23,7 @@ On MacOS, depending on your setup, you can either use the same `wget` command sp
 
 <% } else { %>
 
-Now you have to download the latest release of the devonfw-ide. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz[here].
+Now you have to download the latest release of the devonfw IDE. You can download it from https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz[here].
 
 In the Terminal execute `Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz'` if you are using Windows.
 
@@ -37,10 +37,10 @@ After that you need to extract the downloaded file. To do this, run `tar -xvzf d
 
 === Setup
 
-First, you need to prepare a settings repository to specify the tools to be installed within the devonfw-ide. Normally this is done by your project. If you just want to test the devonfw-ide, you can use the default URL, which is https://github.com/devonfw/ide-settings.
+First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is https://github.com/devonfw/ide-settings.
 
 For now clone the repository on https://github.com/devonfw/ide-settings or your own fork of it.
 For this tutorial you have to write `DEVON_IDE_TOOLS=(<%= tools; %>)` into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
 Start the setup process by executing `.\setup 'path/to/settings'` (Windows) or `bash setup path/to/settings.git` (Linux).
 
-You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw-ide.
+You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.
