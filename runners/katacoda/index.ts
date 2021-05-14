@@ -212,9 +212,8 @@ export class Katacoda extends Runner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
-        let workspaceDir = path.join(this.getVariable(this.workspaceDirectory).concat(path.sep).replace(path.sep + "root" + path.sep, ""));
         let fileName = path.basename(path.join(runCommand.command.parameters[0]));
-        let fileDir = path.join(workspaceDir, runCommand.command.parameters[0]).replace(/\\/g, "/");
+        let fileDir = path.relative('/root', path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0])).replace(/\\/g, "/");
         let placeholder = runCommand.command.parameters[1].placeholder ? runCommand.command.parameters[1].placeholder : "";
         let dataTarget = runCommand.command.parameters[1].placeholder ? "insert" : "replace";
         let content = "";
@@ -424,7 +423,7 @@ export class Katacoda extends Runner {
 
     runOpenFile(runCommand: RunCommand): RunResult {
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let filePath = path.relative('/root', path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0])).replace(/\\/g, "/");
         
         this.pushStep(runCommand, "Open " + fileName, "step" + runCommand.stepIndex + ".md");
 
