@@ -406,7 +406,7 @@ export class Console extends Runner {
     }
 
     runNextKatacodaStep(runCommand: RunCommand): RunResult {
-        //Only needed for katacoda runner
+        //Only needed for katacoda and wiki runner
         return null;
     }
 
@@ -456,6 +456,13 @@ export class Console extends Runner {
 
         ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.workspaceDirectory), result, this.env);
         
+        return result;
+    }
+
+    runOpenFile(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        //Only needed for katacoda, wiki runner and the assertions
         return result;
     }
 
@@ -803,6 +810,20 @@ export class Console extends Runner {
             throw error;
         }
     }
+
+    async assertOpenFile(runCommand: RunCommand, result: RunResult){
+        try{
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        }
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
 
     private lookup(obj, lookupkey) {
         for(var key in obj) {
