@@ -4,4 +4,4 @@ You can either click on this link, here:
 
 `<%= filePath; %>`{{open}}
 
-and it will open the file automatically or switch to the IDE and open it yourself. 
+and it will open the file automatically or switch to the editor and open it yourself. 
