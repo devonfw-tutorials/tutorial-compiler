@@ -1,13 +1,11 @@
-Run Java Server
-================
+== Run Java Server
 
 
-Prerequisites
-~~~~~~~~~~~~~~
+
+=== Prerequisites
 * Maven (can be included in your devonfw environment)
 
-Starting the server
-~~~~~~~~~~~~~~~~~~~
+=== Starting the server
 
 First, change the current working directory to where your server is located, i.e. `cd <%= server_path; %>`.
 
@@ -16,8 +14,7 @@ This command will start the Java server.
 
 <% if(port){ %>
 
-Startup Assertion
-~~~~~~~~~~~~~~~~~
+=== Startup Assertion
 
 You can check if the server is running correctly by checking if `localhost:<%= port; %>/<%= app_path; %>` is accessible by either using a tool like `curl`, `Postman` or simply accessing the service via your webbrowser.
 
