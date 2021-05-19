@@ -5,7 +5,7 @@ Installing devonfw code generator (i.e. CobiGen).
 * An installed VS Code Editor is needed. VS Code is installed inside your devonfw distribution. If VS Code or devonfw is missing, you have to install it first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw ] documentation to install the missing ones. 
 
 === Install CobiGen for VS Code Editor
-First, download the VS Code extension file. You can download it https://github.com/devonfw-forge/cobigen-vscode-plugin/releases/download/0.0.1/cobigen-plugin-0.0.1.vsix[here] or execute this command in PowerShell or Terminal.
+First, download the VS Code extension file. You can download it from https://github.com/devonfw-forge/cobigen-vscode-plugin/releases/download/0.0.1/cobigen-plugin-0.0.1.vsix[here] or execute the following command in PowerShell or Terminal.
 
 
 .Operating system

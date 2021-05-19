@@ -2,7 +2,7 @@
 Installing devonfw code generator (i.e. CobiGen).
 
 === Prerequisites
-* An installed devonfw distribution is needed. To execute the cobigen CLI, you have to install the devonfw IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
+* An installed devonfw distribution is needed. To execute the CobiGen CLI, you have to install the devonfw IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
 
 === Install CobiGen with a command prompt
 
