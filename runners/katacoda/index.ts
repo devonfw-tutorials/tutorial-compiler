@@ -411,6 +411,7 @@ export class Katacoda extends Runner {
                 ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2].dir).replace(/\\/g, "/")
                 : runCommand.command.parameters[2].dir;
             changeDir = true;
+            this.currentDir = filepath;
         }
 
         let bashCommand = {

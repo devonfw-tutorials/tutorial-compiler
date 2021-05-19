@@ -147,7 +147,7 @@ executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "dat
 Will create a command to execute the script in the directory with the parameter --params 5 and in a new terminal.
 
 executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
-Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path ist the subpath from your server that should be reached.
+Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
 
 ### installCobiGen
