@@ -46,7 +46,10 @@ blockmarker "===="
   = "===="
 
 stepstitle
-  = "==" _ string __
+  = "==" _ steptitle __
+  
+steptitle
+  = [^\r\n] + { return { "steptitle": text()};}
 
 steptextlines
   = steptextline* { return { "steptextlines": text()}; }

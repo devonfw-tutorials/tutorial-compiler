@@ -168,7 +168,7 @@ export class Console extends Runner {
 
         let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
         let projectName = runCommand.command.parameters[0];
-        ConsoleUtils.executeDevonCommandSync("java create com.example.application." + projectName, workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
+        ConsoleUtils.executeDevonCommandSync("java create " + projectName, workspaceDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
         return result;
     }
 
@@ -408,7 +408,7 @@ export class Console extends Runner {
     }
 
     runNextKatacodaStep(runCommand: RunCommand): RunResult {
-        //Only needed for katacoda runner
+        //Only needed for katacoda and wiki runner
         return null;
     }
 
@@ -520,6 +520,13 @@ export class Console extends Runner {
         
         return result;
     }
+  
+    runOpenFile(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        //Only needed for katacoda, wiki runner and the assertions
+        return result;
+    }
 
 
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
@@ -606,15 +613,18 @@ export class Console extends Runner {
     async assertCreateDevon4jProject(runCommand: RunCommand, result: RunResult) {
         try {
             let workspaceDir = path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main");
-
+            let lastDot = runCommand.command.parameters[0].lastIndexOf('.') + 1;
+            let projectFolder = runCommand.command.parameters[0].substr(lastDot);
+            let package2Folder = path.join(runCommand.command.parameters[0].replace(/\./g, path.sep));
+        
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0]))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "api", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java"))
-            .directoryExits(path.join(workspaceDir, runCommand.command.parameters[0], "server", "src", "main", "java"))
-            .fileExits(path.join(workspaceDir, runCommand.command.parameters[0], "core", "src", "main", "java", "com", "example", "application", runCommand.command.parameters[0], "SpringBootApp.java"));
+            .directoryExits(path.join(workspaceDir, projectFolder))
+            .directoryExits(path.join(workspaceDir, projectFolder, "api", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, projectFolder, "core", "src", "main", "java"))
+            .directoryExits(path.join(workspaceDir, projectFolder, "server", "src", "main", "java"))
+            .fileExits(path.join(workspaceDir, projectFolder, "core", "src", "main", "java", package2Folder, "SpringBootApp.java"));
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -863,6 +873,20 @@ export class Console extends Runner {
             throw error;
         }
     }
+
+    async assertOpenFile(runCommand: RunCommand, result: RunResult){
+        try{
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        }
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
 
     private lookup(obj, lookupkey) {
         for(var key in obj) {

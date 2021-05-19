@@ -4,7 +4,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p <%= filePath; %>`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 '<%= fileName; %>' will be created automatically inside the newly created folder.
 

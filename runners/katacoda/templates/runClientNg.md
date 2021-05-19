@@ -10,7 +10,7 @@ Usually you would type 'Ctrl + C' and rerun the same command in this terminal to
 
 `<% if(useDevonCommand){ %>devon<% } %> ng serve --host 0.0.0.0 --disable-host-check`{{execute T<%= terminalId; %> <% if (interrupt) { %>interrupt<% } %>}}
 
-For your local projects you wouldn't add '--host 0.0.0.0' and '--disable-host-check' to the ng command.
+For your local projects you wouldn't add '--host 0.0.0.0' and '--disable-host-check' to the 'ng' command.
 
 <% if(port){ %>
 Now you can open the following link to use the app. 
