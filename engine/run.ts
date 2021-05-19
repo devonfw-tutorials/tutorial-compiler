@@ -19,7 +19,7 @@ class Run {
             if(!this.args.has("debug")) {
                 console.debug = function(){}
             }
-            if(this.args.has("commentErrors")) {
+            if(this.args.has("checkSyntax")) {
                 this.syntaxChecker.activate();
             }
             this.parsePlaybooks();
