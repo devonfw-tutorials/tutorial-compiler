@@ -15,13 +15,13 @@ First, you need to open a command prompt in your current workspace. For Windows,
 
 .Operating System
 . Windows + 
-In Powershell, we use the command *New-Item* to create a new file<% if(contentPath) { %>, and to insert some content into the created file we use the *Get-Content* command<% } %>.
-More information about the *New-Item* function and the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-item?view=powershell-7.1[here]<% if(contentPath) { %> and some information about the *Get-Content* function and the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[here]<% } %>. 
-To create a new empty <%= fileName; %> <% if(contentPath){ %>and insert some data from into it, <%= contentFile; %> <% } %>you can execute the command `New-Item  -Path "<%= filePath; %>" -Name 
+In Powershell, we use the cmdlet *New-Item* to create a new file<% if(contentPath) { %>, and to insert some content into the created file we use the cmdlet *Get-Content* <% } %>.
+More information about the *New-Item* cmdlet and the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-item?view=powershell-7.1[here]<% if(contentPath) { %> and some information about the *Get-Content* cmdlet and the usage can be found https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-content?view=powershell-7.1[here]<% } %>. 
+To create a new empty <%= fileName; %> <% if(contentPath){ %>and insert some data from  <%= contentFile; %> into it, <% } %>you can execute the command `New-Item  -Path "<%= filePath; %>" -Name 
 <%= fileName; %> -ItemType "file" <% if(contentPath) { %> -Value $(Get-Content -Path <%= contentPath; %>)`<% } %>. 
 
 . Linux and macOS +
-In the Terminal, we start using the function *cat* to create a new file <% if(contentPath) { %>and also write the content from another file into it <% } %> 
+In the Terminal, we start using the command *cat* to create a new file <% if(contentPath) { %>and also write the content from another file into it <% } %> 
 more information about the usage you can get https://man7.org/linux/man-pages/man1/cat.1.htm[here].<% if(contentPath) { %>
 To create a new empty <%= fileName; %> and write some data from <%= contentFile; %> into it, you can execute the command `cat <%= contentPath; %> > <%= filePath; %>`.
 <% }else{ %>To create a new empty <%= fileName; %> you can execute the command `cat <%= filePath; %>`.<% } %>
