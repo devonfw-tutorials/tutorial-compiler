@@ -26,6 +26,10 @@ The installation process may take a while.
 Accept the licence agreements.
 `yes`{{execute T1}}
 
+<% if(tools.indexOf("mvn") > 0){ %>
+The installer will ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
+<% } %> 
+
 The devonfw IDE is now installed. To use the new 'devon' commands you have the open a new terminal or use the following command:
 
 `. ~/.bashrc`{{execute T1}}
