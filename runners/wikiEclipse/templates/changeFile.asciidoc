@@ -1,23 +1,24 @@
 == Changing of the <%= fileName; %> File
 
+=== Prerequisites
+* Eclipse IDE (can be installed in your devonfw environment).
+
 === Changing of <%= fileName; %> in the Eclipse IDE
 
-<% if(contentPath) {%> 
-First, you want to open the file <%= contentFile; %> where you get the content from, you want to insert into <%= fileName; %>.
-Go to the file context menu in the top left corner right and choose *Open File...*. 
-Based on your operating system a window with the file explorer opens. You have to navigate to <%= contentFile; %> and select it. Select the right folder manually or by inserting the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`.
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new Eclipse editor window where you can select the whole text with the keyboard shortcut ctrl+a or just select the text you want to copy and copy the text with ctrl+c.<% } %>
 
 To change the <%= fileName; %> file, you have to open it in the Eclipse IDE. 
 Open Eclipse and choose in the file context menu in the top left corner  *Open File...*. 
-Based on your operating system a window with the file explorer opens. You have to navigate to <%= fileName; %> and select it. Select the right folder manually or by inserting the path `<%= filePath; %>` into the path bar, so you can jump into the right folder and select the file `<%= fileName; %>`.
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new Eclipse editor window.
+Based on your operating system a window with the file explorer opens. You have to navigate to <%= fileName; %> and select it. Choose the right folder manually by selecting the folders from the path `<%= filePath; %>` and select the file `<%= fileName; %>`. 
+You confirm this with the *Open* button in the bottom right corner and <%= fileName; %> will be opened in a new Eclipse editor window.
 
-<% if(contentString) { %>Now we can copy the content *<%= contentString; %>* with ctrl+c we want to insert into <%= fileName; %>. <% } %>
+Select the following text and copy it with a right-click and the copy function or the keyboard shortcut crtl+c.
+[source, <%= fileType; %>]
+----
+<%= content; %>
+----
+
+
 <% if(lineNumber) { %>Inserting the content into a specific line number can be done by a left mouse click into the line *<%= lineNumber%>* and using the keyboard shortcut ctrl+v.
-<%}else if(placeholder) {%>To replace the content with a specific Placeholder you have to locate the placeholder in <%= fileName %>. The fastest way is to search through the file with ctrl+f. A *Find/Replace* window will be opened and pasting the placeholder *<%= placeholder; %>* into the text field *find*. Use the button *Find* and the placeholder will be marked in the text and you can replace him with the new content.
-<% }else{ %>Now you can select the place you want to insert the content or just append it at the end of the file and paste the content with the shortcut ctrl+v. <% } %>
-
+<%}else if(placeholder) {%>To replace the content with a specific Placeholder you have to locate the placeholder in <%= fileName %>. The fastest way is to search through the file with ctrl+f. A *Find/Replace* window will be opened and pasting the placeholder `<%= placeholder; %>` into the text field *find*. Use the button *Find* and the placeholder will be marked in the text and you can replace him with the new content.
+<% }else{ %>Now insert the copied text with the keyboard shortcut ctrl+v or with a right-click in the Eclipse Editor window of the new file and the paste function or the keyboard shortcut ctrl+v. <% } %>
 The final step is to save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s and <%= fileName; %> has been changed.

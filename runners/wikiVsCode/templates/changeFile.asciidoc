@@ -1,23 +1,22 @@
 == Changing of the <%= fileName; %> File
 
+=== Prerequisites
+* VS Code Editor (can be installed in your devonfw environment).
+
 === Changing of <%= fileName; %> in the VS Code Editor
 
-<% if(contentPath) {%> 
-First, you want to open the file <%= contentFile; %> where you get the content from, you want to put into the <%= fileName; %>.
-Go to the file context menu in the top left corner right next to the VS Code symbol and choose *Open File...* or you can do this with the keyboard shortcut ctrl+o. 
-Based on your operating system a window with the file explorer opens. You have to navigate <%= contentFile; %> and select it. Select the right folder manually or by inserting the path `<%= contentPath; %>` into the path bar, so you can jump into the right folder and select the file `<%= contentFile; %>`. 
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new VS Code editor window where you can select the whole text with the keyboard shortcut ctrl+a or just select the text you want to copy and copy the text with ctrl+c.<% } %>
+To change the file <%= fileName; %>, you have to open it in VS Code first. 
+Open VS Code and choose in the *File* context menu in the top left corner right next to the VS Code symbol *Open File...* or just use the keyboard shortcut ctrl+o. 
+Based on your operating system a window with the file explorer opens. You have to navigate to <%= fileName; %> and select it. Choose the right folder manually by selecting the folders from the path `<%= filePath; %>` and select the file `<%= fileName; %>`. 
+You can confirm this with the *Open* button in the bottom right corner and <%= fileName; %> will be opened in a new VS Code editor window.
 
-To change the file <%= fileName; %>, you have to open it in VS Code. 
-Open VS Code and choose in the file context menu in the top left corner right next to the VS Code symbol *Open File...* or just use the keyboard shortcut ctrl+o. 
-Based on your operating system a window with the file explorer opens. You have to navigate to <%= fileName; %> and select it. Select the right folder manually or by inserting the path `<%= filePath; %>` into the path bar, so you can jump into the right folder and select the file `<%= fileName; %>`. 
-You confirm this with the *Open* button in the bottom right corner.
-The file will be opened in a new VS Code editor window.
+Select the following text and copy it with a right-click and the copy function or the keyboard shortcut crtl+c.
+[source, <%= fileType; %>]
+----
+<%= content; %>
+----
 
-<% if(contentString) { %>Now we can copy the content *<%= contentString; %>* with ctrl+c we want to insert into <%= fileName; %>. <% } %>
 <% if(lineNumber) { %>Inserting the content into a specific line number can be done by a left mouse click into the line *<%= lineNumber%>* and using the keyboard shortcut ctrl+v.
-<%}else if(placeholder) {%>To replace the content with a specific Placeholder you have to locate the placeholder in the file. The fastest way is to search through the file with ctrl+f and pasting the placeholder *<%= placeholder; %>* into the text field that will be opened in the top right of the editor window. The placeholder will be marked in the text and you can replace him with the new content.
-<% }else{ %>Now you can select the place you want to insert the content or just append it at the end of the file and paste the content with the shortcut ctrl+v. <% } %>
-
+<%}else if(placeholder) {%>To replace the content with a specific Placeholder you have to locate the placeholder in the file. The fastest way is to search through the file with ctrl+f and pasting the placeholder `<%= placeholder; %>` into the text field that will be opened in the top right of the editor window. The placeholder will be marked in the text and you can replace him with the new content.
+<% }else{ %>Now insert the copied text with the keyboard shortcut ctrl+v or with a right-click in the VS Code Editor window of the new file and the paste function or the keyboard shortcut ctrl+v. <% } %>
 The final step is to save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s and <%= fileName; %> has been changed.
