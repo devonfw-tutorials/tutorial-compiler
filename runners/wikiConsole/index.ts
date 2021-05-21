@@ -3,6 +3,7 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
+import { Console } from "console";
 
 export class WikiConsole extends WikiRunner {
 
@@ -122,7 +123,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runInstallCobiGen(runCommand: RunCommand): RunResult{
-        let devonPath = this.getWorkingDirectory();
+        let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {devonPath: devonPath});
         return null;
     }
