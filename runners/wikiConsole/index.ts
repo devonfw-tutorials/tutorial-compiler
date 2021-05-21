@@ -85,19 +85,6 @@ export class WikiConsole extends WikiRunner {
     }
 
 
-    runCreateFile(runCommand: RunCommand): RunResult{
-        let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(runCommand.command.parameters[0].replace(fileName, ""));
-        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
-        let commandContent, content = undefined;
-        if(runCommand.command.parameters[1]){
-            content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
-            commandContent = content.replace(/\r?\n|\r/g, " `\n");
-        } 
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , content: content, fileName: fileName, fileType: fileType, commandContent: commandContent });
-        return null;
-    }
-
     runDownloadFile(runCommand: RunCommand): RunResult{
         let url = runCommand.command.parameters[0];
         let fileName = runCommand.command.parameters[1];
