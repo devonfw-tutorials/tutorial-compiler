@@ -51,7 +51,7 @@ class Run {
         }
         
         if (this.errors.length != 0) {
-            console.log("Errors", this.errors);
+            console.log("Errors", JSON.stringify(this.errors, null, "\t"));
         }
         return this.errors.length == 0;
     }
