@@ -1,7 +1,8 @@
 == Create the file <%= fileName; %>
 
 === Prerequisites
-* Existing folder you want to create the file. (If the folder doesn't exist you can create it from with the editor.)
+* Existing folder you want to create the file. (If the folder doesn't exist you can create it from with the editor).
+* Eclipse IDE (can be installed in your devonfw environment).
 
 === Creating <%= fileName; %> in the Eclipse IDE
 
