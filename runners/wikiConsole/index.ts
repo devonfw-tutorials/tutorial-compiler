@@ -8,6 +8,7 @@ export class WikiConsole extends WikiRunner {
 
     init(playbook: Playbook): void {
         super.init(playbook);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
     }
 
@@ -29,6 +30,9 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runRestoreDevonfwIde(runCommand: RunCommand): RunResult {
+        return this.runInstallDevonfwIde(runCommand);
+    }
 
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
@@ -103,11 +107,22 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
+  
+    runCreateFolder(runCommand: RunCommand): RunResult {
+        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
+        return null;
+    }
 
     runBuildJava(runCommand: RunCommand): RunResult {
         let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
         let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
+        return null;
+    }
+
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
         return null;
     }
 }

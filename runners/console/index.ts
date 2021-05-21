@@ -56,6 +56,12 @@ export class Console extends Runner {
             this.env["PATH"] = pathVariables;
         }
         
+        let licenseFile = path.join(os.homedir(), ".devon", ".license.agreement");
+        if(!fs.existsSync(path.dirname(licenseFile))) {
+            fs.mkdirSync(path.dirname(licenseFile));
+        }
+        fs.writeFileSync(licenseFile, "you accepted the devonfw-ide License.https://github.com/devonfw/ide/blob/master/documentation/LICENSE.asciidoc");
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
@@ -75,10 +81,10 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
+            ConsoleUtils.executeCommandSync("powershell.exe ./setup --batch " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env);
         } else {
             ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
+            ConsoleUtils.executeCommandSync("bash setup --batch " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env);
         }
 
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
@@ -406,7 +412,7 @@ export class Console extends Runner {
     }
 
     runNextKatacodaStep(runCommand: RunCommand): RunResult {
-        //Only needed for katacoda runner
+        //Only needed for katacoda and wiki runner
         return null;
     }
 
@@ -456,6 +462,13 @@ export class Console extends Runner {
 
         ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.workspaceDirectory), result, this.env);
         
+        return result;
+    }
+
+    runOpenFile(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0;
+        //Only needed for katacoda, wiki runner and the assertions
         return result;
     }
 
@@ -803,6 +816,20 @@ export class Console extends Runner {
             throw error;
         }
     }
+
+    async assertOpenFile(runCommand: RunCommand, result: RunResult){
+        try{
+            new Assertions()
+            .noErrorCode(result)
+            .noException(result)
+            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+        }
+        catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+    }
+
 
     private lookup(obj, lookupkey) {
         for(var key in obj) {
