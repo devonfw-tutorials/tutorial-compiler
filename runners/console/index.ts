@@ -56,6 +56,12 @@ export class Console extends Runner {
             this.env["PATH"] = pathVariables;
         }
         
+        let licenseFile = path.join(os.homedir(), ".devon", ".license.agreement");
+        if(!fs.existsSync(path.dirname(licenseFile))) {
+            fs.mkdirSync(path.dirname(licenseFile));
+        }
+        fs.writeFileSync(licenseFile, "you accepted the devonfw-ide License.https://github.com/devonfw/ide/blob/master/documentation/LICENSE.asciidoc");
+
         let settingsDir = this.createFolder(path.join(this.getWorkingDirectory(), "devonfw-settings"), true);
         ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw/ide-settings.git settings", settingsDir, result, this.env);
         this.createFolder(path.join(settingsDir, "settings", "vscode", "plugins"), true)
@@ -75,10 +81,10 @@ export class Console extends Runner {
         if(this.platform == ConsolePlatform.WINDOWS) {
             ConsoleUtils.executeCommandSync("powershell.exe \"Invoke-WebRequest -OutFile devonfw.tar.gz '" + downloadUrl + "'\"", installDir, result, this.env);
             ConsoleUtils.executeCommandSync("powershell.exe tar -xvzf devonfw.tar.gz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("powershell.exe ./setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
+            ConsoleUtils.executeCommandSync("powershell.exe ./setup --batch " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env);
         } else {
             ConsoleUtils.executeCommandSync("wget -c \"" + downloadUrl + "\" -O - | tar -xz", installDir, result, this.env);
-            ConsoleUtils.executeCommandSync("bash setup " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env, "yes");
+            ConsoleUtils.executeCommandSync("bash setup --batch " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env);
         }
 
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));

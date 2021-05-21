@@ -46,3 +46,8 @@ Start the setup process by executing `.\setup 'path/to/settings'` (Windows) or `
 You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.
 
 
+<% if(tools.indexOf("mvn") > 0){ %>
+The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
+<% } %> 
+
+

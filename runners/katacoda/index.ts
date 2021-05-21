@@ -96,7 +96,7 @@ export class Katacoda extends Runner {
 
         this.pushStep(runCommand, "Install devonfw IDE", "step" + runCommand.stepIndex + ".md");
         
-        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand});
+        this.renderTemplate("installDevonfwIde.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, tools: tools});
         
         //update current and working directory
         this.currentDir = path.join(this.currentDir, "devonfw");

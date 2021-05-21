@@ -10,6 +10,7 @@ export class WikiConsole extends WikiRunner {
     init(playbook: Playbook): void {
         super.init(playbook);
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
     }
 
     async destroy(playbook: Playbook): Promise<void> {
