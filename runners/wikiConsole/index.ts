@@ -3,8 +3,11 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
+import * as fs from "fs-extra"
 
 export class WikiConsole extends WikiRunner {
+
+    
 
     init(playbook: Playbook): void {
         super.init(playbook);
@@ -33,7 +36,7 @@ export class WikiConsole extends WikiRunner {
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
             let filePath = path.join(workspacePath,runCommand.command.parameters[0]);
-            let fileName = path.basename(runCommand.command.parameters[0]); 
+            let fileName = path.basename(runCommand.command.parameters[0]);
             let contentPath, contentString;
             if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].contentConsole){
                 contentPath = runCommand.command.parameters[1].fileConsole;
@@ -83,16 +86,15 @@ export class WikiConsole extends WikiRunner {
 
 
     runCreateFile(runCommand: RunCommand): RunResult{
-        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(workspacePath, runCommand.command.parameters[0].replace(fileName, ""));
-        let contentFile = runCommand.command.parameters[1] 
-        ? path.basename(runCommand.command.parameters[1])
-        : undefined;
-        let contentPath = runCommand.command.parameters[1] 
-        ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].replace(contentFile, ""))
-        : undefined;
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, fileName: fileName, contentFile: contentFile});
+        let filePath = path.join(runCommand.command.parameters[0].replace(fileName, ""));
+        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
+        let commandContent, content = undefined;
+        if(runCommand.command.parameters[1]){
+            content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
+            commandContent = content.replace(/\r?\n|\r/g, " `\n");
+        } 
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , content: content, fileName: fileName, fileType: fileType, commandContent: commandContent });
         return null;
     }
 

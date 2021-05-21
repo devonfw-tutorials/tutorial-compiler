@@ -3,6 +3,7 @@ import { WikiRunner } from "../../engine/wikiRunner";
 import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import * as path from "path";
+import * as fs from "fs-extra"
 
 export class WikiEditor extends WikiRunner {
 
@@ -16,17 +17,15 @@ export class WikiEditor extends WikiRunner {
 
 
     runCreateFile(runCommand: RunCommand): RunResult{
-        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+        let workspacePath = this.getVariable(this.workspaceDirectory);
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(workspacePath, runCommand.command.parameters[0].replace(fileName, ""));
-        let contentFile = runCommand.command.parameters[1] 
-            ? path.basename(runCommand.command.parameters[1])
+        filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
+        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
+        let content = runCommand.command.parameters[1] 
+            ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" })
             : undefined;
-        let contentPath = runCommand.command.parameters[1] 
-            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1].replace(contentFile, ""))
-            : undefined;
-            
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath , contentPath : contentPath, fileName: fileName, contentFile : contentFile });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType });
         return null;
     }
   
