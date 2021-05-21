@@ -1,4 +1,5 @@
 env:
+  TUTORIAL_REPO: 'devonfw-tutorials/tutorials'
   BUILD_USER: ${{ secrets.BUILD_USER }}
   BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
   BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
@@ -15,17 +16,35 @@ jobs:
       - name: setup variables
         run: |
           echo "ORG=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
-          echo "REPO_SOURCE=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
-          echo "REPO_DEST=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}').wiki" >> $GITHUB_ENV
+          echo "REPO_COMPILER_SOURCE=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+          echo "REPO_COMPILER_DEST=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}').wiki" >> $GITHUB_ENV
+          echo "REPO_TUTORIAL_DEST=$(echo '${TUTORIAL_REPO}' | awk -F '/' '{print $2}').wiki" >> $GITHUB_ENV
         shell: bash
-      - name: Checkout ${REPO_SOURCE} Repository
-        run: git clone https://github.com/${ORG}/${REPO_SOURCE}.git ${REPO_SOURCE}
-      - name: Checkout ${REPO_DEST} Repository
-        run: git clone https://github.com/${ORG}/${REPO_DEST}.git ${REPO_DEST}
+      - name: Checkout ${REPO_COMPILER_SOURCE} Repository
+        run: git clone https://github.com/${ORG}/${REPO_COMPILER_SOURCE}.git ${REPO_COMPILER_SOURCE}
+      - name: Checkout ${REPO_COMPILER_DEST} Repository
+        run: git clone https://github.com/${ORG}/${REPO_COMPILER_DEST}.git ${REPO_COMPILER_DEST}
+      - name: Checkout ${REPO_TUTORIAL_DEST} Repository
+        run: git clone https://github.com/${ORG}/${REPO_TUTORIAL_DEST}.git ${REPO_TUTORIAL_DEST}
       - name: Copy docs and consolidate links
         run: |
-          cp -rf ${REPO_SOURCE}/documentation/* ${REPO_DEST}/
-          cd ${REPO_DEST}
+          cp -rf ${REPO_COMPILER_SOURCE}/documentation/* ${REPO_COMPILER_DEST}/
+          cd ${REPO_COMPILER_DEST}
+          grep -lr "link:[a-zA-Z0-9_.-]*.md.*" .| xargs -r sed -i "s/.md//g"
+          echo ">"
+          git diff-index --quiet HEAD & git status -s
+          echo "<"
+          git status
+          echo ">"
+          git diff-index --quiet HEAD & git status -s
+          echo "<"
+          echo "TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
+          echo "$TO_BE_CANCELLED"
+      - name: Copy docs and consolidate links to ${REPO_TUTORIAL_DEST} Repository
+        if: ${{ env.TO_BE_CANCELLED == 'false' }}
+        run: |
+          cp -rf ${REPO_COMPILER_SOURCE}/documentation/* ${REPO_TUTORIAL_DEST}/
+          cd ${REPO_TUTORIAL_DEST}
           grep -lr "link:[a-zA-Z0-9_.-]*.md.*" .| xargs -r sed -i "s/.md//g"
           echo ">"
           git diff-index --quiet HEAD & git status -s
@@ -44,9 +63,19 @@ jobs:
       - name: Sync Wiki
         if: ${{ env.TO_BE_CANCELLED == 'false' }}
         run: |
-          cd ${REPO_DEST}
+          cd ${REPO_COMPILER_DEST}
           git status
           git add .
-          git commit -m "${REPO_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
-          git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_DEST}.git"
+          git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
+          git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_COMPILER_DEST}.git"
           git push origin-wiki main
+      - name: Sync Wiki ${REPO_TUTORIAL_DEST} Repository
+        if: ${{ env.TO_BE_CANCELLED == 'false' }}
+        run: |
+          cd ${REPO_TUTORIAL_DEST}
+          git status
+          git add .
+          git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
+          git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_TUTORIAL_DEST}.git"
+          git push origin-wiki main
+      
