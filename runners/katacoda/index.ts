@@ -423,7 +423,7 @@ export class Katacoda extends Runner {
 
     runOpenFile(runCommand: RunCommand): RunResult {
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.relative('/root', path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0])).replace(/\\/g, "/");
+        let filePath = path.relative('/root', path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0])).replace(/\\/g, "/");
         
         this.pushStep(runCommand, "Open " + fileName, "step" + runCommand.stepIndex + ".md");
 

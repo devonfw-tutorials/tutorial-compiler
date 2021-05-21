@@ -822,7 +822,7 @@ export class Console extends Runner {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+            .fileExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]));
         }
         catch(error) {
             await this.cleanUp();

@@ -12,9 +12,9 @@ First, download the VS Code extension file. You can download it from https://git
 . Windows +
 `Invoke-WebRequest https://github.com/devonfw-forge/cobigen-vscode-plugin/releases/download/0.0.1/cobigen-plugin-0.0.1.vsix -O <%= dir;%>cobigen-plugin-0.0.1.vsix`
 . Linux and macOS +
-`wget https://github.com/devonfw-forge/cobigen-vscode-plugin/releases/download/0.0.1/cobigen-plugin-0.0.1.vsix -O cobigen-plugin-0.0.1.vsix -P <%= dir;%>`
+`wget https://github.com/devonfw-forge/cobigen-vscode-plugin/releases/download/0.0.1/cobigen-plugin-0.0.1.vsix -O cobigen-plugin-0.0.1.vsix -P $(pwd)/<%= dir;%>`
 
-Install CobiGen by opening VS Code Editor and the *Extensions* menu with ctrl+shift+X and select *...* in the top right corner of the extensions window. Select *Install from VSIX* and select the previously downloaded cobigen-plugin-0.0.1.vsix file.
+Install CobiGen by opening VS Code Editor and the *Extensions* menu with ctrl+shift+X and select *...* in the top right corner of the extensions window. Select *Install from VSIX* and select the previously downloaded cobigen-plugin-0.0.1.vsix file, it is located in the directory you startet executing this wiki.
 Now CobiGen is installed, use CobiGen by right-clicking on a file and selecting CobiGen in the opened menu. CobiGen generate will be executed with the selected file.
 
 Some further information about the usage of CobiGen can be found https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html[here]. 
