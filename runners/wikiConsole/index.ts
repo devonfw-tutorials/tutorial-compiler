@@ -102,6 +102,7 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+
     runDockerCompose(runCommand: RunCommand): RunResult {
         let dir = runCommand.command.parameters[0];
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })

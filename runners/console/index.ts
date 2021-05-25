@@ -8,7 +8,9 @@ import * as path from 'path';
 import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+
 const findProcess = require("find-process");
+
 const os = require("os");
 
 export class Console extends Runner {
@@ -285,7 +287,7 @@ export class Console extends Runner {
                 }
             });
             if(process.pid) {
-                this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
+                this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[1].port });
             }
         }else{
             result.returnCode = 1; 
@@ -306,7 +308,7 @@ export class Console extends Runner {
                 : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
 
                 if(process.pid) {
-                    this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                    this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[1].port });
                 }
         }else{
             result.returnCode = 1; 
@@ -374,7 +376,7 @@ export class Console extends Runner {
                 ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
                 : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
             if(process.pid) { 
-                this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+                this.asyncProcesses.push({ pid: process.pid,port: runCommand.command.parameters[1].port });
             }
         }else{
             result.returnCode = 1; 
@@ -439,7 +441,7 @@ export class Console extends Runner {
 
         return result;
     }
-
+  
     runChangeWorkspace(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -448,9 +450,69 @@ export class Console extends Runner {
         if(!fs.existsSync(workspacesDir))
             fs.mkdirSync(workspacesDir);
         this.setVariable(this.workspaceDirectory, workspacesDir);
-
-        return result;
+     
+      return result;
     }
+
+    runExecuteCommand(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0; 
+        let commandIndex;
+        if(runCommand.command.parameters[0] && runCommand.command.parameters[1]){
+            commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
+        }
+        else{
+            throw new Error("You have to pass a command for Windows and Linux based OS");
+        }
+
+        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
+            ? runCommand.command.parameters[commandIndex]+ " " +runCommand.command.parameters[2].args.join(" ")
+            : runCommand.command.parameters[commandIndex];
+
+        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].dir)
+            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2].dir)
+            : this.getVariable(this.workspaceDirectory)
+
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
+            if(runCommand.command.parameters[3].port){
+                let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[3].port});
+                }
+            }
+            else{
+                throw new Error("Missing arguments for the command " + exeCommand + ". You have to specify a port for the server. For further information read the function documentation.");
+            } 
+        }
+        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
+        
+      return result;
+    }
+
+
+    async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
+        try{
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+            if(runCommand.command.parameters.length > 3 && runCommand.command.parameters[2].asynchronous){
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[3].path,
+                    port: runCommand.command.parameters[3].port,
+                    interval: runCommand.command.parameters[3].interval,
+                    startupTime: runCommand.command.parameters[3].startupTime,
+                    command: this.platform == ConsolePlatform.WINDOWS 
+                        ? runCommand.command.parameters[0] 
+                        : runCommand.command.parameters[1] 
+                });
+            }
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+
+    }
+
 
     runAddSetupScript(runCommand: RunCommand): RunResult {
         let result = new RunResult();
@@ -464,13 +526,14 @@ export class Console extends Runner {
         
         return result;
     }
-
+  
     runOpenFile(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
         //Only needed for katacoda, wiki runner and the assertions
         return result;
     }
+
 
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
@@ -851,6 +914,7 @@ export class Console extends Runner {
                 return process.ppid == processIdToKill;
             });
 
+
             if(childProcesses.length > 0) {
                 for(let childProcess of childProcesses) {
                     killProcessesRecursively(processes, childProcess.pid)
@@ -869,24 +933,21 @@ export class Console extends Runner {
             for(let asyncProcess of this.asyncProcesses) {
                 killProcessesRecursively(processes, asyncProcess.pid);
             }
-            
             //Check if there are still running processes on the given ports
-            for(let asyncProcess of this.asyncProcesses) {
+            for(let asyncProcess of this.asyncProcesses.reverse()) {
                 let processes: any[] = await findProcess("port", asyncProcess.port);
                 if(processes.length > 0) {
                     for(let proc of processes) {
-                        if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                            try {
-                                process.kill(proc.pid);
+                        try {
+                            process.kill(proc.pid);
                             } catch(e) {
                                 console.error("Error killing id " + proc.pid, e);
                             }
                         }
                     }
-                }
-            }   
+                }      
+            }
         }
-    }
 
     private async cleanUp(): Promise<void> {
         await this.killAsyncProcesses();
