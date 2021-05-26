@@ -9,7 +9,8 @@ export class WikiConsole extends WikiRunner {
     init(playbook: Playbook): void {
         super.init(playbook);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
+        this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
+
     }
 
     async destroy(playbook: Playbook): Promise<void> {
@@ -26,8 +27,8 @@ export class WikiConsole extends WikiRunner {
             version = runCommand.command.parameters[1];
         }
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installDevonfwIde.asciidoc"), { tools: tools, version:version })
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
-        this.setVariable(this.installedTools, tools);
+        this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+        this.setVariable(this.INSTALLED_TOOLS, tools);
         return null;
     }
 
@@ -36,7 +37,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
-            let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+            let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
             let filePath = path.join(workspacePath,runCommand.command.parameters[0]);
             let fileName = path.basename(runCommand.command.parameters[0]); 
             let contentPath, contentString;
@@ -63,13 +64,13 @@ export class WikiConsole extends WikiRunner {
 
 
     runRunServerJava(runCommand: RunCommand): RunResult {
-        let server_path = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let server_path = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "runServerJava.asciidoc"), { server_path: server_path, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
 
     runNpmInstall(runCommand: RunCommand): RunResult {
-        let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let projectPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let npmCommand = {
             "name": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : undefined,
             "global": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].global) ? runCommand.command.parameters[1].global : false, 
@@ -81,7 +82,7 @@ export class WikiConsole extends WikiRunner {
     }
   
     runCloneRepository(runCommand: RunCommand): RunResult {
-        let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let directoryPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
@@ -96,7 +97,7 @@ export class WikiConsole extends WikiRunner {
     }
       
     runBuildNg(runCommand: RunCommand): RunResult {
-        let angularPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let angularPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let outputPath = runCommand.command.parameters.length < 1 ? runCommand.command.parameters[1] : "";
         this.renderWiki(path.join(this.getRunnerDirectory(), "template", "buildNg.asciidoc"), {angularPath: angularPath, outputPath: outputPath});
       
@@ -110,13 +111,13 @@ export class WikiConsole extends WikiRunner {
     }
   
     runCreateFolder(runCommand: RunCommand): RunResult {
-        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let folderPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFolder.asciidoc"), { folderPath: folderPath });
         return null;
     }
 
     runBuildJava(runCommand: RunCommand): RunResult {
-        let directoryPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let directoryPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
         return null;
