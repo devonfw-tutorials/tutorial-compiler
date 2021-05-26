@@ -1,5 +1,4 @@
 env:
-  TUTORIAL_REPO: 'tutorials.wiki'
   BUILD_USER: ${{ secrets.BUILD_USER }}
   BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
   BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
@@ -18,7 +17,7 @@ jobs:
           echo "ORG=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
           echo "REPO_COMPILER_SOURCE=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
           echo "REPO_COMPILER_DEST=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}').wiki" >> $GITHUB_ENV
-          echo "REPO_TUTORIAL_DEST=$(echo '${TUTORIAL_REPO}')" >> $GITHUB_ENV
+          echo "REPO_TUTORIAL_DEST=$(echo 'tutorials.wiki')" >> $GITHUB_ENV
         shell: bash
       - name: Checkout ${REPO_COMPILER_SOURCE} Repository
         run: git clone https://github.com/${ORG}/${REPO_COMPILER_SOURCE}.git ${REPO_COMPILER_SOURCE}
