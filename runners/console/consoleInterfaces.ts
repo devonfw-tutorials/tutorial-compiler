@@ -5,6 +5,5 @@ export enum ConsolePlatform {
 
 export interface AsyncProcess {
     pid: number;
-    name: string;
     port: number;
 }
