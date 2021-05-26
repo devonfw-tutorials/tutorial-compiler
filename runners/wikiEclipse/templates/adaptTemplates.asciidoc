@@ -1,0 +1,11 @@
+== Generate new Templates for CobiGen 
+How to use CobiGen, to generate templates for the following code generation.
+More information about CobiGen on https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html.
+
+=== Prerequisites
+An installed devonfw distribution is needed. To execute CobiGen in Eclipse IDE, you have to install the devonfw IDE with the Eclipse IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw-ide] documentation to install the same.
+
+=== Generate CobiGen Templates with Eclipse IDE
+
+First, open Eclipse IDE, and if your file explorer is empty load any file, create a file, or project into Eclipse.
+Right-click any file in the file explorer to open a dropdown menu where you can select CobiGen and an additional menu opens. Select *Adapt Templates...* and CobiGen starts generating a new template folder. CobiGen gives you a warning that existing templates will be overridden in your current workspace, you can confirm to continue. If the folder is already existing CobiGen will inform you, to update your templates you have to use the *Update Templates...* functionality else CobiGen will create a folder and download the latest template to use it. You can confirm and the messages with *OK* or *Update* and the CobiGen templates folder is imported successfully.
