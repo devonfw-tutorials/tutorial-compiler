@@ -1,0 +1,14 @@
+== Install GobiGen
+Installing devonfw CodeGenerator(i.e. CobiGen).
+
+=== Prerequisites
+CobiGen CLI is installed inside your devonfw distribution. In order to execute it, you have to install the devonfw IDE first.
+
+=== Install CobiGen with a command prompt
+
+First, you need to open a command prompt in your current Workspace. For Windows, you can use PowerShell and on Linux and macOS, you can use the Terminal.
+Navigate to the devonfw installation directory with this command `cd <%= devonPath;%>`
+Execute the command `devon conigen` and CobiGen will be installed.
+To update the environment you have to execute `devon` and you have successfully installed CobiGen. 
+
+Some further information about the usage of CobiGen can be found https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html[here]. 

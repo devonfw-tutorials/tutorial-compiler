@@ -6,6 +6,7 @@ import * as path from "path";
 
 export class WikiVsCode extends WikiRunner {
 
+
     init(playbook: Playbook): void {
         super.init(playbook);
     }
@@ -40,4 +41,16 @@ export class WikiVsCode extends WikiRunner {
             contentFile: contentFile, fileName: fileName});
         return null;
     }
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {});
+        return null;
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        return this.getVariable(this.installedTools).includes("vscode")
+            ? super.supports(name, parameters)
+            : false;
+    }
+
 }
