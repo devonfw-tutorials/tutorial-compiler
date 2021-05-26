@@ -67,14 +67,16 @@ jobs:
           git add .
           git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
           git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_COMPILER_DEST}.git"
-          git push origin-wiki main
+          git push origin-wiki master
       - name: Sync Wiki ${REPO_TUTORIAL_DEST} Repository
         if: ${{ env.TO_BE_CANCELLED == 'false' }}
         run: |
           cd ${REPO_TUTORIAL_DEST}
+          git checkout master
+          git pull
           git status
           git add .
           git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
           git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_TUTORIAL_DEST}.git"
-          git push origin-wiki main
+          git push origin-wiki master
       
