@@ -5,4 +5,7 @@ Copy-Item -Force -Recurse -Path $PSScriptRoot\environments\ -Destination $PSScri
 Copy-Item -Force -Recurse -Path $PSScriptRoot\runners\ -Destination $PSScriptRoot\build
 npm test
 if(-not $?) { throw 'tests failed' } 
-node $PSScriptRoot\build\engine\run.js $args 
+node $PSScriptRoot\build\engine\run.js $args
+if(Test-Path $PSScriptRoot\build\playbooks){
+    Remove-Item .\build\playbooks -Recurse -Force
+}
