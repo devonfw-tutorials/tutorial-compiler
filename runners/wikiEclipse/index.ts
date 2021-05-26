@@ -40,11 +40,6 @@ export class WikiEclipse extends WikiRunner {
             contentFile: contentFile, fileName: fileName});
         return null;
     }
-
-    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0]});
-        return null;
-    }
     
 
     runInstallCobiGen(runCommand: RunCommand): RunResult{
@@ -56,5 +51,11 @@ export class WikiEclipse extends WikiRunner {
         return this.getVariable(this.INSTALLED_TOOLS).includes("eclipse")
             ? super.supports(name, parameters)
             : false;
+    }
+
+
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0]});
+        return null;
     }
 }

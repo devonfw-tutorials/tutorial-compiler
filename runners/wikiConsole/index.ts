@@ -9,9 +9,8 @@ export class WikiConsole extends WikiRunner {
 
     init(playbook: Playbook): void {
         super.init(playbook);
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
-
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
     }
 
     async destroy(playbook: Playbook): Promise<void> {
@@ -105,6 +104,7 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+
     runDockerCompose(runCommand: RunCommand): RunResult {
         let dir = runCommand.command.parameters[0];
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "dockerCompose.asciidoc"), { dir: dir, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
@@ -124,13 +124,14 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
-    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
-        return null;
-    }
     runInstallCobiGen(runCommand: RunCommand): RunResult{
         let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {devonPath: devonPath});
+        return null;
+    }
+
+    runCreateDevon4jProject(runCommand: RunCommand): RunResult {
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
         return null;
     }
 }
