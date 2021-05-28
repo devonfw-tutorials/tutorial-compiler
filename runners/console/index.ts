@@ -465,18 +465,18 @@ export class Console extends Runner {
             throw new Error("You have to pass a command for Windows and Linux based OS");
         }
 
-        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
+        let exeCommand = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args)
             ? runCommand.command.parameters[commandIndex]+ " " +runCommand.command.parameters[2].args.join(" ")
             : runCommand.command.parameters[commandIndex];
 
-        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].dir)
+        let dirPath = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir)
             ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2].dir)
             : this.getVariable(this.workspaceDirectory)
 
         if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
             if(runCommand.command.parameters[3].port){
-                if(exeCommand.substring(6).toLowerCase() == "devon "){
-                    process = ConsoleUtils.executeDevonCommandAsync(exeCommand, dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
+                if(exeCommand.substring(0,6).toLowerCase() == "devon "){
+                    process = ConsoleUtils.executeDevonCommandAsync(exeCommand.substring(6), dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
                 }else{
                     process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
                 }
@@ -490,8 +490,8 @@ export class Console extends Runner {
             } 
         }
         else{
-            if(exeCommand.substring(6).toLowerCase() == "devon "){
-                ConsoleUtils.executeDevonCommandSync(exeCommand, dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
+            if(exeCommand.substring(0,6).toLowerCase() == "devon "){
+                ConsoleUtils.executeDevonCommandSync(exeCommand.substring(6), dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
             }else{
                 ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
             }
@@ -501,7 +501,6 @@ export class Console extends Runner {
     }
 
     async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
-        console.log(RunResult);
         try{
             let assert = new Assertions()
             .noErrorCode(result)
