@@ -127,7 +127,7 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
-    runAdaptTemplatesCobiGen(runCOmannd: RunCommand): RunResult{
+    runAdaptTemplatesCobiGen(runComannd: RunCommand): RunResult{
         let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"), {devonPath: devonPath});
         return null;
