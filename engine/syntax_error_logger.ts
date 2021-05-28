@@ -6,7 +6,7 @@ import { Playbook } from './playbook';
 export class SyntaxErrorLogger {
     public activated = false;
     private outputDir = __dirname + "/../errors/";
-    private errorMap = new Map;
+    private errorMap = new Map<string, Set<any>>();
     
     activate() {
         this.activated = true;
@@ -16,17 +16,16 @@ export class SyntaxErrorLogger {
     }
 
     deactivate() {
-        if(this.activated){
+        if(this.activated && this.errorMap.size > 0){
             fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "## Syntax Errors found" + "\n", {flag: "a"});
-            this.errorMap.forEach(key => {
-                let value: Set<any> = this.errorMap.get(key);
+            this.errorMap.forEach((value: Set<any>, key: string) => {
                 fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "Environment incomplete: " + key + " | Missing functions: \n", {flag: "a"});
                 let missingFunctions = "";
                 value.forEach(element => {
                     missingFunctions = missingFunctions + "- " + element + "\n";   
                 });
                 fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), missingFunctions + "\n", {flag: "a"});
-            }
+            });
         }
     }
 
