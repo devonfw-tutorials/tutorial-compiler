@@ -23,12 +23,12 @@ export class WikiVsCode extends WikiRunner {
         let content = undefined;
         if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole){
             content = runCommand.command.parameters[1].content 
-            ? runCommand.command.parameters[1].content
-            : runCommand.command.parameters[1].contentConsole;
+                ? runCommand.command.parameters[1].content
+                : runCommand.command.parameters[1].contentConsole;
         }else if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].file){
             content = runCommand.command.parameters[1].file 
-            ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].file), { encoding: "utf-8" })
-            : fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].fileConsole), { encoding: "utf-8" });
+                ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].file), { encoding: "utf-8" })
+                : fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].fileConsole), { encoding: "utf-8" });
         }
         let placeholder = runCommand.command.parameters[1].placeholder;
         let lineNumber = runCommand.command.parameters[1].lineNumber;
