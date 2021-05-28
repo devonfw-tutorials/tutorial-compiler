@@ -8,6 +8,7 @@ export class WikiConsole extends WikiRunner {
 
     init(playbook: Playbook): void {
         super.init(playbook);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
         this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
     }
 
@@ -100,6 +101,7 @@ export class WikiConsole extends WikiRunner {
       
         return null;
     }
+
 
     runDockerCompose(runCommand: RunCommand): RunResult {
         let dir = runCommand.command.parameters[0];
