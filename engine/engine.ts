@@ -86,7 +86,7 @@ export class Engine {
             }
         }
         if(missingFunctions.length > 0) {
-            this.syntaxErrorLogger.handle("Environment incomplete: " + this.environmentName + " | Missing functions: \n - " + missingFunctions.join("\n - "));
+            this.syntaxErrorLogger.handleMissingFunction(this.environmentName, missingFunctions);
             return false;
         } else {
             return true;

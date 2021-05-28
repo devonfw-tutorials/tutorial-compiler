@@ -44,6 +44,7 @@ class Run {
                         this.errors.push(error);
                     }
                 }
+                this.syntaxErrorLogger.deactivate();
             }
         } catch (error) {
             console.error(error);
@@ -72,7 +73,7 @@ class Run {
                 }
             } catch(e) {
                 console.error("Error while parsing playbook: " + playbookDirs[index], e);
-                this.syntaxErrorLogger.handle("Error while parsing playbook: " + playbookDirs[index] + "\n"+ "- " + e);
+                this.syntaxErrorLogger.handleParseError(playbookDirs[index], e);
                 this.errors.push(e);
             }
         }
