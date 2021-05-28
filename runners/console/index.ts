@@ -501,6 +501,7 @@ export class Console extends Runner {
     }
 
     async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
+        console.log(RunResult);
         try{
             let assert = new Assertions()
             .noErrorCode(result)
