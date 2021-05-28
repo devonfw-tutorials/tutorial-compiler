@@ -13,10 +13,10 @@ Opening a new file can be done by going to the *File* context menu in the top le
 Eclipse opens a *Create New File* window. Select the parent folder you want to save the file into. Insert `<%= parentFolder; %>` at the top text field named *enter or select the parent folder*. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again. 
 Also, a name for the file is needed, so you can insert `<%= fileName; %>` in the text field *File name* or type it yourself. 
 Confirm your inputs with the *Finish* button in the bottom right corner and an empty <%= fileName; %> has been created and can be edited.<% if(content) { %>
-Select the following text and copy it with a right-click and the copy function or the keyboard shortcut crtl+c.
+Copy the following text.
 [source, <%= fileType; %>]
 ----
 <%= content; %>
 ----
-Now insert the copied text with the keyboard shortcut ctrl+v or with a right-click in the Eclipse editor window of the new file and the paste function or the keyboard shortcut ctrl+v. <% } %>
+Now insert the copied text into the new file. <% } %>
 The final step is to save the file by selecting *Save* in the file context menu or by using the keyboard shortcut ctrl+s and <%= fileName; %> has been created <% if(content){%>with the data from above<% }%>.

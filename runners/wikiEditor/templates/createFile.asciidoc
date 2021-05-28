@@ -11,12 +11,12 @@ Create <%= fileName; %> in an Editor<% if(content) { %> and insert the following
 Opening a new file can be done by going to the file context menu in the top left corner of the editor and select *New* or *New File* or mostly also the keyboard shortcut ctrl+n will also work.
 The editor opens a new editor window for an untitled file that can be edited now.
 <% if(content) { %> 
-Select the following text and copy it with a right-click and the copy function or the keyboard shortcut crtl+c.
+Copy the following text.
 [source, <%= fileType; %>]
 ----
 <%= content; %>
 ---- 
-Now insert the copied text with the keyboard shortcut ctrl+v or with a right-click in the editor window of the new file and the paste function or the keyboard shortcut ctrl+v.
+Now insert the copied text into the new file.
 <% } %>
 The next step is to save the file by selecting *Save* or *Save as* in the file context menu or by using the keyboard shortcut ctrl+s.
 A file explorer window opens.
