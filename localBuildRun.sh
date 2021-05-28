@@ -9,4 +9,4 @@ if [ $? -eq 1 ]; then
     exit 1
 fi
 
-node build/engine/run.js $* --checkSyntax -e katacoda
+node build/engine/run.js $*
