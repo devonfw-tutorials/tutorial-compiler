@@ -457,7 +457,7 @@ export class Console extends Runner {
     runExecuteCommand(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0; 
-        let commandIndex;
+        let commandIndex, process;
         if(runCommand.command.parameters[0] && runCommand.command.parameters[1]){
             commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
         }
@@ -475,7 +475,12 @@ export class Console extends Runner {
 
         if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
             if(runCommand.command.parameters[3].port){
-                let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+                if(exeCommand.substring(6).toLowerCase() == "devon "){
+                    process = ConsoleUtils.executeDevonCommandAsync(exeCommand, dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
+                }else{
+                    process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+                }
+                
                 if(process.pid) {
                     this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[3].port});
                 }
@@ -484,11 +489,16 @@ export class Console extends Runner {
                 throw new Error("Missing arguments for the command " + exeCommand + ". You have to specify a port for the server. For further information read the function documentation.");
             } 
         }
-        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
-        
+        else{
+            if(exeCommand.substring(6).toLowerCase() == "devon "){
+                ConsoleUtils.executeDevonCommandSync(exeCommand, dirPath, path.join(this.getWorkingDirectory(), "devonfw") ,result,this.env);
+            }else{
+                ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
+            }
+        }
+            
       return result;
     }
-
 
     async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
         try{
