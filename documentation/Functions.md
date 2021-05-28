@@ -1,11 +1,31 @@
 ## Functions 
 The following functions are already implemented:
-:toc:
-:toc-title:
+* [installDevonfwIde](#installDevonfwIde)
+* [restoreDevonfwIde](#restoreDevonfwIde)
+* [restoreWorkspace](#restoreWorkspace)
+* [changeWorkspace](#changeWorkspace)
+* [executeCommand](#executeCommand)
+* [installCobiGen](#installCobiGen)
+* [cobiGenJava](#cobiGenJava)
+* [createDevon4jProject](#createDevon4jProject)
+* [buildJava](#buildJava)
+* [createFile](#createFile)
+* [changeFile](#changeFile)
+* [createFolder](#createFolder)
+* [cloneRepository](#cloneRepository)
+* [runServerJava](#runServerJava)
+* [buildNg](#buildNg)
+* [npmInstall](#npmInstall)
+* [dockerCompose](#dockerCompose)
+* [downloadFile](#downloadFile)
+* [nextKatacodaStep](#nextKatacodaStep)
+* [adaptTemplatesCobiGen](#adaptTemplatesCobiGen)
+* [createDevon4ngProject](#createDevon4ngProject)
+* [addSetupScript](#addSetupScript)
 
 ***
 
-### installDevonfwIde
+### installDevonfwIde <a name="installDevonfwIde"></a>
 #### parameter
 1. The tools you want to install within the devonfw ide: string array
 2. Optional: The version of the ide to install
@@ -14,7 +34,7 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 
 ***
 
-### restoreDevonfwIde
+### restoreDevonfwIde <a name="restoreDevonfwIde"></a>
 #### parameter
 1. The tools you want to install within the devonfw ide: string array
 2. Optional: The version of the ide to install
@@ -24,7 +44,7 @@ restoreDevonfwIde(["java","mvn"], "2020.08.001")
 In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
 ***
 
-### restoreWorkspace 
+### restoreWorkspace <a name="restoreWorkspace"></a>
 #### parameter
 1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
@@ -86,7 +106,7 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
         
-### changeWorkspace
+### changeWorkspace <a name="changeWorkspace"></a>
 #### parameter
 1. path to a new workspace (relative to working directory)
 #### example 
@@ -95,7 +115,7 @@ will set the workspace directory to "[working directory]/devonfw/workspaces/proj
 
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
-### executeCommand
+### executeCommand <a name="executeCommand"></a>
 #### parameter 
 1. The command that will be executed on Windows
 2. The command that will be executed on Linux
@@ -130,7 +150,7 @@ executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous
 Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
 
-### installCobiGen
+### installCobiGen <a name="installGobiGen"></a>
 #### parameter
 * No parameters
 #### example
@@ -138,7 +158,7 @@ installCobiGen()
 
 ***
 
-### cobiGenJava
+### cobiGenJava <a name="cobiGenJava"></a>
 #### parameter
 1. The path to the java file you want to generate code for: string
 2. The numbers that represent the templates that CobiGen uses to generate code: int array
@@ -155,7 +175,7 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 
 ***
 
-### createDevon4jProject
+### createDevon4jProject <a name="createDevon4jProject"></a>
 #### parameter 
 1. The base package name
 #### example 
@@ -164,7 +184,7 @@ createDevon4jProject("com.mycustomer.myapplication")
 
 ***
 
-### buildJava
+### buildJava <a name="buildJava"></a>
 #### parameter 
 1. The project directory
 2. (Optional) Indicator whether tests should be run. Default is false.
@@ -173,7 +193,7 @@ buildJava("cobigenexample", true)
 
 ***
 
-### createFile
+### createFile <a name="createFile"></a>
 #### parameter 
 1. Path of the file to be created (relative path to the workspace directory)
 2. (Optional) Path of the file to get the content from. Relative to the playbook directory
@@ -182,7 +202,7 @@ createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 
 ***
 
-### changeFile
+### changeFile <a name="changeFile"></a>
 #### parameter 
 1. Path of the file to be changed (relative path to the workspace directory)
 2. 
@@ -223,7 +243,7 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 
 ***
 
-### createFolder
+### createFolder <a name="createFolder"></a>
 #### parameter 
 1. Path of the folder to be created, relative to the workspace directory. Subdirectories are also created.
 #### example 
@@ -231,7 +251,7 @@ createFolder("directoryPath/subDirectory")
 
 ***
 
-### cloneRepository
+### cloneRepository <a name="cloneRepository"></a>
 #### parameter 
 1. Path into which the repository is to be cloned, relative to workspace.
 2. Git repository URL
@@ -245,7 +265,7 @@ Repository will be cloned into a newly created subdirectory devonfw-tutorials.
 ***
 
 
-### runServerJava
+### runServerJava <a name="runServerJava"></a>
 #### parameter 
 1. Path to the server directory within the java project.
 2. Assertion information. Only needed for the console runner to check if the server was started properly.
@@ -260,7 +280,7 @@ path: The URL path on which is checked if the server is running
 If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
-### npmInstall
+### npmInstall <a name="npmInstall"></a>
 #### parameter 
 1. Path to the project where the dependencies from the package.json file are to be installed.
 2. Json-object: Name of a package, global or local installation, or array of npm arguments
@@ -276,7 +296,7 @@ will run 'npm install' in the directory 'my-thai-star/angular'
 
 ***
 
-### dockerCompose
+### dockerCompose <a name="dockerCompose"></a>
 #### parameter 
 1. Path to the directory where the docker-compose.yml file is located, relative to workspace.
 2. Assertion information. Only needed for the console runner to check if the server was started properly.
@@ -291,7 +311,7 @@ path: The URL path on which is checked if the server is running
 If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
-### downloadFile
+### downloadFile <a name="downloadFile"></a>
 #### parameter 
 1. URL of the file to be downloaded.
 2. Name of file.
@@ -301,7 +321,7 @@ downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
 
 ***
 
-### buildNg
+### buildNg <a name="buildNg"></a>
 #### parameter 
 1. Path to the angular project relative to workspace
 2. (Optional) Custom output directory.
@@ -314,7 +334,7 @@ Will build the angular project to output directory testOutput.
 
 ***
 
-### runClientNg
+### runClientNg <a name="runClientNg"></a>
 #### parameter 
 1. Path to the angular project from which the frontend server is to be started.
 2. Assertion information. Only needed for the console runner to check if the server was started properly.
@@ -329,7 +349,7 @@ path: The URL path on which is checked if the server is running
 If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
-### nextKatacodaStep
+### nextKatacodaStep <a name="nextKatacodaStep"></a>
 #### parameter
 1. The title of the step.
 2. An array of json objects with files, content, or images to be rendered within the katacoda step.
@@ -346,7 +366,7 @@ image: Path to an image to be displayed in the katacoda step.
 
 ***
 
-### adaptTemplatesCobiGen
+### adaptTemplatesCobiGen <a name="adaptTemplatesCobiGen"></a>
 #### parameter
 * No parameters
 #### example
@@ -354,7 +374,7 @@ adaptTemplatesCobiGen()
 
 ***
 
-### createDevon4ngProject
+### createDevon4ngProject <a name="createDevon4ngProject"></a>
 #### parameter 
 1. Name of the Project.
 2. Path to where the Project should be created (relative to workspace). Folder should exist.
@@ -371,7 +391,7 @@ This command also works if the devonfw IDE is not installed, but then you have t
 
 ***
 
-### addSetupScript 
+### addSetupScript <a name="addSetupScript"></a>
 #### parameter
 1. Path of the script (Linux). Relative to the playbook directory
 2. Path of the script (Windows). Relative to the playbook directory 
@@ -381,7 +401,7 @@ addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1"
 
 ***
 
-### openFile
+### openFile <a name="openFile"></a>
 #### parameter 
 1. Path of the file to be opened (relative path to the workspace directory)
 
