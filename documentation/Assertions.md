@@ -1,13 +1,7 @@
 ## Assertions
 The following assertions are already implemented:
-* [directoryExist](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#directoryExist)
-* [directoryNotEmpty](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#directoryNotEmpty)
-* [fileExist](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#fileExist)
-* [fileContains](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#fileContains)
-* [noErrorCode](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#noErrorCode)
-* [noException](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#noExceptions)
-* [repositoryIsClean](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#repositoryIsClean)
-* [serverIsReachable](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Assertions#serverIsReachable)
+:toc:
+:toc-title:
 
 ***
 

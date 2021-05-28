@@ -1,27 +1,7 @@
 ## Functions 
 The following functions are already implemented:
-* [installDevonfwIde](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#installDevonfwIde)
-* [restoreDevonfwIde](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#restoreDevonfwIde)
-* [restoreWorkspace](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#restoreWorkspace)
-* [changeWorkspace](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#changeWorkspace)
-* [executeCommand](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#executeCommand)
-* [installCobiGen](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#installCobiGen)
-* [cobiGenJava](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#cobiGenJava)
-* [createDevon4jProject](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#createDevon4jProject)
-* [buildJava](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#buildJava)
-* [createFile](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#createFile)
-* [changeFile](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#changeFile)
-* [createFolder](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#createFolder)
-* [cloneRepository](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#cloneRepository)
-* [runServerJava](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#runServerJava)
-* [buildNg](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#buildNg)
-* [npmInstall](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#npmInstall)
-* [dockerCompose](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#dockerCompose)
-* [downloadFile](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#downloadFile)
-* [nextKatacodaStep](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#nextKatacodaStep)
-* [adaptTemplatesCobiGen](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#adaptTemplatesCobiGen)
-* [createDevon4ngProject](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#createDevon4ngProject)
-* [addSetupScript](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#addSetupScript)
+:toc:
+:toc-title:
 
 ***
 
