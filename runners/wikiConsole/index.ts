@@ -3,6 +3,7 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
+import * as fs from 'fs';
 
 export class WikiConsole extends WikiRunner {
 
@@ -124,6 +125,27 @@ export class WikiConsole extends WikiRunner {
 
     runCreateDevon4jProject(runCommand: RunCommand): RunResult {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
+        return null;
+    }
+
+    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+        let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
+        fs.writeFileSync(tempFile, "");
+        for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
+            let param = runCommand.command.parameters[1][i];
+            if(param.content) {
+                fs.appendFileSync(tempFile, param.content);
+            } else if(param.file) {
+                fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
+            } else if (param.image) {
+                let image = path.join(this.playbookPath, param.image);
+                fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
+            }
+            fs.appendFileSync(tempFile, "\n\n");
+        }
+
+        let content = fs.readFileSync(tempFile, "utf-8");
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"), { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
         return null;
     }
 }
