@@ -8,7 +8,9 @@ import * as path from 'path';
 import * as fs from "fs-extra";
 import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
+
 const findProcess = require("find-process");
+
 const os = require("os");
 
 export class Console extends Runner {
@@ -32,7 +34,7 @@ export class Console extends Runner {
         ConsoleUtils.createBackupDevonDirectory();
 
         this.createFolder(path.normalize(this.getWorkingDirectory()), true);
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
+        this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
         this.env = process.env;
     }
 
@@ -87,8 +89,8 @@ export class Console extends Runner {
             ConsoleUtils.executeCommandSync("bash setup --batch " + path.join(settingsDir, "settings.git").replace(/\\/g, "/"), installDir, result, this.env);
         }
 
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
-        this.setVariable(this.useDevonCommand, true);
+        this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory(), "devonfw", "workspaces", "main"));
+        this.setVariable(this.USE_DEVON_COMMAND, true);
 
         return result;
     }
@@ -106,7 +108,7 @@ export class Console extends Runner {
             ? runCommand.command.parameters[0].workspace
             : this.playbookName.replace("/", "").replace(" ","-"));
 
-        let workspacesDir = this.getVariable(this.useDevonCommand)
+        let workspacesDir = this.getVariable(this.USE_DEVON_COMMAND)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
             : path.join(this.getWorkingDirectory(), 'workspaces');
 
@@ -142,8 +144,8 @@ export class Console extends Runner {
             ConsoleUtils.executeCommandSync("git clone https://github.com/devonfw-tutorials/" + workspacesName + ".git .", workspacesDir, result, this.env);
         }
 
-        if(!this.getVariable(this.useDevonCommand)){
-            this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory(), 'workspaces'));
+        if(!this.getVariable(this.USE_DEVON_COMMAND)){
+            this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory(), 'workspaces'));
         }
 
         return result;
@@ -154,7 +156,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(!this.getVariable(this.useDevonCommand)){
+        if(!this.getVariable(this.USE_DEVON_COMMAND)){
             console.warn("Devonfw IDE is not installed"); 
         }
 
@@ -166,7 +168,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(!this.getVariable(this.useDevonCommand)){
+        if(!this.getVariable(this.USE_DEVON_COMMAND)){
             console.warn("Devonfw IDE is not installed"); 
         }
 
@@ -180,7 +182,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(!fs.existsSync(filepath.substr(0, filepath.lastIndexOf(path.sep)))) {
             fs.mkdirSync(filepath.substr(0, filepath.lastIndexOf(path.sep)), { recursive: true });
         }
@@ -199,12 +201,12 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let buildCommand = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true)
             ? "mvn clean install"
             : "mvn clean install -Dmaven.test.skip=true";
 
-        this.getVariable(this.useDevonCommand)
+        this.getVariable(this.USE_DEVON_COMMAND)
             ? ConsoleUtils.executeDevonCommandSync(buildCommand, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandSync(buildCommand, projectDir, result, this.env);
 
@@ -215,7 +217,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(!this.getVariable(this.useDevonCommand)){
+        if(!this.getVariable(this.USE_DEVON_COMMAND)){
             console.warn("Devonfw IDE is not installed"); 
         }
 
@@ -228,7 +230,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
 
         let content = fs.readFileSync(filepath, { encoding: "utf-8" });
         if(runCommand.command.parameters[1].placeholder) {
@@ -276,7 +278,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
         
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
             let process = ConsoleUtils.executeCommandAsync("docker-compose up", filepath, result, this.env);
             process.on('close', (code) => {
@@ -285,7 +287,7 @@ export class Console extends Runner {
                 }
             });
             if(process.pid) {
-                this.asyncProcesses.push({ pid: process.pid, name: "dockerCompose", port: runCommand.command.parameters[1].port });
+                this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[1].port });
             }
         }else{
             result.returnCode = 1; 
@@ -299,14 +301,14 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let serverDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let serverDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
-            let process = (this.getVariable(this.useDevonCommand))
+            let process = (this.getVariable(this.USE_DEVON_COMMAND))
                 ? ConsoleUtils.executeDevonCommandAsync("mvn spring-boot:run", serverDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
                 : ConsoleUtils.executeCommandAsync("mvn spring-boot:run", serverDir, result, this.env);
 
                 if(process.pid) {
-                    this.asyncProcesses.push({ pid: process.pid, name: "java", port: runCommand.command.parameters[1].port });
+                    this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[1].port });
                 }
         }else{
             result.returnCode = 1; 
@@ -320,7 +322,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let directorypath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let directorypath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(runCommand.command.parameters[0] != "") {
             this.createFolder(directorypath, true);
         }
@@ -333,14 +335,14 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let projectPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let npmCommand = "npm install";
         if(runCommand.command.parameters.length > 1){
             if (runCommand.command.parameters[1].global) npmCommand += " -g";
             if (runCommand.command.parameters[1].args) npmCommand += " " + runCommand.command.parameters[1].args.join(" ");
             if (runCommand.command.parameters[1].name) npmCommand += " " + runCommand.command.parameters[1].name; 
         }
-        this.getVariable(this.useDevonCommand)
+        this.getVariable(this.USE_DEVON_COMMAND)
             ? ConsoleUtils.executeDevonCommandSync(npmCommand, projectPath, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandSync(npmCommand, projectPath, result, this.env);
 
@@ -351,7 +353,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let downloadlDir = this.getVariable(this.workspaceDirectory);
+        let downloadlDir = this.getVariable(this.WORKSPACE_DIRECTORY);
         if (runCommand.command.parameters.length == 3) {
             downloadlDir = path.join(downloadlDir, runCommand.command.parameters[2]);
             this.createFolder(downloadlDir, false);
@@ -368,13 +370,13 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(runCommand.command.parameters.length == 2 && runCommand.command.parameters[1].port){
-            let process = this.getVariable(this.useDevonCommand) 
+            let process = this.getVariable(this.USE_DEVON_COMMAND) 
                 ? ConsoleUtils.executeDevonCommandAsync("ng serve", projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
                 : ConsoleUtils.executeCommandAsync("ng serve", projectDir, result, this.env);
             if(process.pid) { 
-                this.asyncProcesses.push({ pid: process.pid, name: "node", port: runCommand.command.parameters[1].port });
+                this.asyncProcesses.push({ pid: process.pid,port: runCommand.command.parameters[1].port });
             }
         }else{
             result.returnCode = 1; 
@@ -387,12 +389,12 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let command1 = "ng build";
         if(runCommand.command.parameters.length == 2) {
             command1 = command1 + " --output-path " + runCommand.command.parameters[1];
         }
-        this.getVariable(this.useDevonCommand) 
+        this.getVariable(this.USE_DEVON_COMMAND) 
             ? ConsoleUtils.executeDevonCommandSync(command1, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandSync(command1, projectDir, result, this.env);
         
@@ -403,7 +405,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let folderPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         if(folderPath && !fs.existsSync(folderPath)) {
             this.createFolder(folderPath, true);
         }
@@ -420,7 +422,7 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        if(!this.getVariable(this.useDevonCommand)){
+        if(!this.getVariable(this.USE_DEVON_COMMAND)){
             console.warn("Devonfw IDE is not installed"); 
         }
         ConsoleUtils.executeDevonCommandSync("cobigen adapt-templates",path.join(this.getWorkingDirectory(), "devonfw"), path.join(this.getWorkingDirectory(), "devonfw"), result, this.env);
@@ -431,15 +433,15 @@ export class Console extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1]);
+        let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[1]);
         let params = runCommand.command.parameters.length > 2 && (runCommand.command.parameters[2] instanceof Array) ? (" " + runCommand.command.parameters[2].join(" ")) : "";
-        this.getVariable(this.useDevonCommand)
+        this.getVariable(this.USE_DEVON_COMMAND)
             ? ConsoleUtils.executeDevonCommandSync("ng create " + runCommand.command.parameters[0] + params, projectDir, path.join(this.getWorkingDirectory(), "devonfw"), result, this.env)
             : ConsoleUtils.executeCommandSync("ng new " + runCommand.command.parameters[0] + params, projectDir, result, this.env);
 
         return result;
     }
-
+  
     runChangeWorkspace(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
@@ -447,10 +449,69 @@ export class Console extends Runner {
         let workspacesDir = path.join(this.getWorkingDirectory(), runCommand.command.parameters[0]);
         if(!fs.existsSync(workspacesDir))
             fs.mkdirSync(workspacesDir);
-        this.setVariable(this.workspaceDirectory, workspacesDir);
-
+        this.setVariable(this.WORKSPACE_DIRECTORY, workspacesDir);
         return result;
     }
+
+    runExecuteCommand(runCommand: RunCommand): RunResult {
+        let result = new RunResult();
+        result.returnCode = 0; 
+        let commandIndex;
+        if(runCommand.command.parameters[0] && runCommand.command.parameters[1]){
+            commandIndex = this.platform == ConsolePlatform.LINUX ? 1 : 0;
+        }
+        else{
+            throw new Error("You have to pass a command for Windows and Linux based OS");
+        }
+
+        let exeCommand = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].args)
+            ? runCommand.command.parameters[commandIndex]+ " " +runCommand.command.parameters[2].args.join(" ")
+            : runCommand.command.parameters[commandIndex];
+
+        let dirPath = (runCommand.command.parameters.length > 1 && runCommand.command.parameters[2].dir)
+            ? path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir)
+            : this.getVariable(this.WORKSPACE_DIRECTORY)
+
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
+            if(runCommand.command.parameters[3].port){
+                let process = ConsoleUtils.executeCommandAsync(exeCommand, dirPath, result,this.env);
+                if(process.pid) {
+                    this.asyncProcesses.push({ pid: process.pid, port: runCommand.command.parameters[3].port});
+                }
+            }
+            else{
+                throw new Error("Missing arguments for the command " + exeCommand + ". You have to specify a port for the server. For further information read the function documentation.");
+            } 
+        }
+        else ConsoleUtils.executeCommandSync(exeCommand, dirPath, result, this.env);
+        
+      return result;
+    }
+
+
+    async assertExecuteCommand(runCommand: RunCommand, result: RunResult){
+        try{
+            let assert = new Assertions()
+            .noErrorCode(result)
+            .noException(result);
+            if(runCommand.command.parameters.length > 3 && runCommand.command.parameters[2].asynchronous){
+                await assert.serverIsReachable({
+                    path: runCommand.command.parameters[3].path,
+                    port: runCommand.command.parameters[3].port,
+                    interval: runCommand.command.parameters[3].interval,
+                    startupTime: runCommand.command.parameters[3].startupTime,
+                    command: this.platform == ConsolePlatform.WINDOWS 
+                        ? runCommand.command.parameters[0] 
+                        : runCommand.command.parameters[1] 
+                });
+            }
+        } catch(error) {
+            await this.cleanUp();
+            throw error;
+        }
+
+    }
+
 
     runAddSetupScript(runCommand: RunCommand): RunResult {
         let result = new RunResult();
@@ -460,17 +521,18 @@ export class Console extends Runner {
             ? "powershell.exe " + path.join(this.playbookPath, runCommand.command.parameters[1])
             : "bash " + path.join(this.playbookPath, runCommand.command.parameters[0]);
 
-        ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.workspaceDirectory), result, this.env);
+        ConsoleUtils.executeCommandSync(scriptCommand, this.getVariable(this.WORKSPACE_DIRECTORY), result, this.env);
         
         return result;
     }
-
+  
     runOpenFile(runCommand: RunCommand): RunResult {
         let result = new RunResult();
         result.returnCode = 0;
         //Only needed for katacoda, wiki runner and the assertions
         return result;
     }
+
 
     async assertInstallDevonfwIde(runCommand: RunCommand, result: RunResult) {
         try {
@@ -497,9 +559,9 @@ export class Console extends Runner {
     }
 
     async assertRestoreWorkspace(runCommand: RunCommand, result: RunResult) {
-        let workspacesDir = this.getVariable(this.useDevonCommand)
+        let workspacesDir = this.getVariable(this.USE_DEVON_COMMAND)
             ? path.join(this.getWorkingDirectory(), "devonfw", "workspaces")
-            : this.getVariable(this.workspaceDirectory);
+            : this.getVariable(this.WORKSPACE_DIRECTORY);
 
         try{
             new Assertions()
@@ -532,9 +594,9 @@ export class Console extends Runner {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "api", "target"))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "core", "target"))
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], "server", "target"));
+            .directoryExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], "api", "target"))
+            .directoryExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], "core", "target"))
+            .directoryExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], "server", "target"));
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -579,7 +641,7 @@ export class Console extends Runner {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+            .fileExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]));
         } catch(error) {
             await this.cleanUp();
             throw error;
@@ -595,7 +657,7 @@ export class Console extends Runner {
                 content = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].file), { encoding: "utf-8" });
             }
     
-            let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+            let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -653,13 +715,13 @@ export class Console extends Runner {
         try {
             let repository = runCommand.command.parameters[1];
             let repoName = repository.slice(repository.lastIndexOf("/"), -4);
-            let directorypath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName);
+            let directorypath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], repoName);
             
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .directoryExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
-            .directoryNotEmpty(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0], repoName))
+            .directoryExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], repoName))
+            .directoryNotEmpty(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0], repoName))
             .repositoryIsClean(directorypath);
         } catch(error) {
             await this.cleanUp();
@@ -669,7 +731,7 @@ export class Console extends Runner {
 
     async assertNpmInstall(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+            let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -687,7 +749,7 @@ export class Console extends Runner {
 
     async assertDownloadFile(runCommand: RunCommand, result: RunResult){
         try {
-            let directory = this.getVariable(this.workspaceDirectory);
+            let directory = this.getVariable(this.WORKSPACE_DIRECTORY);
             if(runCommand.command.parameters.length == 3) {
                 directory = path.join(directory, runCommand.command.parameters[2]);
             }
@@ -726,7 +788,7 @@ export class Console extends Runner {
 
     async assertBuildNg(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+            let projectPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
             var outputpath;
             if(runCommand.command.parameters.length == 2) {
                 outputpath = runCommand.command.parameters[1].trim();
@@ -751,7 +813,7 @@ export class Console extends Runner {
 
     async assertCreateFolder(runCommand: RunCommand, result: RunResult){
         try {
-            let folderPath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+            let folderPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -779,7 +841,7 @@ export class Console extends Runner {
 
     async assertCreateDevon4ngProject(runCommand: RunCommand, result: RunResult) {
         try {
-            let projectDir = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[1], runCommand.command.parameters[0]);
+            let projectDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[1], runCommand.command.parameters[0]);
             new Assertions()
             .noErrorCode(result)
             .noException(result)
@@ -822,7 +884,7 @@ export class Console extends Runner {
             new Assertions()
             .noErrorCode(result)
             .noException(result)
-            .fileExits(path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]));
+            .fileExits(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]));
         }
         catch(error) {
             await this.cleanUp();
@@ -851,6 +913,7 @@ export class Console extends Runner {
                 return process.ppid == processIdToKill;
             });
 
+
             if(childProcesses.length > 0) {
                 for(let childProcess of childProcesses) {
                     killProcessesRecursively(processes, childProcess.pid)
@@ -869,24 +932,21 @@ export class Console extends Runner {
             for(let asyncProcess of this.asyncProcesses) {
                 killProcessesRecursively(processes, asyncProcess.pid);
             }
-            
             //Check if there are still running processes on the given ports
-            for(let asyncProcess of this.asyncProcesses) {
+            for(let asyncProcess of this.asyncProcesses.reverse()) {
                 let processes: any[] = await findProcess("port", asyncProcess.port);
                 if(processes.length > 0) {
                     for(let proc of processes) {
-                        if(proc.name == asyncProcess.name || proc.name == asyncProcess.name + ".exe") {
-                            try {
-                                process.kill(proc.pid);
+                        try {
+                            process.kill(proc.pid);
                             } catch(e) {
                                 console.error("Error killing id " + proc.pid, e);
                             }
                         }
                     }
-                }
-            }   
+                }      
+            }
         }
-    }
 
     private async cleanUp(): Promise<void> {
         await this.killAsyncProcesses();

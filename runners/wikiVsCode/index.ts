@@ -7,6 +7,7 @@ import * as fs from "fs-extra";
 
 export class WikiVsCode extends WikiRunner {
 
+
     init(playbook: Playbook): void {
         super.init(playbook);
     }
@@ -35,4 +36,17 @@ export class WikiVsCode extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, lineNumber: lineNumber, placeholder: placeholder });
         return null;
     }
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        let dir = path.relative(this.getVariable(this.WORKSPACE_DIRECTORY), this.getWorkingDirectory()).replace(/\\/g, "/");;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {dir: dir});
+        return null;
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        return this.getVariable(this.INSTALLED_TOOLS).includes("vscode")
+            ? super.supports(name, parameters)
+            : false;
+    }
+
 }

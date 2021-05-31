@@ -10,11 +10,13 @@ export abstract class WikiRunner extends Runner {
     protected fileTypeMap = new Map([ [".java", "java"],[".ts", "typescript"],
     [".js", "javascript"], [".html", "html"],
     [".scss", "css"], [".asciidoc", "asciidoc"], ]);
+    protected readonly INSTALLED_TOOLS: string = "installedTools";
 
     init(playbook: Playbook): void {
         let outputDirectory = this.createFolder(path.join(this.getOutputDirectory(), "wiki", this.environmentName), false)
         this.outputPathTutorial = this.createFolder(path.join(outputDirectory, playbook.name), true);
-        this.setVariable(this.workspaceDirectory, path.join(this.getWorkingDirectory()));
+        this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
+        this.setVariable(this.INSTALLED_TOOLS, "");
     }
 
     async destroy(playbook: Playbook): Promise<void> {

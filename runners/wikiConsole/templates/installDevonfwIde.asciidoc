@@ -48,3 +48,4 @@ You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press 
 <% if(tools.indexOf("mvn") > 0){ %>
 The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
 <% } %> 
+

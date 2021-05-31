@@ -35,6 +35,19 @@ export class WikiEclipse extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, lineNumber: lineNumber, placeholder: placeholder });
         return null;
     }
+    
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {});
+        return null;
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        return this.getVariable(this.INSTALLED_TOOLS).includes("eclipse")
+            ? super.supports(name, parameters)
+            : false;
+    }
+
 
     runCreateDevon4jProject(runCommand: RunCommand): RunResult {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0]});
