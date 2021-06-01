@@ -4,9 +4,9 @@
 * Existing folder you want to create the file. (If the folder doesn't exist you can create it from with the editor).
 * Any Editor that can edit files
 
-=== Creating <%= fileName; %> in an Editor
+=== Creating <%= fileName; %> in any Editor
 
-Create <%= fileName; %> in an Editor<% if(content) { %> and insert the following data into it. <% } %>.
+Create <%= fileName; %> in any Editor<% if(content) { %> and insert the following data into it. <% } %>.
 
 Opening a new file can be done by going to the file context menu in the top left corner of the editor and select *New* or *New File* or mostly also the keyboard shortcut ctrl+n will also work.
 The editor opens a new editor window for an untitled file that can be edited now.
