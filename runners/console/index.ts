@@ -469,8 +469,8 @@ export class Console extends Runner {
             : runCommand.command.parameters[commandIndex];
 
         let dirPath = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir)
-            ? path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[2].dir)
-            : this.getVariable(this.workspaceDirectory)
+            ? path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir)
+            : this.getVariable(this.WORKSPACE_DIRECTORY)
 
         if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous){
             if(runCommand.command.parameters[3].port){
