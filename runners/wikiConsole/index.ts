@@ -135,6 +135,12 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runAdaptTemplatesCobiGen(runComannd: RunCommand): RunResult{
+        let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"), {devonPath: devonPath});
+              return null;
+    }
+
     runNextKatacodaStep(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
@@ -153,6 +159,7 @@ export class WikiConsole extends WikiRunner {
 
         let content = fs.readFileSync(tempFile, "utf-8");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"), { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
+
         return null;
     }
 }
