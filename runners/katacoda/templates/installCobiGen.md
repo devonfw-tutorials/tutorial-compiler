@@ -1,6 +1,6 @@
 <%= text; %>
 
-## Install cobigen
+## Install CobiGen
 
 `devon cobigen`{{execute T1}}
 

@@ -11,8 +11,8 @@ export abstract class Runner {
     public playbookPath: string;
     public playbookTitle: string;
     public environmentName: string;
-    protected readonly useDevonCommand: string = "useDevonCommand";
-    protected readonly workspaceDirectory: string = "workspaceDirectory";
+    protected readonly USE_DEVON_COMMAND: string = "useDevonCommand";
+    protected readonly WORKSPACE_DIRECTORY: string = "workspaceDirectory";
 
     private setVariableCallback: (name: string, value: any) => any;
     registerSetVariableCallback(callback: (name: string, value: any) => any) {
@@ -83,7 +83,7 @@ export abstract class Runner {
     }
 
     init(playbook: Playbook): void {
-        this.setVariable(this.useDevonCommand, false);
+        this.setVariable(this.USE_DEVON_COMMAND, false);
     }
 
     run(runCommand: RunCommand): RunResult {

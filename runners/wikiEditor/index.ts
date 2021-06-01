@@ -16,6 +16,7 @@ export class WikiEditor extends WikiRunner {
     }
 
 
+
     runCreateFile(runCommand: RunCommand): RunResult{
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0].replace(fileName, ""));
@@ -27,8 +28,8 @@ export class WikiEditor extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType });
         return null;
     }
-  
-      runChangeFile(runCommand: RunCommand): RunResult{
+
+    runChangeFile(runCommand: RunCommand): RunResult{
         let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(workspacePath,runCommand.command.parameters[0].replace(fileName, "")); 

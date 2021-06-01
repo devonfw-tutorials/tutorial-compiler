@@ -2,7 +2,7 @@ import { Parser } from "./parser";
 import { Playbook } from "./playbook";
 import { Environment } from "./environment";
 import { Engine } from "./engine";
-import { isObject } from "util";
+import { SyntaxErrorLogger } from "./syntax_error_logger";
 const fs = require('fs');
 const yargs = require('yargs/yargs');
 
@@ -11,6 +11,7 @@ class Run {
     private environments: Map<string, Environment> = new Map<string, Environment>();
     private args: Map<string, string> = new Map<string, string>();
     private errors = [];
+    private syntaxErrorLogger = new SyntaxErrorLogger();
 
     async run(): Promise<boolean> {
         try {
@@ -18,15 +19,19 @@ class Run {
             if(!this.args.has("debug")) {
                 console.debug = function(){}
             }
+            if(this.args.has("checkSyntax")) {
+                this.syntaxErrorLogger.activate();
+            }
             this.parsePlaybooks();
             this.parseEnvironments();
             let entries = this.filterEnv(Array.from(this.environments.entries()));
+
             for (let entry of entries) {
                 let key = entry[0];
                 let value = entry[1];
                 let playbookIndecies = this.filterPlaybooks(this.playbooks)
                 for (let playbookIndex of playbookIndecies) {
-                    let engine = new Engine(key, value, this.playbooks[playbookIndex]);
+                    let engine = new Engine(key, value, this.playbooks[playbookIndex], this.syntaxErrorLogger);
 
                     for (let varEntry of Array.from(this.args.entries())) {
                         engine.setVariable(varEntry[0], varEntry[1]);
@@ -46,7 +51,7 @@ class Run {
         }
         
         if (this.errors.length != 0) {
-            console.log("Errors", this.errors);
+            console.log("Errors", JSON.stringify(this.errors, null, "\t"));
         }
         return this.errors.length == 0;
     }
@@ -67,6 +72,7 @@ class Run {
                 }
             } catch(e) {
                 console.error("Error while parsing playbook: " + playbookDirs[index], e);
+                this.syntaxErrorLogger.handle("Error while parsing playbook: " + playbookDirs[index] + "\n"+ "- " + e);
                 this.errors.push(e);
             }
         }

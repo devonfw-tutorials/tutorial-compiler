@@ -1,12 +1,9 @@
-Clone Repository
-================
+== Clone Repository
 
-Prerequisites
-~~~~~~~~~~~~~
+=== Prerequisites
 * You need to have Git installed. You can download Git https://git-scm.com/downloads[here] for your OS and install it by following the instructions.
 
-Download
-~~~~~~~~
+=== Download
 Open a terminal in your current workspace.
 <% if (directoryPath) { %>
 Firstly, you have to move to the directory where the repository should be cloned to.

@@ -52,7 +52,9 @@ export class Parser {
 
     getTitle(parseResult, index) {
         try {
-            return (parseResult[3][index][3][2]|| parseResult[3][index][2][3][2]);
+            // parseResult[3][index][4][2] step without block
+            // parseResult[3][index][2][4][2] step inside a block
+            return (parseResult[3][index][4][2].steptitle || parseResult[3][index][2][4][2].steptitle);
         } catch(error) {
             return null;
         }
