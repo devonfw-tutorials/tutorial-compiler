@@ -54,7 +54,7 @@ jobs:
           echo "TUTORIAL_TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
           echo "$TUTORIAL_TO_BE_CANCELLED"
       - name: setup git user
-        if: ${{ env.COMPILER_TO_BE_CANCELLED == 'false' && env.TUTORIAL_TO_BE_CANCELLED == 'false'}}
+        if: ${{ env.COMPILER_TO_BE_CANCELLED == 'false' || env.TUTORIAL_TO_BE_CANCELLED == 'false'}}
         run: |
           git config --global user.email ${BUILD_USER_EMAIL}
           git config --global user.name ${BUILD_USER}
