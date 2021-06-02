@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 import path = require('path');
-import { Environment } from './environment';
-import { Playbook } from './playbook';
 
 export class SyntaxErrorLogger {
     public activated = false;
