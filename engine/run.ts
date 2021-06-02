@@ -44,8 +44,8 @@ class Run {
                         this.errors.push(error);
                     }
                 }
-                this.syntaxErrorLogger.deactivate();
             }
+            this.syntaxErrorLogger.deactivate();
         } catch (error) {
             console.error(error);
             this.errors.push(error);

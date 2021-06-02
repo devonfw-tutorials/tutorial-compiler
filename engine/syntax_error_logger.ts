@@ -26,6 +26,7 @@ export class SyntaxErrorLogger {
                 fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), missingFunctions + "\n", {flag: "a"});
                 console.log(missingFunctions);
             });
+            this.activated = false;
         }
     }
 
@@ -36,6 +37,7 @@ export class SyntaxErrorLogger {
                 set = this.errorMap.get(environment);
             }
             this.errorMap.set(environment, this.addToSet(set, missingFunctions));
+            console.log(this.errorMap);
         }
     }
 
