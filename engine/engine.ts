@@ -86,7 +86,8 @@ export class Engine {
             }
         }
         if(missingFunctions.length > 0) {
-            this.syntaxErrorLogger.handleMissingFunction(this.environmentName, missingFunctions);
+            console.log(missingFunctions);
+            this.syntaxErrorLogger.handleMissingFunction(missingFunctions);
             return false;
         } else {
             return true;

@@ -4,7 +4,7 @@ import path = require('path');
 export class SyntaxErrorLogger {
     public activated = false;
     private outputDir = __dirname + "/../errors/";
-    private errorMap = new Map<string, Set<any>>();
+    private errors = new Array;
     
     activate() {
         this.activated = true;
@@ -14,44 +14,30 @@ export class SyntaxErrorLogger {
     }
 
     deactivate() {
-        if(this.activated && this.errorMap.size > 0){
-            fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "## Syntax Errors found" + "\n", {flag: "a"});
-            this.errorMap.forEach((value: Set<any>, key: string) => {
-                fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "Environment incomplete: " + key + " | Missing functions: \n", {flag: "a"});
-                console.log("Environment incomplete: " + key + " | Missing functions: \n");
-                let missingFunctions = "";
-                value.forEach(element => {
-                    missingFunctions = missingFunctions + "- " + element + "\n";   
-                });
-                fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), missingFunctions + "\n", {flag: "a"});
-                console.log(missingFunctions);
-            });
+        if(this.activated && this.errors.length > 0){
+            fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "## Function(s) not found: \n - ", {flag: "a"});
+            let ending = "\n You can find all supported functions and how to use them [here](https://github.com/devonfw-tutorials/tutorials/wiki/Functions)."
+            fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), this.errors.join("\n - ") + "\n" + ending + "\n", {flag: "a"});
             this.activated = false;
         }
     }
 
-    handleMissingFunction(environment: string, missingFunctions: any[]) {
+    handleMissingFunction(missingFunctions: any[]) {
         if(this.activated){
-            let set = new Set;
-            if(this.errorMap.has(environment)) {
-                set = this.errorMap.get(environment);
-            }
-            this.errorMap.set(environment, this.addToSet(set, missingFunctions));
-            console.log(this.errorMap);
+            this.errors = missingFunctions;
         }
     }
 
     handleParseError(playbook, error) {
         if(this.activated) { 
-            fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "## Error while parsing playbook: " + playbook + "\n" + "- " + error + "\n", {flag: "a"});
+            fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), 
+                "## Error while parsing playbook: " 
+                + playbook + 
+                "\n" + "- " 
+                + error + "\n"
+                + "\n You can find informations on the syntax [here](https://github.com/devonfw-tutorials/tutorials/wiki/Tutorials)" + "\n",
+                 {flag: "a"});
             this.activated = false;
         }
-    }
-
-    private addToSet(set: Set<any>, array: any[]): Set<any> {
-        array.forEach(element => {
-            set.add(element);
-        });
-        return set;
     }
 }
