@@ -6,6 +6,7 @@ import * as path from "path";
 
 export class WikiVsCode extends WikiRunner {
 
+
     init(playbook: Playbook): void {
         super.init(playbook);
     }
@@ -15,7 +16,7 @@ export class WikiVsCode extends WikiRunner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
-        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+        let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(workspacePath,runCommand.command.parameters[0].replace(fileName, "")); 
         let contentPath, contentFile, contentString;
@@ -40,4 +41,17 @@ export class WikiVsCode extends WikiRunner {
             contentFile: contentFile, fileName: fileName});
         return null;
     }
+
+    runInstallCobiGen(runCommand: RunCommand): RunResult{
+        let dir = path.relative(this.getVariable(this.WORKSPACE_DIRECTORY), this.getWorkingDirectory()).replace(/\\/g, "/");;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {dir: dir});
+        return null;
+    }
+
+    supports(name: string, parameters: any[]): boolean {
+        return this.getVariable(this.INSTALLED_TOOLS).includes("vscode")
+            ? super.supports(name, parameters)
+            : false;
+    }
+
 }
