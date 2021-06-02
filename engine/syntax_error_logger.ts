@@ -20,11 +20,13 @@ export class SyntaxErrorLogger {
             fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "## Syntax Errors found" + "\n", {flag: "a"});
             this.errorMap.forEach((value: Set<any>, key: string) => {
                 fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), "Environment incomplete: " + key + " | Missing functions: \n", {flag: "a"});
+                console.log("Environment incomplete: " + key + " | Missing functions: \n");
                 let missingFunctions = "";
                 value.forEach(element => {
                     missingFunctions = missingFunctions + "- " + element + "\n";   
                 });
                 fs.writeFileSync(path.join(this.outputDir, "syntaxErrors.md"), missingFunctions + "\n", {flag: "a"});
+                console.log(missingFunctions);
             });
         }
     }
