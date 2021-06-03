@@ -11,7 +11,7 @@ Open Eclipse and choose in the file context menu in the top left corner  *Open F
 Based on your operating system a window with the file explorer opens. You have to navigate to <%= fileName; %> and select it. Choose the right folder manually by selecting the folders from the path `<%= filePath; %>` and select the file `<%= fileName; %>`. 
 You confirm this with the *Open* button in the bottom right corner and <%= fileName; %> will be opened in a new Eclipse editor window.
 
-Select the following text and copy it with a right-click and the copy function or the keyboard shortcut crtl+c.
+Copy the following text.
 [source, <%= fileType; %>]
 ----
 <%= content; %>
