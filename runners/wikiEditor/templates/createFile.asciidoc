@@ -14,7 +14,7 @@ The editor opens a new editor window for an untitled file that can be edited now
 Copy the following text.
 [source, <%= fileType; %>]
 ----
-<%= content; %>
+<%- content; %>
 ---- 
 Now insert the copied text into the new file.
 <% } %>

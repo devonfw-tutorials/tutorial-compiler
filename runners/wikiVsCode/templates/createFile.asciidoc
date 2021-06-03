@@ -13,7 +13,7 @@ Opening a new file can be done by going to the file context menu in the top left
 Copy the following text.
 [source, <%= fileType; %>]
 ----
-<%= content; %>
+<%- content; %>
 ---- 
 Now insert the copied text into the new file.
 <% } %>
