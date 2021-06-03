@@ -126,5 +126,10 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0] });
         return null;
     }
+
+    runAddSetupScript(runCommand: RunCommand): RunResult{
+        //this.render
+        return null;
+    }
 }
 
