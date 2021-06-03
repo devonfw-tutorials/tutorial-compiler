@@ -13,7 +13,7 @@ You can confirm this with the *Open* button in the bottom right corner and <%= f
 Copy the following text.
 [source, <%= fileType; %>]
 ----
-<%= content; %>
+<%- content; %>
 ----
 
 <% if(lineNumber) { %>Insert the content into the line *<%= lineNumber%>* in the opened <%= fileName; %>.

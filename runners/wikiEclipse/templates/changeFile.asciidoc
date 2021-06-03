@@ -14,7 +14,7 @@ You confirm this with the *Open* button in the bottom right corner and <%= fileN
 Copy the following text.
 [source, <%= fileType; %>]
 ----
-<%= content; %>
+<%- content; %>
 ----
 
 
