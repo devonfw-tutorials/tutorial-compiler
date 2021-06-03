@@ -3,6 +3,7 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
+import * as fs from "fs";
 
 export class WikiConsole extends WikiRunner {
 
@@ -128,7 +129,12 @@ export class WikiConsole extends WikiRunner {
     }
 
     runAddSetupScript(runCommand: RunCommand): RunResult{
-        //this.render
+        let scriptNameLinux = path.basename(runCommand.command.parameters[0]);
+        let scriptNameWindows = path.basename(runCommand.command.parameters[1]);
+        let windowsContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
+        let linuxContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), { encoding: "utf-8" });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "addSetupScript.asciidoc"), {scriptNameWindows: scriptNameWindows, windowsContent: windowsContent,
+             scriptNameLinux: scriptNameLinux, linuxContent: linuxContent});
         return null;
     }
 }
