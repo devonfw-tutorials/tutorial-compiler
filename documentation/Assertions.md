@@ -1,17 +1,17 @@
 ## Assertions
 The following assertions are already implemented:
-* directoryExist
-* directoryNotEmpty
-* fileExist
-* fileContains
-* noErrorCode
-* noException
-* repositoryIsClean
-* serverIsReachable
+* [directoryExist](#directoryExist)
+* [directoryNotEmpty](#directoryNotEmpty)
+* [fileExist](#fileExist)
+* [fileContains](#fileContains)
+* [noErrorCode](#noErrorCode)
+* [noException](#noExceptions)
+* [repositoryIsClean](#repositoryIsClean)
+* [serverIsReachable](#serverIsReachable)
 
 ***
 
-### directoryExist
+### directoryExist <a name="directoryExist"></a>
 #### description
 Checks if a given path leads to an existing directory.
 #### parameter
@@ -19,7 +19,7 @@ Checks if a given path leads to an existing directory.
 
 ***
 
-### directoryNotEmpty
+### directoryNotEmpty <a name="directoryNotEmpty"></a>
 #### description
 Checks if a given directory contain at least one file or subdirectory.
 #### parameter
@@ -27,7 +27,7 @@ Checks if a given directory contain at least one file or subdirectory.
 
 ***
 
-### fileExist
+### fileExist <a name="fileExist"></a>
 #### description
 Checks if a given path leads to an existing file.
 #### parameter
@@ -35,7 +35,7 @@ Checks if a given path leads to an existing file.
 
 ***
 
-### fileContains
+### fileContains <a name="fileContains"></a>
 #### description
 Checks if content is included in a file
 #### parameter
@@ -44,7 +44,7 @@ Checks if content is included in a file
 
 ***
 
-### noErrorCode
+### noErrorCode <a name="noErrorCode"></a>
 #### description
 Checks if the given RunResult has an returnCode of 0 otherwise throwing Error.
 #### parameter
@@ -52,7 +52,7 @@ Checks if the given RunResult has an returnCode of 0 otherwise throwing Error.
 
 ***
 
-### noException
+### noException <a name="noException"></a>
 #### description
 Checks if the given RunResult's exception Array is empty otherwise throwing Error.
 #### parameter
@@ -60,7 +60,7 @@ Checks if the given RunResult's exception Array is empty otherwise throwing Erro
 
 ***
 
-### repositoryIsClean
+### repositoryIsClean <a name="repositoryIsClean"></a>
 #### description
 Checks if the given directory is a git repository and is clean, meaning there are no uncommited changes.
 #### parameter
@@ -68,7 +68,7 @@ Checks if the given directory is a git repository and is clean, meaning there ar
 
 ***
 
-### serverIsReachable
+### serverIsReachable <a name="serverIsReachable"></a>
 #### description
 Checks if a server is available on localhost.
 #### parameter
