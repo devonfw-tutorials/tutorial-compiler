@@ -18,7 +18,7 @@ export class WikiVsCode extends WikiRunner {
 
     runCreateFile(runCommand: RunCommand): RunResult{
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(this.getVariable(this.workspaceDirectory);, runCommand.command.parameters[0].replace(fileName, ""));
+        let filePath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0].replace(fileName, ""));
         filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
         let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
         let content = runCommand.command.parameters[1] 
@@ -56,7 +56,7 @@ export class WikiVsCode extends WikiRunner {
     }
 
     runInstallCobiGen(runCommand: RunCommand): RunResult{
-        let dir = path.relative(this.getVariable(this.WORKSPACE_DIRECTORY), this.getWorkingDirectory()).replace(/\\/g, "/");;
+        let dir = path.relative(this.getVariable(this.WORKSPACE_DIRECTORY), this.getWorkingDirectory()).replace(/\\/g, "/");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {dir: dir});
         return null;
     }
