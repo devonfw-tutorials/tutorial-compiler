@@ -1,6 +1,6 @@
 <%= text; %>
 
-## devonfw setup
+## Devonfw setup
 
 <%= cdCommand; %>
 

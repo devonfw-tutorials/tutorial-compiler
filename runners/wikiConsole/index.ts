@@ -10,6 +10,7 @@ export class WikiConsole extends WikiRunner {
     init(playbook: Playbook): void {
         super.init(playbook);
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
+        //console.log(playbook.description);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"), {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
     }
 
@@ -151,8 +152,12 @@ export class WikiConsole extends WikiRunner {
             } else if(param.file) {
                 fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
             } else if (param.image) {
+                this.createFolder(path.join(this.outputPathTutorial, "images"), false);
+                console.log(param.image);
+                console.log(path.join(this.outputPathTutorial, "images"));
+                fs.copyFileSync(path.join(this.playbookPath, param.image), path.join(this.outputPathTutorial, "images"), fs.constants.COPYFILE_FICLONE);
                 let image = path.join(this.playbookPath, param.image);
-                fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
+                fs.appendFileSync(tempFile, "image::"+path.basename(image)+"[Name]");
             }
             fs.appendFileSync(tempFile, "\n\n");
         }
