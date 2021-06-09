@@ -25,7 +25,6 @@ export class Katacoda extends Runner {
     private terminalCounter: number = 1;
     private showVsCodeIde: boolean = false;
     private terminals: KatacodaTerminals[] = [{function: "default", terminalId: 1}];
-    private runResult: RunResult = new RunResult();
  
     init(playbook: Playbook): void {
         // create directory for katacoda tutorials if not exist
@@ -465,13 +464,9 @@ export class Katacoda extends Runner {
     }
 
     private renderTemplate(name: string, targetPath: string, variables) {
-        try {
-            let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
-            let result = ejs.render(template, variables);
-            fs.writeFileSync(targetPath, result, {flag: "a"});
-        } catch(e) {
-            this.runResult.exceptions.push(e);
-        }
+        let template = fs.readFileSync(path.join(this.getRunnerDirectory(),"templates", name), 'utf8');
+        let result = ejs.render(template, variables);
+        fs.writeFileSync(targetPath, result, {flag: "a"});
     }
 
     private writeSetupFile(setupFile: string) {
@@ -542,7 +537,9 @@ export class Katacoda extends Runner {
     }
 
     async assert(runCommand: RunCommand, runResult: RunResult): Promise<void> {
-        new Assertions().noException(this.runResult);
+        if(runResult != null) {
+            new Assertions().noException(runResult);
+        }
     }
 
 }
