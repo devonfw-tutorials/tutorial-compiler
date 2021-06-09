@@ -28,35 +28,36 @@ export class Engine {
                 console.log("Environment incomplete: " + this.environmentName + " (ignored)");
            }
         }
-
-        mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
-            for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
-                let runCommand = this.initRunCommand(stepIndex, lineIndex);
-                let foundRunnerToExecuteCommand = false;
-                for (let runnerIndex in this.environment.runners) {
-                    let runner = await this.getRunner(this.environment.runners[runnerIndex]);
-                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
-                        var result = new RunResult();
-                        if(runner.commandIsSkippable(runCommand.command.name)) {
-                            console.log("Command " + runCommand.command.name + " will be skipped.");
-                            continue;
+        if(!this.syntaxErrorLogger.activated) {
+            mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
+                for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
+                    let runCommand = this.initRunCommand(stepIndex, lineIndex);
+                    let foundRunnerToExecuteCommand = false;
+                    for (let runnerIndex in this.environment.runners) {
+                        let runner = await this.getRunner(this.environment.runners[runnerIndex]);
+                        if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
+                            var result = new RunResult();
+                            if(runner.commandIsSkippable(runCommand.command.name)) {
+                                console.log("Command " + runCommand.command.name + " will be skipped.");
+                                continue;
+                            }
+                            try {
+                                result = runner.run(runCommand);
+                            }
+                            catch (e) {
+                                result.exceptions.push(e);
+                            }
+                            
+                            await runner.assert(runCommand, result);
+                            
+                            foundRunnerToExecuteCommand = true;
+                            break;
                         }
-                        try {
-                            result = runner.run(runCommand);
-                        }
-                        catch (e) {
-                            result.exceptions.push(e);
-                        }
-                        
-                        await runner.assert(runCommand, result);
-                        
-                        foundRunnerToExecuteCommand = true;
-                        break;
                     }
+                    if(!foundRunnerToExecuteCommand && !this.environment.skipMissingFunctions) {
+                        break mainloop;
+                    }   
                 }
-                if(!foundRunnerToExecuteCommand && !this.environment.skipMissingFunctions) {
-                    break mainloop;
-                }   
             }
         }
 
@@ -86,7 +87,8 @@ export class Engine {
             }
         }
         if(missingFunctions.length > 0) {
-            this.syntaxErrorLogger.handle("Environment incomplete: " + this.environmentName + " | Missing functions: \n - " + missingFunctions.join("\n - "));
+            console.log(missingFunctions);
+            this.syntaxErrorLogger.handleMissingFunction(missingFunctions);
             return false;
         } else {
             return true;
