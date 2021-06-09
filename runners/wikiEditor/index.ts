@@ -15,7 +15,7 @@ export class WikiEditor extends WikiRunner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
-        let workspacePath = this.getVariable(this.workspaceDirectory).replace(/\\/g, "/");
+        let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(workspacePath,runCommand.command.parameters[0].replace(fileName, "")); 
         let contentPath, contentFile, contentString;

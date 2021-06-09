@@ -68,7 +68,7 @@ export class VsCode extends Runner {
         let result = new RunResult();
         result.returnCode = 0;
 
-        let filepath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0]);
+        let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
         let directoryPath = path.dirname(filepath).replace(/\\/g, "\\\\").replace(/\//g, "//");
         let directoryName = filepath.split(path.sep)[filepath.split(path.sep).length - 2];
         let testfile = path.join(this.getWorkingDirectory(), "vscode_tests", "runCobiGenJava.js");
