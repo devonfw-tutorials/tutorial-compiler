@@ -18,7 +18,7 @@ export class WikiVsCode extends WikiRunner {
 
     runChangeFile(runCommand: RunCommand): RunResult{
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(this.getVariable(this.workspaceDirectory), runCommand.command.parameters[0].replace(fileName, ""));
+        let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
         filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
         let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
         let content = undefined;
