@@ -3,13 +3,14 @@ import { Playbook } from "./playbook";
 import { Runner } from "./runner";
 import { RunCommand } from "./run_command";
 import { RunResult } from "./run_result";
+import { SyntaxErrorLogger } from "./syntax_error_logger";
 
 export class Engine {
 
     private runners: Map<string, Runner> = new Map<string, Runner>();
     private variables: Map<string, any> = new Map<string, any>();
 
-    constructor(private environmentName: string, private environment: Environment, private playbook: Playbook) { }
+    constructor(private environmentName: string, private environment: Environment, private playbook: Playbook, private syntaxErrorLogger: SyntaxErrorLogger) { }
 
     async run() {
         for (let runnerIndex in this.environment.runners) {
@@ -27,35 +28,36 @@ export class Engine {
                 console.log("Environment incomplete: " + this.environmentName + " (ignored)");
            }
         }
-
-        mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
-            for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
-                let runCommand = this.initRunCommand(stepIndex, lineIndex);
-                let foundRunnerToExecuteCommand = false;
-                for (let runnerIndex in this.environment.runners) {
-                    let runner = await this.getRunner(this.environment.runners[runnerIndex]);
-                    if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
-                        var result = new RunResult();
-                        if(runner.commandIsSkippable(runCommand.command.name)) {
-                            console.log("Command " + runCommand.command.name + " will be skipped.");
-                            continue;
+        if(!this.syntaxErrorLogger.activated) {
+            mainloop: for (let stepIndex = 0; stepIndex < this.playbook.steps.length; stepIndex++) {
+                for (let lineIndex = 0; lineIndex < this.playbook.steps[stepIndex].lines.length; lineIndex++) {
+                    let runCommand = this.initRunCommand(stepIndex, lineIndex);
+                    let foundRunnerToExecuteCommand = false;
+                    for (let runnerIndex in this.environment.runners) {
+                        let runner = await this.getRunner(this.environment.runners[runnerIndex]);
+                        if (runner.supports(this.playbook.steps[stepIndex].lines[lineIndex].name, this.playbook.steps[stepIndex].lines[lineIndex].parameters)) {
+                            var result = new RunResult();
+                            if(runner.commandIsSkippable(runCommand.command.name)) {
+                                console.log("Command " + runCommand.command.name + " will be skipped.");
+                                continue;
+                            }
+                            try {
+                                result = runner.run(runCommand);
+                            }
+                            catch (e) {
+                                result.exceptions.push(e);
+                            }
+                            
+                            await runner.assert(runCommand, result);
+                            
+                            foundRunnerToExecuteCommand = true;
+                            break;
                         }
-                        try {
-                            result = runner.run(runCommand);
-                        }
-                        catch (e) {
-                            result.exceptions.push(e);
-                        }
-                        
-                        await runner.assert(runCommand, result);
-                        
-                        foundRunnerToExecuteCommand = true;
-                        break;
                     }
+                    if(!foundRunnerToExecuteCommand && !this.environment.skipMissingFunctions) {
+                        break mainloop;
+                    }   
                 }
-                if(!foundRunnerToExecuteCommand && !this.environment.skipMissingFunctions) {
-                    break mainloop;
-                }   
             }
         }
 
@@ -69,6 +71,7 @@ export class Engine {
     }
 
     private async isEnvironmentComplete(): Promise<boolean> {
+        let missingFunctions = [];
         for (let stepIndex in this.playbook.steps) {
             for (let lineIndex in this.playbook.steps[stepIndex].lines) {
                 let isSupported = false;
@@ -79,12 +82,17 @@ export class Engine {
                     }
                 }
                 if (!isSupported) {
-                    return false;
+                    missingFunctions.push(this.playbook.steps[stepIndex].lines[lineIndex].name);
                 }
             }
         }
-
-        return true;
+        if(missingFunctions.length > 0) {
+            console.log(missingFunctions);
+            this.syntaxErrorLogger.handleMissingFunction(missingFunctions);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private async getRunner(name: string): Promise<Runner> {

@@ -44,3 +44,8 @@ For this tutorial you have to write `DEVON_IDE_TOOLS=(<%= tools; %>)` into the d
 Start the setup process by executing `.\setup 'path/to/settings'` (Windows) or `bash setup path/to/settings.git` (Linux).
 
 You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.
+
+<% if(tools.indexOf("mvn") > 0){ %>
+The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
+<% } %> 
+
