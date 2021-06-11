@@ -19,7 +19,7 @@ export class Engine {
 
         console.log("Environment: " + this.environmentName);
         if (! await this.isEnvironmentComplete()) {
-            if (this.environment.failOnIncomplete) {
+            if (this.environment.failOnIncomplete && !this.syntaxErrorLogger.activated) {
                 throw "Environment incomplete: " + this.environmentName;
             } else if(!this.environment.skipMissingFunctions) {
                 console.log("Environment incomplete: " + this.environmentName);
