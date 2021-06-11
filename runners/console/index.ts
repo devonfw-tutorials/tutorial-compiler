@@ -930,7 +930,7 @@ export class Console extends Runner {
         if(this.asyncProcesses.length > 0) {
             let processes: psList.ProcessDescriptor[] = Array.from((await psList()).values());
             for(let asyncProcess of this.asyncProcesses) {
-                killProcessesRecursively(processes.reverse(), asyncProcess.pid);
+                killProcessesRecursively(processes, asyncProcess.pid);
             }
             //Check if there are still running processes on the given ports
             for(let asyncProcess of this.asyncProcesses.reverse()) {
