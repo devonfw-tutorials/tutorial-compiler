@@ -1,7 +1,6 @@
 import { RunResult } from "./run_result";
 import { Playbook } from "./playbook";
-import * as fs from 'fs';
-import * as rimraf from 'rimraf';
+import * as fs from 'fs-extra';
 import { RunCommand } from "./run_command";
 
 export abstract class Runner {
@@ -104,7 +103,7 @@ export abstract class Runner {
         if(fs.existsSync(path)) {
             if(deleteFolderIfExist) {
                 try {
-                    rimraf.sync(path);
+                    fs.removeSync(path);
                 } catch(e) {
                     console.log("Error deleting foler " + path, e);
                 }
