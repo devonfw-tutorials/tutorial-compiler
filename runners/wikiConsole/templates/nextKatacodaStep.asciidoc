@@ -1,6 +1,10 @@
-== <%= title; %>
+== <%- title; %>
+<%- steptitle; %>
+<%- text; %>
 
-<%= content; %>
+<%- content; %>
+
+<%- textAfter%>
 
 <% if(path) {%>
 After that, move to the target directory by executing `cd  <%= path; %>` in the terminal.
