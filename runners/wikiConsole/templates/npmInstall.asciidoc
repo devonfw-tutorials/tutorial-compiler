@@ -16,7 +16,10 @@ You can install the package <%= npmCommand.name; %><% if(!npmCommand.global){ %>
 You need to be located in the project directory where the package.json file lies.
 For this tutorial it is `<%= projectPath; %>`. You can either move there manually and open the terminal there or open the terminal and move there by executing `cd <%= projectPath; %>`.<% } %>
 
-Now execute `npm install<% if(npmCommand.global){ %> -g<% } %> <%= npmCommand.args; %> <%= npmCommand.name; %>` in the terminal. 
+
+
+Now execute `npm install<% if(npmCommand.global){ %> -g<% } %><% if(npmCommand.args){%> <%= npmCommand.args; %><% } %><%if(npmCommand.name){ %> <%= npmCommand.name; %><%}%>` in the terminal. 
 
 <% if(npmCommand.global){ %>Due to the argument '-g' the package will be installed globally.<% } %>
 This may take some time.
+
