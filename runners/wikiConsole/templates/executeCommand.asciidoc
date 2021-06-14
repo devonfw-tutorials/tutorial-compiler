@@ -2,7 +2,7 @@
 
 === Execute a command in a command prompt
 First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal.
-<% if(async){ %> We want to start a Server so that you have to open a new command prompt, that will be blocked while the server is running. <% } %>
+<% if(async){ %>The command wil start a server so that you have to open a new command prompt, that will be blocked while the server is running. <% } %>
 
 <% if(dir){ %> 
 The command will be executed in the folder *<%= dir; %>* relative to your current Workspace. If the folders are not present, you maybe missed a wiki chapter and have to create it.
