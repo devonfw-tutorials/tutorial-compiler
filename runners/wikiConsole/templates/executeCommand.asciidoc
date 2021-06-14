@@ -1,0 +1,27 @@
+== Execute a command
+
+=== Execute a command in a command prompt
+First, you need to open a command prompt in your current Workspace. For Windows, you can use Powershell and on Linux, you can use the Terminal.
+<% if(async){ %> We want to start a Server so that you have to open a new command prompt, that will be blocked while the server is running. <% } %>
+
+<% if(dir){ %> 
+The command will be executed in the folder *<%= dir; %>* relative to your current Workspace. If the folders are not present, you maybe missed a wiki chapter and have to create it.
+First change your directory with this command `cd <%= dir; %>` <% } %>
+
+.Operating system
+. Windows + 
+Then execute the command `<%- windowsCommand; %><% if(args){ %> <%- args; %><%}%>`.
+. Linux and macOS + 
+Then execute the command `<%- linuxCommand; %><% if(args){ %> <%- args; %><%}%>`.
+
+<% if(port){ %>
+
+=== Startup Assertion
+
+You can check if the server is running correctly by checking if `localhost:<%= port; %>/<%= appPath; %>` is accessible by either using a tool like `curl`, `Postman` or simply accessing the service via your webbrowser.
+
+Example: `curl -Is localhost:<%= port; %>/<%= appPath; %> | head -n 1`
+
+This command should return an `200 OK` header if the service is available.
+
+<% } %>
