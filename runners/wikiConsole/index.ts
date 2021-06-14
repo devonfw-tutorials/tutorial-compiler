@@ -135,6 +135,16 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runAddSetupScript(runCommand: RunCommand): RunResult{
+        let scriptNameLinux = path.basename(runCommand.command.parameters[0]);
+        let scriptNameWindows = path.basename(runCommand.command.parameters[1]);
+        let windowsContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
+        let linuxContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), { encoding: "utf-8" });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "addSetupScript.asciidoc"), {scriptNameWindows: scriptNameWindows, windowsContent: windowsContent,
+             scriptNameLinux: scriptNameLinux, linuxContent: linuxContent});
+      return null;
+    }
+
     runAdaptTemplatesCobiGen(runComannd: RunCommand): RunResult{
         let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"), {devonPath: devonPath});
@@ -168,7 +178,6 @@ export class WikiConsole extends WikiRunner {
 
         let content = fs.readFileSync(tempFile, "utf-8");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"), { steptitle: runCommand.stepTitle, text: runCommand.text, textAfter: runCommand.textAfter, title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
-
         return null;
     }
 }
