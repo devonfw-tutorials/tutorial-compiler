@@ -64,13 +64,14 @@ export class WikiConsole extends WikiRunner {
 
 
     runRunServerJava(runCommand: RunCommand): RunResult {
-        let server_path = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
+        let server_path = path.relative(this.getWorkingDirectory(),this.getVariable(this.WORKSPACE_DIRECTORY));
+        server_path = path.join(server_path, runCommand.command.parameters[0]);
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "runServerJava.asciidoc"), { server_path: server_path, port: runCommand.command.parameters[1].port, app_path: runCommand.command.parameters[1].path })
         return null;
     }
 
     runNpmInstall(runCommand: RunCommand): RunResult {
-        let projectPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
+        let projectPath = runCommand.command.parameters[0];
         let npmCommand = {
             "name": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].name) ? runCommand.command.parameters[1].name : undefined,
             "global": (runCommand.command.parameters.length > 1 && runCommand.command.parameters[1].global) ? runCommand.command.parameters[1].global : false, 
@@ -82,7 +83,7 @@ export class WikiConsole extends WikiRunner {
     }
   
     runCloneRepository(runCommand: RunCommand): RunResult {
-        let directoryPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
+        let directoryPath = runCommand.command.parameters[0];
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
@@ -118,7 +119,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runBuildJava(runCommand: RunCommand): RunResult {
-        let directoryPath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
+        let directoryPath = runCommand.command.parameters[0];
         let skipTest = (runCommand.command.parameters.length == 2 && runCommand.command.parameters[1] == true) ? false : true;
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "buildJava.asciidoc"), { directoryPath: directoryPath, skipTest: skipTest });
         return null;

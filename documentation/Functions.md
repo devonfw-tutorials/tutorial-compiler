@@ -186,7 +186,7 @@ createDevon4jProject("com.mycustomer.myapplication")
 
 ### buildJava <a name="buildJava"></a>
 #### parameter 
-1. The project directory
+1. The project directory relative to current workspace.
 2. (Optional) Indicator whether tests should be run. Default is false.
 #### example 
 buildJava("cobigenexample", true)
@@ -323,7 +323,7 @@ downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
 
 ### buildNg <a name="buildNg"></a>
 #### parameter 
-1. Path to the angular project relative to workspace
+1. Path to the angular project, relative to workspace.
 2. (Optional) Custom output directory.
 #### example 
 buildNg("exampleAngularProject")
