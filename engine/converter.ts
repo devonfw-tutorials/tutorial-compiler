@@ -52,26 +52,28 @@ private platform: ConsolePlatform;
     }
 
     convertAsciidocToMarkdown(asciidocString: string): string {
-        /**
-         * 1. Write asciidocString to temp.adoc file
-         * 2. Use AsciiDoctor to convert AsciiDoc String to DocBook XML file
-         * 3. Use Pandoc to convert DocBook XML file to Markdown File
-         * 4. Read Markdown file (eventually combine with step 2?)
-         */
+        if(asciidocString !== undefined) {
+            /**
+             * 1. Write asciidocString to temp.adoc file
+             * 2. Use AsciiDoctor to convert AsciiDoc String to DocBook XML file
+             * 3. Use Pandoc to convert DocBook XML file to Markdown File
+             * 4. Read Markdown file (eventually combine with step 2?)
+             */
 
-        this.createTempFile("temp.adoc", asciidocString);
+            this.createTempFile("temp.adoc", asciidocString);
 
-        let markdownString = "";
-        if(this.platform == ConsolePlatform.WINDOWS) {
-            this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
-            this.executeCommand("pandoc -f docbook -t markdown temp.xml -o temp.md", this.getTempDir());
-            markdownString = this.readTempFile("temp.md");
-        }else {
-            this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
-            this.executeCommand("pandoc -f docbook -t markdown temp.xml -o temp.md", this.getTempDir());
-            markdownString = this.readTempFile("temp.md");
-        }
-        return markdownString;
+            let markdownString = "";
+            if(this.platform == ConsolePlatform.WINDOWS) {
+                this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
+                this.executeCommand("pandoc -f docbook -t gfm temp.xml -o temp.md", this.getTempDir());
+                markdownString = this.readTempFile("temp.md");
+            }else {
+                this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
+                this.executeCommand("pandoc -f docbook -t markdown temp.xml -o temp.md", this.getTempDir());
+                markdownString = this.readTempFile("temp.md");
+            }    
+            return markdownString;
+        }        
     }
 
     executeCommand(command: string, directory: string) {
