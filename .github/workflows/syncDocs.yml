@@ -37,10 +37,9 @@ jobs:
           echo ">"
           git diff-index --quiet HEAD & git status -s
           echo "<"
-          echo "TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
-          echo "$TO_BE_CANCELLED"
+          echo "COMPILER_TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
+          echo "$COMPILER_TO_BE_CANCELLED"
       - name: Copy docs and consolidate links to ${REPO_TUTORIAL_DEST} Repository
-        if: ${{ env.TO_BE_CANCELLED == 'false' }}
         run: |
           cp -rf ${REPO_COMPILER_SOURCE}/documentation/* ${REPO_TUTORIAL_DEST}/
           cd ${REPO_TUTORIAL_DEST}
@@ -52,29 +51,30 @@ jobs:
           echo ">"
           git diff-index --quiet HEAD & git status -s
           echo "<"
-          echo "TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
-          echo "$TO_BE_CANCELLED"
+          echo "TUTORIAL_TO_BE_CANCELLED=$(if [[ $(git diff-index --quiet HEAD & git status -s) ]]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
+          echo "$TUTORIAL_TO_BE_CANCELLED"
       - name: setup git user
-        if: ${{ env.TO_BE_CANCELLED == 'false' }}
+        if: ${{ env.COMPILER_TO_BE_CANCELLED == 'false' || env.TUTORIAL_TO_BE_CANCELLED == 'false'}}
         run: |
           git config --global user.email ${BUILD_USER_EMAIL}
           git config --global user.name ${BUILD_USER}
       - name: Sync Wiki
-        if: ${{ env.TO_BE_CANCELLED == 'false' }}
+        if: ${{ env.COMPILER_TO_BE_CANCELLED == 'false' }}
         run: |
           cd ${REPO_COMPILER_DEST}
           git status
           git add .
           git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
           git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_COMPILER_DEST}.git"
-          git push origin-wiki main
+          git push origin-wiki master
       - name: Sync Wiki ${REPO_TUTORIAL_DEST} Repository
-        if: ${{ env.TO_BE_CANCELLED == 'false' }}
+        if: ${{ env.TUTORIAL_TO_BE_CANCELLED == 'false' }}
         run: |
           cd ${REPO_TUTORIAL_DEST}
+          git pull
           git status
           git add .
           git commit -m "${REPO_COMPILER_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
           git remote add origin-wiki "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_TUTORIAL_DEST}.git"
-          git push origin-wiki main
+          git push origin-wiki master
       

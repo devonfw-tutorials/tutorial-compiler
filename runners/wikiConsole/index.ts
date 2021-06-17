@@ -3,7 +3,8 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
-import * as fs from 'fs';
+import * as fs from "fs";
+
 
 export class WikiConsole extends WikiRunner {
 
@@ -38,6 +39,7 @@ export class WikiConsole extends WikiRunner {
         return this.runInstallDevonfwIde(runCommand);
     }
 
+
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
             let filePath = path.join(workspacePath,runCommand.command.parameters[0]);
@@ -63,7 +65,6 @@ export class WikiConsole extends WikiRunner {
                  contentPath: contentPath, contentString: contentString, placeholder: placeholder, lineNumber: lineNumber, fileName: fileName, contentFile: contentFile});
             return null;
     }
-
 
     runRunServerJava(runCommand: RunCommand): RunResult {
         let server_path = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
@@ -138,6 +139,16 @@ export class WikiConsole extends WikiRunner {
         return null;
     }
 
+    runAddSetupScript(runCommand: RunCommand): RunResult{
+        let scriptNameLinux = path.basename(runCommand.command.parameters[0]);
+        let scriptNameWindows = path.basename(runCommand.command.parameters[1]);
+        let windowsContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" });
+        let linuxContent = fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[0]), { encoding: "utf-8" });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "addSetupScript.asciidoc"), {scriptNameWindows: scriptNameWindows, windowsContent: windowsContent,
+             scriptNameLinux: scriptNameLinux, linuxContent: linuxContent});
+      return null;
+    }
+
     runAdaptTemplatesCobiGen(runComannd: RunCommand): RunResult{
         let devonPath = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY)).replace(/\\/g, "/");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"), {devonPath: devonPath});
@@ -162,7 +173,7 @@ export class WikiConsole extends WikiRunner {
 
         let content = fs.readFileSync(tempFile, "utf-8");
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"), { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
-
+      
         return null;
     }
 }
