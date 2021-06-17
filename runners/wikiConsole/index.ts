@@ -175,6 +175,7 @@ export class WikiConsole extends WikiRunner {
     }
 
     runExecuteCommand(runCommand: RunCommand): RunResult{
+        let currentdir = path.relative(this.getWorkingDirectory(), this.getVariable(this.WORKSPACE_DIRECTORY));
         let windowsCommand = runCommand.command.parameters[0];
         let linuxCommand = runCommand.command.parameters[1];
         let dir = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir) 
@@ -194,7 +195,7 @@ export class WikiConsole extends WikiRunner {
             : undefined; 
 
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "executeCommand.asciidoc"),
-            {windowsCommand: windowsCommand, linuxCommand: linuxCommand, dir: dir, async: async, args: args, port: port, appPath: appPath });
+            {windowsCommand: windowsCommand, linuxCommand: linuxCommand, dir: dir, async: async, args: args, port: port, appPath: appPath, currentdir: currentdir});
         
         return null;
     }
