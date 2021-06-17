@@ -7,6 +7,9 @@ import * as ejs from "ejs";
 export abstract class WikiRunner extends Runner {
 
     public outputPathTutorial: string;
+    protected fileTypeMap = new Map([ [".java", "java"],[".ts", "typescript"],
+    [".js", "javascript"], [".html", "html"],
+    [".scss", "css"], [".asciidoc", "asciidoc"], ]);
     protected readonly INSTALLED_TOOLS: string = "installedTools";
 
     init(playbook: Playbook): void {

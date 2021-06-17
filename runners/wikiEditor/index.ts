@@ -3,6 +3,7 @@ import { WikiRunner } from "../../engine/wikiRunner";
 import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import * as path from "path";
+import * as fs from "fs-extra";
 
 export class WikiEditor extends WikiRunner {
 
@@ -15,29 +16,23 @@ export class WikiEditor extends WikiRunner {
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{
-        let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
         let fileName = path.basename(runCommand.command.parameters[0]);
-        let filePath = path.join(workspacePath,runCommand.command.parameters[0].replace(fileName, "")); 
-        let contentPath, contentFile, contentString;
-        if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].contentConsole){
-            contentPath = runCommand.command.parameters[1].fileConsole;
-            contentString = runCommand.command.parameters[1].contentConsole;
-        }else{
-            contentPath = runCommand.command.parameters[1].file;
-            contentString = runCommand.command.parameters[1].content;
+        let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
+        filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
+        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
+        let content = undefined;
+        if(runCommand.command.parameters[1].content || runCommand.command.parameters[1].contentConsole){
+            content = runCommand.command.parameters[1].content 
+                ? runCommand.command.parameters[1].content
+                : runCommand.command.parameters[1].contentConsole;
+        }else if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].file){
+            content = runCommand.command.parameters[1].file 
+                ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].file), { encoding: "utf-8" })
+                : fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1].fileConsole), { encoding: "utf-8" });
         }
-        contentFile = contentPath 
-            ? path.basename(contentPath)
-            : undefined;
-        contentPath = contentPath 
-            ? path.join(this.getPlaybookPath(), contentPath.replace(contentFile, ""))
-            : undefined;
         let placeholder = runCommand.command.parameters[1].placeholder;
         let lineNumber = runCommand.command.parameters[1].lineNumber;
-
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"), {filePath : filePath,
-             contentPath: contentPath, contentString: contentString, placeholder: placeholder, lineNumber: lineNumber,
-            contentFile: contentFile, fileName: fileName});
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, lineNumber: lineNumber, placeholder: placeholder });
         return null;
     }
 }
