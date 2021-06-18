@@ -3,7 +3,7 @@ import { WikiRunner } from "../../engine/wikiRunner";
 import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import * as path from "path";
-import * as fs from "fs-extra";
+import * as fs from "fs-extra"
 
 export class WikiEditor extends WikiRunner {
 
@@ -13,6 +13,20 @@ export class WikiEditor extends WikiRunner {
 
     async destroy(playbook: Playbook): Promise<void> {
         super.destroy(playbook);
+    }
+
+
+
+    runCreateFile(runCommand: RunCommand): RunResult{
+        let fileName = path.basename(runCommand.command.parameters[0]);
+        let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
+        filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
+        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
+        let content = runCommand.command.parameters[1] 
+            ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" })
+            : undefined;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType });
+        return null;
     }
 
     runChangeFile(runCommand: RunCommand): RunResult{

@@ -105,7 +105,7 @@ export abstract class Runner {
                 try {
                     fs.removeSync(path);
                 } catch(e) {
-                    console.log("Error deleting foler " + path, e);
+                    console.log("Error deleting folder " + path, e);
                 }
             } else return path;
         }

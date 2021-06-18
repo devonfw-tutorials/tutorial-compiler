@@ -12,6 +12,7 @@ export abstract class WikiRunner extends Runner {
     [".scss", "css"], [".asciidoc", "asciidoc"], ]);
     protected readonly INSTALLED_TOOLS: string = "installedTools";
 
+
     init(playbook: Playbook): void {
         let outputDirectory = this.createFolder(path.join(this.getOutputDirectory(), "wiki", this.environmentName), false)
         this.outputPathTutorial = this.createFolder(path.join(outputDirectory, playbook.name), true);

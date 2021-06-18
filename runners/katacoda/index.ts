@@ -208,7 +208,7 @@ export class Katacoda extends Runner {
         }
         this.pushStep(runCommand, "Create a new file", "step" + runCommand.stepIndex + ".md");
         
-        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});
+        this.renderTemplate("createFile.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, filePath: filePath, fileDir: fileDir , fileName:fileName , content: content});           
         return null;
     }
 

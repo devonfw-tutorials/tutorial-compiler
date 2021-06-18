@@ -15,6 +15,19 @@ export class WikiEclipse extends WikiRunner {
         super.destroy(playbook);
     }
 
+    runCreateFile(runCommand: RunCommand): RunResult{
+        let fileName = path.basename(runCommand.command.parameters[0]);
+        let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
+        filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
+        let fileType = this.fileTypeMap.get(fileName.substr(fileName.indexOf(".")));
+        let parentFolder = path.basename(filePath);
+        let content = runCommand.command.parameters[1] 
+            ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" })
+            : undefined;
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, parentFolder: parentFolder });
+        return null;
+    }
+      
     runChangeFile(runCommand: RunCommand): RunResult{
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
