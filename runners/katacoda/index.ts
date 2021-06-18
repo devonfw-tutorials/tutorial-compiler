@@ -344,7 +344,7 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
         for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
@@ -364,7 +364,7 @@ export class Katacoda extends Runner {
         let content = fs.readFileSync(tempFile, "utf-8");
         this.pushStep(runCommand, runCommand.command.parameters[0], "step" + runCommand.stepIndex + ".md");
 
-        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, content: content });
+        this.renderTemplate("displayContent.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, content: content });
         
         if(runCommand.command.parameters[2]) {
             this.currentDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2]);

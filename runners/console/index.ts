@@ -413,7 +413,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         //Only needed for katacoda and wiki runner
         return null;
     }

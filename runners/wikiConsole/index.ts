@@ -155,7 +155,7 @@ export class WikiConsole extends WikiRunner {
               return null;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    rundisplayContent(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
         for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
@@ -172,7 +172,7 @@ export class WikiConsole extends WikiRunner {
         }
 
         let content = fs.readFileSync(tempFile, "utf-8");
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"), { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "displayContent.asciidoc"), { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
       
         return null;
     }
