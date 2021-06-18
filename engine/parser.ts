@@ -62,11 +62,16 @@ export class Parser {
 
     createCommand(line: string): Command{
         let re =/([^(]+)\(([^)]*)\)/;
-        let result = re.exec(line);
-        let retVal = new Command();
-        retVal.name = result[1].trim();
-        retVal.parameterString = result[2];
-        return retVal;
+        try {
+            let result = re.exec(line);
+            let retVal = new Command();
+            retVal.name = result[1].trim();
+            retVal.parameterString = result[2];
+            return retVal;
+        } catch(e) {
+            console.error("Error in method createCommand while parsing line: '" + line + "'");
+            throw e;
+        }
     }
 
     getTextAfter(parseResult, index){
