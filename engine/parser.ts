@@ -44,9 +44,9 @@ export class Parser {
     getLines(parseResult, index):Command[]{
         let linebreak = process.platform=="win32" ? "\r\n" : "\n";
         try {
-            return (parseResult[3][index][7].steplines || parseResult[3][index][2][7].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return (parseResult[3][index][7].steplines || parseResult[3][index][2][7].steplines).split(linebreak).filter(e => e.trim() != '').map(e => this.createCommand(e));
         } catch (error) {
-            return parseResult[3][index][2][7].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return parseResult[3][index][2][7].steplines.split(linebreak).filter(e => e.trim() != '').map(e => this.createCommand(e));
         }
     }
 
