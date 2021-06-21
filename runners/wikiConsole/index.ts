@@ -155,7 +155,7 @@ export class WikiConsole extends WikiRunner {
               return null;
     }
 
-    rundisplayContent(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
         for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
