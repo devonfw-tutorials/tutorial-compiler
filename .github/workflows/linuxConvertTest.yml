@@ -1,4 +1,4 @@
-name: Convert Test
+name: Linux Convert Test
 on:
   workflow_dispatch:
 
