@@ -1,0 +1,31 @@
+name: Convert Test
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+
+      - name: install Pandoc
+        run: sudo wget https://github.com/jgm/pandoc/releases/download/2.14.0.2/pandoc-2.14.0.2-1-amd64.deb && sudo dpkg -i pandoc-2.14.0.2-1-amd64.deb
+
+      - name: install AsciiDoctor
+        run: sudo apt install asciidoctor
+
+      - name: install TS
+        run: npm install typescript
+
+      - name: npm install
+        run: npm install
+
+      - name: run checkout.sh
+        run: bash checkout.sh
+
+      - name: run buildRun.sh --debug
+        uses: GabrialBB/xvfb-action@v1.0
+        with:
+          run: sh buildRun.sh --debug
