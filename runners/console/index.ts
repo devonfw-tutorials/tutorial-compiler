@@ -545,17 +545,11 @@ export class Console extends Runner {
      
   /// runassertFile
 
-    runassertFile(runCommand: RunCommand): RunResult{
-	let result = new RunResult();
-        result.returnCode = 0;
-
-        let filepath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
+    runAssertExistFile(runCommand: RunCommand): RunResult{
+		let result = new RunResult();
+	    result.returnCode = 0;
+	     return result;
 	
-	    if(!fs.existsSync(filepath)) {
-            throw new Error("file " + filepath + " does not exist");
-        }
-	
-	return result;
      }
 
 
@@ -917,8 +911,8 @@ export class Console extends Runner {
         }
     }
 
-    // assertFileExit
-      async assertassertFileExist(runCommand: RunCommand, result: RunResult) {
+    
+      async assertAssertFileExist(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
             .noErrorCode(result)
