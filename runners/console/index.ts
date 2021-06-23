@@ -911,7 +911,7 @@ export class Console extends Runner {
         }
     }
 
-    
+   
       async assertAssertFileExist(runCommand: RunCommand, result: RunResult) {
         try {
             new Assertions()
