@@ -351,7 +351,7 @@ If the tutorial should be tested on the console environment, you have to specify
 
 ### displayContent <a name="displayContent"></a>
 #### parameter
-1. The title of the step.
+1. The title of the step. 
 2. An array of json objects with files, content, or images to be rendered within the katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda Syntax is allowed in the files or the content!
 3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
 #### example 
@@ -360,8 +360,8 @@ display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "T
 #### Details
 Available attributes in the json objects:
 
-file: Path to a file whose content is to be displayed in the katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. additional formating information.
-content: Plain text to be displayed in the katacoda step. This Text should be following the formating of markdown or asciidoc // Todo
+file: Path to a file whose content is to be displayed in the katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
+content: Plain text to be displayed in the katacoda step. This Text should be following the formating of asciidoc files.
 image: Path to an image to be displayed in the katacoda step.
 
 ***
