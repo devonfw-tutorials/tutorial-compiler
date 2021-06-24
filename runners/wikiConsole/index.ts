@@ -8,6 +8,8 @@ import * as fs from "fs";
 
 export class WikiConsole extends WikiRunner {
 
+    
+
     init(playbook: Playbook): void {
         super.init(playbook);
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
@@ -37,10 +39,11 @@ export class WikiConsole extends WikiRunner {
         return this.runInstallDevonfwIde(runCommand);
     }
 
+
     runChangeFile(runCommand: RunCommand): RunResult{
             let workspacePath = this.getVariable(this.WORKSPACE_DIRECTORY).replace(/\\/g, "/");
             let filePath = path.join(workspacePath,runCommand.command.parameters[0]);
-            let fileName = path.basename(runCommand.command.parameters[0]); 
+            let fileName = path.basename(runCommand.command.parameters[0]);
             let contentPath, contentString;
             if(runCommand.command.parameters[1].fileConsole || runCommand.command.parameters[1].contentConsole){
                 contentPath = runCommand.command.parameters[1].fileConsole;
@@ -62,7 +65,6 @@ export class WikiConsole extends WikiRunner {
                  contentPath: contentPath, contentString: contentString, placeholder: placeholder, lineNumber: lineNumber, fileName: fileName, contentFile: contentFile});
             return null;
     }
-
 
     runRunServerJava(runCommand: RunCommand): RunResult {
         let server_path = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0]);
@@ -87,6 +89,7 @@ export class WikiConsole extends WikiRunner {
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "cloneRepository.asciidoc"), { directoryPath: directoryPath, url: runCommand.command.parameters[1] });
         return null;
     }
+
 
     runDownloadFile(runCommand: RunCommand): RunResult{
         let url = runCommand.command.parameters[0];
