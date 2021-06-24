@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         
       - name: install Pandoc
-        run: sudo wget https://github.com/jgm/pandoc/releases/download/2.14.0.2/pandoc-2.14.0.2-1-amd64.deb && sudo dpkg -i pandoc-2.14.0.2-1-amd64.deb
+        run: sudo apt install pandoc
 
       - name: install AsciiDoctor
         run: sudo apt install asciidoctor
