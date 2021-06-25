@@ -37,7 +37,6 @@ export class WikiVsCode extends WikiRunner {
         let title = this.checkForTitle(runCommand);
         let text = this.checkForText(runCommand);
         let textAfter = this.checkForTextAfter(runCommand);
-        console.log(textAfter);
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
         filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");

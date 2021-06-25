@@ -20,6 +20,9 @@ export abstract class WikiRunner extends Runner {
         this.outputPathTutorial = this.createFolder(path.join(outputDirectory, playbook.name), true);
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
         this.setVariable(this.INSTALLED_TOOLS, "");
+        for(let i = 0; i< playbook.steps.length; i++){
+            this.CommandCntMap.set(i, playbook.steps[i].lines.length-1);
+        }
     }
 
     async destroy(playbook: Playbook): Promise<void> {

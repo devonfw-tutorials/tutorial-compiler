@@ -14,10 +14,6 @@ export class WikiConsole extends WikiRunner {
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
         this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "intro.asciidoc"),
             {name: playbook.name, title: playbook.title, subtitle: playbook.subtitle, description: playbook.description});
-        
-        for(let i = 0; i< playbook.steps.length; i++){
-            this.CommandCntMap.set(i, playbook.steps[i].lines.length-1);
-        }
     }
 
     async destroy(playbook: Playbook): Promise<void> {
