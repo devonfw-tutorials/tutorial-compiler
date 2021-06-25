@@ -11,6 +11,19 @@ jobs:
 
       - uses: actions/setup-node@v2-beta
         
+      - name: install Pandoc
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install pandoc
+
+      - name: install Ruby
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install ruby
+
+      - name: install AsciiDoctor
+        run: gem install asciidoctor
+        
       - name: install TS
         run: npm install typescript
       
