@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from "fs-extra";
 import { ConsoleUtils } from "./consoleUtils";
 
-const { listProcess } = require("process-list");
+const { snapshot } = require("process-list");
 const findProcess = require("find-process");
 
 const os = require("os");
@@ -936,13 +936,13 @@ export class Console extends Runner {
                 console.error("Error killing id " + processIdToKill, e);
             }
         }
-        let processes = await listProcess("name", "pid", "ppid", "path");
+        let systemProcesses = await snapshot("name", "pid", "ppid", "path");
         if(this.asyncProcesses.length > 0) {
             for(let asyncProcess of this.asyncProcesses) {
-                killProcessesRecursively(processes, asyncProcess.pid);
+                killProcessesRecursively(systemProcesses, asyncProcess.pid);
             }
         }
-        for(let proc of processes){
+        for(let proc of systemProcesses){
             if(path.normalize(proc.path).includes(path.normalize(this.getWorkingDirectory()))){
                 try {
                     process.kill(proc.pid);
