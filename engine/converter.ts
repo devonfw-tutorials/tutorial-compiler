@@ -64,16 +64,30 @@ private platform: ConsolePlatform;
 
             let markdownString = "";
             if(this.platform == ConsolePlatform.WINDOWS) {
-                this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
-                this.executeCommand("pandoc -f docbook -t gfm temp.xml -o temp.md", this.getTempDir());
-                markdownString = this.readTempFile("temp.md");
+                if(this.commandAvailable("asciidoctor") && this.commandAvailable("pandoc")) {
+                    this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
+                    this.executeCommand("pandoc -f docbook -t gfm temp.xml -o temp.md", this.getTempDir());
+                    markdownString = this.readTempFile("temp.md");
+                }else {
+                    markdownString = this.readTempFile("temp.adoc");
+                } 
             }else {
-                this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
-                this.executeCommand("pandoc -f docbook -t markdown temp.xml -o temp.md", this.getTempDir());
-                markdownString = this.readTempFile("temp.md");
+                if(this.commandAvailable("asciidoctor") && this.commandAvailable("pandoc")) {
+                    this.executeCommand("asciidoctor -b docbook temp.adoc", this.getTempDir());
+                    this.executeCommand("pandoc -f docbook -t gfm temp.xml -o temp.md", this.getTempDir());
+                    markdownString = this.readTempFile("temp.md");
+                }else {
+                    markdownString = this.readTempFile("temp.adoc");
+                }
             }    
             return markdownString;
         }        
+    }
+
+    commandAvailable(command: string): boolean {
+        let isAvailable = false;
+        let process = child_process.spawnSync(command, {shell: true, cwd: this.getTempDir()});
+        return process.status == 0;
     }
 
     executeCommand(command: string, directory: string) {
