@@ -6,9 +6,9 @@ import { Playbook } from "../../engine/playbook";
 import { ConsolePlatform, AsyncProcess } from "./consoleInterfaces";
 import * as path from 'path';
 import * as fs from "fs-extra";
-import * as psList from "ps-list";
 import { ConsoleUtils } from "./consoleUtils";
 
+const { listProcess } = require("process-list");
 const findProcess = require("find-process");
 
 const os = require("os");
@@ -413,7 +413,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         //Only needed for katacoda and wiki runner
         return null;
     }
@@ -918,15 +918,15 @@ export class Console extends Runner {
     }
 
     private async killAsyncProcesses(): Promise<void> {
-        let killProcessesRecursively = function(processes: psList.ProcessDescriptor[], processIdToKill: number) {
+        let killProcessesRecursively = function(processes: Object[], processIdToKill: number) {
             let childProcesses = processes.filter(process => {
-                return process.ppid == processIdToKill;
+                return process["ppid"] == processIdToKill;
             });
 
 
             if(childProcesses.length > 0) {
                 for(let childProcess of childProcesses) {
-                    killProcessesRecursively(processes, childProcess.pid)
+                    killProcessesRecursively(processes, childProcess["pid"])
                 }
             }
 
@@ -936,17 +936,27 @@ export class Console extends Runner {
                 console.error("Error killing id " + processIdToKill, e);
             }
         }
-
+        let processes = await listProcess("name", "pid", "ppid", "path");
         if(this.asyncProcesses.length > 0) {
-            let processes: psList.ProcessDescriptor[] = Array.from((await psList()).values());
             for(let asyncProcess of this.asyncProcesses) {
                 killProcessesRecursively(processes, asyncProcess.pid);
             }
+        }
+        for(let proc of processes){
+            if(path.normalize(proc.path).includes(path.normalize(this.getWorkingDirectory()))){
+                try {
+                    process.kill(proc.pid);
+                } catch(e) {
+                        console.error("Error killing process "+proc.name+" with id: " + proc.pid , e);
+                }
+            }
+        }
             //Check if there are still running processes on the given ports
+            // Maybe not needed anymore can be deleted and the function documentation should be updated
             for(let asyncProcess of this.asyncProcesses.reverse()) {
-                let processes: any[] = await findProcess("port", asyncProcess.port);
-                if(processes.length > 0) {
-                    for(let proc of processes) {
+                let portProcesses: any[] = await findProcess("port", asyncProcess.port);
+                if(portProcesses.length > 0) {
+                    for(let proc of portProcesses) {
                         try {
                             process.kill(proc.pid);
                             } catch(e) {
@@ -955,7 +965,8 @@ export class Console extends Runner {
                         }
                     }
                 }      
-            }
+            
+
         }
 
     private async cleanUp(): Promise<void> {
