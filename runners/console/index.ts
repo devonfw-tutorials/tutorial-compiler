@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from "fs-extra";
 import { ConsoleUtils } from "./consoleUtils";
 
-const { snapshot } = require("process-list");
+const {snapshot }= require("process-list");
 const findProcess = require("find-process");
 
 const os = require("os");
