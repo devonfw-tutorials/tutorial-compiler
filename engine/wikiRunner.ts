@@ -8,11 +8,13 @@ import * as ejs from "ejs";
 export abstract class WikiRunner extends Runner {
 
     public outputPathTutorial: string;
+    public commandCntMap = new Map();
+
+    protected readonly INSTALLED_TOOLS: string = "installedTools";
     protected fileTypeMap = new Map([ [".java", "java"],[".ts", "typescript"],
     [".js", "javascript"], [".html", "html"],
     [".scss", "css"], [".asciidoc", "asciidoc"], ]);
-    protected readonly INSTALLED_TOOLS: string = "installedTools";
-    public CommandCntMap = new Map();
+    
 
 
     init(playbook: Playbook): void {
@@ -21,7 +23,7 @@ export abstract class WikiRunner extends Runner {
         this.setVariable(this.WORKSPACE_DIRECTORY, path.join(this.getWorkingDirectory()));
         this.setVariable(this.INSTALLED_TOOLS, "");
         for(let i = 0; i< playbook.steps.length; i++){
-            this.CommandCntMap.set(i, playbook.steps[i].lines.length-1);
+            this.commandCntMap.set(i, playbook.steps[i].lines.length-1);
         }
     }
 
@@ -49,7 +51,7 @@ export abstract class WikiRunner extends Runner {
     }
 
     protected checkForTextAfter(runCommand: RunCommand): string{
-        return this.CommandCntMap.get(runCommand.stepIndex) == runCommand.lineIndex 
+        return this.commandCntMap.get(runCommand.stepIndex) == runCommand.lineIndex 
             ? runCommand.textAfter
             : undefined;
     }

@@ -1,10 +1,10 @@
 <%if(title){%>== <%- title; %>
 <%if(text){%><%- text; %><%}%><%}else{%>
 
-=== Create Folder
+=== Create folder
 <%if(text){%><%- text; %><%}%><%}%>
 
-==== Creating a new Folder
+==== Creating a new folder
 
 A folder can be created either from within an IDE like VSCode or Eclipse by simply right clicking in the file explorer and creating a new folder. Another approach is to use the Terminal. 
 
