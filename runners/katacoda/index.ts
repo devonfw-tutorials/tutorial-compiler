@@ -423,7 +423,7 @@ export class Katacoda extends Runner {
             "path" : filepath, 
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
-            "args": (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args) ? runCommand.command.parameters[1].args.join(" ") : undefined
+            "args": (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args) ? runCommand.command.parameters[2].args.join(" ") : undefined
         }
 
         this.pushStep(runCommand, "Executing the command "+ runCommand.command.parameters[1] , "step"+ runCommand.stepIndex + ".md");
