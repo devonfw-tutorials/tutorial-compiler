@@ -44,9 +44,9 @@ export class Parser {
     getLines(parseResult, index):Command[]{
         let linebreak = process.platform=="win32" ? "\r\n" : "\n";
         try {
-            return (parseResult[3][index][7].steplines || parseResult[3][index][2][7].steplines).split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return (parseResult[3][index][7].steplines || parseResult[3][index][2][7].steplines).split(linebreak).filter(e => e.trim() != '').map(e => this.createCommand(e));
         } catch (error) {
-            return parseResult[3][index][2][7].steplines.split(linebreak).filter(e => e != '').map(e => this.createCommand(e));
+            return parseResult[3][index][2][7].steplines.split(linebreak).filter(e => e.trim() != '').map(e => this.createCommand(e));
         }
     }
 
@@ -62,11 +62,16 @@ export class Parser {
 
     createCommand(line: string): Command{
         let re =/([^(]+)\(([^)]*)\)/;
-        let result = re.exec(line);
-        let retVal = new Command();
-        retVal.name = result[1].trim();
-        retVal.parameterString = result[2];
-        return retVal;
+        try {
+            let result = re.exec(line);
+            let retVal = new Command();
+            retVal.name = result[1].trim();
+            retVal.parameterString = result[2];
+            return retVal;
+        } catch(e) {
+            console.error("Error in method createCommand while parsing line: '" + line + "'");
+            throw e;
+        }
     }
 
     getTextAfter(parseResult, index){
