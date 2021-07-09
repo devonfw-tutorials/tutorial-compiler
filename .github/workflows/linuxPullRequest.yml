@@ -11,6 +11,12 @@ jobs:
 
       - uses: actions/setup-node@v2-beta
         
+      - name: install Pandoc
+        run: sudo apt install pandoc
+
+      - name: install AsciiDoctor
+        run: sudo apt install asciidoctor
+        
       - name: install TS
         run: npm install typescript
       
