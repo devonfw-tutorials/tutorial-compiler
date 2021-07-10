@@ -20,8 +20,8 @@ export class Parser {
         let result = new Playbook();
         result.title = parseResult[0][2];
         result.subtitle = parseResult[1]? parseResult[1][3]: "";
-        result.description = parseResult[2][2].descriptionlines;
-        result.conclusion = parseResult[4]? parseResult[4][2].conclusionlines: "";
+        result.description = this.insertNewlineIntoDescription(parseResult[2][2].descriptionlines);
+        result.conclusion = this.insertNewlineIntoDescription(parseResult[4]? parseResult[4][2].conclusionlines: "");
         for(let index in parseResult[3]){
             let step = new Step();
             step.text = this.getText(parseResult, index);
@@ -80,5 +80,24 @@ export class Parser {
         } catch (error) {
             return "";
         }
+    }
+
+    insertNewlineIntoDescription(description: string): string{
+        let result = description;
+        let offset = 0;
+        for(let i = 0; i < description.length-1; i++){
+            if(description[i] == '#' && description[i+1] == '#'){
+                let temp = result.slice(0,i+offset);
+                result = temp +"\n"+result.slice(i+offset);
+                offset++;
+            }
+            if(description[i] == '*'){
+                let temp = result.slice(0,i+offset);
+                result = temp +"\n"+result.slice(i+offset);
+                offset++;
+            }
+
+        }
+        return result;
     }
 }
