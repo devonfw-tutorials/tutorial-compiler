@@ -181,7 +181,7 @@ export class WikiConsole extends WikiRunner {
     runDisplayContent(runCommand: RunCommand): RunResult {
         let text = this.checkForText(runCommand);
         let textAfter = this.checkForTextAfter(runCommand);
-        let title = this.checkForTitle(runCommand);
+        let stepTitle = this.checkForTitle(runCommand);
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
         let counter = 2;
@@ -195,21 +195,19 @@ export class WikiConsole extends WikiRunner {
                 this.createFolder(path.join(this.outputPathTutorial, "images"), false);
                 let imageName = path.join(this.outputPathTutorial, "images",path.basename(param.image));
                 while(fs.existsSync(imageName)){
-                    imageName = path.join(this.outputPathTutorial, "images",counter+"_"+path.basename(param.image));
+                    imageName = path.join(this.outputPathTutorial, "images",path.parse(param.image).name+"_"+counter+path.parse(param.image).ext);
                     counter++;
                 }
-                fs.createFileSync(imageName);
                 fs.copyFileSync(path.join(this.playbookPath, param.image),imageName);
                 fs.appendFileSync(tempFile, "image::images/"+path.basename(imageName)+"[]");
-                counter = 2;
             }
             fs.appendFileSync(tempFile, "\n\n");
         }
 
         let content = fs.readFileSync(tempFile, "utf-8");
       
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "nextKatacodaStep.asciidoc"),
-        { steptitle: runCommand.stepTitle, text: runCommand.text, textAfter: runCommand.textAfter, title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "displayContent.asciidoc"),
+        { steptitle: stepTitle, text: text, textAfter: textAfter, title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
         
         return null;
     }

@@ -1,7 +1,9 @@
-<% if(steptitle){ %> == <%= steptitle;%> 
+<% if(steptitle){ %>== <%= steptitle;%> 
 === <%= title; %>
-<%if(text){%><%- text; %><%}%> 
-<%}else{%> == <%= title; %>
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(steptitle === undefined){%>=== <%= title; %>
+<%if(text){%><%- text; %> <%}%>
+<%}else if(steptitle === null){ %>== <%= title; %>
 <%if(text){%><%- text; %><%}%> <%}%>
 
 <%= content; %>
@@ -11,3 +13,4 @@ After that, move to the target directory by executing `cd  <%= path; %>` in the 
 <% } %>
 
 <%if(textAfter){%><%- textAfter; %><%}%>
+
