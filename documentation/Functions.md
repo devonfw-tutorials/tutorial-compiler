@@ -186,7 +186,7 @@ createDevon4jProject("com.mycustomer.myapplication")
 
 ### buildJava <a name="buildJava"></a>
 #### parameter 
-1. The project directory
+1. The project directory, relative to workspace.
 2. (Optional) Indicator whether tests should be run. Default is false.
 #### example 
 buildJava("cobigenexample", true)
@@ -323,7 +323,7 @@ downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
 
 ### buildNg <a name="buildNg"></a>
 #### parameter 
-1. Path to the angular project relative to workspace
+1. Path to the angular project, relative to workspace
 2. (Optional) Custom output directory.
 #### example 
 buildNg("exampleAngularProject")
@@ -363,6 +363,7 @@ Available attributes in the json objects:
 1. file: Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
 2. content: Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
 3. image: Path to an image to be displayed in the Katacoda step.
+
 
 #### Formatting rules for content and .asciidoc or .txt files.
 * You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.

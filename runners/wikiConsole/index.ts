@@ -3,7 +3,7 @@ import { RunCommand } from "../../engine/run_command";
 import { RunResult } from "../../engine/run_result";
 import { WikiRunner } from "../../engine/wikiRunner";
 import * as path from "path";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 
 
 export class WikiConsole extends WikiRunner {
@@ -181,10 +181,10 @@ export class WikiConsole extends WikiRunner {
     runDisplayContent(runCommand: RunCommand): RunResult {
         let text = this.checkForText(runCommand);
         let textAfter = this.checkForTextAfter(runCommand);
-        this.checkForText(runCommand);
-        this.checkForTextAfter(runCommand);
+        let stepTitle = this.checkForTitle(runCommand);
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
+        let counter = 2;
         for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
             let param = runCommand.command.parameters[1][i];
             if(param.content) {
@@ -192,16 +192,23 @@ export class WikiConsole extends WikiRunner {
             } else if(param.file) {
                 fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
             } else if (param.image) {
-                let image = path.join(this.playbookPath, param.image);
-                fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
+                this.createFolder(path.join(this.outputPathTutorial, "images"), false);
+                let imageName = path.join(this.outputPathTutorial, "images",path.basename(param.image));
+                while(fs.existsSync(imageName)){
+                    imageName = path.join(this.outputPathTutorial, "images",path.parse(param.image).name+"_"+counter+path.parse(param.image).ext);
+                    counter++;
+                }
+                fs.copyFileSync(path.join(this.playbookPath, param.image),imageName);
+                fs.appendFileSync(tempFile, "image::images/"+path.basename(imageName)+"[]");
             }
             fs.appendFileSync(tempFile, "\n\n");
         }
 
         let content = fs.readFileSync(tempFile, "utf-8");
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "displayContent.asciidoc"), 
-        { title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2], text: text, textAfter: textAfter});
       
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "displayContent.asciidoc"),
+        { steptitle: stepTitle, text: text, textAfter: textAfter, title: runCommand.command.parameters[0], content: content, path: runCommand.command.parameters[2]});
+        
         return null;
     }
 
