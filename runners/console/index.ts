@@ -413,7 +413,7 @@ export class Console extends Runner {
         return result;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         //Only needed for katacoda and wiki runner
         return null;
     }
@@ -941,16 +941,6 @@ export class Console extends Runner {
             for(let asyncProcess of this.asyncProcesses) {
                 killProcessesRecursively(systemProcesses, asyncProcess.pid);
             }
-        }
-        for(let proc of systemProcesses){
-            if(path.normalize(proc.path).includes(path.normalize(this.getWorkingDirectory()))){
-                try {
-                    process.kill(proc.pid);
-                } catch(e) {
-                        console.error("Error killing process "+proc.name+" with id: " + proc.pid , e);
-                }
-            }
-        }
             //Check if there are still running processes on the given ports
             // Maybe not needed anymore can be deleted and the function documentation should be updated
             for(let asyncProcess of this.asyncProcesses.reverse()) {
@@ -965,9 +955,17 @@ export class Console extends Runner {
                         }
                     }
                 }      
-            
-
+            for(let proc of systemProcesses){
+                if(path.normalize(proc.path).includes(path.normalize(this.getWorkingDirectory()))){
+                    try {
+                        process.kill(proc.pid);
+                    } catch(e) {
+                        console.error("Error killing process "+proc.name+" with id: " + proc.pid , e);
+                    }
+                }
+            }
         }
+    }
 
     private async cleanUp(): Promise<void> {
         await this.killAsyncProcesses();

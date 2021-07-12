@@ -18,7 +18,7 @@ The following functions are already implemented:
 * [npmInstall](#npmInstall)
 * [dockerCompose](#dockerCompose)
 * [downloadFile](#downloadFile)
-* [nextKatacodaStep](#nextKatacodaStep)
+* [displayContent](#displayContent)
 * [adaptTemplatesCobiGen](#adaptTemplatesCobiGen)
 * [createDevon4ngProject](#createDevon4ngProject)
 * [addSetupScript](#addSetupScript)
@@ -349,20 +349,46 @@ path: The URL path on which is checked if the server is running
 If the tutorial should be tested on the console environment, you have to specify a port.
 ***
 
-### nextKatacodaStep <a name="nextKatacodaStep"></a>
+### displayContent <a name="displayContent"></a>
 #### parameter
-1. The title of the step.
-2. An array of json objects with files, content, or images to be rendered within the katacoda step.
+1. The title of the step. 
+2. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
 3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
 #### example 
-nextKatacodaStep("Step title", [{ "file": "files/description.md" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
+display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Details
 Available attributes in the json objects:
 
-file: Path to a file whose content is to be displayed in the katacoda step (e.g. .md or .txt file).
-content: Plain text to be displayed in the katacoda step.
-image: Path to an image to be displayed in the katacoda step.
+1. file: Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
+2. content: Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+3. image: Path to an image to be displayed in the Katacoda step.
+
+#### Formatting rules for content and .asciidoc or .txt files.
+* You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.
+* A list always needs an empty newline between the last row and the list.
+* Use asciidoc style of links
+
+#### examples
+``` 
+Existing header structure
+= Level 1: tutorial title
+== Level 2: subtitle
+=== Level 3: prerequisites and learning goals
+== Level 2: steptitle
+=== Level 3: titles from functions 
+==== Level 4: subtitles from functions
+== Level 2: conclusion
+
+List:
+This an unordered List (The empty line is necessary)
+
+* First Item
+* Second Item
+
+Link:
+The tutorials repository can be found https://github.com/devonfw-tutorials/tutorials/issues[here].
+```
 
 ***
 

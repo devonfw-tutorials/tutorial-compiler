@@ -1,15 +1,18 @@
-Create Folder
-=============
+<%if(title){%>== <%- title; %>
+<%if(text){%><%- text; %><%}%><%}else{%>
 
+=== Create folder
+<%if(text){%><%- text; %><%}%><%}%>
 
-Creating a new Folder
-~~~~~~~~~~~~~~~~~~~~~
+==== Creating a new folder
 
 A folder can be created either from within an IDE like VSCode or Eclipse by simply right clicking in the file explorer and creating a new folder. Another approach is to use the Terminal. 
 
-On Linux or MacOS, you can use any file explorer like Finder or execute the command `mkdir -p <%= folderPath; %>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
+.Operating system
+. Linux or MacOS + 
+You can use any file explorer like Finder or execute the command `mkdir -p <%= folderPath; %>`. The `-p` flag won't throw an error if the target folder already exists and allows the creation of parent directories.
+. Windows + 
+You can simply use the Windows Explorer to create the desired folder structure.Alternatively, use the batch command `if not exist <%= folderPath; %> mkdir <%= folderPath; %>` in your command prompt (CMD). For PowerShell users, refer to the command `New-Item -ItemType Directory -Force -Path <%= folderPath; %>`.
 
-On Windows, you can simply use the Windows Explorer to create the desired folder structure.
+<%if(textAfter){%><%- textAfter; %><%}%>
 
-Alternatively, use the batch command `if not exist <%= folderPath; %> mkdir <%= folderPath; %>` in your command prompt (CMD).
-For PowerShell users, refer to the command `New-Item -ItemType Directory -Force -Path <%= folderPath; %>`.

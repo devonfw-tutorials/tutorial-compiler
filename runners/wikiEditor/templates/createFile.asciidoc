@@ -1,10 +1,15 @@
-== Create the file <%= fileName; %>
+<%if(title){%>== <%- title; %>
+<%if(text){%><%- text; %><%}%><%}else{%>
 
-=== Prerequisites
+=== Create the file <%= fileName; %>
+
+<%if(text){%><%- text; %><%}%><%}%>
+
+==== Prerequisites
 * Existing folder you want to create the file. (If the folder doesn't exist you can create it from with the editor).
 * Any Editor that can edit files
 
-=== Creating <%= fileName; %> in any Editor
+==== Creating <%= fileName; %> in any Editor
 
 Create <%= fileName; %> in any Editor<% if(content) { %> and insert the following data into it. <% } %>.
 
@@ -26,3 +31,4 @@ To save the file specify the name of the file. Paste `<%= fileName; %>` in the t
 The last step is to save the file with the *Save* button in the bottom right corner and <%= fileName; %> has been created<% if(content) { %> and filled with some data<%} %>.
 
 
+<%if(textAfter){%><%- textAfter; %><%}%>
