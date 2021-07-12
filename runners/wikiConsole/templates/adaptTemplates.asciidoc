@@ -1,12 +1,18 @@
-== Generate CobiGen Templates 
+<%if(title){%>== <%- title; %>
+<%if(text){%><%- text; %><%}%><%}else{%>
+
+=== Generate CobiGen templates 
+<%if(text){%><%- text; %><%}%>
+
 How to use CobiGen, to generate templates for the following code generation.
 More information about CobiGen on https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html.
 
-=== Prerequisites
+
+==== Prerequisites
 
 * An installed devonfw distribution is needed. To execute the CobiGen CLI, you have to install the devonfw IDE first. Follow the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html[devonfw IDE] documentation to install the same.
 
-=== Generate CobiGen Templates with CobiGen CLI
+==== Generate CobiGen templates with CobiGen CLI
 
 First open a command prompt in your current workspace. You should be inside your devonfw directory, if not change your directory to *<%= devonPath;%>*.
 Run the CobiGen command  `devon cobigen adapt-templates`
@@ -14,6 +20,5 @@ to generate a new templates folder next to the CobiGen CLI and save its location
 
 You can also spezify the location of the templates folder with the parameter `--custom-location` or `-cl` and pass the absolute path to your custom location.
 
-
-
+<%if(textAfter){%><%- textAfter; %><%}%>
 

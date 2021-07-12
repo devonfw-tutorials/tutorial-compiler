@@ -16,6 +16,9 @@ export class WikiEclipse extends WikiRunner {
     }
 
     runCreateFile(runCommand: RunCommand): RunResult{
+        let title = this.checkForTitle(runCommand);
+        let text = this.checkForText(runCommand);
+        let textAfter = this.checkForTextAfter(runCommand);
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
         filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
@@ -24,11 +27,15 @@ export class WikiEclipse extends WikiRunner {
         let content = runCommand.command.parameters[1] 
             ? fs.readFileSync(path.join(this.playbookPath, runCommand.command.parameters[1]), { encoding: "utf-8" })
             : undefined;
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, parentFolder: parentFolder });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createFile.asciidoc"),
+            {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, parentFolder: parentFolder, title: title, text: text, textAfter: textAfter });
         return null;
     }
       
     runChangeFile(runCommand: RunCommand): RunResult{
+        let title = this.checkForTitle(runCommand);
+        let text = this.checkForText(runCommand);
+        let textAfter = this.checkForTextAfter(runCommand);
         let fileName = path.basename(runCommand.command.parameters[0]);
         let filePath = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[0].replace(fileName, ""));
         filePath = path.relative(this.getWorkingDirectory(), filePath).replace(/\\/g, "/");
@@ -45,13 +52,17 @@ export class WikiEclipse extends WikiRunner {
         }
         let placeholder = runCommand.command.parameters[1].placeholder;
         let lineNumber = runCommand.command.parameters[1].lineNumber;
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"), {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, lineNumber: lineNumber, placeholder: placeholder });
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "changeFile.asciidoc"),
+            {filePath : filePath ,fileName: fileName, content : content, fileType: fileType, lineNumber: lineNumber, placeholder: placeholder, text: text, textAfter: textAfter, title: title });
         return null;
     }
     
 
     runInstallCobiGen(runCommand: RunCommand): RunResult{
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {});
+        let title = this.checkForTitle(runCommand);
+        let text = this.checkForText(runCommand);
+        let textAfter = this.checkForTextAfter(runCommand);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "installCobiGen.asciidoc"), {text: text, textAfter: textAfter, title: title});
         return null;
     }
 
@@ -63,11 +74,19 @@ export class WikiEclipse extends WikiRunner {
 
 
     runCreateDevon4jProject(runCommand: RunCommand): RunResult {
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"), { name: runCommand.command.parameters[0]});
+        let title = this.checkForTitle(runCommand);
+        let text = this.checkForText(runCommand);
+        let textAfter = this.checkForTextAfter(runCommand);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4jProject.asciidoc"),
+            { name: runCommand.command.parameters[0], text: text, textAfter: textAfter, title: title});
         return null;
     }
-    runAdaptTemplatesCobiGen(runComannd: RunCommand): RunResult{
-        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"), {});
+    runAdaptTemplatesCobiGen(runCommand: RunCommand): RunResult{
+        let title = this.checkForTitle(runCommand);
+        let text = this.checkForText(runCommand);
+        let textAfter = this.checkForTextAfter(runCommand);
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "adaptTemplates.asciidoc"),
+            {text: text, textAfter: textAfter, title: title});
         return null;
     }
 }

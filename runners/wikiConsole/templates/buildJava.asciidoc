@@ -1,10 +1,14 @@
-== Build the Java Project with Maven
+<%if(title){%>== <%- title; %>
+<%if(text){%><%- text; %><%}%><%}else{%>
 
-=== Prerequisites
+=== Build the Java Project with Maven
+<%if(text){%><%- text; %><%}%><%}%>
+
+==== Prerequisites
 
 * You need to have Maven installed. If not already installed, you can download it https://maven.apache.org/download.cgi[here]. Alternativly, you can make use of the devonfw-ide, where you can install Maven directly to your workspace. For more details on how to do that, see the https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc[devonfw-ide setup].
 
-=== Execution
+==== Execution
 
 Now move to your project directory manually or by executing `cd <%= directoryPath; %>` in the terminal.
 Next, use the following command to build the java project.
@@ -16,3 +20,6 @@ Install will then compile, test and package your Java project and copy your buil
 <% if(skipTest){ %>
 We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.
 <% } %>
+
+<%if(textAfter){%><%- textAfter; %><%}%>
+
