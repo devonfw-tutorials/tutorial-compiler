@@ -404,9 +404,9 @@ export class Katacoda extends Runner {
 
     runExecuteCommand(runCommand: RunCommand) : RunResult {
         let terminal = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous) 
-            ? this.getTerminal("executeCommand"+runCommand.stepIndex) 
+            ? this.getTerminal("executeCommand" + runCommand.stepIndex)
             : undefined;
-        
+
         let filepath;
         let changeDir = false;
         if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir){
@@ -425,9 +425,10 @@ export class Katacoda extends Runner {
             "interrupt" : terminal ?  terminal.isRunning : false,
             "args": (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args) ? runCommand.command.parameters[2].args.join(" ") : undefined
         }
+        let newTerminal = this.terminals.filter(terminal => terminal.terminalId == bashCommand.terminalId).length == 0;
 
         this.pushStep(runCommand, "Executing the command "+ runCommand.command.parameters[1] , "step"+ runCommand.stepIndex + ".md");
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand, newTerminal: newTerminal });
         return null;
     }
   
