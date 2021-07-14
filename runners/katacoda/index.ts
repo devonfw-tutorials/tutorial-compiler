@@ -404,30 +404,27 @@ export class Katacoda extends Runner {
 
     runExecuteCommand(runCommand: RunCommand) : RunResult {
         let terminal = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous) 
-            ? this.getTerminal("executeCommand"+runCommand.stepIndex) 
+            ? this.getTerminal("executeCommand" + runCommand.stepIndex)
             : undefined;
-        
-        let filepath;
-        let changeDir = false;
-        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir){
-            filepath = runCommand.command.parameters[2].asynchronous 
-                ? path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir).replace(/\\/g, "/")
-                : runCommand.command.parameters[2].dir;
-            changeDir = true;
-            this.currentDir = filepath;
-        }
 
+        let cdCommand: string;
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir) {
+            cdCommand = terminal 
+                ? this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir), terminal.terminalId, terminal.isRunning)
+                : this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir));
+        } else {
+            cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY)));
+        }
+        
         let bashCommand = {
             "name" : runCommand.command.parameters[1],
-            "changeDir" : changeDir,
-            "path" : filepath, 
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
             "args": (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args) ? runCommand.command.parameters[2].args.join(" ") : undefined
         }
 
         this.pushStep(runCommand, "Executing the command "+ runCommand.command.parameters[1] , "step"+ runCommand.stepIndex + ".md");
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, bashCommand: bashCommand });
         return null;
     }
   
