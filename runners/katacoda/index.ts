@@ -407,13 +407,15 @@ export class Katacoda extends Runner {
             ? this.getTerminal("executeCommand" + runCommand.stepIndex)
             : undefined;
 
-        let cdCommand: string = undefined; 
-        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir){
+        let cdCommand: string;
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir) {
             cdCommand = terminal 
                 ? this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir), terminal.terminalId, terminal.isRunning)
                 : this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir));
+        } else {
+            cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY)));
         }
-
+        
         let bashCommand = {
             "name" : runCommand.command.parameters[1],
             "terminalId" : terminal ? terminal.terminalId : 1,
