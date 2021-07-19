@@ -3,6 +3,9 @@
 To download and setup the tutorial-compiler use the description in the setup section.<br/>
 [Setup](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Setup)
 
+If you want to know if your tutorial meets the general requirements, check out the Definition of DONE<br/>
+[Definition of DONE](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Definition-of-DONE)
+
 The Development section may help you to contribute code to the tutorial-compiler.<br/>
 [Development](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Development)
 
