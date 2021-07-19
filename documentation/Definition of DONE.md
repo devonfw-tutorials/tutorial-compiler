@@ -9,6 +9,7 @@
 * I rather made many small steps than a few big steps.
 * I used images and code examples in my tutorial which were provided in the devonfw documentation. Plain text gets boring after time.
 * I used an organized structure in my tutorial.
+* All the things that the user should do actively, I have always written with function calls and steps . I have not given any instructions for action in text form.
 * I proofread my tutorial:
      1. Are the steps available and in the correct order? 
      1. Are there any spelling mistakes? 
@@ -17,7 +18,7 @@
 
 # **Technical**
 * The files that were used in `nextKatacodaStep `are available in `.asciidoc` files and do not contain Katacoda Syntax. `nextKatacodaStep` is almost never needed.
-* Commands like `--- cd devonfw {{execute T1}} ---` should not be used, as it could break certain functions. 
+* Commands like `--- cd devonfw {{execute T1}} ---` should not be used, as it could break certain functions.
 
 # Different types of tutorials
 * “Learning”: The user gets a detailed explanation of certain code/feature/functionality.
