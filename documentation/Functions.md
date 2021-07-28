@@ -353,7 +353,6 @@ If the tutorial should be tested on the console environment, you have to specify
 #### parameter
 1. The title of the step. 
 2. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
-3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
 #### example 
 display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
