@@ -116,14 +116,20 @@ will set the workspace directory to "[working directory]/devonfw/workspaces/proj
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
 ### executeCommand <a name="executeCommand"></a>
+### executeCommand <a name="executeCommand"></a>
+This function is used when you want to use a bash (or powershell/cmd on windows) command. 
 #### parameter 
-1. The command that will be executed on Windows
-2. The command that will be executed on Linux
-3. Json-object with optional fields
+You will need four parameters
+
+Example: executeCommand(1st-parameter, 2nd-parameter, 3rd-parameter, 4th-parameter)
+1st-parameter: It contains the input which is a command. The command that will be executed on Windows. It is of type string.
+2nd-parameter:  It contains the input which is a command. The command that will be executed on Linux. It is of type string.
+3rd-parameter: It is optional. This parameter contains Json-object with optional fields.
    * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
    * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. {"asynchronous": boolean}
    * (Optional) Array of arguments {"args": string[]}
-4. Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. 
+  
+4th-parameter: Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. This parameter is only needed when the command is an asynchronous command.
 
 #### Commands
 It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
@@ -140,15 +146,19 @@ interval: The availability of the server is checked in the given interval
 
 #### example
 
-executeCommand("node", "node" ,{"args": ["-v"]})
+* executeCommand("node", "node" ,{"args": ["-v"]})
 Will create a command for executing node -v .
 
-executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
+* executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
 Will create a command to execute the script in the directory with the parameter --params 5 and in a new terminal.
 
-executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
+* executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
 Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
+
+Note: User will have to execute this command manually.
+
+***
 
 ### installCobiGen <a name="installGobiGen"></a>
 #### parameter
