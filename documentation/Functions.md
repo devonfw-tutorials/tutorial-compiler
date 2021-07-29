@@ -159,15 +159,9 @@ installCobiGen()
 ***
 
 ### cobiGenJava <a name="cobiGenJava"></a>
-This function is used for code generation inside Java file i.e. Entity class in Java.
 #### parameter
-You need two parameters for this function.
-
-Example: cobiGenJava(1st-parameter, 2nd-parameter)
-
-1st-parameter: The path to the java file you want to generate code for. It is of type string.
-
-2nd-parameter: It is the array of numbers that represent the templates that CobiGen uses to generate code. The type of array is int.
+1. The path to the java file you want to generate code for: string
+2. The numbers that represent the templates that CobiGen uses to generate code: int array
 #### example
 cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### details
@@ -178,12 +172,6 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 | 5 | TO's: Generates the related Transfer Objects.|
 | 6 | Entity infrastructure: Creates the entity main interface and edits (by a merge) the current entity to extend the newly generated classes.|
 | 8 | CRUD SpringData Repository: Generates the entity repository (that contains the CRUD operations) in the data access layer.
-
-Note: 
-
-1. User needs to execute this command manually. 
-
-2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
 
 ***
 
