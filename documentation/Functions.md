@@ -42,6 +42,7 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 restoreDevonfwIde(["java","mvn"], "2020.08.001")
 #### details 
 In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
+
 ***
 
 ### restoreWorkspace <a name="restoreWorkspace"></a>
@@ -105,6 +106,7 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
     
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
+***
         
 ### changeWorkspace <a name="changeWorkspace"></a>
 #### parameter
@@ -114,6 +116,8 @@ changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
+
+***
 
 ### executeCommand <a name="executeCommand"></a>
 #### parameter 
@@ -149,6 +153,7 @@ Will create a command to execute the script in the directory with the parameter 
 executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
 Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
+***
 
 ### installCobiGen <a name="installGobiGen"></a>
 #### parameter
@@ -244,10 +249,17 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 ***
 
 ### createFolder <a name="createFolder"></a>
+This function is used when you want to use an other command in a location which does not exist at the moment 
 #### parameter 
-1. Path of the folder to be created, relative to the workspace directory. Subdirectories are also created.
+You need to add only one parameter.
+
+Example: createFolder(1st parameter)
+
+1st parameter: Path of the folder to be created, relative to the workspace directory. Subdirectories are also created. The type of input is string.
 #### example 
 createFolder("directoryPath/subDirectory")
+
+Note: User have to manually execute this command.
 
 ***
 
