@@ -151,11 +151,14 @@ Starting a server in a new terminal. You have to specify the port for testing, t
 
 
 ### installCobiGen <a name="installGobiGen"></a>
+This function is used to install the CobiGen CLI inside devonfw IDE.
+
 #### parameter
-* No parameters
+* No parameters required
 #### example
 installCobiGen()
 
+Note: User needs to execute this command manually. 
 ***
 
 ### cobiGenJava <a name="cobiGenJava"></a>
