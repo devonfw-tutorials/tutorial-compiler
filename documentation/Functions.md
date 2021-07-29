@@ -116,7 +116,6 @@ will set the workspace directory to "[working directory]/devonfw/workspaces/proj
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
 
 ### executeCommand <a name="executeCommand"></a>
-### executeCommand <a name="executeCommand"></a>
 This function is used when you want to use a bash (or powershell/cmd on windows) command. 
 #### parameter 
 You will need four parameters
