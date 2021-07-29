@@ -253,9 +253,9 @@ This function is used when you want to use an other command in a location which 
 #### parameter 
 You need to add only one parameter.
 
-Example: createFolder(1st parameter)
+Example: createFolder(1st-parameter)
 
-1st parameter: Path of the folder to be created, relative to the workspace directory. Subdirectories are also created. The type of input is string.
+1st-parameter: Path of the folder to be created, relative to the workspace directory. Subdirectories are also created. The type of input is string.
 #### example 
 createFolder("directoryPath/subDirectory")
 
