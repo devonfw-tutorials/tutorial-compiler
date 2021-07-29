@@ -281,18 +281,31 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### npmInstall <a name="npmInstall"></a>
+npmInstall is used for installing packages from node package mangager, for example used in nodejs or angular projects.
 #### parameter 
-1. Path to the project where the dependencies from the package.json file are to be installed.
-2. Json-object: Name of a package, global or local installation, or array of npm arguments
-* (Optional) name of a package {"name": string }
-* (Optional) global or local installation. Default is local, therefore false {"global" : boolean }
-* (Optional) array of npm arguments {"args": string[]}
+You need to two parameters for this function.
+
+Example: npmInstall(1st-parameter, 2nd-parameter)
+
+1st-parameter: It is always needed. It is the path to the project where the dependencies from the package.json file are to be installed. It is of type string.
+2nd-parameter: It is optional. It is the array of Json-objects which contains Name of a package, global or local installation, or array of npm arguments.
+
+### Details
+
+In 2nd-parameter, you can add 3 attributes.
+1st-attribute: It is optional and it is the name of a package. Example: {"name": string }
+2nd-attribute: It is optional and it is for global or local installation. Default is local, therefore false. Example: {"global" : boolean }
+2nd-attribute: It is optional and it is the array of npm arguments. Example: {"args": string[]}
 #### example
-npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
+* npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
 
-npmInstall("my-thai-star/angular")
+* npmInstall("my-thai-star/angular")
 will run 'npm install' in the directory 'my-thai-star/angular'
+
+Note: 
+1. Existing project is required.
+2. User will execute this manually.
 
 ***
 
