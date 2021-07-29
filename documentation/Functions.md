@@ -350,19 +350,32 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### displayContent <a name="displayContent"></a>
+This function is only used when you want to display content such as text, image or any file content in your tutorial.
+
 #### parameter
-1. The title of the step. 
-2. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
+you need two parameters for this function.
+
+Example: displayContent(1st parameter, 2nd parameter) 
+
+1st parameter i.e. The title of the step. 
+
+Note: The title should never be empty and it is of type string.
+
+2nd parameter i.e. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
+
 #### example 
-display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
+displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Details
-Available attributes in the json objects:
+You can use 3 attributes in the json objects array in 2nd parameter:
 
-1. file: Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
-2. content: Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
-3. image: Path to an image to be displayed in the Katacoda step.
+2nd parameter = [{1st attribute}, {2nd attribute}, {3rd attribute}]
 
+1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
+
+2nd attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+
+3rd attribute i.e. "image": Path to an image to be displayed in the Katacoda step.
 
 #### Formatting rules for content and .asciidoc or .txt files.
 * You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.
