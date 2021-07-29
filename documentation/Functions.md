@@ -176,10 +176,14 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ***
 
 ### createDevon4jProject <a name="createDevon4jProject"></a>
+This function is used to create devon4j project.
 #### parameter 
-1. The base package name
+You need one parameter for this function
+Example:createDevon4jProject(1st parameter)
+1st parameter: The base package name and it is of type string.
 #### example 
 createDevon4jProject("com.mycustomer.myapplication")
+Note: This function is executed manually by user.
 
 
 ***
