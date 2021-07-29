@@ -150,7 +150,7 @@ executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous
 Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
 
-### installCobiGen <a name="installGobiGen"></a>
+### installCobiGen <a name="installCobiGen"></a>
 This function is used to install the CobiGen CLI inside devonfw IDE.
 
 #### parameter
