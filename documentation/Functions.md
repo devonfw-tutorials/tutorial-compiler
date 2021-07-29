@@ -295,7 +295,7 @@ Example: npmInstall(1st-parameter, 2nd-parameter)
 In 2nd-parameter, you can add 3 attributes.
 1st-attribute: It is optional and it is the name of a package. Example: {"name": string }
 2nd-attribute: It is optional and it is for global or local installation. Default is local, therefore false. Example: {"global" : boolean }
-2nd-attribute: It is optional and it is the array of npm arguments. Example: {"args": string[]}
+3rd-attribute: It is optional and it is the array of npm arguments. Example: {"args": string[]}
 #### example
 * npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
