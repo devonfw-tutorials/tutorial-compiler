@@ -194,9 +194,11 @@ buildJava("cobigenexample", true)
 ***
 
 ### createFile <a name="createFile"></a>
+This function create a file structure at workspace directory.
 #### parameter 
-1. Path of the file to be created (relative path to the workspace directory).
-2. (Optional) Path of the file to get the content from. Relative to the playbook directory
+There are two parameters used.
+1. 1st Parameter(cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java)-Path of the file to be created (relative path to the workspace directory).
+2. 2nd Parameter(files/CustomerEntity.java)-(Optional) Path of the file to get the content from. Relative to the playbook directory
 #### example 
 createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
 
