@@ -394,10 +394,16 @@ The tutorials repository can be found https://github.com/devonfw-tutorials/tutor
 ***
 
 ### adaptTemplatesCobiGen <a name="adaptTemplatesCobiGen"></a>
+This function is used when you want to adapt CobiGen templates.
 #### parameter
-* No parameters
+* You don't need any parameters.
 #### example
 adaptTemplatesCobiGen()
+
+Note:
+1. No background script will run. Katacoda user will have to execute this command manually.
+
+2. To execute this command first you need to execute installCobiGen() function to install CobiGen. For this function CobiGen needs to be installed.
 
 ***
 
