@@ -45,6 +45,7 @@ In the Katacoda environment the installation of the devonfw IDE is executed in a
 ***
 
 ### restoreWorkspace <a name="restoreWorkspace"></a>
+This function will clone your repository into the workspace directory.
 #### parameter
 1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
