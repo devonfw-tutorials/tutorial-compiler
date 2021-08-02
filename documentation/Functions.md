@@ -252,15 +252,24 @@ createFolder("directoryPath/subDirectory")
 ***
 
 ### cloneRepository <a name="cloneRepository"></a>
+This function is used when you want to clone a repository into a particular repository.
 #### parameter 
-1. Path into which the repository is to be cloned, relative to workspace.
-2. Git repository URL
+You need two parameter for this function.
+
+Example: cloneRepository(1st-parameter, 2nd-parameter)
+
+1st-parameter: It is path into which the repository is to be cloned, relative to workspace. It is of type String.
+
+2nd-parameter: It is the git repository URL. It is of type String.
 #### example 
-cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+1. cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
 Repository will be cloned directly into the workspace directory.
 
-cloneRepository(devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
-Repository will be cloned into a newly created subdirectory devonfw-tutorials.
+2. cloneRepository("devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory "devonfw-tutorials".
+
+Note: No scripts will run in the background. User will have to manually execute the command.
+
 
 ***
 
