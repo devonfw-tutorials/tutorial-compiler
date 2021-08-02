@@ -26,11 +26,23 @@ The following functions are already implemented:
 ***
 
 ### installDevonfwIde <a name="installDevonfwIde"></a>
+This function allows you to install devonfw IDE in your environment.
 #### parameter
-1. The tools you want to install within the devonfw ide: string array
-2. Optional: The version of the ide to install
+You need two parameter for this function.
+
+Example: installDevonfwIde(1st-parameter, 2nd-parameter)
+
+1st-parameter: The tools you want to install within the devonfw ide. You can pass every tool that can be installed with the devonfwIde. It is of type string array. In this parameter, the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn. You can pass any tool based on your requirement. 
+
+Note: You can also pass the IDEs: eclipse, intellij, and vscode. But are not needed in the Katacoda environment and they might create some errors. 
+
+2nd-parameter: It is Optional. It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfwIde release.
 #### example
 installDevonfwIde(["java","mvn"], "2020.08.001")
+
+Note:
+1. You should not use it when you want to show the Katacoda user the installation process of the devonfwIde.
+2. There are scripts that can run in the katacoda background before first step.
 
 ***
 
