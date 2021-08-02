@@ -322,15 +322,26 @@ downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
 ***
 
 ### buildNg <a name="buildNg"></a>
+This function is used to build angular project.
+
 #### parameter 
-1. Path to the angular project, relative to workspace
-2. (Optional) Custom output directory.
+You need two parameter for this function.
+
+Example: buildNg(1st-parameter, 2nd-parameter)
+
+1st-parameter: It is the path to the angular project, relative to workspace. It is of type String.
+
+2nd-parameter: It is an optional parameter. It is the Custom output directory. it is of type String.
 #### example 
-buildNg("exampleAngularProject")
+1. buildNg("exampleAngularProject")
 Will build the angular project to default output directory defined in angular.json outputPath key, normally set to dist/.
 
-buildNg("exampleAngularProject", "testOutput")
+2. buildNg("exampleAngularProject", "testOutput")
 Will build the angular project to output directory testOutput.
+
+Note:
+1. To use only one parameter, you should have angular installed and the folder should exist.
+2. No background script will run. Katacoda user will have to manually execute this function.
 
 ***
 
