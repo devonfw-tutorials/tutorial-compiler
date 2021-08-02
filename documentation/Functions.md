@@ -40,7 +40,7 @@ Note: You can also pass the IDEs: eclipse, intellij, and vscode. But are not nee
 #### example
 installDevonfwIde(["java","mvn"], "2020.08.001")
 
-Note:
+#### details 
 1. You should not use it when you want to show the Katacoda user the installation process of the devonfwIde.
 2. There are scripts that can run in the katacoda background before first step.
 
