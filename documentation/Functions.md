@@ -297,18 +297,32 @@ will run 'npm install' in the directory 'my-thai-star/angular'
 ***
 
 ### dockerCompose <a name="dockerCompose"></a>
+This function is used for docker compose.
+
 #### parameter 
-1. Path to the directory where the docker-compose.yml file is located, relative to workspace.
-2. Assertion information. Only needed for the console runner to check if the server was started properly.
+You need two parameter for this function.
+
+Example: dockerCompose(1st-parameter, 2nd-parameter)
+
+1st-parameter: This is the path to the directory where the docker-compose.yml file is located, relative to workspace. It is of type String.
+
+2nd-parameter: In this parameter you need to give assertion information. This parameter is only needed for the console runner to check if the server started properly.
+You need three attributes in this parameter for assertion information. 
+
+## Assertion Information
+1. startupTime = Time in seconds to wait before checking if the server is running
+2. port: Port on which the server is running
+3. path: The URL path on which is checked if the server is running
+
 #### example 
 dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081, "path": "" })
 
-##### Assertion information
-startupTime = Time in seconds to wait before checking if the server is running
-port: Port on which the server is running
-path: The URL path on which is checked if the server is running
+Note:
+1. If the tutorial needs to be tested on the console environment, you have to specify a port.
 
-If the tutorial should be tested on the console environment, you have to specify a port.
+2. No background script will run. Katacoda user needs to execute it manually.
+
+3.  Docker should be installed. 
 ***
 
 ### downloadFile <a name="downloadFile"></a>
