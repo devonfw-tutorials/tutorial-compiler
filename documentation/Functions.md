@@ -402,19 +402,27 @@ adaptTemplatesCobiGen()
 ***
 
 ### createDevon4ngProject <a name="createDevon4ngProject"></a>
+This function is used to create a devon4ng project ib workspace.
 #### parameter 
-1. Name of the Project.
-2. Path to where the Project should be created (relative to workspace). Folder should exist.
-3. (Optional) String array of parameters, according to https://angular.io/cli/new.
+You need three parameters for this function.
+Example: createDevon4ngProject(1st-parameter, 2nd-parameter, 3rd-parameter)
+
+1st-parameter: It is the name of the Project.It is of type String.
+
+2nd-parameter: It is the path to where the Project should be created (relative to workspace). Folder should exist. It is of type String.
+
+3rd-parameter: It is an optional parameter. It contains String array of parameters, according to https://angular.io/cli/new. You can pass argument that can be used in angular CLI.
 #### example 
-createDevon4ngProject("exampleAngularProject", "")
+1. createDevon4ngProject("exampleAngularProject", "")
 Will create the angular project to the current workspace with the name exampleAngularProject.
 
-createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
+2. createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
 Will create the angular project to the directory projects within the current workspace and adds more details to output logging.
 
-#### Details
-This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
+Note:
+1. No background script will run. Katacoda user will have to manually execute the command.
+
+2. This command also works if the devonfw IDE is not installed, but then you have to make sure that the Angular cli is installed.
 
 ***
 
