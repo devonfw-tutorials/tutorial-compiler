@@ -419,12 +419,26 @@ This command also works if the devonfw IDE is not installed, but then you have t
 ***
 
 ### addSetupScript <a name="addSetupScript"></a>
+This function is used to add a script which is executed on startup of the tutorial.
 #### parameter
-1. Path of the script (Linux). Relative to the playbook directory
-2. Path of the script (Windows). Relative to the playbook directory 
+This function consist of 2 parameters
+1. First parameter:
+    - **Required**
+    - **type**- String
+    - **Description**- Path of the script (Linux). Relative to the playbook directory
+2. Second parameter:
+    - **Required**
+    - **type**- String
+    - **Description**- Path of the script (Windows). Relative to the playbook directory 
 
 #### example
 addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
+
+Note:
+1. For katacoda, only first parameter is required.
+
+2. The script will run in the background while starting the tutorial. Katacoda user will have to wait till the script execution is in process. Once it is done it, katacoda user will get the message and then command prompt will be available to katacoda user.
+
 
 ***
 
