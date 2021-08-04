@@ -158,7 +158,10 @@ This function is used to install the CobiGen CLI inside devonfw IDE.
 #### example
 installCobiGen()
 
-Note: User needs to execute this command manually. 
+Note: 
+1. User needs to execute this command manually. 
+
+2. devonfw-ide has to be installed.
 ***
 
 ### cobiGenJava <a name="cobiGenJava"></a>
