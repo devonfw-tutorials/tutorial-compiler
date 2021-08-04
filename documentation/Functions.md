@@ -176,7 +176,7 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ***
 
 ### createDevon4jProject <a name="createDevon4jProject"></a>
-This function is used to create devon4j project.
+This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
 #### parameter 
 You need one parameter for this function
 Example:createDevon4jProject(1st parameter)
