@@ -35,13 +35,19 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 ***
 
 ### restoreDevonfwIde <a name="restoreDevonfwIde"></a>
-It is similar to [installDevonfwIde](#installDevonfwIde) function. With the installDevonfwIDE function a script will load a settings file for the installation to contains the tools you have chosen. With this function, the whole installation of the devonfwIde will be done by a script in the background and the Katakoda user won't have to download a start the installation.
+It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user does not have to download and start the installation.
 #### parameter
-Example: restoreDevonfwIde(1st-parameter, 2nd-parameter)
+This function consist of two parameters.
 
-1st-parameter: The tools you want to install within the devonfw ide. You can pass every tool that can be installed with the devonfwIde. It is of type string array. In this parameter, the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn. You can pass any tool based on your requirement.
+1. First parameter:
+    - **Required**
+    - **type**- Array of String or String[]
+    - **Description**- The tools you want to install within the devonfw ide. You can pass every tool that can be installed with the devonfwIde. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
 
-2nd-parameter: It is Optional. It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfwIde release.
+2. Second parameter:
+    - **Optional**
+    - **type**- devonfw-ide version
+    - **Description**- It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
 
 #### example
 restoreDevonfwIde(["java","mvn"], "2020.08.001")
@@ -49,7 +55,7 @@ restoreDevonfwIde(["java","mvn"], "2020.08.001")
 Note:
 1. In the Katacoda environment the installation of the devonfw IDE is executed in a startup script. Katacoda user don't have to manually execute it.
 
-2. It should be used when you don't have to show the Katacoda user how to install the devonIde because some other tutorials are predecessors for this tutorial or you assume that the user already has done it.
+2. It should be used when you don't have to show the Katacoda user how to install the devonIde because some other tutorials are predecessors for this tutorial and the user already knows the process.
 ***
 
 ### restoreWorkspace <a name="restoreWorkspace"></a>
