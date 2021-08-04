@@ -314,19 +314,19 @@ If the tutorial should be tested on the console environment, you have to specify
 ### downloadFile <a name="downloadFile"></a>
 This function is used to download a file from an external URL which is passed a parameter.
 #### parameter 
-This function has 3 three parameters.
+This function consist of 3 parameters.
 1. First parameter:
     - **Required**
-    - type- **String**
-    - Description- URL of the file to be downloaded.
+    - **type**- String
+    - **Description**- URL of the file to be downloaded.
 2. Second Parameter:
     - **Required**
-    - type- **String**
-    - Description- Name of file
+    - **type**- String
+    - **Description**- Name of file
 3. Third parameter:
     - **Optional**
-    - type- **String**
-    - Description- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
+    - **type**- String
+    - **Description**- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
 #### example 
 downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
 
