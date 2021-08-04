@@ -266,10 +266,10 @@ Repository will be cloned into a newly created subdirectory devonfw-tutorials.
 
 
 ### runServerJava <a name="runServerJava"></a>
-This function will run your java application on server.Parameter and Assertion information you need to use properly, which is mentioned below.
+This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
 #### parameter 
-There two parameters you need to use.
-1. 1st Parameter(devonfw/workspaces/main/jump-the-queue/java/jtqj/server)-Path to the server directory within the java project.
+There are two parameters you need to use.
+1. 1st Parameter(devonfw/workspaces/main/jump-the-queue/java/jtqj/server)-Path to the server directory within the Java project.
 2. 2nd Parameter({ "startupTime": 40, "port": 8081, "path": "jumpthequeue" })-Assertion information. Only needed for the console runner to check if the server was started properly.
 #### example 
 runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
