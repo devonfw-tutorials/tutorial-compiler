@@ -183,7 +183,7 @@ Example:createDevon4jProject(1st parameter)
 1st parameter: The base package name and it is of type string.
 #### example 
 createDevon4jProject("com.mycustomer.myapplication")
-Note: This function is executed manually by user.
+Note: This function generates command the katacoda user has to execute manually.
 
 
 ***
