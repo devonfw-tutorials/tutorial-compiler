@@ -163,11 +163,9 @@ This function is used for code generation inside Java file i.e. Entity class in 
 #### parameter
 You need two parameters for this function.
 
-Example: cobiGenJava(1st-parameter, 2nd-parameter)
+* parameter-I i.e. The path to the Java file you want to generate code for. It is of type string.
 
-1st-parameter: The path to the java file you want to generate code for. It is of type string.
-
-2nd-parameter: It is the array of numbers that represent the templates that CobiGen uses to generate code. The type of array is int.
+* parameter-II i.e. It is the array of numbers that represent the templates that CobiGen uses to generate code. The type of array is int.
 #### example
 cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### details
@@ -184,6 +182,8 @@ Note:
 1. User needs to execute this command manually. 
 
 2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
+
+3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI on https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html.
 
 ***
 
