@@ -223,16 +223,16 @@ changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexa
 ##### Path of the file to get the content from or a string, that should be inserted.
 * If you want to add content from a file then use: 
 
-example: {"file": "[path]"}
+  example: {"file": "[path]"}
 * If you want to add a string to a file then use:
  
-example: {"content": "[string]"}
+  example: {"content": "[string]"}
 * If you want to add different contents for the katacoda and console runner, then use the properties "fileConsole" and "fileKatacoda" or "contentConsole" and "contentKatacoda":
 
-example: {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
+  example: {"fileConsole": "[pathToConsoleFile]", "fileKatacoda": "[pathToKatacodaFile]"}
 * If you want to insert some content at a specific line, then use "lineNumber" and dont use a placeholder: 
 
-example: {"lineNumber": "[Line]"}
+  example: {"lineNumber": "[Line]"}
 
 example:{...,"placeholder": "private int age;"}
 | Before | Content or File | After |
