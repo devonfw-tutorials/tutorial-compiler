@@ -312,12 +312,25 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### downloadFile <a name="downloadFile"></a>
+This function is used to download a file from an external URL which is passed a parameter.
 #### parameter 
-1. URL of the file to be downloaded.
-2. Name of file.
-3. (Optional) Downloads file to a given directory relative to workspace. Directory is created, if its not existing.
+This function has 3 three parameters.
+1. First parameter:
+    - **Required**
+    - type- **String**
+    - Description- URL of the file to be downloaded.
+2. Second Parameter:
+    - **Required**
+    - type- **String**
+    - Description- Name of file
+3. Third parameter:
+    - **Optional**
+    - type- **String**
+    - Description- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
 #### example 
 downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+Note: Katacoda user needs to execute this command manually.
 
 ***
 
