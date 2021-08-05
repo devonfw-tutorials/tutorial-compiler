@@ -119,17 +119,33 @@ Learn more about the workspace directory and working directory on [Structure](ht
 This function is used when you want to use a bash (or powershell/cmd on windows) command. 
 
 #### parameter 
-You will need four parameters
+This function consists of four parameters.
 
-Example: executeCommand(1st-parameter, 2nd-parameter, 3rd-parameter, 4th-parameter)
-1st-parameter: It contains the input which is a command. The command that will be executed on Windows. It is of type string.
-2nd-parameter:  It contains the input which is a command. The command that will be executed on Linux. It is of type string.
-3rd-parameter: It is optional. This parameter contains Json-object with optional fields.
-   * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
-   * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. {"asynchronous": boolean}
-   * (Optional) Array of arguments {"args": string[]}
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**-It contains the input which is a command. The command that will be executed on Windows.
+    
+2. Second parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**-It contains the input which is a command. The command that will be executed on Linux.
+    
+3. Third parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**- JSON object with optional fields
+        * **First attribute**: (Optional) Directory where the command will be executed, if not in current directory (relative to workspace)
+            Example: {"dir": string}
+        * **Second attribute**: (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. 
+            Example: {"asynchronous": boolean}
+        * **Third attribute**: (Optional) Array of arguments 
+            Example: {"args": string[]}
   
-4th-parameter: Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. This parameter is only needed when the command is an asynchronous command.
+4. Fourth parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**-Assertion information needed if you start a server to check server availability. Only required when you start a asynchronous server. This parameter is           only needed when the command is an asynchronous command.
 
 #### Commands
 It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
