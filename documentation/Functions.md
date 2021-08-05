@@ -287,11 +287,11 @@ This function consist of two parameters.
 
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- It is the path to the project where the dependencies from the package.json file are to be installed.
  2. Second parameter:
     - **Optional**
-    - **type**- JSON object
+    - **Type**- JSON object
     - **Description**- It is the array of JSON-objects which contains name of a package, global or local installation, or array of npm arguments.
 
 ### Details
