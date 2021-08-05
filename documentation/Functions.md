@@ -255,7 +255,7 @@ This function has only one parameter.
 
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- Path of the folder to be created (relative to working directory). Subdirectories are also created.
 
 #### example 
