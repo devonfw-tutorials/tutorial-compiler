@@ -258,12 +258,12 @@ This function consist of two parameter.
 
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- It is path into which the repository is to be cloned, relative to workspace.
 
 2. Second parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**-It is the Git repository URL.
 #### example 
 1. cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
