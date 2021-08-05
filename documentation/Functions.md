@@ -161,11 +161,16 @@ installCobiGen()
 ### cobiGenJava <a name="cobiGenJava"></a>
 This function is used for code generation inside Java file i.e. Entity class in Java.
 #### parameter
-You need two parameters for this function.
+This function consist of two parameters.
 
-* parameter-I i.e. The path to the Java file you want to generate code for. It is of type string.
-
-* parameter-II i.e. It is the array of numbers that represent the templates that CobiGen uses to generate code. The type of array is int.
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The path to the Java file you want to generate code for.
+2. Second parameter:
+    - **Required**
+    - **Type**- Array of Integers
+    - **Description**- It is the array of numbers that represent the templates that CobiGen uses to generate code.
 #### example
 cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### details
@@ -183,7 +188,9 @@ Note:
 
 2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
 
-3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI on https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html.
+3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI click [here](https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html).
+
+4. To execute this function, devonfw-ide must be installed. 
 
 ***
 
