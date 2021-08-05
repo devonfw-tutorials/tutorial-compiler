@@ -112,7 +112,7 @@ This function is used to change the workspace of the current tutorial.
 This function has only one parameter
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- path to a new workspace (relative to working directory)
 #### example 
 changeWorkspace("devonfw/workspaces/project")
