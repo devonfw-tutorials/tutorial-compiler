@@ -353,13 +353,19 @@ If the tutorial should be tested on the console environment, you have to specify
 This function is only used when you want to display content such as text, image or any file content in your tutorial.
 
 #### parameter
-you need two parameters for this function.
+This function consists of two parameters.
 
-* parameter-I i.e. The title of the step. 
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The title of the step. 
 
 Note: The title should never be empty and it is of type string.
 
-* parameter-II i.e. An array of JSON objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
+2. Second parameter:
+    - **Required**
+    - **Type**- Array of JSON objects with files, content, or images to be rendered within the Katacoda step. 
+    - **Description**-The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
 
 #### example 
 displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
