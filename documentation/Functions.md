@@ -32,14 +32,14 @@ This function consist of two parameter.
 
 1. First parameter:
     - **Required**
-    - **type**- String[] or Array of String
+    - **Type**- String[] or Array of String
     - **Description**-The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn. You can pass any tool based on your requirement. 
 
 Note: You can also pass the IDEs: eclipse, intellij, and vscode. But are not needed in the Katacoda environment and they might create some errors. 
 
 2. Second parameter:
     - **Optional**
-    - **type**- devon-ide version
+    - **Type**- devon-ide version
     - **Description**-It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
 #### example
 installDevonfwIde(["java","mvn"], "2020.08.001")
