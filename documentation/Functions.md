@@ -424,11 +424,11 @@ This function is used to add a script which is executed on startup of the tutori
 This function consist of 2 parameters
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- Path of the script (Linux). Relative to the playbook directory
 2. Second parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- Path of the script (Windows). Relative to the playbook directory 
 
 #### example
