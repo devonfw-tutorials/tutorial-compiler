@@ -41,12 +41,12 @@ This function consist of two parameters.
 
 1. First parameter:
     - **Required**
-    - **type**- Array of String or String[]
+    - **Type**- Array of String or String[]
     - **Description**- The tools you want to install within the devonfw ide. You can pass every tool that can be installed with the devonfwIde. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
 
 2. Second parameter:
     - **Optional**
-    - **type**- devonfw-ide version
+    - **Type**- devonfw-ide version
     - **Description**- It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
 
 #### example
