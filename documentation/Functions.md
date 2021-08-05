@@ -317,15 +317,15 @@ This function is used to download a file from an external URL which is passed as
 This function consist of 3 parameters.
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- URL of the file to be downloaded.
 2. Second Parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- Name of file
 3. Third parameter:
     - **Optional**
-    - **type**- String
+    - **Type**- String
     - **Description**- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
 #### example 
 downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
