@@ -208,11 +208,11 @@ This function is used to insert, append and replace some text in a file.
 This function consist of 2 parameters
 1. First parameter:
     - **Required**
-    - **type**- String
+    - **Type**- String
     - **Description**- Path of the file to be changed (relative path to the workspace directory)
 2. Second parameter:
     - **Required**
-    - **type**- JSON Object
+    - **Type**- JSON Object
     - **Description**-This parameter consist of 3 attributes:
       * First attribute:- The content that you want to insert into the file or the filepath of a file from where you want to insert the content.
       * Second attribute:- (Optional) Name of a placeholder 
