@@ -178,13 +178,16 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### createDevon4jProject <a name="createDevon4jProject"></a>
 This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
 #### parameter 
-You need one parameter for this function
-Example:createDevon4jProject(1st parameter)
-1st parameter: The base package name and it is of type string.
+This function has only one parameter.
+1st parameter: 
+    - **Required**
+    - **Type**- String
+    - **Description**- The base package name and it is of type string.
 #### example 
 createDevon4jProject("com.mycustomer.myapplication")
-Note: This function generates command the katacoda user has to execute manually.
-
+Note: 
+1. This function generates command the katacoda user has to execute manually.
+2. To execute this function, devonfw-ide must be installed.
 
 ***
 
