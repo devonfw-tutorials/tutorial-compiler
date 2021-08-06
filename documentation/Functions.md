@@ -312,7 +312,7 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### downloadFile <a name="downloadFile"></a>
-This function is used to download a file from an external URL which is passed as a parameter.
+This function is used to download a file from an external URL.
 #### parameter 
 This function consist of 3 parameters.
 1. First parameter:
