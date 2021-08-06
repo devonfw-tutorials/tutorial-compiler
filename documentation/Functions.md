@@ -35,19 +35,19 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 ***
 
 ### restoreDevonfwIde <a name="restoreDevonfwIde"></a>
-It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user does not have to download and start the installation.
+It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user will already have an installed version of devonfw-ide at the start of the tutorial.
 #### parameter
 This function consist of two parameters.
 
 1. First parameter:
     - **Required**
-    - **Type**- Array of String or String[]
-    - **Description**- The tools you want to install within the devonfw ide. You can pass every tool that can be installed with the devonfwIde. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
+    - **Type**- Array of String.
+    - **Description**- The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
 
 2. Second parameter:
     - **Optional**
-    - **Type**- devonfw-ide version
-    - **Description**- It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
+    - **Type**- String
+    - **Description**- Devonfw-ide version that will be installed. If this parameter is omitted, it will install the newest devonfw-ide release.
 
 #### example
 restoreDevonfwIde(["java","mvn"], "2020.08.001")
