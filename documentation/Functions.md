@@ -251,7 +251,7 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 ### createFolder <a name="createFolder"></a>
 This function is used to create a new folder.
 #### parameter 
-This function has only one parameter.
+This function consist of one parameter.
 
 1. First parameter:
     - **Required**
