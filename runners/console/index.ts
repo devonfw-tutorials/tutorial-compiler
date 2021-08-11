@@ -591,8 +591,8 @@ export class Console extends Runner {
             .noErrorCode(result)
             .noException(result)
             .directoryExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli"))
-            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen.jar"))
-            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "cobigen"));
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "lib", "cli.jar"))
+            .fileExits(path.join(this.getWorkingDirectory(), "devonfw", "software", "cobigen-cli", "bin", "cobigen"));
         } catch(error) {
             await this.cleanUp();
             throw error;
