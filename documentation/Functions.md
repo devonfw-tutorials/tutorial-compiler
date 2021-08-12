@@ -120,7 +120,7 @@ will set the workspace directory to "[working directory]/devonfw/workspaces/proj
 
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure).
 
-Note: No background scripts are running and katacoda user don't have to manually execute them.
+Note: No background scripts are running and Katacoda user don't have to manually execute them.
 
 ### executeCommand <a name="executeCommand"></a>
 #### parameter 
