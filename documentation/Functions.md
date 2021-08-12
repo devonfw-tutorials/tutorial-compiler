@@ -435,9 +435,9 @@ This function consist of 2 parameters
 addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
 
 Note:
-1. For katacoda, only first parameter is required.
+1. For Katacoda, only first parameter is required.
 
-2. The script will run in the background while starting the tutorial. Katacoda user will have to wait till the script execution is in process. Once it is done it, katacoda user will get the message and then command prompt will be available to katacoda user.
+2. The script will run in the background while starting the tutorial. Katacoda user will have to wait till the script execution is in process. Once it is done it, Katacoda user will get the message and then command prompt will be available to Katacoda user.
 
 
 ***
