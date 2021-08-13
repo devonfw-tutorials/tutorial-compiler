@@ -571,9 +571,9 @@ Note: The title should never be empty and it is of type string.
 displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Details
-You can use 3 attributes in the JSON objects array in 2nd parameter:
+You can use 3 attributes in the JSON objects array in second parameter:
 
-parameter-II = [{1st attribute}, {2nd attribute}, {3rd attribute}]
+Second-parameter = [{1st attribute}, {2nd attribute}, {3rd attribute}]
 
 * 1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
 
@@ -606,6 +606,10 @@ This an unordered List (The empty line is necessary)
 Link:
 The tutorials repository can be found https://github.com/devonfw-tutorials/tutorials/issues[here].
 ```
+
+Note:
+
+1. You should avoid using any command inside any text file for which you want to display content. This will cause problems with the console runner and the tests.
 
 ***
 
