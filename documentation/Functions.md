@@ -51,17 +51,32 @@ installDevonfwIde(["java","mvn"], "2020.08.001")
 ***
 
 ### restoreDevonfwIde <a name="restoreDevonfwIde"></a>
+It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user will already have an installed version of devonfw-ide at the start of the tutorial.
 #### parameter
-1. The tools you want to install within the devonfw ide: string array
-2. Optional: The version of the ide to install
+This function consist of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- Array of String.
+    - **Description**- The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
+
+2. Second parameter:
+    - **Optional**
+    - **Type**- String
+    - **Description**- Devonfw-ide version that will be installed. If this parameter is omitted, it will install the newest devonfw-ide release.
+
 #### example
 restoreDevonfwIde(["java","mvn"], "2020.08.001")
-#### details 
-In the Katacoda environment the installation of the devonfw IDE is executed in a startup script.
+
+Note:
+1. In the Katacoda environment the installation of the devonfw-ide is executed in a startup script. Katacoda user don't have to manually execute it.
+
+2. It should be used when you don't have to show the Katacoda user how to install the devonfw-ide because some other tutorials are predecessors for this tutorial and the user already knows the process.
 
 ***
 
 ### restoreWorkspace <a name="restoreWorkspace"></a>
+This function is used to clone an existing GitHub repository to the working directory of the tutorial. It can be used to continue the tutorial with the state of a previous tutorial located in the repository to be cloned.
 #### parameter
 1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
@@ -143,14 +158,36 @@ Note: No background scripts are running and Katacoda user don't have to manually
 ***
 
 ### executeCommand <a name="executeCommand"></a>
+This function is used when you want to use a bash (or powershell/cmd on windows) command. 
+
 #### parameter 
-1. The command that will be executed on Windows
-2. The command that will be executed on Linux
-3. Json-object with optional fields
-   * (Optional) Directory where the command will be executed, if not in current directory (relative to workspace){"dir": string}
-   * (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. {"asynchronous": boolean}
-   * (Optional) Array of arguments {"args": string[]}
-4. Assert information needed if you start a server to check server availability. Only required when you start a asynchronous server. 
+This function consists of four parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**-It contains the input which is a command. The command that will be executed on Windows.
+    
+2. Second parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**-It contains the input which is a command. The command that will be executed on Linux.
+    
+3. Third parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**- JSON object with optional fields
+        * **First attribute**: (Optional) Directory where the command will be executed, if not in current directory (relative to workspace)
+            Example: {"dir": string}
+        * **Second attribute**: (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. 
+            Example: {"asynchronous": boolean}
+        * **Third attribute**: (Optional) Array of arguments 
+            Example: {"args": string[]}
+  
+4. Fourth parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**-Assertion information needed if you start a server to check server availability. Only required when you start a asynchronous server. This parameter is           only needed when the command is an asynchronous command.
 
 #### Commands
 It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
@@ -167,13 +204,13 @@ interval: The availability of the server is checked in the given interval
 
 #### example
 
-executeCommand("node", "node" ,{"args": ["-v"]})
+* executeCommand("node", "node" ,{"args": ["-v"]})
 Will create a command for executing node -v .
 
-executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "data/setup","asynchronous": true, "args": ["--params 5"]})
-Will create a command to execute the script in the directory with the parameter --params 5 and in a new terminal.
+* executeCommand("somePollingScript.ps1","bash somePollingScript.sh", {"dir": "data/setup", "args": ["--params 5"]})
+Will create a command to execute the script in the directory with the parameter --params 5 and in the current command prompt. The command prompt will be blocked until you stop the script.
 
-executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
+* executeCommand("someServerScript.ps1","bash someServerScript.sh", {"asynchronous": true, "args":["-port 8080"] },{"port":8080 , "startupTime": 20, "path": "some/path/", "interval": 2})
 Starting a server in a new terminal. You have to specify the port for testing, the other parameters are optional. The startupTime can specify how long the runner will wait for a response from the server process and with interval you can set the frequenzy for the server testing. The path is the subpath from your server that should be reached.
 
 ***
@@ -190,6 +227,7 @@ Note:
 1. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
 
 2. To execute this function, devonfw-ide must be installed.
+
 ***
 
 ### cobiGenJava <a name="cobiGenJava"></a>
@@ -394,9 +432,17 @@ Note:
 
 
 ### runServerJava <a name="runServerJava"></a>
+This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
 #### parameter 
-1. Path to the server directory within the java project.
-2. Assertion information. Only needed for the console runner to check if the server was started properly.
+This functions consists of two parameters.
+1. 1st Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path to the server directory within the Java project.
+2. 2nd Parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**- Assertion information. Only needed for the console runner to check if the server was started properly.
 #### example 
 runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
 
@@ -406,6 +452,9 @@ port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
 If the tutorial should be tested on the console environment, you have to specify a port.
+
+Note: For this command the devonfw-ide is not necessarily needed. Maven has to be installed. So if someone installs Maven before (e.g. with a setup script), then the command should also work.The command uses the Spring Boot Maven Plugin to run the Java application. So at the moment only Spring applications are supported.
+
 ***
 
 ### npmInstall <a name="npmInstall"></a>
@@ -436,11 +485,12 @@ In second parameter, you can add 3 attributes.
 - **Third attribute**: It is optional and it is the array of npm arguments. 
   
   Example: {"args": string[]}
+
 #### example
-* npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
+npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
 will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
 
-* npmInstall("my-thai-star/angular")
+npmInstall("my-thai-star/angular")
 will run 'npm install' in the directory 'my-thai-star/angular'
 
 Note: 
@@ -556,20 +606,28 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### displayContent <a name="displayContent"></a>
+This function is only used when you want to display content such as text, image or any file content in your tutorial.
+
 #### parameter
-1. The title of the step. 
-2. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
-3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
+This function consists of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The title of the step. 
+
+Note: The title should never be empty and it is of type string.
+
+2. Second parameter:
+    - **Required**
+    - **Type**- Array of JSON objects with files, content, or images to be rendered within the Katacoda step. 
+    - **Description**-This function consists of three attributes. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in                         the files or the content!
+        * 1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the                                formating of asciidoc files. 
+        * 2nd attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+        * 3rd attribute i.e. "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory. 
+
 #### example 
-display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
-
-#### Details
-Available attributes in the json objects:
-
-1. file: Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
-2. content: Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
-3. image: Path to an image to be displayed in the Katacoda step.
-
+displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Formatting rules for content and .asciidoc or .txt files.
 * You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.
@@ -596,6 +654,10 @@ This an unordered List (The empty line is necessary)
 Link:
 The tutorials repository can be found https://github.com/devonfw-tutorials/tutorials/issues[here].
 ```
+
+Note:
+
+1. You should avoid using any command inside any text file for which you want to display content. This will cause problems with the console runner and the tests.
 
 ***
 
