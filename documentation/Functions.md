@@ -402,9 +402,17 @@ Note:
 
 
 ### runServerJava <a name="runServerJava"></a>
+This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
 #### parameter 
-1. Path to the server directory within the java project.
-2. Assertion information. Only needed for the console runner to check if the server was started properly.
+This functions consists of two parameters.
+1. 1st Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path to the server directory within the Java project.
+2. 2nd Parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**- Assertion information. Only needed for the console runner to check if the server was started properly.
 #### example 
 runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
 
@@ -414,6 +422,9 @@ port: Port on which the server is running
 path: The URL path on which is checked if the server is running
 
 If the tutorial should be tested on the console environment, you have to specify a port.
+
+Note: For this command the devonfw-ide is not necessarily needed. Maven has to be installed. So if someone installs Maven before (e.g. with a setup script), then the command should also work.The command uses the Spring Boot Maven Plugin to run the Java application. So at the moment only Spring applications are supported.
+
 ***
 
 ### npmInstall <a name="npmInstall"></a>
