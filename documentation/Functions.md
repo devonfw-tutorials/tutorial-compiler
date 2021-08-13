@@ -125,13 +125,20 @@ Learn more about the workspace directory and working directory on [Structure](ht
 ***
         
 ### changeWorkspace <a name="changeWorkspace"></a>
+This function is used to change the workspace of the current tutorial.
 #### parameter
-1. path to a new workspace (relative to working directory)
+This function has only one parameter
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- path to a new workspace (relative to working directory)
 #### example 
 changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure).
+
+Note: No background scripts are running and Katacoda user don't have to manually execute them.
 
 ***
 
