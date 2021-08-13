@@ -209,11 +209,21 @@ createDevon4jProject("com.mycustomer.myapplication")
 ***
 
 ### buildJava <a name="buildJava"></a>
+This function will build your java project.
 #### parameter 
-1. The project directory, relative to workspace.
-2. (Optional) Indicator whether tests should be run. Default is false.
+This function consist two parameter . 
+1. 1st Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The project directory, relative to workspace.
+2. 2nd Parameter:
+    - **Optional**
+    - **Type**- Boolean
+    - **Description**- Indicator whether tests should be run. Default is false.
 #### example 
 buildJava("cobigenexample", true)
+Note:
+   1. To execute this function, devonfw-ide must be installed.
 
 ***
 
