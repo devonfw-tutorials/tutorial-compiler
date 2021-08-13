@@ -45,7 +45,7 @@ In the Katacoda environment the installation of the devonfw IDE is executed in a
 ***
 
 ### restoreWorkspace <a name="restoreWorkspace"></a>
-This function will clone your repository into the workspace directory.
+This function is used to clone an existing GitHub repository to the working directory of the tutorial. It can be used to continue the tutorial with the state of a previous tutorial located in the repository to be cloned.
 #### parameter
 1. (Optional) Name of the workspace repository {"workspace": string} (Default is the playbook-name)
 
