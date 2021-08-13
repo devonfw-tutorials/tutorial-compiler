@@ -186,7 +186,7 @@ This function has only one parameter.
 #### example 
 createDevon4jProject("com.mycustomer.myapplication")
 Note: 
-1. This function generates command the katacoda user has to execute manually.
+1. This function generates command the Katacoda user has to execute manually.
 2. To execute this function, devonfw-ide must be installed.
 
 ***
