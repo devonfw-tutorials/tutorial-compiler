@@ -159,9 +159,18 @@ installCobiGen()
 ***
 
 ### cobiGenJava <a name="cobiGenJava"></a>
+This function is used for code generation inside Java file i.e. Entity class in Java.
 #### parameter
-1. The path to the java file you want to generate code for: string
-2. The numbers that represent the templates that CobiGen uses to generate code: int array
+This function consist of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The path to the Java file you want to generate code for.
+2. Second parameter:
+    - **Required**
+    - **Type**- Array of Integers
+    - **Description**- It is the array of numbers that represent the templates that CobiGen uses to generate code.
 #### example
 cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### details
@@ -172,6 +181,16 @@ cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 | 5 | TO's: Generates the related Transfer Objects.|
 | 6 | Entity infrastructure: Creates the entity main interface and edits (by a merge) the current entity to extend the newly generated classes.|
 | 8 | CRUD SpringData Repository: Generates the entity repository (that contains the CRUD operations) in the data access layer.
+
+Note: 
+
+1. User needs to execute this command manually. 
+
+2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
+
+3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI click [here](https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html).
+
+4. To execute this function, devonfw-ide must be installed. 
 
 ***
 
