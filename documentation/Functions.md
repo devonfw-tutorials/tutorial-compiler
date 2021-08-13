@@ -565,21 +565,13 @@ Note: The title should never be empty and it is of type string.
 2. Second parameter:
     - **Required**
     - **Type**- Array of JSON objects with files, content, or images to be rendered within the Katacoda step. 
-    - **Description**-The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
+    - **Description**-This function consists of three attributes. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in                         the files or the content!
+        * 1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the                                formating of asciidoc files. 
+        * 2nd attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+        * 3rd attribute i.e. "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory. 
 
 #### example 
 displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
-
-#### Details
-You can use 3 attributes in the JSON objects array in second parameter:
-
-Second-parameter = [{1st attribute}, {2nd attribute}, {3rd attribute}]
-
-* 1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
-
-* 2nd attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
-
-* 3rd attribute i.e. "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory.
 
 #### Formatting rules for content and .asciidoc or .txt files.
 * You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.
