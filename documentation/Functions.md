@@ -607,20 +607,28 @@ If the tutorial should be tested on the console environment, you have to specify
 ***
 
 ### displayContent <a name="displayContent"></a>
+This function is only used when you want to display content such as text, image or any file content in your tutorial.
+
 #### parameter
-1. The title of the step. 
-2. An array of json objects with files, content, or images to be rendered within the Katacoda step. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in the files or the content!
-3. (Optional) Path to the current directory where the user is located (relative to the workspace directory). Only needed if the directory is changed within this step.
+This function consists of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- The title of the step. 
+
+Note: The title should never be empty and it is of type string.
+
+2. Second parameter:
+    - **Required**
+    - **Type**- Array of JSON objects with files, content, or images to be rendered within the Katacoda step. 
+    - **Description**-This function consists of three attributes. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in                         the files or the content!
+        * 1st attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the                                formating of asciidoc files. 
+        * 2nd attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+        * 3rd attribute i.e. "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory. 
+
 #### example 
-display("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
-
-#### Details
-Available attributes in the json objects:
-
-1. file: Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the formating of asciidoc files. 
-2. content: Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
-3. image: Path to an image to be displayed in the Katacoda step.
-
+displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
 
 #### Formatting rules for content and .asciidoc or .txt files.
 * You can add headers to structure your text. The generated headers are shown in the examples below. The headers should fit into the overall structure of the generated wiki so level 1 header are not allowed, but the other header can be used at your judgement.
@@ -647,6 +655,10 @@ This an unordered List (The empty line is necessary)
 Link:
 The tutorials repository can be found https://github.com/devonfw-tutorials/tutorials/issues[here].
 ```
+
+Note:
+
+1. You should avoid using any command inside any text file for which you want to display content. This will cause problems with the console runner and the tests.
 
 ***
 
