@@ -223,11 +223,18 @@ Note:
 ***
 
 ### createDevon4jProject <a name="createDevon4jProject"></a>
+This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
 #### parameter 
-1. The base package name
+This function has only one parameter.
+1st parameter: 
+    - **Required**
+    - **Type**- String
+    - **Description**- The base package name and it is of type string.
 #### example 
 createDevon4jProject("com.mycustomer.myapplication")
-
+Note: 
+1. This function generates command the Katacoda user has to execute manually.
+2. To execute this function, devonfw-ide must be installed.
 
 ***
 
