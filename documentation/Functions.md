@@ -228,11 +228,21 @@ Note:
 ***
 
 ### createFile <a name="createFile"></a>
+This function creates a new file with a specified content. If no content is specified, an empty file is created.
 #### parameter 
-1. Path of the file to be created (relative path to the workspace directory).
-2. (Optional) Path of the file to get the content from. Relative to the playbook directory
+This functions consists of two parameter.
+1. 1st Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path of the file to be created (relative path to the workspace directory).
+3. 2nd Parameter:
+    - **Optional**
+    - **Type**- String
+    - **Description**-  Path of the file to get the content from. Relative to the playbook directory.
 #### example 
 createFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", "files/CustomerEntity.java")
+
+Note: This function will work without a devonfw-ide installation.
 
 ***
 
