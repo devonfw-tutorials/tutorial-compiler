@@ -287,7 +287,8 @@ path: The URL path on which is checked if the server is running
 
 If the tutorial should be tested on the console environment, you have to specify a port.
 
-Note: To execute this function, devonfw-ide must be installed.
+Note: For this command the devonfw-ide is not necessarily needed. Maven has to be installed. So if someone installs Maven before (e.g. with a setup script), then the command should also work.The command uses the Spring Boot Maven Plugin to run the Java application. So at the moment only Spring applications are supported.
+
 ***
 
 ### npmInstall <a name="npmInstall"></a>
