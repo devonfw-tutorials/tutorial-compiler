@@ -73,6 +73,11 @@ export class Katacoda extends Runner {
         this.createFolder(path.join(this.outputPathTutorial, "assets", "setup"), true);
         this.writeSetupFile(path.join(this.outputPathTutorial, "assets", "setup", "setup.txt"))
 
+        let imageDirectory = path.join(this.playbookPath, "images");
+        if(fs.existsSync(imageDirectory)) {
+            this.assetManager.registerDirectory(imageDirectory, "", "", true);
+        }
+
         // copy all assets from temp/setup in assets folder
         this.assetManager.registerDirectory(path.join(this.tempPathTutorial, "setup"), "setup", "/root/setup", true);
         this.assetManager.copyAssets();
@@ -355,7 +360,6 @@ export class Katacoda extends Runner {
                 fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
             } else if (param.image) {
                 let image = path.join(this.playbookPath, param.image);
-                this.assetManager.registerFile(image, path.basename(image), "", true);
                 fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
             }
             fs.appendFileSync(tempFile, "\n\n");
