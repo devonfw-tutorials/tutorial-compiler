@@ -121,6 +121,7 @@ Description of the tutorial
 ====
 
 The explanation for the step 1
+![alternative text](./assets/image.jpg)
 [step]
 --
 functionName1(parameters)
