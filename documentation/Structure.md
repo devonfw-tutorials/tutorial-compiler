@@ -11,9 +11,14 @@
     |-- tutorials
         |-- [playbook-name]
             /--index.asciidoc
+            |-- images
+                /--image.png
+            
+
 
 Write your own tutorials in "./tutorials/[playbook-name]/index.asciidoc".
 You will find all the details in the tutorials [Developement](https://github.com/devonfw-tutorials/tutorials/wiki/Development) page.
+The images must be saved in a folder called `images`.
 
 
 # File system of the "tutorial-compiler" - repository 
