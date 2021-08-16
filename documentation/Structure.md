@@ -12,7 +12,7 @@
         |-- [playbook-name]
             /--index.asciidoc
             |-- images
-                /--image.png
+                /--image.jpg
             
 
 
