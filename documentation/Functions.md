@@ -152,7 +152,7 @@ This function has only one parameter
     - **Required**
     - **Type**- String
     - **Description**- path to a new workspace (relative to working directory)
-#### example 
+#### Example: 
 * changeWorkspace("devonfw/workspaces/project")
 will set the workspace directory to "[working directory]/devonfw/workspaces/project"
 
@@ -181,7 +181,7 @@ This function consists of four parameters.
 3. Third parameter:
     - **Required**
     - **Type**- JSON object
-    - **Description**- JSON object with optional fields
+    - **Description**- This parameter consist of three attribute. It is a JSON object with optional fields
         * First attribute: (Optional) Directory where the command will be executed, if not in current directory (relative to workspace)
             Example: {"dir": string}
         * Second attribute: (Optional) Synchronous or asynchronous process. Use asynchronous when starting a server. Default is synchronous. 
@@ -192,7 +192,12 @@ This function consists of four parameters.
 4. Fourth parameter:
     - **Required**
     - **Type**- JSON object
-    - **Description**-Assertion information needed if you start a server to check server availability. Only required when you start a asynchronous server. This parameter is           only needed when the command is an asynchronous command.
+    - **Description**- This parameter consist of three attributes which are the assertion information. Assertion information is needed if you start a server to check server                            availability. Only required when you start a asynchronous server. This parameter is only needed when the command is an asynchronous command.
+        * First attribute: "startupTime" which is the time in seconds to wait before checking if the server is running
+        * Second attribute: "port" which is the port number on which the server is running
+        * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
+
+    
 
 #### Commands:
 It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
@@ -334,9 +339,9 @@ This function consist of 2 parameters
     - **Required**
     - **Type**- JSON Object
     - **Description**-This parameter consist of 3 attributes:
-      * First attribute:- The content that you want to insert into the file or the filepath of a file from where you want to insert the content.
-      * Second attribute:- (Optional) Name of a placeholder 
-      * Third attribute:- (Optional) Line number where you want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
+      * First attribute: The content that you want to insert into the file or the filepath of a file from where you want to insert the content.
+      * Second attribute: It is Optional. Name of a placeholder 
+      * Third attribute: It is Optional. Line number where you want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### Example: 
 changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### Details:
@@ -436,10 +441,12 @@ This functions consists of two parameters.
     - **Required**
     - **Type**- JSON object
     - **Description**- This parameter consist of three attributes which are the assertion information. Only needed for the console runner to check if the server was started                            properly.
-        * First attribute i.e. "startupTime" which is the time in seconds to wait before checking if the server is running
-        * Second attribute i.e. "port" which is the port number on which the server is running
-        * Third attribute i.e. "path" which is the path to the URL path on which is checked if the server is running
-runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
+        * First attribute: "startupTime" which is the time in seconds to wait before checking if the server is running
+        * Second attribute: "port" which is the port number on which the server is running
+        * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
+
+#### Example:
+* runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
 
 ##### Note:
 1. If the tutorial should be tested on the console environment, you have to specify a port.
@@ -464,7 +471,7 @@ This function consist of two parameters.
                            Example: {"name": string }
         * Second attribute: It is optional and it is for global or local installation. Default is local, therefore false. 
                             Example: {"global" : boolean }
-        * Third attribute*: It is optional and it is the array of npm arguments. 
+        * Third attribute: It is optional and it is the array of npm arguments. 
                             Example: {"args": string[]}
 
 #### Example:
@@ -603,9 +610,9 @@ Note: The title should never be empty and it is of type string.
     - **Required**
     - **Type**- Array of JSON objects with files, content, or images to be rendered within the Katacoda step. 
     - **Description**-This function consists of three attributes. The use for this function is to display an image and some descriptive text. No Katacoda syntax is allowed in                         the files or the content!
-        * First attribute i.e.  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the                                formating of asciidoc files. 
-        * Second attribute i.e. "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
-        * Third attribute i.e. "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory. 
+        * First attribute:  "file": Path to a file whose content is to be displayed in the Katacoda step (e.g. .asciidoc or .txt file). The file should be following the                                formating of asciidoc files. 
+        * Second attribute: "content": Plain text to be displayed in the Katacoda step. This Text should be following the formating of asciidoc files.
+        * Third attribute: "image": Path to an image to be displayed in the Katacoda step. It should be placed under subfolder of the playbook directory. 
 
 #### Example: 
 * displayContent("Step title", [{ "file": "files/description.asciidoc" }, { "content": "This is just plain content." }, { "image": "files/image.png" }])
