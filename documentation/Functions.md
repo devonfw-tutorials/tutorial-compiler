@@ -1,33 +1,52 @@
 ## Functions 
 The following functions are already implemented:
-1. [adaptTemplatesCobiGen](#adaptTemplatesCobiGen)
-2. [addSetupScript](#addSetupScript)
-3. [buildJava](#buildJava)
-4. [buildNg](#buildNg)
-5. [changeFile](#changeFile)
-6. [changeWorkspace](#changeWorkspace)
-7. [cloneRepository](#cloneRepository)
-8. [cobiGenJava](#cobiGenJava)
-9. [createDevon4jProject](#createDevon4jProject)   
-10. [createDevon4ngProject](#createDevon4ngProject)
-11. [createFile](#createFile) 
-12. [createFolder](#createFolder)
-13. [dockerCompose](#dockerCompose)
-14. [downloadFile](#downloadFile)
-15. [displayContent](#displayContent) 
-16. [executeCommand](#executeCommand)
-17. [installCobiGen](#installCobiGen)
-18. [installDevonfwIde](#installDevonfwIde)
-19. [npmInstall](#npmInstall)
-20. [openFile](#openFile)
-21. [restoreDevonfwIde](#restoreDevonfwIde)
-22. [restoreWorkspace](#restoreWorkspace)
-23. [runClientNg](#runClientNg)
-24. [runServerJava](#runServerJava)
+ * [CobiGen Functions](#cobiGen)
+    1. [adaptTemplatesCobiGen](#adaptTemplatesCobiGen)
+    2. [cobiGenJava](#cobiGenJava)
+    3. [installCobiGen](#installCobiGen) 
+
+* [devonfw-ide Functions](#ideSpecific)
+    1. [installDevonfwIde](#installDevonfwIde)
+    2. [restoreDevonfwIde](#restoreDevonfwIde)
+
+* [devon4j Functions](#devon4j)
+    1. [createDevon4jProject](#createDevon4jProject)
+    2. [buildJava](#buildJava)
+    4. [runServerJava](#runServerJava)
+    
+* [devon4ng Functions](#devon4ng)
+    1. [createDevon4ngProject](#createDevon4ngProject)
+    2. [buildNg](#buildNg)
+    3. [npmInstall](#npmInstall)
+    4. [runClientNg](#runClientNg)
+    
+* [Docker Functions](#dockerSpecific)
+    1. [dockerCompose](#dockerCompose)
+
+* [File Functions](#fileSpecific)
+    1. [changeFile](#changeFile)
+    2. [createFile](#createFile) 
+    3. [displayContent](#displayContent) 
+    4. [downloadFile](#downloadFile)
+    5. [openFile](#openFile)
+
+* [Katacoda Environment Functions](#katacodaSpecific)
+    1. [addSetupScript](#addSetupScript)
+    2. [executeCommand](#executeCommand)
+
+* [Git Functions](#gitSpecific)
+    1. [cloneRepository](#cloneRepository)
+
+* [Workspace Functions](#workspaceSpecific)
+    1. [changeWorkspace](#changeWorkspace)
+    2. [createFolder](#createFolder)
+    3. [restoreWorkspace](#restoreWorkspace)
 
 ***
 
-### 1. adaptTemplatesCobiGen <a name="adaptTemplatesCobiGen"></a>
+## cobiGenFunctions <a name="cobiGen"></a>
+
+### i. adaptTemplatesCobiGen <a name="adaptTemplatesCobiGen"></a>
 This function is used when you want to adapt CobiGen templates. See [CobiGen CLI Documentation](https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html)
 #### Parameter:
 * You don't need any parameters.
@@ -41,29 +60,124 @@ adaptTemplatesCobiGen()
 
 ***
 
-### 2. addSetupScript <a name="addSetupScript"></a>
-This function is used to add a script which is executed on startup of the tutorial.
+### ii. cobiGenJava <a name="cobiGenJava"></a>
+This function is used for code generation inside Java file i.e. Entity class in Java.
 #### Parameter:
-This function consist of two parameters
+This function consist of two parameters.
+
 1. First parameter:
     - **Required**
     - **Type**- String
-    - **Description**- Path of the script (Linux). Relative to the playbook directory.
+    - **Description**- The path to the Java file you want to generate code for.
 2. Second parameter:
     - **Required**
-    - **Type**- String
-    - **Description**- Path of the script (Windows). Relative to the playbook directory. 
-
+    - **Type**- Array of Integers
+    - **Description**- It is the array of numbers that represent the templates that CobiGen uses to generate code.
 #### Example:
-* addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
+cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
+### Details:
+| Number | Description |
+| --- | -- |
+| 1 | CRUD logic: Generates the logic layer and implementations for some use cases.|
+| 3 | CRUD REST services: Generates the service layer with CRUD operations for using in REST services.|
+| 5 | TO's: Generates the related Transfer Objects.|
+| 6 | Entity infrastructure: Creates the entity main interface and edits (by a merge) the current entity to extend the newly generated classes.|
+| 8 | CRUD SpringData Repository: Generates the entity repository (that contains the CRUD operations) in the data access layer.
 
-##### Note:
-1. For Katacoda, only first parameter is required.
-2. The script will run in the background while starting the tutorial. Katacoda user will have to wait till the script execution is in process. Once it is done it, Katacoda user will get the message and then command prompt will be available to Katacoda user.
+##### Note: 
+1. User needs to execute this command manually. 
+2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
+3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI click [here](https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html).
+4. To execute this function, devonfw-ide must be installed. 
 
 ***
 
-### 3. buildJava <a name="buildJava"></a>
+### iii. installCobiGen <a name="installCobiGen"></a>
+This function is used to install the CobiGen CLI inside devonfw-ide.
+
+#### Parameter:
+* No parameters required
+#### Example:
+* installCobiGen()
+
+##### Note: 
+1. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+2. To execute this function, devonfw-ide must be installed.
+
+***
+
+## devonfw-ide Functions <a name="ideSpecific"></a>
+
+### i. installDevonfwIde <a name="installDevonfwIde"></a>
+This function allows you to install devonfw-ide in your environment.
+#### Parameter:
+This function consist of two parameter.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String[] or Array of String
+    - **Description**-The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn. You can pass any tool based on your requirement. 
+
+Note: You can also pass the IDEs: eclipse, intellij, and vscode. But are not needed in the Katacoda environment and they might create some errors. 
+
+2. Second parameter:
+    - **Optional**
+    - **Type**- devon-ide version
+    - **Description**-It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
+#### Example:
+* installDevonfwIde(["java","mvn"], "2020.08.001")
+
+##### Note: 
+1. You should not use it when you want to show Katacoda user the installation process of the devonfw-ide.
+2. There are scripts that can run in the Katacoda background before first step.
+
+***
+
+### ii. restoreDevonfwIde <a name="restoreDevonfwIde"></a>
+It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user will already have an installed version of devonfw-ide at the start of the tutorial.
+#### Parameter:
+This function consist of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- Array of String.
+    - **Description**- The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
+
+2. Second parameter:
+    - **Optional**
+    - **Type**- String
+    - **Description**- Devonfw-ide version that will be installed. If this parameter is omitted, it will install the newest devonfw-ide release.
+
+#### Example:
+* restoreDevonfwIde(["java","mvn"], "2020.08.001")
+
+##### Note:
+1. In the Katacoda environment the installation of the devonfw-ide is executed in a startup script. Katacoda user don't have to manually execute it.
+
+2. It should be used when you don't have to show the Katacoda user how to install the devonfw-ide because some other tutorials are predecessors for this tutorial and the user already knows the process.
+
+***
+
+## devon4j Functions <a name="devon4j"></a>
+
+### i. createDevon4jProject <a name="createDevon4jProject"></a>
+This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
+#### Parameter: 
+This function consist of only one parameter.
+1st parameter: 
+    - **Required**
+    - **Type**- String
+    - **Description**- The base package name and it is of type string.
+#### Example: 
+* createDevon4jProject("com.mycustomer.myapplication")
+
+##### Note: 
+1. This function generates command the Katacoda user has to execute manually.
+2. To execute this function, devonfw-ide must be installed.
+
+***
+
+### ii. buildJava <a name="buildJava"></a>
 This function will build your java project.
 #### Parameter: 
 This function consist two parameter . 
@@ -79,10 +193,68 @@ This function consist two parameter .
 * buildJava("cobigenexample", true)
 ##### Note:
    1. To execute this function, devonfw-ide must be installed.
+   
+***
+
+### iii. runServerJava <a name="runServerJava"></a>
+This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
+#### Parameter: 
+This functions consists of two parameters.
+1. 1st Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path to the server directory within the Java project.
+2. 2nd Parameter:
+    - **Required**
+    - **Type**- JSON object
+    - **Description**- This parameter consist of three attributes which are the assertion information. Only needed for the console runner to check if the server was started                            properly.
+        * First attribute: "startupTime" which is the time in seconds to wait before checking if the server is running
+        * Second attribute: "port" which is the port number on which the server is running
+        * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
+
+#### Example:
+* runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
+
+##### Note:
+1. If the tutorial should be tested on the console environment, you have to specify a port.
+2. For this command the devonfw-ide is not necessarily needed but Maven has to be installed. So if someone installs Maven before (e.g. with a setup script), then the command should also work.The command uses the Spring Boot Maven Plugin to run the Java application. So at the moment only Spring applications are supported.
 
 ***
 
-### 4. buildNg <a name="buildNg"></a>
+## devon4ng Functions <a name="devon4ng"></a>
+
+### i. createDevon4ngProject <a name="createDevon4ngProject"></a>
+This function is used to create a [devon4ng](https://github.com/devonfw/devon4ng) project in workspace.
+#### Parameter: 
+This function consist of three parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- It is the name of the project.
+2. Second parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- It is the path to where the project should be created (relative to workspace). Folder should exist.
+3. Third parameter:
+    - **Optional**
+    - **Type**- Array of String or String[]
+    - **Description**- It contains String array of parameters, according to https://angular.io/cli/new. You can pass argument that can be used in Angular CLI.
+#### Example: 
+* createDevon4ngProject("exampleAngularProject", "")
+Will create the Angular project to the current workspace with the name exampleAngularProject.
+
+* createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
+Will create the Angular project to the directory projects within the current workspace and adds more details to output logging.
+
+##### Note:
+1. No background script will run. 
+2. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+3. This command also works if the devonfw-ide is not installed, but then you have to make sure that the Angular CLI is installed.
+
+***
+
+### ii. buildNg <a name="buildNg"></a>
 This function is used to build Angular project.
 
 #### Parameter: 
@@ -110,7 +282,98 @@ Will build the Angular project to output directory testOutput.
 
 ***
 
-### 5. changeFile <a name="changeFile"></a>
+### iii. npmInstall <a name="npmInstall"></a>
+npmInstall is used for installing packages from node package mangager, for example used in Node.js or Angular projects.
+#### Parameter:
+This function consist of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- It is the path to the project where the dependencies from the package.json file are to be installed.
+ 2. Second parameter:
+    - **Optional**
+    - **Type**- JSON object
+    - **Description**- This parameter consists of three attributes. It is the array of JSON-objects which contains name of a package, global or local installation, or array of                        npm arguments.
+        * First attribute: It is optional and it is the name of a package. 
+                           Example: {"name": string }
+        * Second attribute: It is optional and it is for global or local installation. Default is local, therefore false. 
+                            Example: {"global" : boolean }
+        * Third attribute: It is optional and it is the array of npm arguments. 
+                            Example: {"args": string[]}
+
+#### Example:
+* npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
+will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
+
+* npmInstall("my-thai-star/angular")
+will run 'npm install' in the directory 'my-thai-star/angular'
+
+##### Note: 
+1. Existing project is required to execute this command.
+2. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+
+***
+
+### iv. runClientNg <a name="runClientNg"></a>
+This function is used to start the server of Angular project.
+#### Parameters:
+This function consist of two parameters.
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**-Path to the Angular project from which the frontend server is to be started.
+2. Second parameter:
+    - **optional**
+    - **Type**- String
+    - **Description**- This parameter consist of three attributes which are the required assertion information. Only needed for the console runner to check if the server was                          started properly.
+        * First attribute: "startupTime" which is the time in seconds to wait before checking if the server is running
+        * Second attribute: "port" which is the port number on which the server is running
+        * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
+#### Example: 
+* runClientNg("jump-the-queue/angular", { "startupTime": 200, "port": 4200, "path": "" })
+
+##### Note:
+1. If the tutorial should be tested on the console environment, you have to specify a port.
+2. To execute this, devonfw-ide must be installed and Angular project should be there.
+3. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+
+***
+
+## Docker Functions <a name="dockerSpecific"></a>
+
+### i. dockerCompose <a name="dockerCompose"></a>
+This function is used for running Docker Compose. For more information on Docker Compose click [here](https://docs.docker.com/compose/) 
+
+#### Parameter: 
+This function has consist of two parameters.
+
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- This is the path to the directory where the docker-compose.yml file is located, relative to workspace.
+2. Second parameter:
+    - **Required**
+    - **Type**- JSON Object
+    - **Description**- This parameter consists of three attributes. In this parameter you need to give assertion information. This parameter is only needed for the console                            runner to check if the server started properly.
+        * First attribute: startupTime which is time in seconds to wait before checking if the server is running.
+        * Second attribute: Port on which the server is running.
+        * Third attribute: The URL path on which is checked if the server is running.
+
+#### Example: 
+* dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081, "path": "" })
+
+##### Note:
+1. If the tutorial needs to be tested on the console environment, you have to specify a port.
+2. No background script will run. 
+3. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+4. Docker must be installed. In the Katacoda environment, Docker is already preinstalled.
+
+***
+
+## File Functions <a name="fileSpecific"></a>
+
+### i. changeFile <a name="changeFile"></a>
 This function is used to insert, append and replace some text in a file.
 #### Parameter: 
 This function consist of 2 parameters
@@ -147,7 +410,6 @@ example:{...,"placeholder": "private int age;"}
 | --- | --- | --- |
 |<p>private int age;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br>}</p>|<p>private int age;<br><br>private String company;<br>public String getCompany() {<br>return firstname;<br>}<br>public void setCompany(String company) {<br>this.company = company;<br><br>public String getFirstname() {<br>return firstname;<br>}<br></p>|
 
-
 ##### Prerequisite:
 The usage of the line number function requires having VSCode installed on your System. Not having VSCode installed will not create any output for Katacoda.
 
@@ -166,132 +428,7 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 
 ***
 
-### 6. changeWorkspace <a name="changeWorkspace"></a>
-This function is used to change the workspace of the current tutorial.
-#### Parameter:
-This function has only one parameter
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- path to a new workspace (relative to working directory)
-#### Example: 
-* changeWorkspace("devonfw/workspaces/project")
-will set the workspace directory to "[working directory]/devonfw/workspaces/project"
-
-Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure).
-
-##### Note: 
-1. No background scripts are running and Katacoda user don't have to manually execute them.
-
-***
-
-### 7. cloneRepository <a name="cloneRepository"></a>
-This function is used when you want to clone a repository into a particular directory.
-#### Parameter: 
-This function consist of two parameter.
-
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- It is path into which the repository is to be cloned, relative to workspace.
-2. Second parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**-It is the Git repository URL.
-#### Example: 
-* cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
-Repository will be cloned directly into the workspace directory.
-
-* cloneRepository("devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
-Repository will be cloned into a newly created subdirectory "devonfw-tutorials".
-
-##### Note: 
-1. No scripts will run in the background. 
-2. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-
-***
-
-### 8. cobiGenJava <a name="cobiGenJava"></a>
-This function is used for code generation inside Java file i.e. Entity class in Java.
-#### Parameter:
-This function consist of two parameters.
-
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- The path to the Java file you want to generate code for.
-2. Second parameter:
-    - **Required**
-    - **Type**- Array of Integers
-    - **Description**- It is the array of numbers that represent the templates that CobiGen uses to generate code.
-#### Example:
-cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
-### Details:
-| Number | Description |
-| --- | -- |
-| 1 | CRUD logic: Generates the logic layer and implementations for some use cases.|
-| 3 | CRUD REST services: Generates the service layer with CRUD operations for using in REST services.|
-| 5 | TO's: Generates the related Transfer Objects.|
-| 6 | Entity infrastructure: Creates the entity main interface and edits (by a merge) the current entity to extend the newly generated classes.|
-| 8 | CRUD SpringData Repository: Generates the entity repository (that contains the CRUD operations) in the data access layer.
-
-##### Note: 
-1. User needs to execute this command manually. 
-2. You need to add installCobiGen() and adaptTemplatesCobiGen() functions before adding this function for CobiGen installation and adapting the Cobigen Templates respectively.
-3. CobiGen CLI is used for execution of these functions. You can find more information related to CobiGen CLI click [here](https://devonfw.com/website/pages/docs/howto_Cobigen-CLI-generation.asciidoc.html).
-4. To execute this function, devonfw-ide must be installed. 
-
-***
-
-### 9. createDevon4jProject <a name="createDevon4jProject"></a>
-This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
-#### Parameter: 
-This function consist of only one parameter.
-1st parameter: 
-    - **Required**
-    - **Type**- String
-    - **Description**- The base package name and it is of type string.
-#### Example: 
-* createDevon4jProject("com.mycustomer.myapplication")
-
-##### Note: 
-1. This function generates command the Katacoda user has to execute manually.
-2. To execute this function, devonfw-ide must be installed.
-
-***
-
-### 10. createDevon4ngProject <a name="createDevon4ngProject"></a>
-This function is used to create a [devon4ng](https://github.com/devonfw/devon4ng) project in workspace.
-#### Parameter: 
-This function consist of three parameters.
-
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- It is the name of the project.
-2. Second parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- It is the path to where the project should be created (relative to workspace). Folder should exist.
-3. Third parameter:
-    - **Optional**
-    - **Type**- Array of String or String[]
-    - **Description**- It contains String array of parameters, according to https://angular.io/cli/new. You can pass argument that can be used in Angular CLI.
-#### Example: 
-* createDevon4ngProject("exampleAngularProject", "")
-Will create the Angular project to the current workspace with the name exampleAngularProject.
-
-* createDevon4ngProject("exampleAngularProject", "projects", ["--verbose"])
-Will create the Angular project to the directory projects within the current workspace and adds more details to output logging.
-
-##### Note:
-1. No background script will run. 
-2. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-3. This command also works if the devonfw-ide is not installed, but then you have to make sure that the Angular CLI is installed.
-
-***
-
-### 11. createFile <a name="createFile"></a>
+### ii. createFile <a name="createFile"></a>
 This function creates a new file with a specified content. If no content is specified, an empty file is created.
 #### Parameter: 
 This functions consists of two parameter.
@@ -311,79 +448,7 @@ This function will work without a devonfw-ide installation.
 
 ***
 
-### 12. createFolder <a name="createFolder"></a>
-This function is used to create a new folder.
-#### Parameter: 
-This function consist of one parameter.
-
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- Path of the folder to be created (relative to working directory). Subdirectories are also created.
-
-#### Example: 
-* createFolder("directoryPath/subDirectory")
-
-##### Note:
-1. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-2. It can be used before any command which needs to be executed in such folder which doesn't exist.
-
-***
-
-### 13. dockerCompose <a name="dockerCompose"></a>
-This function is used for running Docker Compose. For more information on Docker Compose click [here](https://docs.docker.com/compose/) 
-
-#### Parameter: 
-This function has consist of two parameters.
-
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- This is the path to the directory where the docker-compose.yml file is located, relative to workspace.
-2. Second parameter:
-    - **Required**
-    - **Type**- JSON Object
-    - **Description**- This parameter consists of three attributes. In this parameter you need to give assertion information. This parameter is only needed for the console                            runner to check if the server started properly.
-        * First attribute: startupTime which is time in seconds to wait before checking if the server is running.
-        * Second attribute: Port on which the server is running.
-        * Third attribute: The URL path on which is checked if the server is running.
-
-#### Example: 
-* dockerCompose("my-thai-star", { "startupTime": 600, "port": 8081, "path": "" })
-
-##### Note:
-1. If the tutorial needs to be tested on the console environment, you have to specify a port.
-2. No background script will run. 
-3. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-4. Docker must be installed. In the Katacoda environment, Docker is already preinstalled.
-
-***
-
-### 14. downloadFile <a name="downloadFile"></a>
-This function is used to download a file from an external URL.
-#### Parameter: 
-This function consist of 3 parameters.
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- URL of the file to be downloaded.
-2. Second Parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- Name of file
-3. Third parameter:
-    - **Optional**
-    - **Type**- String
-    - **Description**- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
-#### Example: 
-* downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
-
-##### Note: 
-The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-
-***
-
-### 15. displayContent <a name="displayContent"></a>
+### iii. displayContent <a name="displayContent"></a>
 This function is only used when you want to display content such as text, image or any file content in your tutorial.
 
 #### Parameter:
@@ -437,7 +502,69 @@ The tutorials repository can be found https://github.com/devonfw-tutorials/tutor
 
 ***
 
-### 16. executeCommand <a name="executeCommand"></a>
+### iv. downloadFile <a name="downloadFile"></a>
+This function is used to download a file from an external URL.
+#### Parameter: 
+This function consist of 3 parameters.
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- URL of the file to be downloaded.
+2. Second Parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Name of file
+3. Third parameter:
+    - **Optional**
+    - **Type**- String
+    - **Description**- The path where the file should be stored. It can be used if you want to load the file into a different folder and not into the current Workspace. If folder does not exists, it will be created.
+#### Example: 
+* downloadFile("https://bit.ly/2BCkFa9", "file", "downloads")
+
+##### Note: 
+The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+
+***
+
+### v. openFile <a name="openFile"></a>
+This function is used to open a particular file.
+
+#### Parameter:
+This function consist of one parameter
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path of the file to be opened (relative path to the workspace directory).
+#### Example: 
+* openFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java")
+
+***
+
+## Katacoda Environment Functions <a name="katacodaSpecific"></a>
+
+### i. addSetupScript <a name="addSetupScript"></a>
+This function is used to add a script which is executed on startup of the tutorial.
+#### Parameter:
+This function consist of two parameters
+1. First parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path of the script (Linux). Relative to the playbook directory.
+2. Second parameter:
+    - **Required**
+    - **Type**- String
+    - **Description**- Path of the script (Windows). Relative to the playbook directory. 
+
+#### Example:
+* addSetupScript("assets/createProjectScript.sh", "assets/createProjectScript.ps1")
+
+##### Note:
+1. For Katacoda, only first parameter is required.
+2. The script will run in the background while starting the tutorial. Katacoda user will have to wait till the script execution is in process. Once it is done it, Katacoda user will get the message and then command prompt will be available to Katacoda user.
+
+***
+
+### ii. executeCommand <a name="executeCommand"></a>
 This function is used when you want to use a bash (or powershell/cmd on windows) command. 
 
 #### Parameter: 
@@ -472,8 +599,6 @@ This function consists of four parameters.
         * Second attribute: "port" which is the port number on which the server is running
         * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
 
-    
-
 #### Commands:
 It is needed to pass a command for Windows and also for Linux-based systems because both systems will always be tested.
 
@@ -500,118 +625,75 @@ Starting a server in a new terminal. You have to specify the port for testing, t
 
 ***
 
-### 17. installCobiGen <a name="installCobiGen"></a>
-This function is used to install the CobiGen CLI inside devonfw-ide.
+## Git Functions <a name="gitSpecific"></a>
 
-#### Parameter:
-* No parameters required
-#### Example:
-* installCobiGen()
-
-##### Note: 
-1. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-2. To execute this function, devonfw-ide must be installed.
-
-***
-
-### 18. installDevonfwIde <a name="installDevonfwIde"></a>
-This function allows you to install devonfw-ide in your environment.
-#### Parameter:
+### i. cloneRepository <a name="cloneRepository"></a>
+This function is used when you want to clone a repository into a particular directory.
+#### Parameter: 
 This function consist of two parameter.
 
 1. First parameter:
     - **Required**
-    - **Type**- String[] or Array of String
-    - **Description**-The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn. You can pass any tool based on your requirement. 
-
-Note: You can also pass the IDEs: eclipse, intellij, and vscode. But are not needed in the Katacoda environment and they might create some errors. 
-
+    - **Type**- String
+    - **Description**- It is path into which the repository is to be cloned, relative to workspace.
 2. Second parameter:
-    - **Optional**
-    - **Type**- devon-ide version
-    - **Description**-It is the version of the ide to install. If you don't use the second parameter, it will always install the newest devonfw-ide release.
-#### Example:
-* installDevonfwIde(["java","mvn"], "2020.08.001")
-
-##### Note: 
-1. You should not use it when you want to show Katacoda user the installation process of the devonfw-ide.
-2. There are scripts that can run in the Katacoda background before first step.
-
-***
-
-### 19. npmInstall <a name="npmInstall"></a>
-npmInstall is used for installing packages from node package mangager, for example used in Node.js or Angular projects.
-#### Parameter:
-This function consist of two parameters.
-
-1. First parameter:
     - **Required**
     - **Type**- String
-    - **Description**- It is the path to the project where the dependencies from the package.json file are to be installed.
- 2. Second parameter:
-    - **Optional**
-    - **Type**- JSON object
-    - **Description**- This parameter consists of three attributes. It is the array of JSON-objects which contains name of a package, global or local installation, or array of                        npm arguments.
-        * First attribute: It is optional and it is the name of a package. 
-                           Example: {"name": string }
-        * Second attribute: It is optional and it is for global or local installation. Default is local, therefore false. 
-                            Example: {"global" : boolean }
-        * Third attribute: It is optional and it is the array of npm arguments. 
-                            Example: {"args": string[]}
+    - **Description**-It is the Git repository URL.
+#### Example: 
+* cloneRepository("", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+Repository will be cloned directly into the workspace directory.
 
-#### Example:
-* npmInstall("jump-the-queue/angular", {"name": "@angular/cli", "global": true, "args": ["--save-dev"]})
-will run 'npm install -g --save-dev @angular/cli' in the directory 'jump-the-queue/angular'.
-
-* npmInstall("my-thai-star/angular")
-will run 'npm install' in the directory 'my-thai-star/angular'
+* cloneRepository("devonfw-tutorials", "https://github.com/devonfw-tutorials/tutorial-compiler.git")
+Repository will be cloned into a newly created subdirectory "devonfw-tutorials".
 
 ##### Note: 
-1. Existing project is required to execute this command.
+1. No scripts will run in the background. 
 2. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
 
 ***
 
-### 20. openFile <a name="openFile"></a>
-This function is used to open a particular file.
+## Workspace Functions <a name="workspaceSpecific"></a>
 
+### i. changeWorkspace <a name="changeWorkspace"></a>
+This function is used to change the workspace of the current tutorial.
 #### Parameter:
-This function consist of one parameter
+This function has only one parameter
 1. First parameter:
     - **Required**
     - **Type**- String
-    - **Description**- Path of the file to be opened (relative path to the workspace directory).
+    - **Description**- path to a new workspace (relative to working directory)
 #### Example: 
-* openFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java")
+* changeWorkspace("devonfw/workspaces/project")
+will set the workspace directory to "[working directory]/devonfw/workspaces/project"
+
+Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure).
+
+##### Note: 
+1. No background scripts are running and Katacoda user don't have to manually execute them.
 
 ***
 
-### 21. restoreDevonfwIde <a name="restoreDevonfwIde"></a>
-It is similar to [installDevonfwIde](#installDevonfwIde) function but the difference between the two functions is that restoreDevonfwIde installs the ide through a script in the background and the Katacoda user will already have an installed version of devonfw-ide at the start of the tutorial.
-#### Parameter:
-This function consist of two parameters.
+### ii. createFolder <a name="createFolder"></a>
+This function is used to create a new folder.
+#### Parameter: 
+This function consist of one parameter.
 
 1. First parameter:
     - **Required**
-    - **Type**- Array of String.
-    - **Description**- The tools you want to install within the devonfw-ide. You can pass every tool that can be installed with the devonfw-ide. In this parameter, based on requirement the tools you can pass are: java, mvn, node, npm, gradle, ionic jasypt, jenkins, ng, sonar and yarn.
-
-2. Second parameter:
-    - **Optional**
     - **Type**- String
-    - **Description**- Devonfw-ide version that will be installed. If this parameter is omitted, it will install the newest devonfw-ide release.
+    - **Description**- Path of the folder to be created (relative to working directory). Subdirectories are also created.
 
-#### Example:
-* restoreDevonfwIde(["java","mvn"], "2020.08.001")
+#### Example: 
+* createFolder("directoryPath/subDirectory")
 
 ##### Note:
-1. In the Katacoda environment the installation of the devonfw-ide is executed in a startup script. Katacoda user don't have to manually execute it.
-
-2. It should be used when you don't have to show the Katacoda user how to install the devonfw-ide because some other tutorials are predecessors for this tutorial and the user already knows the process.
+1. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
+2. It can be used before any command which needs to be executed in such folder which doesn't exist.
 
 ***
 
-### 22. restoreWorkspace <a name="restoreWorkspace"></a>
+### iii. restoreWorkspace <a name="restoreWorkspace"></a>
 This function is used to clone an existing GitHub repository to the working directory of the tutorial. It can be used to continue the tutorial with the state of a previous tutorial located in the repository to be cloned.
 #### Parameter:
 This function only consist of one parameter.
@@ -676,55 +758,5 @@ will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checko
 
     
 Learn more about the workspace directory and working directory on [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)
-
-***
-
-### 23. runClientNg <a name="runClientNg"></a>
-This function is used to start the server of Angular project.
-#### Parameters:
-This function consist of two parameters.
-1. First parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**-Path to the Angular project from which the frontend server is to be started.
-2. Second parameter:
-    - **optional**
-    - **Type**- String
-    - **Description**- This parameter consist of three attributes which are the required assertion information. Only needed for the console runner to check if the server was                          started properly.
-        * First attribute i.e. "startupTime" which is the time in seconds to wait before checking if the server is running
-        * Second attribute i.e. "port" which is the port number on which the server is running
-        * Third attribute i.e. "path" which is the path to the URL path on which is checked if the server is running
-#### Example: 
-* runClientNg("jump-the-queue/angular", { "startupTime": 200, "port": 4200, "path": "" })
-
-##### Note:
-1. If the tutorial should be tested on the console environment, you have to specify a port.
-2. To execute this, devonfw-ide must be installed and Angular project should be there.
-3. The command for execution will be generated by Katacoda runner, so user will have to execute this command manually.
-
-***
-
-### 24. runServerJava <a name="runServerJava"></a>
-This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
-#### Parameter: 
-This functions consists of two parameters.
-1. 1st Parameter:
-    - **Required**
-    - **Type**- String
-    - **Description**- Path to the server directory within the Java project.
-2. 2nd Parameter:
-    - **Required**
-    - **Type**- JSON object
-    - **Description**- This parameter consist of three attributes which are the assertion information. Only needed for the console runner to check if the server was started                            properly.
-        * First attribute: "startupTime" which is the time in seconds to wait before checking if the server is running
-        * Second attribute: "port" which is the port number on which the server is running
-        * Third attribute: "path" which is the path to the URL path on which is checked if the server is running
-
-#### Example:
-* runServerJava("devonfw/workspaces/main/jump-the-queue/java/jtqj/server", { "startupTime": 40, "port": 8081, "path": "jumpthequeue" })
-
-##### Note:
-1. If the tutorial should be tested on the console environment, you have to specify a port.
-2. For this command the devonfw-ide is not necessarily needed but Maven has to be installed. So if someone installs Maven before (e.g. with a setup script), then the command should also work.The command uses the Spring Boot Maven Plugin to run the Java application. So at the moment only Spring applications are supported.
 
 ***
