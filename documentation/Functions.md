@@ -53,7 +53,7 @@ This function is used when you want to adapt CobiGen templates. See [CobiGen CLI
 #### Parameter:
 * You don't need any parameters.
 #### Example:
-adaptTemplatesCobiGen()
+* adaptTemplatesCobiGen()
 
 ##### Note:
 1. No background script will run. 
@@ -76,7 +76,7 @@ This function consist of two parameters.
     - **Type**- Array of Integers
     - **Description**- It is the array of numbers that represent the templates that CobiGen uses to generate code.
 #### Example:
-cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
+* cobiGenJava("path/to/java/file/MyEntity.java",[1,3,5,6,8])
 ### Details:
 | Number | Description |
 | --- | -- |
@@ -165,17 +165,20 @@ This function consist of two parameters.
 ### i. createDevon4jProject <a name="createDevon4jProject"></a>
 This function is used to create a [devon4j](https://github.com/devonfw/devon4j) project.
 #### Parameter: 
-This function consist of only one parameter.
-1st parameter: 
+This function consist of only one parameter
+
+1. First parameter: 
     - **Required**
     - **Type**- String
     - **Description**- The base package name and it is of type string.
+    
 #### Example: 
 * createDevon4jProject("com.mycustomer.myapplication")
 
 ##### Note: 
 1. This function generates command the Katacoda user has to execute manually.
 2. To execute this function, devonfw-ide must be installed.
+3. This function will always create the devon4j project with latest devon4j version.
 
 ***
 
@@ -183,11 +186,11 @@ This function consist of only one parameter.
 This function will build your java project.
 #### Parameter: 
 This function consist two parameter . 
-1. 1st Parameter:
+1. First Parameter:
     - **Required**
     - **Type**- String
     - **Description**- The project directory, relative to workspace.
-2. 2nd Parameter:
+2. Second Parameter:
     - **Optional**
     - **Type**- Boolean
     - **Description**- Indicator whether tests should be run. Default is false.
@@ -202,11 +205,11 @@ This function consist two parameter .
 This function will run your Java application on server.Parameter and assertion information you need to use properly, which is mentioned below.In Katacoda the command will be executed in a new terminal.
 #### Parameter: 
 This functions consists of two parameters.
-1. 1st Parameter:
+1. First Parameter:
     - **Required**
     - **Type**- String
     - **Description**- Path to the server directory within the Java project.
-2. 2nd Parameter:
+2. Second Parameter:
     - **Required**
     - **Type**- JSON object
     - **Description**- This parameter consist of three attributes which are the assertion information. Only needed for the console runner to check if the server was started                            properly.
@@ -391,7 +394,7 @@ This function consist of 2 parameters
       * Second attribute: It is Optional. Name of a placeholder 
       * Third attribute: It is Optional. Line number where you want to insert your code. (Possible lines are: 1...n+1 for N = number of existing lines. File cant be empty) 
 #### Example: 
-changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
+* changeFile("cobigenexample/core/src/main/java/com/example/application/cobigenexample/customermanagement/dataaccess/api/CustomerEntity.java", { "file": "files/Placeholder.java", "placeholder": "private static final long serialVersionUID = 1L;" })
 #### Details:
 ##### Path of the file to get the content from or a string, that should be inserted.
 * If you want to add content from a file then use: 
@@ -434,11 +437,11 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 This function creates a new file with a specified content. If no content is specified, an empty file is created.
 #### Parameter: 
 This functions consists of two parameter.
-1. 1st Parameter:
+1. First Parameter:
     - **Required**
     - **Type**- String
     - **Description**- Path of the file to be created (relative path to the workspace directory).
-3. 2nd Parameter:
+3. Second Parameter:
     - **Optional**
     - **Type**- String
     - **Description**-  Path of the file to get the content from. Relative to the playbook directory.
@@ -622,19 +625,21 @@ This function only consist of one parameter.
     - **Description**- Name of the workspace repository(Default is the playbook-name).
 
 #### Arguments: 
-**User**(Optional)
-    flag: --user 
-    value: GitHub-username (Default is 'devonfw-tutorials')
+* **User**
+        -   (Optional)
+        -   flag: --user 
+        -   value: GitHub-username (Default is 'devonfw-tutorials')
 
-You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
+Note: You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
 
-**Branch**(Optional)
-    flag: --branch
-    value: the working branch (Default is its default-branch)
+* **Branch**
+        -   (Optional)
+        -   flag: --branch
+        -   value: the working branch (Default is its default-branch)
 
-You can use a different branch, if you add the working branch as argument. If the runner cannot find the branch in the cloned repository, it will use the default branch instead. 
+Note: You can use a different branch, if you add the working branch as argument. If the runner cannot find the branch in the cloned repository, it will use the default branch instead. 
 
-buildRun.sh --user [username] --branch [branch]
+* buildRun.sh --user [username] --branch [branch]
 
 #### Example:
 
@@ -644,8 +649,9 @@ will clone "https://github.com/devonfw-tutorials/[playbook-name]" into the works
 * restoreWorkspace({"workspace": [name]})
 will clone "https://github.com/devonfw-tutorials/[name]" into the workspace directory.
 
-**buildRun.sh --user [GitHub-name] --branch [branch]**
-* restoreWorkspace()
+* **buildRun.sh --user [GitHub-name] --branch [branch]**     
+    restoreWorkspace()
+
 will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checkout in branch [branch]
 
 #### details  
