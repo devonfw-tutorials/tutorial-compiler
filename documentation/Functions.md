@@ -649,9 +649,8 @@ will clone "https://github.com/devonfw-tutorials/[playbook-name]" into the works
 * restoreWorkspace({"workspace": [name]})
 will clone "https://github.com/devonfw-tutorials/[name]" into the workspace directory.
 
-* **buildRun.sh --user [GitHub-name] --branch [branch]**
-
-restoreWorkspace()
+* **buildRun.sh --user [GitHub-name] --branch [branch]**     
+    restoreWorkspace()
 
 will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checkout in branch [branch]
 
