@@ -625,19 +625,21 @@ This function only consist of one parameter.
     - **Description**- Name of the workspace repository(Default is the playbook-name).
 
 #### Arguments: 
-**User**(Optional)
-    flag: --user 
-    value: GitHub-username (Default is 'devonfw-tutorials')
+* **User**
+        -   (Optional)
+        -   flag: --user 
+        -   value: GitHub-username (Default is 'devonfw-tutorials')
 
-You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
+Note: You can use a forked workspace-repository, if you add the username as argument. If the runner cannot find the workspace repository in the your repositories, it will use devonfw-tutorials instead. 
 
-**Branch**(Optional)
-    flag: --branch
-    value: the working branch (Default is its default-branch)
+* **Branch**
+        -   (Optional)
+        -   flag: --branch
+        -   value: the working branch (Default is its default-branch)
 
-You can use a different branch, if you add the working branch as argument. If the runner cannot find the branch in the cloned repository, it will use the default branch instead. 
+Note: You can use a different branch, if you add the working branch as argument. If the runner cannot find the branch in the cloned repository, it will use the default branch instead. 
 
-buildRun.sh --user [username] --branch [branch]
+* buildRun.sh --user [username] --branch [branch]
 
 #### Example:
 
@@ -647,8 +649,8 @@ will clone "https://github.com/devonfw-tutorials/[playbook-name]" into the works
 * restoreWorkspace({"workspace": [name]})
 will clone "https://github.com/devonfw-tutorials/[name]" into the workspace directory.
 
-**buildRun.sh --user [GitHub-name] --branch [branch]**
-* restoreWorkspace()
+* **buildRun.sh --user [GitHub-name] --branch [branch]**
+restoreWorkspace()
 will run "git clone https://github.com/[GitHub-name]/[playbook-name]" and checkout in branch [branch]
 
 #### details  
