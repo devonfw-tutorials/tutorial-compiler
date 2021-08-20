@@ -437,11 +437,11 @@ The option to insert at a linenumber uses a placeholder inserted by a script and
 This function creates a new file with a specified content. If no content is specified, an empty file is created.
 #### Parameter: 
 This functions consists of two parameter.
-1. 1st Parameter:
+1. First Parameter:
     - **Required**
     - **Type**- String
     - **Description**- Path of the file to be created (relative path to the workspace directory).
-3. 2nd Parameter:
+3. Second Parameter:
     - **Optional**
     - **Type**- String
     - **Description**-  Path of the file to get the content from. Relative to the playbook directory.
