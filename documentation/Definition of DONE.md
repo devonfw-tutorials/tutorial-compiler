@@ -19,7 +19,7 @@
 
 # **Technical**
 * The files that were used in `nextKatacodaStep `are available in `.asciidoc` files and do not contain Katacoda Syntax.
-* Do not use Katacoda-Syntax inside the files. ` Use displayContent`.
+* Do not use Katacoda-Syntax inside the files. Use `displayContent`.
 * Commands like `--- cd devonfw {{execute T1}} ---` should not be used, as it could break certain functions.
 
 # Different types of tutorials
