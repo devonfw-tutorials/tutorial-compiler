@@ -1,5 +1,6 @@
 # **General**
 * I kept the name of my tutorial short. For a small explanation of my tutorial, I used sub-topics.
+* I used a higher header level for Prerequisites and Learning goals.
 * I described what I wanted to train in a few words and clearly state the objective of my tutorial. This should give the reader an idea of what to expect from my tutorial and help them to determine if they really want to learn this topic.
 * I addressed the user directly.
 * I was clear and concise in my writing. 
@@ -18,7 +19,7 @@
 
 # **Technical**
 * The files that were used in `nextKatacodaStep `are available in `.asciidoc` files and do not contain Katacoda Syntax.
-* The name of the function `nextKatacodaStep ` has been changed to make it clearer that there is no functional content allowed. Now it is called `displayContent ` 
+* Do not use Katacoda-Syntax inside the files. ` Use displayContent`.
 * Commands like `--- cd devonfw {{execute T1}} ---` should not be used, as it could break certain functions.
 
 # Different types of tutorials
