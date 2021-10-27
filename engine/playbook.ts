@@ -1,7 +1,5 @@
 import {Step} from "./step";
 
-type Tag = Record<string, string[]>
-
 export class Playbook{
     public name: string;
     public path: string;
@@ -10,5 +8,5 @@ export class Playbook{
     public description: string;
     public conclusion: string;
     public steps: Step[] = [];
-    public tags: Tag;
+    public tags: Record<string, string[]>;
 }
