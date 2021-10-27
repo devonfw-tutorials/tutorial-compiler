@@ -22,6 +22,7 @@ export class Parser {
         result.subtitle = parseResult[1]? parseResult[1][3]: "";
         result.description = this.insertNewlineIntoDescription(parseResult[2][2].descriptionlines);
         result.conclusion = this.insertNewlineIntoDescription(parseResult[4]? parseResult[4][2].conclusionlines: "");
+        result.tags = this.getTags(parseResult);
         for(let index in parseResult[3]){
             let step = new Step();
             step.text = this.getText(parseResult, index);
@@ -80,6 +81,24 @@ export class Parser {
         } catch (error) {
             return "";
         }
+    }
+
+    getTags(parseResult){
+        let tagDict = {};
+        try{
+            let results = parseResult[5] ? parseResult[5][4].taglines.split(/\r?\n/) : Array();
+            for (let result of results){
+                if(result){
+                    result = result.split("=")
+                    let type = result[0];
+                    let tags = result[1].includes(";") ? result[1].split(";") : Array(result[1]);
+                    tagDict[type] = tags;
+                }
+            }
+        }catch (error) {
+            throw error;
+        }
+        return tagDict;
     }
 
     insertNewlineIntoDescription(description: string): string{
