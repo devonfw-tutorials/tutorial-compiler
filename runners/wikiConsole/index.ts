@@ -155,6 +155,11 @@ export class WikiConsole extends WikiRunner {
             { name: runCommand.command.parameters[0], text: text, textAfter: textAfter, title: title });
         return null;
     }
+    
+    runCreateDevon4ngProject(runCommand: RunCommand): RunResult {
+        let cdCommand = runCommand.command.parameters[1];
+        let ngParams = runCommand.command.parameters.length > 2 && (runCommand.command.parameters[2] instanceof Array) ? runCommand.command.parameters[2].join(" ") : "";
+        this.renderWiki(path.join(this.getRunnerDirectory(), "templates", "createDevon4ngProject.asciidoc"), {cdCommand: cdCommand, projectName: runCommand.command.parameters[0], ngParams: ngParams})
 
     runAddSetupScript(runCommand: RunCommand): RunResult{
         let text = this.checkForText(runCommand);
