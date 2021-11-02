@@ -104,8 +104,6 @@ The image must be in a folder called `images` in the folder of the playbook (see
 There is the option to add tags to your tutorials. To do that, you have to add the following syntax after the title or if you have specified a subtitle, after the subtitle.
 
 ````
-= Title
-== Subtitle
 [tags]
 --
 tagType=tag0;tag1
