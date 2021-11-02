@@ -1,11 +1,10 @@
 start
   = headline
     subtitle?
+    tags?
     description
     steps
     conclusion?
-    tags?
-
 headline "headline starting with ="
   = "=" _ string ___
 
