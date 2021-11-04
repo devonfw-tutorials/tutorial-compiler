@@ -1,10 +1,11 @@
 start
   = headline
     subtitle?
+    tags?
     description
     steps
     conclusion?
-
+    
 headline "headline starting with ="
   = "=" _ string ___
 
@@ -82,6 +83,18 @@ conclusionlines
 
 conclusionline
   = !blockmarker string __ 
+
+tags
+  = "[tags]" ___
+    "--" ___
+    taglines
+    "--" __
+
+taglines
+  = tagline+ { return { "taglines": text()}; }
+
+tagline
+  = !"--" string __ 
 
 string "string"
   = [^\r\n]+ { return text(); }
