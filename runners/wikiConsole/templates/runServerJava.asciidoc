@@ -1,5 +1,10 @@
-== Run Java Server
-
+<% if(title){ %>== <%= title;%> 
+=== Run Java Server
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== Run Java Server
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== Run Java Server
+<%if(text){%><%- text; %><%}%> <%}%>
 
 
 === Prerequisites
@@ -23,3 +28,6 @@ Example: `curl -Is localhost:<%= port; %>/<%= app_path; %> | head -n 1`
 This command should return an `200 OK` header if the service is available.
 
 <% } %>
+
+<%if(textAfter){%><%- textAfter; %><%}%>
+

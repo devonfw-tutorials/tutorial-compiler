@@ -8,4 +8,5 @@ export class Playbook{
     public description: string;
     public conclusion: string;
     public steps: Step[] = [];
+    public tags: Record<string, string[]>;
 }

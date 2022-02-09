@@ -73,6 +73,11 @@ export class Katacoda extends Runner {
         this.createFolder(path.join(this.outputPathTutorial, "assets", "setup"), true);
         this.writeSetupFile(path.join(this.outputPathTutorial, "assets", "setup", "setup.txt"))
 
+        let imageDirectory = path.join(this.playbookPath, "images");
+        if(fs.existsSync(imageDirectory)) {
+            this.assetManager.registerDirectory(imageDirectory, "", "", true);
+        }
+
         // copy all assets from temp/setup in assets folder
         this.assetManager.registerDirectory(path.join(this.tempPathTutorial, "setup"), "setup", "/root/setup", true);
         this.assetManager.copyAssets();
@@ -344,7 +349,7 @@ export class Katacoda extends Runner {
         return null;
     }
 
-    runNextKatacodaStep(runCommand: RunCommand): RunResult {
+    runDisplayContent(runCommand: RunCommand): RunResult {
         let tempFile = path.join(this.getTempDirectory(), runCommand.command.name + ".md");
         fs.writeFileSync(tempFile, "");
         for(let i = 0; i < runCommand.command.parameters[1].length; i++) {
@@ -355,7 +360,6 @@ export class Katacoda extends Runner {
                 fs.appendFileSync(tempFile, fs.readFileSync(path.join(this.playbookPath, param.file), "utf-8"));
             } else if (param.image) {
                 let image = path.join(this.playbookPath, param.image);
-                this.assetManager.registerFile(image, path.basename(image), "", true);
                 fs.appendFileSync(tempFile, "![" + path.basename(image) + "](./assets/" + path.basename(image) + ")");
             }
             fs.appendFileSync(tempFile, "\n\n");
@@ -364,7 +368,7 @@ export class Katacoda extends Runner {
         let content = fs.readFileSync(tempFile, "utf-8");
         this.pushStep(runCommand, runCommand.command.parameters[0], "step" + runCommand.stepIndex + ".md");
 
-        this.renderTemplate("nextKatacodaStep.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, content: content });
+        this.renderTemplate("displayContent.md", this.outputPathTutorial + "step" + runCommand.stepIndex + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, content: content });
         
         if(runCommand.command.parameters[2]) {
             this.currentDir = path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2]);
@@ -404,30 +408,27 @@ export class Katacoda extends Runner {
 
     runExecuteCommand(runCommand: RunCommand) : RunResult {
         let terminal = (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].asynchronous) 
-            ? this.getTerminal("executeCommand"+runCommand.stepIndex) 
+            ? this.getTerminal("executeCommand" + runCommand.stepIndex)
             : undefined;
-        
-        let filepath;
-        let changeDir = false;
-        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir){
-            filepath = runCommand.command.parameters[2].asynchronous 
-                ? path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir).replace(/\\/g, "/")
-                : runCommand.command.parameters[2].dir;
-            changeDir = true;
-            this.currentDir = filepath;
-        }
 
+        let cdCommand: string;
+        if(runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].dir) {
+            cdCommand = terminal 
+                ? this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir), terminal.terminalId, terminal.isRunning)
+                : this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY), runCommand.command.parameters[2].dir));
+        } else {
+            cdCommand = this.changeCurrentDir(path.join(this.getVariable(this.WORKSPACE_DIRECTORY)));
+        }
+        
         let bashCommand = {
             "name" : runCommand.command.parameters[1],
-            "changeDir" : changeDir,
-            "path" : filepath, 
             "terminalId" : terminal ? terminal.terminalId : 1,
             "interrupt" : terminal ?  terminal.isRunning : false,
             "args": (runCommand.command.parameters.length > 2 && runCommand.command.parameters[2].args) ? runCommand.command.parameters[2].args.join(" ") : undefined
         }
 
         this.pushStep(runCommand, "Executing the command "+ runCommand.command.parameters[1] , "step"+ runCommand.stepIndex + ".md");
-        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, bashCommand: bashCommand});
+        this.renderTemplate("executeCommand.md", this.outputPathTutorial + "step" + (runCommand.stepIndex) + ".md", { text: runCommand.text, textAfter: runCommand.textAfter, cdCommand: cdCommand, bashCommand: bashCommand });
         return null;
     }
   

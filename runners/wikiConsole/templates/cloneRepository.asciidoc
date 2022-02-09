@@ -1,9 +1,15 @@
-== Clone Repository
+<% if(title){ %>== <%= title;%> 
+=== Clone Repository
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== Clone Repository
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== Clone Repository
+<%if(text){%><%- text; %><%}%> <%}%>
 
-=== Prerequisites
+==== Prerequisites
 * You need to have Git installed. You can download Git https://git-scm.com/downloads[here] for your OS and install it by following the instructions.
 
-=== Download
+==== Download
 Open a terminal in your current workspace.
 <% if (directoryPath) { %>
 Firstly, you have to move to the directory where the repository should be cloned to.
@@ -13,4 +19,6 @@ In this case execute `mkdir -p <%= directoryPath; %>`.
 After that, move to the target directory by executing `cd  <%= directoryPath; %>` in the terminal.
 <% } %>
 To clone a Git repository execute `git clone <%= url; %>` in the terminal.
+
+<%if(textAfter){%><%- textAfter; %><%}%>
 

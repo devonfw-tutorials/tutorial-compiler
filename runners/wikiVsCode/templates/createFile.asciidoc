@@ -1,10 +1,16 @@
-== Create the file <%= fileName; %>
+<% if(title){ %>== <%= title;%> 
+=== Create the <%= fileName; %> file
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== Create the <%= fileName; %> file
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== Create the <%= fileName; %> file
+<%if(text){%><%- text; %><%}%> <%}%>
 
-=== Prerequisites
+==== Prerequisites
 * Existing folder you want to create the file. (If the folder doesn't exist you can create it from with the editor).
 * VS Code Editor (can be installed in your devonfw environment).
 
-=== Creating <%= fileName; %> in the VS Code Editor
+==== Creating <%= fileName; %> in the VS Code Editor
 
 Create <%= fileName; %> in the VS Code editor<% if(content) { %> and insert the following data into it. <% }%>
 
@@ -23,3 +29,6 @@ You should check if you are currently in the right directory where you want to s
 Select the directory `<%= filePath; %>`. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
 To save the file specify the name of the file. Paste `<%= fileName; %>` in the text field *File name:*. 
 The last step is to save the file with the *Save* button in the bottom right corner and <%= fileName; %> has been created<% if(content) { %> and filled with some content%><%} %>.
+
+<%if(textAfter){%><%- textAfter; %><%}%>
+

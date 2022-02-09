@@ -1,15 +1,21 @@
-== devonfw setup
+<% if(title){ %>== <%= title;%> 
+=== devonfw setup
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== devonfw setup
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== devonfw setup
+<%if(text){%><%- text; %><%}%> <%}%>
 
 If you already installed the devonfw IDE, you can skip this step.
 
-=== Prerequisites
+==== Prerequisites
 
 * You need to have a tool to extract `.tar.gz` files. On Windows lower Windows 10 use can use https://www.7-zip.org/7-zip[7-Zip]. The most other platforms support this feature by default.
 * You need to have https://git-scm.com/[Git] and https://curl.se/[Curl] installed. On Windows you have to install https://git-scm.com/download/win[Git for Windows]. On Linux systems you might need to install the following tools in case they are not present (`sudo apt-get install git curl` or `sudo yum install git-core curl`)
 
 Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run `mkdir devonfw` and `cd devonfw` to create the directory and navigate into it.
 
-=== Download
+==== Download
 
 <% if(version) {%>
 
@@ -35,7 +41,7 @@ On MacOS, depending on your setup, you can either use the same `wget` command sp
 
 After that you need to extract the downloaded file. To do this, run `tar -xvzf devonfw-ide-scripts.tar.gz`. Or you can simply use a tool (e.g. 7-Zip) for this.
 
-=== Setup
+==== Setup
 
 First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is https://github.com/devonfw/ide-settings.
 
@@ -48,4 +54,6 @@ You can also just execute `.\setup` (Windows) or `bash setup` (Linux) and press 
 <% if(tools.indexOf("mvn") > 0){ %>
 The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
 <% } %> 
+
+<%if(textAfter){%><%- textAfter; %><%}%>
 

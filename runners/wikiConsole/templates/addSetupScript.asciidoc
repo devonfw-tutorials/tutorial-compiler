@@ -1,11 +1,17 @@
-== Run a Setupscript
+<% if(title){ %>== <%= title;%> 
+=== Run a setup script
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== Run a setup script
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== Run a setup script
+<%if(text){%><%- text; %><%}%> <%}%>
+
 Run a Script to setup the enviroment for the Tutorial.  
 
-
-=== Prerequisites
+==== Prerequisites
 * Any Editor that can edit files.
 
-=== Create the Setupscript
+==== Create the Setupscript
 Open a editor and create a new file by going to the file context menu in the top left corner of the editor and select *New* or *New File* or mostly also the keyboard shortcut ctrl+n will also work.
 
 .Operating system
@@ -29,11 +35,13 @@ The editor opens a new editor window for an untitled file where you can insert t
 Save the file by selecting *Save* or *Save as* in the file context menu or by using the keyboard shortcut ctrl+s.
 A file explorer window opens where you should set the filename to *<%= scriptNameLinux; %>* and save it to your current directory. 
 
-=== Run the Setupscript
+==== Run the setup script
 
 .Operating system
 . Windows + 
 Open the PowerShell in your current workspace and execute the command `./<%= scriptNameWindows; %>` to run the script.
 . Linux and macOS + 
-Open the Terminal in your current workspace and execute the command `bash <%= scriptNameWindows; %>` to run the script.
+Open the Terminal in your current workspace and execute the command `bash <%= scriptNameLinux; %>` to run the script.
+
+<%if(textAfter){%><%- textAfter; %><%}%>
 

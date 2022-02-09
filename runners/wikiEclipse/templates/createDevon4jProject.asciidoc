@@ -1,6 +1,11 @@
-== Create a new devon4j project
-
+<% if(title){ %>== <%= title;%> 
 === Create a new devon4j project in the Eclipse IDE
+<%if(text){%><%- text; %> <%}%> 
+<%}else if(title === undefined){%>=== Create a new devon4j project in the Eclipse IDE
+<%if(text){%><%- text; %> <%}%>
+<%}else if(title === null){ %>== Create a new devon4j project in the Eclipse IDE
+<%if(text){%><%- text; %><%}%> <%}%>
+
 
 ==== Prerequisites
 
@@ -39,4 +44,6 @@ The toplevel pom.xml of the generated project has the following features:
 - Maven plugins with desired versions and configuration
 
 - Profiles for https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-testing.asciidoc[test stages]
+
+<%if(textAfter){%><%- textAfter; %><%}%>
 
