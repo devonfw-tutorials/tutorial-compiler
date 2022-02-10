@@ -24,7 +24,7 @@ export class KatacodaTools {
             },
             "environment": environment,
             "backend": {
-                "imageid": "ubuntu:2004"
+                "imageid": "ubuntu:1804"
             }
         }
         return indexJsonObject;
