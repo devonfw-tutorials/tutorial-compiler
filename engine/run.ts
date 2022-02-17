@@ -122,16 +122,31 @@ class Run {
         return filteredEntries
     }
 
-    filterPlaybooks(playbooks){
-        if(!this.args.get('p'))
+    filterPlaybooks(playbooks: Playbook[]){
+        let playbookArguments: any = this.args.get('p');
+        if(!playbookArguments)
             return Array.from(playbooks.keys());
-            
+
         let filteredIndecies = [];
-        for(let playbook of playbooks){
-            if(this.args.get('p').includes(playbook['name'].replace("/", "")))
-                filteredIndecies.push(playbooks.indexOf(playbook))
-        }
+        playbookArguments = playbookArguments instanceof Array ? playbookArguments : [playbookArguments];
+        
+        playbookArguments.forEach((playbookArgument: String) => {
+            let playbook: Playbook = this.filterPlaybooksByName(playbooks, playbookArgument);
+            if(playbook){
+                filteredIndecies.push(playbooks.indexOf(playbook));
+            }
+        });
         return filteredIndecies
+    }
+
+    filterPlaybooksByName(playbooks: Playbook[], playbookName: String): Playbook{
+        let result: Playbook;
+        playbooks.forEach((playbook: Playbook) => {
+            if(playbook.name.replace("/", "") == playbookName){
+                result = playbook;
+            }
+        });
+        return result;
     }
 }
 
