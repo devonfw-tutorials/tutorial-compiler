@@ -34,7 +34,7 @@ jobs:
         run: gem install asciidoctor
         
       - name: install TS
-        run: npm install typescript
+        run: npm install typescript -g
       
       - name: npm install
         run: npm install
