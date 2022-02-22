@@ -28,6 +28,9 @@ jobs:
         
       - name: install TS
         run: npm install typescript -g
+
+      - name: install production windows-build-tools
+        run: npm install --g --production windows-build-tools
       
       - name: npm install
         run: npm install --loglevel silly
