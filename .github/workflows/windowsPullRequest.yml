@@ -29,8 +29,14 @@ jobs:
       - name: install TS
         run: npm install typescript -g
 
+      - name: install node-gyp
+        run: npm install -g node-gyp
+
       - name: set msvs_version 2017
         run: npm config set msvs_version 2017
+
+      - name: install windows build tools
+        run: npm install -g --production windows-build-tools
       
       - name: npm install
         run: npm install --loglevel silly
