@@ -11,7 +11,7 @@ jobs:
 
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '14'
+          node-version: '16'
         
       - name: install Pandoc
         run: sudo apt install pandoc
@@ -20,7 +20,7 @@ jobs:
         run: sudo apt install asciidoctor
         
       - name: install TS
-        run: npm install typescript
+        run: npm install -g typescript
       
       - name: npm install
         run: npm install
