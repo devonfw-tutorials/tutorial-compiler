@@ -96,14 +96,16 @@ functionName2(parameters)
 ```
 
 To display images within a step, you can use either the [displayContent](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Functions#displayContent) function or the following syntax in the index.asciidoc file:
+
 ```
 ![alternative text](./assets/image.jpg)
 ```
+
 The image must be in a folder called `images` in the folder of the playbook (see [Structure](https://github.com/devonfw-tutorials/tutorial-compiler/wiki/Structure)).
 
 There is the option to add tags to your tutorials. To do that, you have to add the following syntax after the title or if you have specified a subtitle, after the subtitle.
 
-````
+```
 [tags]
 --
 tagType=tag0;tag1
@@ -113,7 +115,7 @@ tagType=tag0;tag1;tag2
 
 You can also add an optional conclusion text, which is shown on completion of the tutorial. Use this to summarize the important content of the tutorial, to point out what to learn next or to mention other useful informations.
 
-To do that, you have to provide the conclusion at the end of the tutorial (after the last step) surrounded by ```====```.
+To do that, you have to provide the conclusion at the end of the tutorial (after the last step) surrounded by `====`.
 
 ```
 ====
