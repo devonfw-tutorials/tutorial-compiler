@@ -27,7 +27,7 @@ jobs:
         run: sudo apt install asciidoctor
 
       - name: install TS
-        run: npm install typescript
+        run: npm install -g typescript
       
       - name: npm install
         run: npm install
