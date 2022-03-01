@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '15'
+          node-version: '16'
         
       - name: install Pandoc
         run: sudo apt install pandoc
