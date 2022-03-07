@@ -75,11 +75,11 @@ export class Katacoda extends Runner {
 
         let imageDirectory = path.join(this.playbookPath, "images");
         if(fs.existsSync(imageDirectory)) {
-            this.assetManager.registerDirectory(imageDirectory, "", "", true);
+            this.assetManager.registerDirectory(imageDirectory, "", "", true, false);
         }
 
         // copy all assets from temp/setup in assets folder
-        this.assetManager.registerDirectory(path.join(this.tempPathTutorial, "setup"), "setup", "/root/setup", true);
+        this.assetManager.registerDirectory(path.join(this.tempPathTutorial, "setup"), "setup", "/root/setup", true, true);
         this.assetManager.copyAssets();
 
         // write index file, required for katacoda to load the tutorial
@@ -478,7 +478,7 @@ export class Katacoda extends Runner {
             fs.appendFileSync(setupFile, "##########\n");
         }
 
-        this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false);
+        this.assetManager.registerFile(setupFile, "setup/setup.txt", "/root/setup", false, true);
     }
 
     private changeCurrentDir(targetDir:string, terminalId?: number, isRunning?: boolean):string{

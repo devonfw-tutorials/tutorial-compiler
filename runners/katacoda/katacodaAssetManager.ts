@@ -11,7 +11,7 @@ export class KatacodaAssetManager {
         this.assetDirectory = assetDir;
     }
 
-    registerFile(filepathSource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean) {
+    registerFile(filepathSource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean, copyIntoKatacodaEnvironment: boolean) {
         this.assetData.push({
             sourcePath: filepathSource,
             targetPath: filepathTarget,
@@ -19,19 +19,21 @@ export class KatacodaAssetManager {
             copyFile: copyFile
         });
 
-        this.katacodaAssets.push({
-            file: filepathTarget.replace(/\\/g, "/"),
-            target: katacodaDirectory.replace(/\\/g, "/")
-        })
+        if(copyIntoKatacodaEnvironment) {
+            this.katacodaAssets.push({
+                file: filepathTarget.replace(/\\/g, "/"),
+                target: katacodaDirectory.replace(/\\/g, "/")
+            })
+        }
     }
 
-    registerDirectory(directorySource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean) {
+    registerDirectory(directorySource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean, copyIntoKatacodaEnvironment: boolean) {
         let dir = fs.readdirSync(directorySource);
         dir.forEach(file => {
             if(fs.lstatSync(path.join(directorySource, file)).isDirectory()) {
-                this.registerDirectory(path.join(directorySource, file), filepathTarget, katacodaDirectory, copyFile);
+                this.registerDirectory(path.join(directorySource, file), filepathTarget, katacodaDirectory, copyFile, copyIntoKatacodaEnvironment);
             } else {
-                this.registerFile(path.join(directorySource, file), path.join(filepathTarget, file), katacodaDirectory, copyFile);
+                this.registerFile(path.join(directorySource, file), path.join(filepathTarget, file), katacodaDirectory, copyFile, copyIntoKatacodaEnvironment);
             }
         });
     }
