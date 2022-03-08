@@ -19,10 +19,12 @@ export class KatacodaAssetManager {
             copyFile: copyFile
         });
 
-        this.katacodaAssets.push({
-            file: filepathTarget.replace(/\\/g, "/"),
-            target: katacodaDirectory.replace(/\\/g, "/")
-        })
+        if(filepathTarget && katacodaDirectory) {
+            this.katacodaAssets.push({
+                file: filepathTarget.replace(/\\/g, "/"),
+                target: katacodaDirectory.replace(/\\/g, "/")
+            })
+        }
     }
 
     registerDirectory(directorySource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean) {
