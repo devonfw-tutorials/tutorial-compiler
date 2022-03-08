@@ -11,7 +11,7 @@ export class KatacodaAssetManager {
         this.assetDirectory = assetDir;
     }
 
-    registerFile(filepathSource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean, copyIntoKatacodaEnvironment: boolean) {
+    registerFile(filepathSource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean) {
         this.assetData.push({
             sourcePath: filepathSource,
             targetPath: filepathTarget,
@@ -19,7 +19,7 @@ export class KatacodaAssetManager {
             copyFile: copyFile
         });
 
-        if(copyIntoKatacodaEnvironment) {
+        if(filepathTarget && katacodaDirectory) {
             this.katacodaAssets.push({
                 file: filepathTarget.replace(/\\/g, "/"),
                 target: katacodaDirectory.replace(/\\/g, "/")
@@ -27,13 +27,13 @@ export class KatacodaAssetManager {
         }
     }
 
-    registerDirectory(directorySource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean, copyIntoKatacodaEnvironment: boolean) {
+    registerDirectory(directorySource: string, filepathTarget: string, katacodaDirectory: string, copyFile: boolean) {
         let dir = fs.readdirSync(directorySource);
         dir.forEach(file => {
             if(fs.lstatSync(path.join(directorySource, file)).isDirectory()) {
-                this.registerDirectory(path.join(directorySource, file), filepathTarget, katacodaDirectory, copyFile, copyIntoKatacodaEnvironment);
+                this.registerDirectory(path.join(directorySource, file), filepathTarget, katacodaDirectory, copyFile);
             } else {
-                this.registerFile(path.join(directorySource, file), path.join(filepathTarget, file), katacodaDirectory, copyFile, copyIntoKatacodaEnvironment);
+                this.registerFile(path.join(directorySource, file), path.join(filepathTarget, file), katacodaDirectory, copyFile);
             }
         });
     }
